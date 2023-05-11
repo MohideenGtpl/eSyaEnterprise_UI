@@ -1,0 +1,50 @@
+[
+  {
+    "cltype": "VT",
+    "item": [
+      {
+        "name": "Temperature",
+        "controlid": "VT-1",
+        "valuetype": "float",
+        "unittype": "C",
+        "index": 1
+      },
+      {
+        "name": "Pulse",
+        "controlid": "VT-2",
+        "valuetype": "float",
+        "unittype": "per min",
+        "mandatory": "Y",
+        "index": 2
+      },
+      {
+        "name": "Respiration",
+        "controlid": "VT-3",
+        "valuetype": "float",
+        "unittype": "per min",
+        "index": 3
+      },
+      {
+        "name": "Blood Pressure",
+        "controlid": "VT-4",
+        "valuetype": "float",
+        "unittype": "mm/hg",
+        "index": 4
+      },
+      {
+        "name": "Blood Drop",
+        "controlid": "VT-5",
+        "valuetype": "float",
+        "unittype": "rate/min",
+        "index": 5
+      },
+      {
+        "name": "Additional Notes",
+        "controlid": "VT-11",
+        "valuetype": "text",
+        "unittype": "",
+        "index": 11
+      }
+    ]
+  }
+]

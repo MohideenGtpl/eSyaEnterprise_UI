@@ -1,0 +1,229 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.ActionFilter;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using eSyaEnterprise_UI.Areas.eSyaNatureCure.Data;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Areas.eSyaNatureCure.Models;
+
+
+namespace eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers
+{
+    [SessionTimeout]
+    public class RoomReservationController : Controller
+    {
+        private readonly IeSyaNatureCureAPIServices _eSyaNatureCureAPIServices;
+        private readonly ILogger<RoomReservationController> _logger;
+
+        public RoomReservationController(IeSyaNatureCureAPIServices eSyaNatureCureAPIServices, ILogger<RoomReservationController> logger)
+        {
+            _eSyaNatureCureAPIServices = eSyaNatureCureAPIServices;
+            _logger = logger;
+        }
+        #region Room Reservation
+        /// <summary>
+        /// Room Reservation
+        /// </summary>
+        /// <returns></returns>
+
+        [Area("eSyaNatureCure")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public async Task<IActionResult> V_ENC_21_00()
+        {
+
+            try
+            {
+                var parameter = "?codeType=" + CodeTypeValues.ReasonType;
+
+                var roomtypeResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<List<DO_RoomType>>("RoomType/GetActiveRoomTypes");
+                var restypeResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<List<DO_AppCodes>>("CommonMaster/GetApplicationCodesByCodeType"+ parameter);
+                var roomNumberResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<List<DO_BedMaster>>("RoomReservation/GetActiveRoomNumbers" + parameter);
+
+                if (roomtypeResponse.Status && restypeResponse.Status && roomNumberResponse.Status)
+                {
+                    ViewBag.roomtypes = roomtypeResponse.Data;
+                    ViewBag.restypes = restypeResponse.Data;
+                    ViewBag.roomNumber = roomNumberResponse.Data;
+                    return View();
+
+                }
+                else
+                {
+                    _logger.LogError(new Exception(roomtypeResponse.Message), "UD:V_ENC_21_00");
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+
+
+        }
+
+        /// <summary>
+        ///Get Room Reservation by BusinessKey for Grid
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetRoomReservationsbyBusinesskey(int businesskey,int roomtypeId, string roomNumber)
+        {
+
+            try
+            {
+                var parameter = "?businesskey=" + businesskey;
+                parameter += "&roomtypeId=" + roomtypeId;
+                parameter += "&roomNumber=" + roomNumber;
+
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<List<DO_RoomReservation>>("RoomReservation/GetRoomReservationsbyBusinesskey" + parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetRoomReservationsbyBusinesskey");
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetRoomReservationsbyBusinesskey");
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+
+        }
+
+        /// <summary>
+        /// Insert or Update Room Reservation
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> InsertOrUpdateRoomReservation(bool isInsert, DO_RoomReservation obj)
+        {
+
+            try
+            {
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                obj.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                if (isInsert)
+                {
+                    var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("RoomReservation/InsertIntoRoomReservation", obj);
+                    if (serviceResponse.Status)
+                        return Json(serviceResponse.Data);
+                    else
+                        return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+                else
+                {
+                    var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("RoomReservation/UpdateRoomReservation", obj);
+                    if (serviceResponse.Status)
+                        return Json(serviceResponse.Data);
+                    else
+                        return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertOrUpdateRoomReservation:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Activate or De Activate Room Reservation
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> ActiveOrDeActiveRoomReservation(DO_RoomReservation robj)
+        {
+
+            try
+            {
+
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("RoomReservation/ActiveOrDeActiveRoomReservation", robj);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:ActiveOrDeActiveRoomReservation:params:" + JsonConvert.SerializeObject(robj));
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetActiveRoomNumbersbyRoomType(int roomtype)
+        {
+            try
+            {
+                var parameter = "?roomtype=" + roomtype;
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<List<DO_BedMaster>>("RoomReservation/GetActiveRoomNumbersbyRoomType" + parameter);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetActiveRoomNumbersbyRoomType:For roomtype", roomtype);
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetActiveRoomNumbersbyRoomType:For roomtype ", roomtype);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetActiveRoomNumbersbyRoomType:For roomtype ", roomtype);
+                throw ex;
+            }
+        }
+        [HttpGet]
+        public async Task<JsonResult> GetActiveBedNumbersbyRoomNumber(int roomtype, string roomnumber)
+        {
+            try
+            {
+                var parameter = "?roomtype=" + roomtype + "&roomnumber=" + roomnumber;
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<List<DO_BedMaster>>("RoomReservation/GetActiveBedNumbersbyRoomNumber" + parameter);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetActiveBedNumbersbyRoomNumber:For roomtype {0} with roomnumber entered {1}", roomtype, roomnumber);
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetActiveBedNumbersbyRoomNumber:For roomtype {0} with roomnumber entered {1}", roomtype, roomnumber);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetActiveBedNumbersbyRoomNumber:For roomtype {0} with roomnumber entered {1}", roomtype, roomnumber);
+                throw ex;
+            }
+        }
+        #endregion 
+    }
+}

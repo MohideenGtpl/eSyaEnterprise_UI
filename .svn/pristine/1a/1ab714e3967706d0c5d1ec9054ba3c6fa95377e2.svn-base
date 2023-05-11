@@ -1,0 +1,55 @@
+﻿
+@{
+    ViewData["Title"] = "V_104_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts{
+<script src="~/js/Config/BusinessSubscription.js"></script>
+}
+<section id="divBusinessSubscriptionGrid">
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label class="lable-color">Business Location</label>
+                <select class="selectpicker" data-live-search="false" id="cboBusinessLocation" title="Choose Business Location"></select>
+            </div>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 form-group">
+            <table id="jqgBusinessSubscription"></table>
+            <div id="jqpBusinessSubscription"></div>
+        </div>
+    </div>
+</section>
+
+<section id="divBusinessSubsciptionForm" style="display:none">
+    <div class="row">
+        <div class="col-lg-2 col-md-3 col-sm-4 form-group">
+            <label>Subscription From</label>
+            <input type="text" name="name" value="" class="datepicker form-control" />
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-4 form-group">
+            <label>Subscription Till</label>
+            <input type="text" name="name" value="" class="datepicker form-control" />
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-4">
+            <div class="form-group">
+                <div class="default-checkbox  padbot15">
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActiveStatus">
+                        <input type="checkbox" id="chkActiveStatus"  class="mdl-checkbox__input">
+                        <span class="mdl-checkbox__label">Active Status</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12 text-center">
+            <hr />
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent btn-back mr-10"  id="" onclick="fnCloseBusinessSubscription();">
+                Back
+            </button>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button mr-10" id="btnSaveBusinessSubscription" onclick="fnSaveSMSRecipient();">
+                Save
+            </button>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" onclick="fnCloseBusinessSubscription()"> Cancel</button>
+        </div>
+    </div>
+</section>

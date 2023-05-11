@@ -1,0 +1,160 @@
+﻿@{
+    ViewData["Title"] = "Item Group / Category Mapping";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@section scripts{
+    <script src="~/js/jsTree.js"></script>
+    <link href="~/css/jsTree.css" rel="stylesheet" />
+    <script src="~/js/eSyaMaterial/ItemGroupCategoryMapping.js"></script>
+}
+
+
+<style>
+
+
+    .w-120 {
+        width: 120px !important
+    }
+
+    .mdl-card__title {
+        max-height: 45px !important;
+        display: block !important;
+        padding-left: 0px !important;
+        padding-top: 0px !important;
+    }
+
+    .mdl-card {
+        min-height: auto !important
+    }
+
+    h5 {
+        margin-top: 0px;
+        font-weight: 600;
+        color: #0e75bc;
+        padding-left: 0px;
+        margin-bottom: 10px;
+        font-size: 20px;
+    }
+
+    hr {
+        border-color: #f1f1f1 !important;
+    }
+
+    #pnlAddMainMenu, #pnlAddSubMenu {
+        width: 100%;
+    }
+
+    #lblItemGroup {
+        cursor: pointer;
+        padding: 2px 4px;
+    }
+
+        #lblItemGroup:hover {
+            background: #e7f4f9;
+            box-shadow: inset 0 0 1px #cccccc;
+        }
+
+    .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
+        width: 100% !important
+    }
+
+    hr {
+        margin-bottom: 8px;
+        margin-top: 8px;
+    }
+</style>
+
+<div class="row row-bottom-pad">
+    <div class="col-sm-4 col-md-4 col-lg-4">
+
+        <div id="ItemGroupCategoryTree">
+        </div>
+    </div>
+
+    <div class="col-sm-1 col-md-1 col-lg-1">
+        </div>
+
+
+        <div id="dvItemGroupCate" class="col-lg-7 col-md-7 col-sm-7 f-right">
+
+            <div class="demo-card-square mdl-card mdl-shadow--2dp marbot15 fullwidth" id="pnlAddItemGroupCate">
+                <div class="mdl-card__title mdl-card--expand padleft0 padtop0 h-60 d-block">
+                    <h5 class="mdl-card__title-text"> Item Group / Category Link </h5>
+                </div>
+                <div class="mdl-card__supporting-text fullwidth">
+                    <div class="row ">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="form-group">
+                                <label>
+                                    Item Group
+                                </label>
+                                <div>
+                                    <select class="selectpicker" data-live-search="true" id="cboitemgroup" title="">
+                                        <option value="0"> Choose Item Group </option>
+                                        @foreach (var group in ViewBag.ItemGroups)
+                                            {
+                                                <option value="@group.ItemGroupId">@group.ItemGroupDesc</option>
+                                            }
+
+                                    </select>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="form-group">
+                                <label class="lable-color">
+                                    Item Category
+                                </label>
+                                <div>
+                                    <select class="selectpicker" data-live-search="true" id="cboitemcategory" title="" onchange="fnloadSubCateCbo()">
+                                        <option value="0"> Choose Item Category</option>
+                                        @foreach (var cate in ViewBag.ItemCategories)
+                                            {
+                                                <option value="@cate.ItemCategory">@cate.ItemCategoryDesc</option>
+                                            }
+
+                                    </select>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="form-group">
+                                <label class="lable-color"> Item Sub Category</label>
+                                <div>
+                                    <select class="selectpicker" data-live-search="true" id="cboitemsubcategory" title="" onchange="fnGetMappingRecord()">
+                                        <option value="0"> Choose Item Sub Category </option>
+                                    </select>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ">
+                        <div class="col-lg-12" style="margin-bottom: 15px;">
+                            <label class="mdl-checkbox mdl-js-checkbox" for="chkActiveStatus">
+                                <input type="checkbox" id="chkActiveStatus"
+                                       class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">Is Active</span>
+                            </label>
+                        </div>
+                    </div>
+
+
+                    <hr />
+                    <div class="mdl-card__actions text-center vertical-center pad0">
+
+                        <button type="button" class="btn btn-primary" id="btnIGCAdd" onclick="fnItemGroupCateSubCateMapping()"><i class="fa fa-plus"></i> Add</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

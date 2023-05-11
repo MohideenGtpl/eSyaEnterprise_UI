@@ -1,0 +1,83 @@
+﻿
+@{
+    ViewData["Title"] = "Nurse Assessment";
+}
+
+<link href="~/css/emergency.css" rel="stylesheet" />
+@section scripts{
+@*<script src="~/js/eSyaOutPatient/emergency.js"></script>*@
+   <script src="~/js/eSyaNursingStation/nurseassessment.js"></script>
+}
+
+<style>
+
+    .dropdown bootstrap-select {
+        width: 100% !important;
+    }
+    p span[id^='lbl']{
+        font-weight:600;
+    }
+</style>
+
+<input type="hidden" id="hdIPNumber" value="@ViewBag.IpNumber" />
+<input type="hidden" id="hdUHID" value="@ViewBag.UHID" />
+
+<div class="divFixedBar">
+    <div class="row">
+        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-xs-6 d-flex align-items-center">
+            <span class="mr-3"><i class="far fa-user-circle f-28 c-lightgrey"></i></span>
+            <div>
+                <p><span id="lblPatientName"></span> -- <span id="lblGender"></span> -- <span id="lblAge"></span></p>
+                <p><span class="labelname"> Room Type</span> <span id="lblRoomType"></span>  -- <span id="lblBedNumber"></span></p>
+                @*<p><span class="labelname"> Room No</span> </p>*@
+            </div>
+           
+        </div>
+        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-xs-6 d-flex align-items-center">
+            <span class="mr-3"><i class="fas fa-user-md f-28 mr-2 c-lightgrey"></i></span>
+            <div>
+                <p><span class="labelname"> DOA</span> <span id="lblDOA"></span></p>
+                <p><span id="lblConsultantName"></span></p>
+            </div>
+        </div>
+        @*<div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-xs-6 d-flex align-items-center">
+            <span class="mr-3"><i class="fas fa-hotel f-28 mr-2 c-lightgrey"></i></span>
+            <div>
+                <p><span class="labelname"> Room Type</span> <span id="lblRoomType"></span></p>
+                <p><span class="labelname"> Room No</span> <span id="lblBedNumber"></span></p>
+            </div>
+        </div>*@
+
+        <div id="floatButtons" class="col-xl-4 col-lg-12 text-right p-0">
+            <button class="mdl-button" id="btnBackNS" onclick="fnBackToNSGrid()"><i class="fas fa-chevron-left"></i> <span class="btntext">Back</span></button>
+            <button class="mdl-button" id="btnSaveDraft" onclick="fnSaveNurseAssessment('D')"><i class="far fa-save c-green"></i> <span class="btntext">Save Draft</span></button>
+            <button class="mdl-button" id="btnSave" onclick="fnSaveNurseAssessment('S')"><i class="far fa-check-circle c-brown"></i> <span class="btntext">Submit</span></button><button class="mdl-button d-none"><i class="fas fa-print c-blue"></i> <span class="btntext">Print</span></button>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <nav class="col-md-3 col-lg-2 col-sm-3 sidebar" id="navbar-example2" style="display:none">
+        <div class="sidebar-sticky">
+            <ul class="nav flex-column" id="nav_menu"></ul>
+        </div>
+    </nav>
+
+    <main class="" id="mainContent" data-spy="scroll"  data-target="#navbar-example2" data-offset="30">
+        @*<div class="tab-content" id="v-pills-tabContent"></div>*@
+    </main>
+
+</div>
+
+
+<script>
+
+    function fnBackToNSGrid() {
+        window.location.href = getBaseURL() + "/eSyaNursingStation/NurseAssessment/V_6000_00";
+    }
+
+</script>
+
+
+
+

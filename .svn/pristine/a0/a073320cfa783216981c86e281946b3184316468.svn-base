@@ -1,0 +1,62 @@
+﻿
+@{
+    ViewData["Title"] = "V_5500_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts{
+<script src="~/js/eSyaPayrollExpat/BankMaster.js"></script>
+}
+
+<div class="row form-group">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <table id="jqgBankMaster"></table>
+        <div id="jqpBankMaster"></div>
+    </div>
+</div>
+ 
+<div class="modal fade in" id="PopupBankMaster" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Add Bank Details</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                        <label>Bank Name</label>
+                        <input type="text" class="form-control" id="txtBankName" />
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                        <label>Bank Account No</label>
+                        <input type="text" class="form-control" id="txtAccountno" />
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                        <label>Branch Name</label>
+                        <input type="text" class="form-control" id="txtBankName" />
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 form-group">
+                        <label>Bank Address</label>
+                        <input type="text" class="form-control" id="txtBankAddress" />
+                    </div>
+                    <div class="col-lg-9 col-md-9 col-sm-9">
+                        <table id="jqgBankCurrentDetail"></table>
+                        <div id="jqpBankCurrentDetail"></div>
+                    </div>
+                </div>
+               
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveBankDetails">
+                            Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="btnCancelBankDetails"> Cancel </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

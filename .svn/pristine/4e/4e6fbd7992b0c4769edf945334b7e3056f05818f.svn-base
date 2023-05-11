@@ -1,0 +1,170 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<div class="row padbot4">
+    <input type="hidden" id="hdvDoctorId" value="" />
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label> @Localizer["DoctorShortName"]</label>
+            <input class="form-control" type="text" autocomplete="off" maxlength="10" id="txtDoctorShortName" />
+        </div>
+    </div>
+    <div class="col-lg-6 col-md-8 col-sm-6">
+        <div class="form-group">
+            <label> @Localizer["DoctorName"]</label>
+            <input class="form-control" type="text" autocomplete="off" maxlength="50" id="txtDoctorName" />
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> @Localizer["Gender"]</label>
+            <select class="selectpicker" data-live-search="false" title="Choose Gender" id="cboGender">
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-8 col-sm-6">
+        <div class="form-group">
+            <label> @Localizer["Qualification"]</label>
+            <input class="form-control" type="text" autocomplete="off" maxlength="50" id="txtQualification" />
+        </div>
+    </div>
+    <div class="col-lg-6 col-md-8 col-sm-6">
+        <div class="form-group">
+            <label> @Localizer["MobileNumber"]</label>
+            @*<select class="selectpicker one-fourth" data-live-search="true" id="cboISDCode" title="" data-size="8" asp-items="@ViewBag.ISDCodesList">
+                    <option value="0">Choose ISD Code</option>
+
+                </select>
+                <input class="form-control three-fourth" data-inputmask="'mask': '9', 'repeat': 10, 'greedy' : false" autocomplete="off" id="txtMobileNumber" />*@
+
+            @await Component.InvokeAsync("IsdMobileInput", new { id = "DoctorMobile" })
+
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label> @Localizer["EmailID"]</label>
+            <input class="form-control" type="text" autocomplete="off" maxlength="50" id="txtEMailId" />
+        </div>
+    </div>
+
+
+
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> @Localizer["DoctorClass"]</label>
+            <select class="selectpicker" data-live-search="true" data-size="10" id="cboDoctorClass" asp-items="@ViewBag.doctorClassList">
+                @*<option value="0">Select</option>*@
+                @*@foreach (var dc in ViewBag.doctorClassList)
+                    {
+                        <option value="@dc.ApplicationCode">@dc.CodeDesc</option>
+                    }*@
+            </select>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> @Localizer["DoctorCategory"]</label>
+            <select class="selectpicker" data-live-search="true" data-size="10" id="cboDoctorCategory" asp-items="@ViewBag.doctorCategoryList">
+                @*<option value="0">Select</option>*@
+                @*@foreach (var dc in ViewBag.doctorCategoryList)
+                    {
+                        <option value="@dc.ApplicationCode">@dc.CodeDesc</option>
+                    }*@
+            </select>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> @Localizer["TraiffFrom"]</label>
+            <select class="selectpicker" data-live-search="false" title="Choose TraiffFrom" id="cboTraiffFrom">
+                <option value="N">None</option>
+                <option value="R">Service Rate</option>
+                <option value="S">Specialty</option>
+                <option value="D">Doctor</option>
+            </select>
+        </div>
+    </div>
+
+</div>
+
+<div class="row">
+
+    @*<div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="form-group">
+                <label> @Localizer["LanguageKnown"]</label>
+                <input class="form-control" type="text" autocomplete="off" maxlength="150" id="txtLanguageKnown" />
+            </div>
+        </div>*@
+    @*<div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="form-group">
+                <label> @Localizer["Experience"]</label>
+                <input class="form-control" type="text" autocomplete="off" maxlength="150" id="txtExperience" />
+            </div>
+        </div>*@
+    <div class="col-lg-12 ">
+        <div class="form-group">
+            <label> @Localizer["DoctorRemarks"]</label>
+            @*<input class="form-control" type="text" autocomplete="off" maxlength="150" id="txtDoctorRemarks" />*@
+            <textarea id="txtDoctorRemarks" class="form-control" maxlength="150" rows="4" cols="40"></textarea>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<div class="row">
+
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="default-checkbox checkbox-group">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkAllowConsultation">
+                <input type="checkbox" id="chkAllowConsultation" class="mdl-checkbox__input">
+                <span class="mdl-checkbox__label"> @Localizer["AllowConsultation"]</span>
+            </label>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="default-checkbox checkbox-group">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkAllowSMS">
+                <input type="checkbox" id="chkAllowSMS" class="mdl-checkbox__input">
+                <span class="mdl-checkbox__label"> @Localizer["AllowSMS"]</span>
+            </label>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="default-checkbox checkbox-group">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsRevenueShareApplicable">
+                <input type="checkbox" id="chkIsRevenueShareApplicable" class="mdl-checkbox__input">
+                <span class="mdl-checkbox__label"> @Localizer["IsRevenueShareApplicable"]</span>
+            </label>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="default-checkbox checkbox-group">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActiveStatus">
+                <input type="checkbox" id="chkActiveStatus" class="mdl-checkbox__input">
+                <span class="mdl-checkbox__label"> @Localizer["Active"]</span>
+            </label>
+        </div>
+    </div>
+
+</div>
+
+<div class="row form-group">
+    <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+        <hr />
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent btn-back mr-10 c-white" onclick="fnCloseDoctorMaster()"><i class="fas fa-chevron-left"></i> @Localizer["Back"]</button>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button mr-10" id="btnSaveDoctorMaster" onclick="fnSaveDoctorMaster()"><i class="far fa-save"></i> @Localizer["Save"]</button>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" id="btnClearDoctor" onclick="fnClearFields()"><i class="fa fa-redo"></i> @Localizer["Clear"]</button>
+    </div>
+</div>

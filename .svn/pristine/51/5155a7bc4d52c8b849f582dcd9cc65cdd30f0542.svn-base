@@ -1,0 +1,76 @@
+﻿
+@{
+    ViewData["Title"] = "PreOperative";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div>
+    <input type="hidden" id="hdfBusinessKey" value=@ViewBag.BusinessKey />
+    <div class="row">
+
+        <div class="col-lg-2 col-md-4 col-sm-4" style="padding-top:8px;">
+            <label>From Date</label>  <input type="date" id="dtFromDate" class="form-control" />
+        </div>
+        <div class="col-lg-2 col-md-4 col-sm-4" style="padding-top:8px;">
+            <label>To Date</label> <input type="date" id="dtToDate" class="form-control" />
+        </div>
+        <div class="col-lg-2 col-md-4 col-sm-4" style="position:relative; top:25px;">
+            <button type="submit" class="btn btn-primary" onclick="btnViewReport();"><i class="glyphicon glyphicon-eye-open"></i> Submit</button>
+        </div>
+
+        <div class="col-lg-2"></div>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    <div id="divPartialViewContainer">
+    </div>
+</div>
+<script>
+
+        $(document).ready(function () {
+
+
+        });
+
+        function btnViewReport() {
+            var fromDate = $("#dtFromDate").val();
+            var toDate = $("#dtToDate").val();
+            var businessKey = $("#hdfBusinessKey").val();
+
+            var URL = getReportBaseURL() + '/eSyaClinic/ReportViewer/PreOperative';
+           
+
+            if (fromDate == null || fromDate == "") {
+                toastr.warning("Please select From Date");
+                return false;
+            }
+            else if (toDate == null || toDate == "") {
+                toastr.warning("Please select To Date");
+                return false;
+            }
+            else if (toDate < fromDate) {
+                toastr.warning("To Date can not be less than From Date");
+                return false;
+            }
+            else {
+                $.ajax({
+                    url: URL,
+                    'async': false,
+                    data: { businesskey: businessKey, fromdate: fromDate, todate: toDate },
+                    type: 'POST',
+                    success: function (content) {
+                        $('#divPartialViewContainer').html(content);
+                    },
+                    error: function (result) {
+                        alert('Error, could not view!');
+                    }
+                });
+
+                return true;
+            }
+        }
+</script>
+
+

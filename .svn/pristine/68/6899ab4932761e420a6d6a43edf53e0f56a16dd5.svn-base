@@ -1,0 +1,460 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.ActionFilter;
+using eSyaEnterprise_UI.Areas.eSyaCustomer.Data;
+using eSyaEnterprise_UI.Areas.eSyaCustomer.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+
+namespace eSyaEnterprise_UI.Areas.eSyaCustomer.Controllers
+{
+    [SessionTimeout]
+    public class CustomerController : Controller
+    {
+        private readonly IeSyaCustomerAPIServices _eSyaCustomerAPIServices;
+        private readonly ILogger<CustomerController> _logger;
+
+        public CustomerController(IeSyaCustomerAPIServices eSyaCustomerAPIServices, ILogger<CustomerController> logger)
+        {
+            _eSyaCustomerAPIServices = eSyaCustomerAPIServices;
+            _logger = logger;
+        }
+
+        [Area("eSyaCustomer")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public IActionResult V_271_00()
+        {
+            return View();
+        }
+
+        /// <summary>
+        ///Get Customer Code Information By Customer Name Prefix
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult>  GetCustomerCodeInformationByNamePrefix(string customerNamePrefix)
+        {
+            try
+            {
+                var serviceResponse = await _eSyaCustomerAPIServices.HttpClientServices.GetAsync<List<DO_CustomerCodes>>("CustomerMaster/GetCustomerCodeInformationByNamePrefix?customerNamePrefix=" + customerNamePrefix);
+                if(serviceResponse.Data != null)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetCustomerCodeInformationByNamePrefix");
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetCustomerCodeInformationByNamePrefix:For Prefix {0}", customerNamePrefix);
+                throw ex;
+            }
+        }
+
+        [Area("eSyaCustomer")]
+        public IActionResult _CustomerDetails()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// Insert Into Customer Codes
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> InsertIntoCustomerCode(DO_CustomerCodes cs_cc)
+        {
+            try
+            {
+                cs_cc.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                cs_cc.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                cs_cc.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext).ToString();
+
+                var serviceResponse = await _eSyaCustomerAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("CustomerMaster/InsertIntoCustomerCode", cs_cc);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:InsertIntoCustomerCode:params:" + JsonConvert.SerializeObject(cs_cc));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertIntoCustomerCode:params:" + JsonConvert.SerializeObject(cs_cc));
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+
+        /// <summary>
+        /// Update Customer Codes
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> UpdateCustomerCode(DO_CustomerCodes cs_cc)
+        {
+            try
+            {
+                cs_cc.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                cs_cc.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                cs_cc.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext).ToString();
+
+                var serviceResponse = await _eSyaCustomerAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("CustomerMaster/UpdateCustomerCode", cs_cc);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:UpdateCustomerCode:params:" + JsonConvert.SerializeObject(cs_cc));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:UpdateCustomerCode:params:" + JsonConvert.SerializeObject(cs_cc));
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+
+        [Area("eSyaCustomer")]
+        public IActionResult _CustomerContact()
+        {
+            return View();
+        }
+
+        /// <summary>
+        ///Get Customer Contact By Customer Id
+        /// </summary>
+        //[HttpPost]
+        public async Task<JsonResult> GetCustomerContactInformationByCustomerId(int customerId)
+        {
+            try
+            {
+                var serviceResponse = await _eSyaCustomerAPIServices.HttpClientServices.GetAsync<List<DO_CustomerContact>>("CustomerMaster/GetCustomerContactInformationByCustomerId?customerId=" + customerId);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetCustomerContactInformationByCustomerId:For CustomerId {0}", customerId);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetCustomerContactInformationByCustomerId:For CustomerId {0}", customerId);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        ///Get Customer Contact By Customer Id And Location Id
+        /// </summary>
+        public async Task<JsonResult> GetCustomerContactInformationByCustomerIdLocId(int customerId, int locationId)
+        {
+            try
+            {
+                var serviceResponse = await _eSyaCustomerAPIServices.HttpClientServices.GetAsync<DO_CustomerContact>("CustomerMaster/GetCustomerContactInformationByCustomerIdLocId?customerId=" + customerId + "&locationId=" + locationId);
+                if(serviceResponse.Status)
+                {
+                    DO_CustomerContact cc_cn = serviceResponse.Data;
+                    return Json(cc_cn);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetCustomerContactInformationByCustomerIdLocId:For CustomerId {0} and LocationId {1}", customerId, locationId);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetCustomerContactInformationByCustomerIdLocId:For CustomerId {0} and LocationId {1}", customerId, locationId);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Insert Into Customer Contact
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> InsertIntoCustomerContact(DO_CustomerContact cs_cc)
+        {
+            try
+            {
+                cs_cc.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                cs_cc.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                cs_cc.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext).ToString();
+
+                var serviceResponse = await _eSyaCustomerAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("CustomerMaster/InsertIntoCustomerContact", cs_cc);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:InsertIntoCustomerContact:params:" + JsonConvert.SerializeObject(cs_cc));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertIntoCustomerContact:params:" + JsonConvert.SerializeObject(cs_cc));
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+
+        /// <summary>
+        /// Update Customer Contact
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> UpdateCustomerContact(DO_CustomerContact cs_cc)
+        {
+            try
+            {
+                cs_cc.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                cs_cc.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                cs_cc.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext).ToString();
+
+                var serviceResponse = await _eSyaCustomerAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("CustomerMaster/UpdateCustomerContact", cs_cc);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:UpdateCustomerContact:params:" + JsonConvert.SerializeObject(cs_cc));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:UpdateCustomerContact:params:" + JsonConvert.SerializeObject(cs_cc));
+                throw ex;
+            }
+        }
+
+        [Area("eSyaCustomer")]
+        public IActionResult _BusinessLink()
+        {
+            return View();
+        }
+
+        /// <summary>
+        ///Get Customer Business Location By Customer Id
+        /// </summary>
+        //[HttpPost]
+        public async Task<JsonResult> GetCustomerBusinessLocationByCustomerId(int customerId)
+        {
+            try
+            {
+                var serviceResponse = await _eSyaCustomerAPIServices.HttpClientServices.GetAsync<List<DO_CustomerBusinessLocation>>("CustomerMaster/GetCustomerBusinessLocationByCustomerId?customerId=" + customerId);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetCustomerBusinessLocationByCustomerId:For CustomerId {0}", customerId);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetCustomerBusinessLocationByCustomerId:For CustomerId {0}", customerId);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Insert Into Customer Business Location
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> InsertOrUpdateCustomerBusinessLocation(List<DO_CustomerBusinessLocation> cs_bl)
+        {
+            try
+            {
+                cs_bl.All(c =>
+                {
+                    c.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                    c.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                    c.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext).ToString();
+                    return true;
+                });
+
+                var serviceResponse = await _eSyaCustomerAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("CustomerMaster/InsertOrUpdateCustomerBusinessLocation", cs_bl);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:InsertOrUpdateCustomerBusinessLocation:params:" + JsonConvert.SerializeObject(cs_bl));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertOrUpdateCustomerBusinessLocation:params:" + JsonConvert.SerializeObject(cs_bl));
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+
+        [Area("eSyaCustomer")]
+        public IActionResult _StatutoryDetails()
+        {
+            return View();
+        }
+
+        /// <summary>
+        ///Get Customer Statutory Detail By Customer Id , Location Id and IsdCode
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetStatutoryInformationByCusIdLocIdIsdCode(int customerId, int locationId, int isdCode)
+        {
+            try
+            {
+                var serviceResponse = await _eSyaCustomerAPIServices.HttpClientServices.GetAsync<List<DO_CustomerStatutoryDetail>>("CustomerMaster/GetStatutoryInformationByCusIdLocIdIsdCode?customerId=" + customerId + "&locationId=" + locationId + "&isdCode=" + isdCode);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetStatutoryInformationByCusIdLocIdIsdCode:For CustomerId {0} , LocationId {1} and ISDCode {2}", customerId, locationId, isdCode);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetStatutoryInformationByCusIdLocIdIsdCode:For CustomerId {0} , LocationId {1} and ISDCode {2}", customerId, locationId, isdCode);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Insert Into Customer Statutory Details
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> InsertOrUpdateCustomerStatutoryDetail(List<DO_CustomerStatutoryDetail> cs_sd)
+        {
+            try
+            {
+                cs_sd.All(c =>
+                {
+                    c.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                    c.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                    c.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext).ToString();
+                    return true;
+                });
+
+                var serviceResponse = await _eSyaCustomerAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("CustomerMaster/InsertOrUpdateCustomerStatutoryDetail", cs_sd);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:InsertOrUpdateCustomerStatutoryDetail:params:" + JsonConvert.SerializeObject(cs_sd));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertOrUpdateCustomerStatutoryDetail:params:" + JsonConvert.SerializeObject(cs_sd));
+                throw ex;
+            }
+        }
+
+        [Area("eSyaCustomer")]
+        public IActionResult _BankDetails()
+        {
+            return View();
+        }
+        [Area("eSyaCustomer")]
+        public IActionResult _ItemLink()
+        {
+            return View();
+        }
+        [Area("eSyaCustomer")]
+        public IActionResult _PartNumber()
+        {
+            return View();
+        }
+
+        [Area("eSyaCustomer")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public async Task<IActionResult> V_272_00()
+        {
+            try
+            {
+                var serviceResponse = await _eSyaCustomerAPIServices.HttpClientServices.GetAsync<List<DO_ApplicationCodes>>("CommonData/GetApplicationCodesByCodeType?codeType=" + CodeTypeValues.CustomerHoldReason);
+                if (serviceResponse.Status)
+                {
+                    ViewBag.HoldReason = serviceResponse.Data.Select(b => new SelectListItem
+                    {
+                        Value = b.ApplicationCode.ToString(),
+                        Text = b.CodeDesc,
+                    }).ToList();
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetApplicationCodesByCodeType for hold reason");
+                }
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetApplicationCodesByCodeType for hold reason");
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        ///Get Customer Code Information By Customer Name Prefix , Customer On Hold
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetCustomerCodeInformationByNamePrefixOnHold(string customerNamePrefix, string customerOnHold)
+        {
+            try
+            {
+                var serviceResponse = await _eSyaCustomerAPIServices.HttpClientServices.GetAsync<List<DO_CustomerCodes>>("CustomerMaster/GetCustomerCodeInformationByNamePrefixOnHold?customerNamePrefix=" + customerNamePrefix + "&customerOnHold=" + customerOnHold);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetCustomerCodeInformationByNamePrefixOnHold:For Prefix {0} , customerOnHold {1}", customerNamePrefix, customerOnHold);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetCustomerCodeInformationByNamePrefixOnHold:For Prefix {0} , customerOnHold {1}", customerNamePrefix, customerOnHold);
+                throw ex;
+            }
+        }
+
+
+        /// <summary>
+        /// Update Customer Hold
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> UpdateCustomerCodeForHold(DO_CustomerCodes cs_hd)
+        {
+            try
+            {
+                cs_hd.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                cs_hd.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                cs_hd.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext).ToString();
+
+                var serviceResponse = await _eSyaCustomerAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("CustomerMaster/UpdateCustomerCodeForHold", cs_hd);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:UpdateCustomerCodeForHold:params:" + JsonConvert.SerializeObject(cs_hd));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:UpdateCustomerCodeForHold:params:" + JsonConvert.SerializeObject(cs_hd));
+                throw ex;
+            }
+        }
+    }
+}

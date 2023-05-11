@@ -1,0 +1,19 @@
+﻿
+@{
+    ViewData["Title"] = "V_4000_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/css/Masters/CustomerCodes.css" rel="stylesheet" />
+@section scripts{
+    <script src="~/js/eSyaPayroll/EmployeeDetails.js"></script>
+    <script src="~/js/eSyaPayroll/FamilyInfo.js"></script>
+    <script src="~/js/eSyaPayroll/PersonalInformation.js"></script>
+    <script src="~/js/eSyaPayroll/PreviousJob.js"></script>
+    <script src="~/js/eSyaPayroll/BankDetails.js"></script>
+    <script src="~/js/eSyaPayroll/SalaryDetails.js"></script>
+    <script src="~/js/eSyaPayroll/CurrentJob.js"></script>
+    <script src="~/js/eSyaPayroll/Education.js"></script>
+    <script src="~/js/eSyaPayroll/FixedDeduction.js"></script>
+}
+

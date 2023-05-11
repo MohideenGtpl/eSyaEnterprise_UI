@@ -1,0 +1,9 @@
+﻿
+@{
+    ViewData["Title"] = "V_5006";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts{
+    <script src="~/js/eSyaPayrollExpat/PayPeriod.js"></script>
+}

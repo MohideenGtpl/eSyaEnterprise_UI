@@ -1,0 +1,16 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+<div class="row padbot10 padtop15">
+    <div class="col-lg-7 col-md-7 col-sm-12">
+
+        <table id="jqgBusinessLink"></table>
+        <div id="jqpBusinessLink"></div>
+
+    </div>
+</div>
+<div class="row" style="justify-content:center;margin-top:10px;margin-bottom:10px;">
+    <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" onclick="fnSaveBusinessLinks()" style="margin-right:10px;">  Save</button><br />
+    <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button" onclick="fnCloseVendorDetails()"> Cancel</button>
+
+</div>

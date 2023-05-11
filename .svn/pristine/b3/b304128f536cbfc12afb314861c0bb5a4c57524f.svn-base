@@ -1,0 +1,548 @@
+﻿
+@{
+    ViewData["Title"] = "V_4000_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/css/Masters/CustomerCodes.css" rel="stylesheet" />
+@section scripts{
+    <script src="~/js/eSyaPayroll/EmployeeDetails.js"></script>
+    <script src="~/js/eSyaPayroll/PersonalInformation.js"></script>
+    <script src="~/js/eSyaPayroll/PreviousJobs.js"></script>
+    <script src="~/js/eSyaPayroll/BankDetails.js"></script>
+    <script src="~/js/eSyaPayroll/SalaryDetails.js"></script>
+    <script src="~/js/eSyaPayroll/Education.js"></script>
+    <script src="~/js/eSyaPayroll/FixedDeduction.js"></script>
+    <script src="~/js/eSyaPayroll/FamilyDetails.js"></script>
+    <script src="~/js/eSyaPayroll/CurrentJob.js"></script>
+}
+
+<section id="divGrid">
+    <div class="row form-group">
+        <div class="col-lg-12 col-xl-12 col-sm-12">
+            <label>Choose Employee by alphabets</label>
+            <span class="dot">A</span>
+            <span class="dot">B</span>
+            <span class="dot">C</span>
+            <span class="dot">D</span>
+            <span class="dot">E</span>
+            <span class="dot">F</span>
+            <span class="dot">G</span>
+            <span class="dot">H</span>
+            <span class="dot">I</span>
+            <span class="dot">J</span>
+            <span class="dot">K</span>
+            <span class="dot">L</span>
+            <span class="dot">M</span>
+            <span class="dot">N</span>
+            <span class="dot">O</span>
+            <span class="dot">P</span>
+            <span class="dot">Q</span>
+            <span class="dot">R</span>
+            <span class="dot">S</span>
+            <span class="dot">T</span>
+            <span class="dot">U</span>
+            <span class="dot">V</span>
+            <span class="dot">W</span>
+            <span class="dot">X</span>
+            <span class="dot">Y</span>
+            <span class="dot">Z</span>
+            <span class="dot">All</span>
+        </div>
+    </div>
+
+    <div class="row padbot10">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <table id="jqgEmployeeDetails"></table>
+            <div id="jqpEmployeeDetails"></div>
+        </div>
+    </div>
+</section>
+
+<section id="divForm" style="display:none">
+    <div class="row">
+        <div class="col-lg-12 col-md-12">
+            <h6 class="displayNames" id="hdCustomerName">Add Employee</h6>
+            <span class="btnCloseCodesScreens" onclick="fnCloseEmployeeDetails()"><i class="fa fa-times"></i></span>
+        </div>
+        <div class="col-sm-12">
+            <input type="text" class="form-control" id="txtCustomerCode" style="display:none">
+        </div>
+        <div class="col-lg-1 col-md-2 col-sm-2 col-xs-3 col-xl-1  animated slideInLeft sidebarSmall">
+            <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                <a class="nav-link active" id="employeedetails-tab" data-toggle="pill" href="#employeedetails" role="tab" aria-controls="employeedetails" aria-selected="true">Employee Details</a>
+                <a class="nav-link" id="personalInformation-tab" data-toggle="pill" href="#personalInformation" role="tab" aria-controls="personalInformation" aria-selected="true">Personal Information</a>
+                <a class="nav-link" id="salaryinfo-tab" data-toggle="pill" href="#salaryinfo" role="tab" aria-controls="salaryinfo" aria-selected="false" onclick="fnGridBankDetails()">Salary Info</a>
+                <a class="nav-link" id="familyinfo-tab" data-toggle="pill" href="#familyinfo" role="tab" aria-controls="familyinfo" aria-selected="false" onclick="fnGridFamilyDetails()">Family Info</a>
+                <a class="nav-link" id="education-tab" data-toggle="pill" href="#education" role="tab" aria-controls="education" aria-selected="false" onclick="fnGridEducation()">Education / Academics</a>
+                <a class="nav-link" id="previousjobs-tab" data-toggle="pill" href="#previousjobs" role="tab" aria-controls="previousjobs" aria-selected="false" onclick="fnGridPreviousJob()">Previous Jobs</a>
+                <a class="nav-link" id="currentjob-tab" data-toggle="pill" href="#currentjob" role="tab" aria-controls="currentjob" aria-selected="false" onclick="fnGridCurrentJob()">Current Job</a>
+                <a class="nav-link" id="fixeddeduction-tab" data-toggle="pill" href="#fixeddeduction" role="tab" aria-controls="fixeddeduction" aria-selected="false" onclick="fnGridFixedDeduction()">Fixed Deduction</a>
+            </div>
+        </div>
+        <div class="col-lg-11 col-md-12 col-sm-12 col-xl-11 bg-white animated fadeIn delay-1s padleft0 mainbarSmall">
+            <div class="tab-content" id="v-pills-tabContent">
+                <div class="tab-pane fade show active" id="employeedetails" role="tabpanel" aria-labelledby="employeedetails-tab">
+                    @await Html.PartialAsync("_EmployeeDetails")
+                </div>
+                <div class="tab-pane fade show" id="personalInformation" role="tabpanel" aria-labelledby="personalInformation-tab">
+                    @await Html.PartialAsync("_PersonalInformation")
+                </div>
+                <div class="tab-pane fade show" id="salaryinfo" role="tabpanel" aria-labelledby="salaryinfo-tab">
+                    @await Html.PartialAsync("_SalaryInfo")
+                </div>
+                <div class="tab-pane fade show" id="familyinfo" role="tabpanel" aria-labelledby="familyinfo-tab">
+                    @await Html.PartialAsync("_FamilyInfo")
+                </div>
+                <div class="tab-pane fade show" id="education" role="tabpanel" aria-labelledby="education-tab">
+                    @await Html.PartialAsync("_EducationInfo")
+                </div>
+                <div class="tab-pane fade show" id="previousjobs" role="tabpanel" aria-labelledby="previousjobs-tab">
+                    @await Html.PartialAsync("_PreviousJobs")
+                </div>
+                <div class="tab-pane fade show" id="currentjob" role="tabpanel" aria-labelledby="currentjob-tab">
+                    @await Html.PartialAsync("_CurrentJob")
+                </div>
+                <div class="tab-pane fade show" id="fixeddeduction" role="tabpanel" aria-labelledby="currentjob-tab">
+                    @await Html.PartialAsync("_FixedDeduction")
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade in" id="PopupBankDetails" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Add Bank Details</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row mar0">
+                    <div class="col-lg-3 col-md-6 col-sm-6 form-group">
+                        <label>Payment Mode</label>
+                            <select class="form-control selectpicker" id="cboPaymentmode" title="" data-size="8">
+                                <option value="0"> Select</option>
+                                @foreach (var pmode in ViewBag.SalaryPaymentMode)
+                                {
+                                    <option value="@pmode.ApplicationCode">@pmode.CodeDesc</option>
+                                }
+                            </select>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                        <label>Bank Name</label>
+                        <select class="form-control selectpicker" id="cboBankname" title="" data-size="8">
+                            <option value="0"> Select</option>
+                            @foreach (var bank in ViewBag.BankName)
+                            {
+                                <option value="@bank.ApplicationCode">@bank.CodeDesc</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-6 form-group">
+                        <label>Account No</label>
+                        <input type="text" class="form-control" id="txtAccountno" maxlength="25"/>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-6 form-group">
+                        <label>IFSC Code</label>
+                        <input type="text" class="form-control" id="txtIFSCcode" maxlength="25"/>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                        <label>Bank Branch</label>
+                        <input type="text" class="form-control" id="txtBankbranch" maxlength="25"/>
+                    </div>
+                    <div class="col-lg-2 col-md-6 col-sm-6 form-group">
+                        <div class="default-checkbox">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkBankActiveStatus">
+                                <input type="checkbox" id="chkBankActiveStatus" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label"> Active</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveBankDetails" onclick="fnSaveBankDetails()">
+                            Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="btnCancelBankDetails" onclick="fnClearEmpBankFields()"> Cancel </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade in" id="PopupSalaryDetails" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Add Salary Details</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row mar0">
+                    @*<div class="col-lg-3 col-md-6 col-sm-6 form-group">
+                        <label>Pay Category</label>
+                        <select class="form-control selectpicker" data-live-search="true" id="cboSalpaycategory" title="" data-size="8">
+                            <option value="0"> Select</option>
+                            @foreach (var pcategory in ViewBag.EmployeePayCategory)
+                            {
+                                <option value="@pcategory.ApplicationCode">@pcategory.CodeDesc</option>
+                            }
+                        </select>
+                    </div>*@
+                    <div class="col-lg-3 col-md-6 col-sm-6 form-group">
+                        <label>ER Code</label>
+                        <select class="form-control selectpicker" id="cboErcode">
+                            <option value="0"> Select</option>
+                            @foreach (var ercode in ViewBag.ERCode)
+                            {
+                                <option value="@ercode.Ercode">@ercode.Erdesc</option>
+                            }
+                        </select>
+                    </div>
+                    @*<div class="col-lg-12 col-md-12 col-sm-12 form-group">
+            <label>Description</label>
+            <input type="text" class="form-control" readonly id="txtDescription"/>
+        </div>*@
+                    <div class="col-lg-3 col-md-6 col-sm-6 form-group">
+                        <label>Amount</label>
+                        <input type="text" class="form-control currencyFormatAllowMinus" id="txtAmount" />
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-6 form-group">
+                        <label>Effective From</label>
+                        <input type="text" class="form-control datepicker" id="txtEffectivefrom" />
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-6 form-group">
+                        <label>Effective Till</label>
+                        <input type="text" class="form-control datepicker" id="txtEffectivetill" />
+                    </div>
+                    <div class="col-lg-2 col-md-6 col-sm-6 form-group">
+            <div class="default-checkbox">
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkAccountStatus">
+                    <input type="checkbox" id="chkAccountStatus" class="mdl-checkbox__input">
+                    <span class="mdl-checkbox__label"> Account Status</span>
+                </label>
+            </div>
+        </div>
+                   
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveSalaryDetails" onclick="fnSaveEmpSalaryDetails()">
+                            Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="btnCancelSalaryDetails" onclick="fnClearSalaryDetailsFields()"> Cancel </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade in" id="PopupFamily" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content ">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Add Family Details</h4>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <p class="subheading">Family Info</p>
+                        <hr class="left" />
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-sm-3 form-group">
+                        <label>Marital Status</label>
+                        <select class="form-control selectpicker" id="cboMatiralstatus">
+                            <option value="0">Select</option>
+                            <option value="S">Single</option>
+                            <option value="M">Married</option>
+                            <option value="O">Others</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-3 form-group">
+                        <label>Spouse Name</label>
+                        <input type="text" class="form-control" id="txtSpousename" maxlength="75" pattern="^[a-zA-Z _]+$" autocomplete="off"/>
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-sm-3 form-group">
+                        <label>No of Children</label>
+                        <input type="text" class="form-control integerFormat" id="txtNoofchildern" maxlength="8"/>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-3 form-group">
+                        <label>Father's Name</label>
+                        <input type="text" class="form-control" id="txtFathername" maxlength="75" pattern="^[a-zA-Z _]+$" autocomplete="off"/>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-3 form-group">
+                        <label>Mother's Name</label>
+                        <input type="text" class="form-control" id="txtMothername" maxlength="75" pattern="^[a-zA-Z _]+$" autocomplete="off"/>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveFamilyDetails" onclick="fnSaveEmpFamilyDetails()">
+                            Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="btnCancelFamilyDetails" onclick="fnClearFamilyDetailsFields()"> Cancel </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade in" id="PopupEducation" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content ">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Add Education Details</h4>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="row mar0">
+                    <div class="col-lg-6 form-group">
+                        <label>Education Level</label>
+                        <input type="text" class="form-control" id="txtEducationlevel" maxlength="75" pattern="^[a-zA-Z _]+$" autocomplete="off"/>
+                    </div>
+                    <div class="col-lg-6 form-group">
+                        <label>Institution</label>
+                        <input type="text" class="form-control" id="txtInstitution" maxlength="75" pattern="^[a-zA-Z _]+$" autocomplete="off"/>
+                    </div>
+                    <div class="col-lg-6 form-group">
+                        <label>University</label>
+                        <input type="text" class="form-control" id="txtUniversity" maxlength="75" pattern="^[a-zA-Z _]+$" autocomplete="off"/>
+                    </div>
+                    <div class="col-lg-3 form-group">
+                        <label>Year of Passing</label>
+                        <input type="text" class="form-control integerFormat" id="txtYearofpassing" maxlength="4"/>
+                    </div>
+                    <div class="col-lg-3 form-group">
+                        <label>Percentage of Marks</label>
+                        <input type="text" class="form-control decimalFormat" id="txtPercentageofmarks"/>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveEducation" onclick="fnSaveEducationDetails()">
+                            Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="btnCancelEducationDetails"onclick="fnClearEducationDetailsFields()"> Cancel </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade in" id="PopupPreviousJobs" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content ">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Add Previous Jobs Details</h4>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="row mar0">
+                    <div class="col-lg-12 col-md-12 col-sm-12 form-group">
+                        <label>Organization</label>
+                        <input type="text" class="form-control" maxlength="75" pattern="^[a-zA-Z _]+$" autocomplete="off" id="txtOrganization"/>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-3 form-group">
+                        <label>Service Period From</label>
+                        <input type="text" class="form-control datepicker" id="txtServiceperiodfrom"/>
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-sm-3 form-group">
+                        <label>Service Period Till</label>
+                        <input type="text" class="form-control datepicker" id="txtServiceperiodtill"/>
+                    </div>
+                    <div class="col-lg-7 col-md-7 col-sm-6 form-group">
+                        <label>Designation</label>
+                        <input type="text" class="form-control" maxlength="25" pattern="^[a-zA-Z _]+$" autocomplete="off" id="txtDesignation"/>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 form-group">
+                        <label>Reason for Leaving</label>
+                        <textarea rows="4" cols="20" class="form-control" maxlength="100" pattern="^[a-zA-Z _]+$" autocomplete="off" id="txtReasonforleaving"></textarea>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSavePreviousjob" onclick="fnSavePreviousJobDetails()">
+                            Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="btnCancelPreviousjob" onclick="fnClearPreviousJobFields()"> Cancel </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade in" id="PopupCurrentJobs" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content ">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Add Current Jobs Details</h4>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <p class="subheading">Current Job Details</p>
+                        <hr class="left" />
+                    </div>
+                    <div class="col-lg-2 form-group">
+                        <label>From Date</label>
+                        <input type="text" class="form-control datepicker" id="txtcurrentjobFromdate"/>
+                    </div>
+                    <div class="col-lg-2 form-group">
+                        <label>Till Date</label>
+                        <input type="text" class="form-control datepicker" id="txtcurrentjobTilldate"/>
+                    </div>
+                    <div class="col-lg-4 form-group">
+                        <label>Department</label>
+                        <select class="form-control selectpicker" id="cboCurrentjobdepartment">
+                            <option value="0"> Select</option>
+                            @foreach (var dept in ViewBag.EmployeeDepartment)
+                            {
+                                <option value="@dept.ApplicationCode">@dept.CodeDesc</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-lg-4 form-group">
+                        <label>Designation</label>
+                        <select class="form-control selectpicker" id="cboCurrentjobdesignation">
+                            <option value="0"> Select</option>
+                            @foreach (var desig in ViewBag.EmployeeDesignation)
+                            {
+                                <option value="@desig.ApplicationCode">@desig.CodeDesc</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-lg-12 form-group">
+                        <label>Functional Reporting</label>
+                        <input type="text" class="form-control" maxlength="50" pattern="^[a-zA-Z _]+$" autocomplete="off" id="txtFunctionalreporting" />
+                    </div>
+                    <div class="col-lg-12 form-group">
+                        <label>Administrative Reporting</label>
+                        <input type="text" class="form-control" maxlength="50" pattern="^[a-zA-Z _]+$" autocomplete="off" id="txtAdministrativereporting" />
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveCurrentjob" onclick="fnSaveCurrentJobDetails()">
+                            Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="btnCancelCurrentjob" onclick="fnClearCurrentJobFields()"> Cancel </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade in" id="PopupFixedDeduction" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content ">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Add Fixed Deduction Details</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row mar0">
+                    <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-group">
+                        <label>E R Description</label>
+                        <select class="form-control selectpicker" id="cboFixeddeductionErcode">
+                            <option value="0"> Select</option>
+                            @foreach (var ercode in ViewBag.ERCode)
+                            {
+                                <option value="@ercode.Ercode">@ercode.Erdesc</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-group">
+                        <label>Amount</label>
+                        <input type="text" class="form-control currencyFormatAllowMinus" id="txtFixeddeductionamount" />
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-group">
+                        <label>No of Installments</label>
+                        <input type="text" class="form-control integerFormat" id="txtNoofInstallments" maxlength="8" />
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-group">
+                        <label>Paid Amount</label>
+                        <input type="text" class="form-control currencyFormatAllowMinus" id="txtFixeddeductionPaidamount" />
+                    </div>
+                    @*<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-group">
+                        <label>Balance Amount</label>
+                        <input type="text" class="form-control" />
+                    </div>*@
+                    <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-group">
+                        <label>Reference Detail</label>
+                        <input type="text" class="form-control" maxlength="50" id="txtReferencedetail"/>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-group">
+                        <label>Status</label>
+                        <select class="form-control selectpicker" id="cboFixeddeductionStatus">
+                            <option value="0">Select</option>
+                            <option value="A">Active</option>
+                            <option value="C">Closed</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-2 col-md-6 col-sm-4 col-xs-12 form-group">
+                        <div class="default-checkbox">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkSkipPayroll">
+                                <input type="checkbox" id="chkSkipPayroll" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label"> Skip Payroll</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveFixedDeduction" onclick="fnSaveFixedDeduction()">
+                            Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="btnCancelFixedDeduction" onclick="fnClearFixedDeductionFields()"> Cancel </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+

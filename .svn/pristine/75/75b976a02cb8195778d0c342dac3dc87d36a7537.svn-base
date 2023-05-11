@@ -1,0 +1,376 @@
+﻿var NodeID;
+var prevSelectedID;
+var Isactivestatus = false;
+$(document).ready(function () {
+
+    $("#pnlMainMenu").hide();
+    $("#divjqgrid").hide(); 
+    LoadPatientTypeTree();
+    //$("#btnDeleteNode").attr("disabled", _userFormRole.IsDelete === false);
+    fnLoadSpecialtyLinkGrid();
+
+    $("#chkIsspecialtylink").change(function () {
+        if (this.checked) {
+            $("#divjqgrid").show();
+            fnLoadSpecialtyLinkGrid();
+        } else {
+            $("#divjqgrid").hide(); 
+            fnLoadSpecialtyLinkGrid();
+        }
+    });
+
+});
+
+function LoadPatientTypeTree() {
+    $.ajax({
+        url: getBaseURL() + '/CustomerAttributes/GetAllPatientTypesforTreeView',
+        success: function (result) {
+            fnGetPatientType_Success(result);
+        },
+        error: function (error) {
+            toastr.error(error.status);
+        }
+    });
+}
+
+function fnGetPatientType_Success(dataArray) {
+    $("#jstPatientType").jstree({
+        "state": { "checkbox_disabled": true },
+        "checkbox": {
+            "keep_selected_style": false
+        },
+        //"plugins": ["checkbox"],
+        core: { 'data': dataArray, 'check_callback': true, 'multiple': true }
+
+    });
+
+    $("#jstPatientType").on('loaded.jstree', function () {
+
+        $("#jstPatientType").jstree('open_all');
+        $("#jstPatientType").jstree()._open_to(prevSelectedID);
+        $('#jstPatientType').jstree().select_node(prevSelectedID);
+
+    });
+
+    $('#jstPatientType').on("changed.jstree", function (e, data) {
+
+        if (data.node != undefined) {
+            if (prevSelectedID != data.node.id) {
+                prevSelectedID = data.node.id;
+
+                if (data.node.id == "0") {
+                    fnClearFields();
+                    $("#pnlMainMenu").hide();
+                }
+                else {
+
+                    $('#View').remove();
+                    $('#Edit').remove();
+                    $('#Add').remove();
+
+                    $("#pnlMainMenu").hide();
+
+                    if (data.node.parent == "MM") {
+                        $('#' + data.node.id + "_anchor").html($('#' + data.node.id + "_anchor").html() + '<span id="Add" style="padding-left:10px;padding-right:10px">&nbsp;<i class="fa fa-plus" style="color:#337ab7"aria-hidden="true"></i></span>')
+
+                        $('#Add').on('click', function () {
+                            if (_userFormRole.IsInsert === false) {
+                                $('#pnlMainMenu').hide();
+                                toastr.warning(errorMsgCS["E003"]);
+                                return;
+                            }
+
+                            $("#pnlMainMenu").show();
+                            $(".mdl-card__title-text").text("Add Patient Category");
+                            fnClearFields();
+
+
+                            $('#txtPatientTypeId').val(data.node.id.substring(2));
+
+                            $("#txtPatientCategoryId").val('');
+                            fnLoadSpecialtyLinkGrid();
+                            if ($("#chkIsspecialtylink").parent().hasClass("is-checked")) {
+                                $("#divjqgrid").show();
+                            } else {
+                                $("#divjqgrid").hide();
+                            }
+                            $("input[id*='chk']").attr('disabled', false);
+                            //Enable category dropdown and check boxes
+                            $("#cboPatientcategory").prop('disabled', false).selectpicker("refresh");
+                            Isactivestatus = false;
+
+                            $("#btnAddPatientType").show();
+                            $("input,textarea").attr('readonly', false);
+                            $("select").next().attr('disabled', false);
+                            $("#btnAddPatientType").html('<i class="fa fa-plus"></i> ' + "Save");
+                           
+                        });
+                    }
+                    else if (data.node.id.startsWith("SM")) {
+
+                        NodeID = 0;
+                        NodeID = data.node.id.substring(2).split("_")[1];
+
+                        $('#' + data.node.id + "_anchor").html($('#' + data.node.id + "_anchor").html() + '<span id="View" style="padding-left:10px">&nbsp;<i class="fa fa-eye" style="color:#337ab7"aria-hidden="true"></i></span>')
+                        $('#' + data.node.id + "_anchor").html($('#' + data.node.id + "_anchor").html() + '<span id="Edit" style="padding-left:10px">&nbsp;<i class="fa fa-pen" style="color:#337ab7"aria-hidden="true"></i></span>')
+
+                        $('#View').on('click', function () {
+
+                            if (_userFormRole.IsView === false) {
+                                $('#pnlMainMenu').hide();
+                                toastr.warning(errorMsgCS["E001"]);
+                                return;
+                            }
+
+                            $("#pnlMainMenu").show();
+                            $(".mdl-card__title-text").text("Patient Category");
+                            $('#txtPatientCategoryId').val(NodeID);
+                            $('#txtPatientTypeId').val(data.node.id.substring(2).split("_")[0]);
+
+                            fnFillPatientCategoryInfo();
+                            fnLoadSpecialtyLinkGrid();
+                            //disableing check boxes
+                            Isactivestatus = true;
+                            if ($("#chkIsspecialtylink").parent().hasClass("is-checked")) {
+                                $("#divjqgrid").show();
+                            } else {
+                                $("#divjqgrid").hide();
+                            }
+                            $("#btnAddPatientType").hide();
+                            $("input,textarea").attr('readonly', true);
+                            $("select").next().attr('disabled', true);
+                            $("input[type=checkbox]").attr('disabled', true);
+                        });
+
+                        $('#Edit').on('click', function () {
+
+                            if (_userFormRole.IsEdit === false) {
+                                $('#pnlMainMenu').hide();
+                                toastr.warning(errorMsgCS["E002"]);
+                                return;
+                            }
+
+                            $("#pnlMainMenu").show();
+                            $(".mdl-card__title-text").text("Edit Patient Category");
+                            $('#txtPatientCategoryId').val(NodeID);
+                            $('#txtPatientTypeId').val(data.node.id.substring(2).split("_")[0]);
+
+                            fnFillPatientCategoryInfo();
+
+                            fnLoadSpecialtyLinkGrid();
+                            //enableing check boxes
+                            Isactivestatus = false;
+                            if ($("#chkIsspecialtylink").parent().hasClass("is-checked")) {
+                                $("#divjqgrid").show();
+                            } else {
+                                $("#divjqgrid").hide();
+                            }
+                            //disable category dropdown
+                            $("#cboPatientcategory").prop('disabled', true).selectpicker("refresh");
+
+                            $("#btnAddPatientType").show();
+                            $("input,textarea").attr('readonly', false);
+                            //$("select").next().attr('disabled', false);
+                            $("input[type=checkbox]").attr('disabled', false);
+                            $("#btnAddPatientType").html('<i class="fa fa-sync"></i> ' + "Update");
+                        });
+
+
+                    }
+                    else {
+                        fnClearFields();
+                        $("#pnlMainMenu").hide();
+                    }
+                }
+            }
+        }
+    });
+
+    $('#jstPatientType').on("close_node.jstree", function (node) {
+        var closingNode = node.handleObj.handler.arguments[1].node;
+        $('#jstPatientType').jstree().deselect_node(closingNode.children);
+    });
+    fnTreeSize('#jstPatientType');
+};
+
+function fnFillPatientCategoryInfo() {
+    if ($("#txtPatientCategoryId").val() != '' && $("#txtPatientCategoryId").val() != undefined) {
+        $.ajax({
+            async: false,
+            url: getBaseURL() + "/CustomerAttributes/GetPatientCategoryInfo?PatientTypeId=" + $("#txtPatientTypeId").val() + "&PatientCategoryId=" + $("#txtPatientCategoryId").val(),
+            type: 'post',
+            datatype: 'json',
+            contentType: 'application/json; charset=utf-8',
+            success: function (result) {
+                $("#txtPatientTypeId").val('');
+                $("#txtPatientTypeId").val(result.PatientTypeId);
+                $('#cboPatientcategory').val(result.PatientCategoryId);
+                $('#cboPatientcategory').selectpicker('refresh');
+                if (result.TreatmentAllowedOp == 1) {
+                    $("#chkTreatmentallowedop").parent().addClass("is-checked");
+                }
+                else { $('#chkTreatmentallowedop').parent().removeClass("is-checked"); }
+                if (result.TreatmentAllowedIp == 1) {
+                    $("#chkTreatmentallowedip").parent().addClass("is-checked");
+                }
+                else { $('#chkTreatmentallowedip').parent().removeClass("is-checked"); }
+                if (result.IsSpecialtyLink == 1) {
+                    $("#chkIsspecialtylink").parent().addClass("is-checked");
+                }
+                else { $('#chkIsspecialtylink').parent().removeClass("is-checked"); }
+                if (result.ActiveStatus == 1) {
+                    $("#chkActivestatus").parent().addClass("is-checked");
+                }
+                else { $('#chkActivestatus').parent().removeClass("is-checked"); }
+
+            }
+        });
+    }
+}
+
+function validationPatientCategory() {
+
+    if ($("#cboPatientcategory").val() === "0" || $("#cboIsdcode").val() === "") {
+        toastr.warning("Please Select Patient Category");
+        return false;
+    }
+
+}
+
+function fnSavePatientCategory() {
+
+    if (validationPatientCategory() === false) {
+        return;
+    }
+
+    var val = [];
+    var numberOfRecords = $("#jqgSpecialtyLink").getGridParam("records");
+    for (i = 1; i <= numberOfRecords; i++) {
+        var rowData = $('#jqgSpecialtyLink').getRowData(i);
+        if (rowData.ActiveStatus == "true") {
+            val.push(rowData.SpecialtyId);
+
+        }
+    }
+
+
+    $("#btnAddPatientType").attr('disabled', true);
+   
+    var isspecialtyunchecked = $("#chkIsspecialtylink").parent().hasClass("is-checked");
+    if (isspecialtyunchecked === false) {
+        val = [];
+    }
+    
+    var obj = {
+        PatientTypeId: $("#txtPatientTypeId").val(),
+        PatientCategoryId: $("#cboPatientcategory").val(),
+        TreatmentAllowedOp: $("#chkTreatmentallowedop").parent().hasClass("is-checked"),
+        TreatmentAllowedIp: $("#chkTreatmentallowedip").parent().hasClass("is-checked"),
+        IsSpecialtyLink: $("#chkIsspecialtylink").parent().hasClass("is-checked"),
+        ActiveStatus: $("#chkActivestatus").parent().hasClass("is-checked"),
+        Speialtylink: val
+    };
+    $.ajax({
+        url: getBaseURL() + '/CustomerAttributes/InsertOrUpdatePatientCategory',
+        type: 'POST',
+        datatype: 'json',
+        data: { obj },
+        async: false,
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                location.reload();
+                return true;
+            }
+            else {
+                toastr.error(response.Message);
+                $("#btnAddPatientType").attr('disabled', false);
+                return false;
+            }
+        },
+        error: function (error) {
+            $("#btnAddPatientType").attr('disabled', false);
+            toastr.error(error.statusText);
+        }
+    });
+}
+
+function fnClearFields() {
+    $("#txtPatientTypeId").val('');
+    $("#cboPatientcategory").val('0');
+    $("#cboPatientcategory").selectpicker('refresh');
+    $("#chkTreatmentallowedop").parent().removeClass("is-checked");
+    $("#chkTreatmentallowedip").parent().removeClass("is-checked");
+    $("#chkIsspecialtylink").parent().removeClass("is-checked");
+    $("#chkActivestatus").parent().addClass("is-checked");
+}
+
+function fnExpandAll() {
+    $('#jstPatientType').jstree('open_all');
+}
+
+function fnCollapseAll() {
+    fnClearFields();
+    $("#pnlMainMenu").hide();
+    $('#jstPatientType').jstree('close_all');
+}
+
+function fnTreeSize() {
+    $("#jstPatientType").css({
+        'height': $(window).innerHeight() - 136,
+        'overflow': 'auto'
+    });
+}
+
+function fnLoadSpecialtyLinkGrid() {
+    $("#jqgSpecialtyLink").jqGrid('GridUnload');
+    $("#jqgSpecialtyLink").jqGrid({
+        url: getBaseURL() + "/CustomerAttributes/GetSpecialtyByPatientTypeAndCategory?PatientTypeId=" + $("#txtPatientTypeId").val() + "&PatientCategoryId=" + $("#txtPatientCategoryId").val(),
+        mtype: 'POST',
+        datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Specialty ID", "Specialty Description", "Active"],
+        colModel: [
+            { name: "SpecialtyId", width: 150, editable: true, align: 'left', hidden: true },
+            { name: "SpecialtyDesc", width: 160, editable: false, hidden: false, align: 'left', resizable: true },
+            {
+                name: 'ActiveStatus', index: 'ActiveStatus', width: 150, resizable: false, align: 'center',
+                formatter: "checkbox", formatoptions: { disabled: false },
+                edittype: "checkbox", editoptions: { value: "true:false" }
+            },
+        ],
+        pager: "#jqpSpecialtyLink",
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0,
+        loadComplete: function (data) {
+            fnDisableActivecheckboxs();
+        },
+    }).jqGrid('navGrid', '#jqpSpecialtyLink', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpSpecialtyLink', {
+        caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshSpecialtyLink
+    });
+
+}
+function fnGridRefreshSpecialtyLink() {
+
+    $("#jqgSpecialtyLink").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid')
+}
+
+function fnDisableActivecheckboxs() {
+    if (Isactivestatus === true) {
+        $("input[type=checkbox]").attr('disabled', true);
+    }
+    if (Isactivestatus === false) {
+        $("input[type=checkbox]").attr('disabled', false);
+    }
+}

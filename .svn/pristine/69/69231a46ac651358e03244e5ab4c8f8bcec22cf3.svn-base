@@ -1,0 +1,85 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+<style>
+    #PopupUserAction .modal-dialog {
+        margin: 70px auto !important;
+        width: 300px !important;
+    }
+</style>
+
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-12">
+        <div class="form-group">
+            <label> @Localizer["SearchForm"] </label>
+            <input type="text" id="txtSearch" name="Search" value="" class="form-control" />
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-6">
+        <div id="jstUserGroup"></div>
+    </div>
+    <div id="dvForm" class="col-lg-4 col-md-4 col-sm-6">
+
+        <div class="demo-card-square mdl-card mdl-shadow--2dp marbot15 fullwidth" id="pnlAddForms">
+            <div class="mdl-card__title mdl-card--expand padleft0 padtop0 d-block">
+                <h5 class="mdl-card__title-text" id="UserActionTitle"> @Localizer["UserAction"] </h5>
+            </div>
+            <div class="mdl-card__supporting-text fullwidth">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="default-checkbox separate">
+                        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkFormName">
+                            <input type="checkbox" id="chkFormName" class="mdl-checkbox__input">
+                            <span class="mdl-checkbox__label lblFormName">Form Name</span>
+                        </label>
+                    </div>
+                </div>
+                <div id="dvFormAction">
+
+                    <div class="col-lg-12 col-md-12 col-sm-12 pad0 padbot10">
+                        <table id="jqgFormAction"></table>
+                        <div id="jqpFormAction"></div>
+                    </div>
+                    <hr />
+                    <div class="mdl-card__actions text-center pad0 form-group">
+                        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button  mr-10" id="btnSaveFormAction" onclick="fnSaveFormAction();"> <i class="fa fa-save"></i> @Localizer["Save"]</button>
+                        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button" id="btnCancelFormAction" onclick="fnCancelFormAction();"> <i class="fa fa-times"></i> @Localizer["Cancel"] </button>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@*<div class="modal fade" id="PopupUserAction">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header popupHeader">
+                    <button type="button" class="close" onclick="fnCloseUserAction()"> <i class="fa fa-times"></i></button>
+                    <h4 class="modal-title" id="Popupmodaltitle"></h4>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row padbot4">
+
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <table id="jqgFormAction"></table>
+                            <div id="jqpFormAction"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveUserAction">
+                        Save
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>*@

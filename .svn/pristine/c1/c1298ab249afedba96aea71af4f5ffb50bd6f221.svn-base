@@ -1,0 +1,100 @@
+﻿
+@{
+    ViewData["Title"] = "V_100_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/jsTree.css" rel="stylesheet" />
+@section scripts{
+    <script src="~/js/jsTree.js"></script>
+}
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-6">
+        <label>Fixed Asset</label>
+        <div id="FormMasterTree"></div>
+    </div>
+    <div class="col-lg-2 col-md-2">
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6">
+        <div class="demo-card-square mdl-card mdl-shadow--2dp marbot15 fullwidth" id="pnlAddForms">
+            <div class="mdl-card__title mdl-card--expand padleft0 padtop0 h-60 d-block">
+                <h5 class="mdl-card__title-text"> Add Asset Group</h5>
+            </div>
+            <div class="mdl-card__supporting-text fullwidth">
+                <div class="row  padbot10">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <label>Asset Group </label>
+                            <input type="text" name="int" class="form-control " id="txtFormID" />
+                        </div>
+                    </div>
+
+                </div>
+
+                <hr />
+                <div class="mdl-card__actions text-center">
+
+                    <button type="button" class="btn btn-primary" id=""><i class="fa fa-save"></i> Save</button>
+                    <button type="button" class="btn btn-danger" id=""><i class="fa fa-times"></i> Cancel</button>
+
+                </div>
+            </div>
+        </div>
+        <div class="demo-card-square mdl-card mdl-shadow--2dp marbot15 fullwidth" id="pnlAddForms">
+            <div class="mdl-card__title mdl-card--expand padleft0 padtop0 h-60 d-block">
+                <h5 class="mdl-card__title-text"> Add Sub Group</h5>
+            </div>
+            <div class="mdl-card__supporting-text fullwidth">
+                <div class="row  padbot10">
+
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <label> Sub Group</label>
+                            <input type="text" class="form-control " id="txtFormDescription" />
+                        </div>
+                    </div>
+                </div>
+
+                <hr />
+                <div class="mdl-card__actions text-center">
+
+                    <button type="button" class="btn btn-primary" id=""><i class="fa fa-save"></i> Save</button>
+                    <button type="button" class="btn btn-danger" id=""><i class="fa fa-times"></i> Cancel</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-6">
+        <div id=""></div>
+    </div>
+</div>
+
+
+
+<script>
+
+</script>
+<script type="text/javascript">
+    $(function () {
+
+        var jsondata = [
+           
+            { "id": "ajson2", "parent": "#", "text": "Asset Group" },
+            { "id": "ajson3", "parent": "ajson2", "text": "Sub Group 1" },
+            { "id": "ajson4", "parent": "ajson2", "text": "Sub Group 2" },
+        ];
+
+        createJSTree(jsondata);
+    });
+
+    function createJSTree(jsondata) {
+        $('#FormMasterTree').jstree({
+            'core': {
+                'data': jsondata
+            }
+        }).bind("loaded.jstree", function (event, data) {
+            $(this).jstree("open_all");
+        });
+    }
+</script>
+

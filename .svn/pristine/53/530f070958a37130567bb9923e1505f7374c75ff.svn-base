@@ -1,0 +1,143 @@
+﻿var actiontype = "";
+var isUpdate = 0;
+$(document).ready(function () {
+    fnGridLoadSMSVariable();
+});
+
+function fnGridLoadSMSVariable() {
+    $('#jqgSMSVariable').jqGrid('GridUnload');
+    $("#jqgSMSVariable").jqGrid({
+        url: getBaseURL() + '/SMSEngine/GetSMSVariableInformation',
+        datatype: 'json',
+        mtype: 'Post',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["SMS Variable", "SMS Component", "Status", "Actions"],
+        colModel: [
+            { name: "Smsvariable", width: 45, editable: true, align: 'left', editoptions: { maxlength: 4 }},
+            { name: "Smscomponent", width: 108, editable: true, align: 'left', editoptions: { maxlength: 4 }},
+            { name: "ActiveStatus", editable: true, width: 28, edittype: "select", align: 'left', formatter: 'select', editoptions: { value: "true:Active;false:Inactive" } },
+            {
+                name: 'action', search: false, align: 'left', width: 80, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" onclick="return fnEditSMSVariable(event,\'edit\')"><i class="fas fa-pencil-alt"></i> Edit </button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnEditSMSVariable(event,\'view\')"><i class="far fa-file-alt"></i> View </button>'
+                }
+            },
+        ],
+        pager: "#jqpSMSVariable",
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0,
+    }).jqGrid('navGrid', '#jqpSMSVariable', {
+        add: false, edit: false, search: false, del: false, refresh: false
+    }).jqGrid('navButtonAdd', '#jqpSMSVariable', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshSMSVariable
+    }).jqGrid('navButtonAdd', '#jqpSMSVariable', {
+        caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Add', buttonicon: 'none', id: 'custAdd', position: 'first', onClickButton: fnAddSMSVariable
+        });
+}
+
+function fnGridRefreshSMSVariable() {
+    $("#jqgSMSVariable").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+function fnClearFields() {
+    $("#txtSMSVariable").val('');
+    $("#txtSMSComponent").val('');
+    $("#cboActiveStatus").val('true');
+    $("#cboActiveStatus").selectpicker('refresh');
+    $("#btnSaveSMSVariable").attr('disabled', false);
+}
+
+function fnAddSMSVariable() {
+    fnClearFields();
+    $("#PopupSMSVariable").modal('show');
+    $('#PopupSMSVariable').find('.modal-title').text("Add SMS Variable");
+    $("#btnSaveSMSVariable").html(' Save');
+    $("#txtSMSVariable").attr('readonly', false);
+    isUpdate = 0;
+}
+
+function fnEditSMSVariable(e, actiontype) {
+    $("#PopupSMSVariable").modal('show');
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgSMSVariable').jqGrid('getRowData', rowid);
+    $('#txtSMSVariable').val(rowData.ParameterId).attr('readonly', true);
+    $('#txtSMSComponent').val(rowData.ParameterDesc);
+    $('#cboActiveStatus').val(rowData.ActiveStatus);
+    $('#cboActiveStatus').selectpicker('refresh');
+    $("#btnSaveSMSVariable").attr('disabled', false);
+    isUpdate = 1;
+    if (actiontype.trim() == "edit") {
+        $('#PopupSMSVariable').find('.modal-title').text("Update SMS Variable");
+        $("#btnSaveSMSVariable").html('Update');
+    }
+    if (actiontype.trim() == "view") {
+        $('#PopupSMSVariable').find('.modal-title').text("View SMS Variable");
+        $("#btnSaveSMSVariable").hide();
+        $("input,textarea").attr('readonly', true);
+        $("select").next().attr('disabled', true);
+        //$("input[type=checkbox]").attr('disabled', true);
+        $("#PopupSMSVariable").on('hidden.bs.modal', function () {
+            $("#btnSaveSMSVariable").show();
+            $("input,textarea").attr('readonly', false);
+            $("select").next().attr('disabled', false);
+            //$("input[type=checkbox]").attr('disabled', false);
+        });
+    }
+}
+
+function fnSaveSMSVariable() {
+    debugger;
+    if (IsStringNullorEmpty($("#txtSMSComponent").val())) {
+        toastr.warning("Please Enter SMS Component");
+        return false;
+    }
+
+    var sm_sv = {
+        Smsvariable: $("#txtSMSVariable").val(),
+        Smscomponent: $("#txtSMSComponent").val(),
+        ActiveStatus: $("#cboActiveStatus").val()
+    }
+
+    var URL = getBaseURL() + '/SMSEngine/InsertIntoSMSVariable';
+    if (isUpdate == 1) {
+        URL = getBaseURL() + '/SMSEngine/UpdateSMSVariable';
+    }
+
+    $.ajax({
+        url: URL,
+        type: 'POST',
+        datatype: 'json',
+        data: { sm_sv },
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                $("#btnSaveSMSVariable").html('<i class="fa fa-spinner fa-spin"></i> wait');
+                $("#btnSaveSMSVariable").attr('disabled', true);
+                fnGridRefreshSMSVariable();
+                $("#PopupSMSVariable").modal('hide');
+
+            }
+            else {
+                toastr.error(response.Message);
+                $("#btnSaveSMSVariable").attr('disabled', false);
+            }
+
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnSaveSMSVariable").attr("disabled", false);
+        }
+    });
+}

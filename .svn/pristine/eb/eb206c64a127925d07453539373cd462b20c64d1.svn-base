@@ -1,0 +1,105 @@
+﻿$(document).ready(function () {
+    fnGridLoadRoomMaster();
+    $.contextMenu({
+        selector: "#btnWardMaster",
+        trigger: 'left',
+        items: {
+            jqgEdit: { name: localization.Edit, icon: "edit", callback: function (key, opt) { fnEditWardMaster(event, 'edit') } },
+            jqgView: { name: localization.View, icon: "view", callback: function (key, opt) { fnEditWardMaster(event, 'view') } },
+            jqgDelete: { name: localization.Delete, icon: "delete", callback: function (key, opt) { fnEditWardMaster(event, 'delete') } },
+        }
+    });
+    $(".context-menu-icon-edit").html("<span class='icon-contextMenu'><i class='fa fa-pen'></i>" + localization.Edit + " </span>");
+    $(".context-menu-icon-view").html("<span class='icon-contextMenu'><i class='fa fa-eye'></i>" + localization.View + " </span>");
+    $(".context-menu-icon-delete").html("<span class='icon-contextMenu'><i class='fa fa-trash'></i>" + localization.Delete + " </span>");
+});
+var actiontype = "";
+function fnGridLoadRoomMaster() {
+
+
+    $("#jqgRoomMaster").jqGrid('GridUnload');
+    $("#jqgRoomMaster").jqGrid({
+        url: '',
+        mtype: 'Post',
+        datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: [localization.RoomId, localization.RoomShortDesc, localization.RoomDesc, localization.Gender, localization.Active, localization.Actions],
+        colModel: [
+            { name: "RoomId", width: 50, editable: true, align: 'left', hidden: true },
+            { name: "RoomShortDesc", width: 70, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "RoomDesc", width: 180, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            { name: "Gender", width: 70, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "ActiveStatus", width: 35, editable: false, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+            {
+                name: 'edit', search: false, align: 'left', width: 35, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="mr-1 btn btn-outline" id="btnRoomMaster"><i class="fa fa-ellipsis-v"></i></button>'
+                }
+            },
+        ],
+        pager: "#jqpRoomMaster",
+        rowNum: 10000,
+        rownumWidth: '55',
+        pgtext: null,
+        pgbuttons: null,
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: true,
+        shrinkToFit: true,
+        forceFit: true,
+        scrollOffset: 0, caption: 'Room Master',
+        loadComplete: function (data) {
+            SetGridControlByAction();
+            fnJqgridSmallScreen("jqgRoomMaster");
+        },
+    }).jqGrid('navGrid', '#jqpRoomMaster', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpRoomMaster', {
+        caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshRoomMaster
+        }).jqGrid('navButtonAdd', '#jqpRoomMaster', {
+        caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddRoomMaster
+    });
+    fnAddGridSerialNoHeading();
+}
+function fnAddRoomMaster() {
+    fnClearFields();
+    $('#PopupRoomMaster').modal('show');
+    $('#PopupRoomMaster').modal({ backdrop: 'static', keyboard: false });
+    $('#PopupRoomMaster').find('.modal-title').text(localization.AddWardMaster);
+}
+function fnEditRoomMaster(e, actiontype) {
+    var rowid = $("#jqgWardMaster").jqGrid('getGridParam', 'selrow');
+    var rowData = $('#jqgWardMaster').jqGrid('getRowData', rowid);
+
+    $('#txtWardShortDesc').val(rowData.WardShortDesc);
+    $('#txtWardDescription').val(rowData.WardDesc);
+    if (rowData.ActiveStatus == 'true') {
+        $("#chkActiveStatus").parent().addClass("is-checked");
+    }
+    else {
+        $("#chkActiveStatus").parent().removeClass("is-checked");
+    }
+    $("#btnSaveApplicationCode").attr('disabled', false);
+
+    if (actiontype.trim() == "edit") {
+        $('#PopupRoomMaster').modal('show');
+        $('#PopupRoomMaster').find('.modal-title').text(localization.UpdateWardMaster);
+    }
+    if (actiontype.trim() == "view") {
+        $('#PopupRoomMaster').modal('show');
+        $('#PopupRoomMaster').find('.modal-title').text(localization.ViewWardMaster);
+    }
+}
+function fnGridRefreshRoomMaster() {
+    $("#jqgRoomMaster").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+function fnClearFields() {
+    $("#txtWardShortDesc").val("");
+    $("#txtWardDescription").val("");
+    $("#chkActiveStatus").prop('disabled', false);
+    $("#btnSaveWardMaster").attr('disabled', false);
+}

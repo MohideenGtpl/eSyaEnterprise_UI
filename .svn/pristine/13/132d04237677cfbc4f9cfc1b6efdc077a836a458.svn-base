@@ -1,0 +1,22 @@
+﻿
+@{
+    ViewData["Title"] = "V_24_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts{
+<script src="~/js/Config/LocalizationLanguageMapping.js"></script>
+} 
+<div class="row padbot10">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <table id="jqgLocalizationLanguage"></table>
+        <div id="jqpLocalizationLanguage"></div>
+    </div>
+</div>
+
+
+<script>
+    var LocalizationTableMaster = (@Html.Raw(Json.Serialize(ViewBag.locMasterlist)));
+    var FormMaster = (@Html.Raw(Json.Serialize(ViewBag.formMasterlist)));
+</script>
+

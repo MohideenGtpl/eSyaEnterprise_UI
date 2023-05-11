@@ -1,0 +1,125 @@
+﻿$(document).ready(function () {
+    fnGridSMSParameter();
+    fnGridSMSVariable();
+    fneSyaParameter();
+});
+
+function fnGridSMSParameter() {
+$("#jqgSMSParameter").jqGrid('GridUnload');
+$("#jqgSMSParameter").jqGrid({
+    //url:,
+    // mtype: 'Post',
+    datatype: 'local',
+    ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+    jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+    colNames: ["SMS ID", "SMS Description", "Is Variable", "SMS Statement", "Status", "Actions"],
+    colModel: [
+        { name: "SMSID", width: 70, editable: true, align: 'left'},
+        { name: "SMSDescription", width: 70, editable: false,align: 'left', resizable: true },
+        { name: "IsVariable", width: 170, editable: true, align: 'left', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true }  },
+        { name: "SMSStatement", width: 35, align: 'center', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+        { name: "ActiveStatus", editable: true, width: 28, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: Inactive" } },
+        {
+            name: 'Actions', search: false, align: 'left', width: 54, sortable: false, resizable: false,
+            formatter: function (cellValue, options, rowdata, action) {
+                return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" onclick="return fnEditSMSParameter(event,\'edit\')"><i class="fas fa-pencil-alt"></i> Edit </button>' +
+                    '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnEditSMSParameter(event,\'view\')"><i class="far fa-file-alt"></i> View </button>'
+
+            }
+        }
+    ],
+    pager: "#jqpSMSParameter",
+    rowNum: 10,
+    rowList: [10, 20, 50, 100],
+    loadonce: true,
+    viewrecords: true,
+    gridview: true,
+    rownumbers: true,
+    height: 'auto',
+    align: "left",
+    width: 'auto',
+    autowidth: false,
+    shrinkToFit: false,
+    scrollOffset: 0
+}).jqGrid('navGrid', '#jqpSMSParameter', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpSMSParameter', {
+    caption: '<span class="fa fa-sync btn-pager"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefresh
+}).jqGrid('navButtonAdd', '#jqpSMSParameter', {
+    caption: '<span class="fa fa-plus btn-pager"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnRedirectToSMSVariable
+        });
+}
+function fnAdd() {
+   
+}
+function fnGridSMSVariable() {
+    $("#jqgSMSVariable").jqGrid('GridUnload');
+    $("#jqgSMSVariable").jqGrid({
+        //url:,
+        // mtype: 'Post',
+        datatype: 'local',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Variable ID", "Variable Name"],
+        colModel: [
+            { name: "VariableID", width: 70, editable: true, align: 'left' },
+            { name: "VariableName", width:230, editable: false, align: 'left', resizable: true },
+         ],
+        pager: "#jqpSMSVariable",
+        emptyrecords:"No records",
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0
+    }).jqGrid('navGrid', '#jqpSMSVariable', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpSMSVariable', {
+        caption: '<span class="fa fa-sync btn-pager"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefresh
+        }).jqGrid('navButtonAdd', '#jqpSMSVariable', {
+        caption: '<span class="fa fa-plus btn-pager" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAdd
+    });
+}
+
+function fneSyaParameter() {
+
+    $("#jqgSpecialtyParameter").jqGrid({
+        //url:
+        datatype: 'local',
+        data: [{ ActionDesc: 'Is Inspection Reqd', ActiveStatus: true }, { ActionDesc: 'Is Saleable', ActiveStatus: true }, { ActionDesc: 'Is Rate Contract item', ActiveStatus: false }, { ActionDesc: 'Is Batch Applicable', ActiveStatus: false }],
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        colNames: ["Action ID", "Parameter", "Status"],
+        colModel: [
+            { name: 'ActionID', key: true, index: 'ActionId', width: 0, sortable: false, hidden: true },
+            { name: 'ActionDesc', index: 'ActionDesc', width: 150, sortable: false, editable: false },
+            { name: 'ActiveStatus', index: 'ActiveStatus', width: 75, align: 'center', sortable: false, formatter: 'checkbox', editable: true, edittype: "checkbox", formatoptions: { disabled: false } }
+        ],
+        caption: "",
+        height: 'auto',
+        width: '200',
+        rowNum: 15,
+        rownumbers: true,
+        viewrecords: true,
+        gridview: true,
+        autowidth: false,
+        shrinkToFit: false,
+        forceFit: false,
+        cellEdit: true,
+
+    });
+}
+
+function fnRedirectToSMSVariable() {
+    window.location.href = getBaseURL() + "/eSyaConfig/SMSEngine/_SMSInformation";
+    
+}
+
+function fnRedirectToSMSInformation() {
+    window.location.href = getBaseURL() + "/eSyaConfig/SMSEngine/V_115_00"
+}
+function fnGridRefresh() {
+
+}

@@ -1,0 +1,70 @@
+﻿
+@{
+    ViewData["Title"] = "Drug Re-order Level";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts{
+<script src="~/js/eSyaPharma/DrugReorderLevel.js"></script>
+}
+
+<section id="divDrugReorderLevelGrid">
+    <div class="row">
+        <div class="col-lg-3 col-md-3 col-sm-4 form-group">
+            <label>Business Segment</label>
+            <select class="form-control selectpicker">
+                <option value="value">Select</option>
+            </select>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-4 form-group">
+            <label>Store</label>
+            <select class="form-control selectpicker">
+                <option value="value">Select</option>
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <table id="jqgDrugReorderLevel"></table>
+            <div id="jqpDrugReorderLevel"></div>
+        </div>
+    </div>
+</section>
+
+<section id="divDrugReorderLevelForm" style="display:none;">
+    <div class="row">
+        <div class="col-lg-2 col-md-3 col-sm-3 form-group">
+            <label>Drug Code</label>
+            <input type="text" name="DrugCode" class="form-control" value="" readonly />
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+            <label>Drug Name</label>
+            <input type="text" name="DrugName" class="form-control" value="" readonly />
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-3 form-group">
+            <label>Maximum Stock Level</label>
+            <input type="text" name="MaximumStockLevel" class="form-control" value="" />
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-3 form-group">
+            <label>Re Order Level</label>
+            <input type="text" name="ReorderLevel" class="form-control" value="" />
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-3 form-group">
+            <label>Safety Stock Level</label>
+            <input type="text" name="SafetyStockLevel" class="form-control" value="" />
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-3 form-group">
+            <label>Minimum Stock Level</label>
+            <input type="text" name="MinimumStockLevel" class="form-control" value="" />
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+            <hr />
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent btn-back mr-10 c-white" onclick="fnCloseDrugReorderLevel()"><i class="fas fa-chevron-left"></i> Back</button>
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button mr-10" id="btnSaveDrugReorderLevel">
+                <i class="fa fa-save"></i>   Save
+            </button>
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button" id="btnCancel" onclick="fnCloseDrugReorderLevel()"><i class="fa fa-redo"></i> Cancel</button>
+
+        </div>
+    </div>
+</section>
+

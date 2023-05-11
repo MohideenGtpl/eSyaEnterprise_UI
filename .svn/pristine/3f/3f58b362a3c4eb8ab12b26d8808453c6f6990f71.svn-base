@@ -1,0 +1,209 @@
+﻿$(document).ready(function () {
+
+    fnLoadUnitofMeasureGrid();   
+});
+
+function fnLoadUnitofMeasureGrid() {
+
+    $("#jqgUnitofMeasure").GridUnload();
+
+    $("#jqgUnitofMeasure").jqGrid({
+        url: getBaseURL() + '/Inventory/GetUnitofMeasurements',
+        datatype: 'json',
+        mtype: 'POST',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Unit of Measure", localization.UnitofPurchase, localization.Description, localization.UOMStock, localization.Description, localization.ConvFactor, localization.Active, localization.Actions],
+
+        colModel: [
+
+            { name: "UnitOfMeasure", width: 80, editable: true, align: 'left', hidden: true },
+            { name: "Uompurchase", width: 80, editable: true, align: 'left', hidden: false },
+            { name: "Uompdesc", width: 80, editable: true, align: 'left', hidden: false },
+            { name: "Uomstock", width: 80, editable: true, align: 'left', hidden: false },
+            { name: "Uomsdesc", width: 80, editable: true, align: 'left', hidden: false },
+            { name: "ConversionFactor", width: 80, editable: true, align: 'left', hidden: false },
+            { name: "ActiveStatus", width: 35, editable: false, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+            {
+                name: 'Edit', search: false, align: 'left', width: 100, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit", onclick="return fnEditUnitofMeasure(event,\'edit\')"><i class="fa fa-edit"></i> ' + localization.Edit + ' </button>'+
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title ="View" id = "jqgView", onclick = "return fnEditUnitofMeasure(event,\'view\')"><i class="far fa-eye"></i> ' + localization.View+' </button>'
+                 }
+            },
+
+        ],    
+        rowNum: 10,
+        loadonce: false,
+        pager: "#jqpUnitofMeasure",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0,
+        loadComplete: function (data) {
+            SetGridControlByAction();
+        },
+    }).jqGrid('navGrid', '#jqpUnitofMeasure', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpUnitofMeasure', {
+        caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshUnitofMeasure
+    }).jqGrid('navButtonAdd', '#jqpUnitofMeasure', {
+        caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddUnitofMeasure
+        });
+    fnAddGridSerialNoHeading();
+}
+
+function fnAddUnitofMeasure() {
+    fnClearFields();
+    $("#PopupUnitofMeasure").modal('show');
+    $(".modal-title").text("Add Unit of Measure");
+    $("#chkActiveStatus").parent().addClass("is-checked");
+    $("#btnSaveUnitofMeasure").text("Save");
+}
+
+function fnEditUnitofMeasure(e,actiontype) {
+    fnClearFields();
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgUnitofMeasure').jqGrid('getRowData', rowid);
+    $("#txtUnitofMeasure").val(rowData.UnitOfMeasure);
+    $("#txtUOMPurchase").val(rowData.Uompurchase);
+    $("#txtUOMPurchaseDesc").val(rowData.Uompdesc);
+    $("#txtUOMStack").val(rowData.Uomstock);
+    $("#txtUOMStackDesc").val(rowData.Uomsdesc);
+    $("#txtConversionFactor").val(rowData.ConversionFactor);
+    if (rowData.ActiveStatus == 'true') {
+        $("#chkActiveStatus").parent().addClass("is-checked");
+    }
+    else {
+        $("#chkActiveStatus").parent().removeClass("is-checked");
+    }
+
+    $("#chkActiveStatus").prop('disabled', false);
+    $("#PopupUnitofMeasure").modal('show');
+    $(".modal-title").text("Edit Unit of Measure");
+    $("#btnSaveUnitofMeasure").text("Update");
+    if (actiontype.trim() == "edit") {
+        $("#btnSaveUnitofMeasure").show();
+        fnEnableUnitofMeasure(false);
+         $("#btnSaveSMSInformation").html('Update');
+    }
+    if (actiontype.trim() == "view") {
+        $("#btnSaveUnitofMeasure").hide();
+        fnEnableUnitofMeasure(true);
+        $(".modal-title").text("View Unit of Measure");
+    }
+    $("#PopupUnitofMeasure").on('hidden.bs.modal', function () {
+        $("#btnSaveUnitofMeasure").show();
+        fnEnableUnitofMeasure(false);
+    });
+}
+
+function fnSaveUnitofMeasure() {
+  
+    if (validationUnitofMeasure() === false) {
+        return;
+    }
+        uoms = {
+            UnitOfMeasure: $("#txtUnitofMeasure").val() === '' ? 0 : $("#txtUnitofMeasure").val(),
+            Uompurchase: $("#txtUOMPurchase").val(),
+            Uompdesc: $("#txtUOMPurchaseDesc").val(),
+            Uomstock: $("#txtUOMStack").val(),
+            Uomsdesc: $("#txtUOMStackDesc").val(),
+            ConversionFactor: $("#txtConversionFactor").val(),
+            ActiveStatus: $("#chkActiveStatus").parent().hasClass("is-checked")
+        };
+    $.ajax({
+        url: getBaseURL() + '/Inventory/InsertOrUpdateUnitofMeasurement',
+        type: 'POST',
+        datatype: 'json',
+        data: { uoms },
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                $("#PopupUnitofMeasure").modal('hide');
+                fnClearFields();
+                fnLoadUnitofMeasureGrid();
+                return true;
+            }
+            else{
+                toastr.error(response.Message);
+                return false;
+            }
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+        }
+    });
+
+
+
+}
+
+function validationUnitofMeasure() {
+    if (IsStringNullorEmpty($("#txtUOMPurchase").val())) {
+        toastr.warning("Please Enter Unit of Purchase");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtUOMPurchaseDesc").val())) {
+        toastr.warning("Please Enter Unit of Purchase Description");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtUOMStack").val())) {
+        toastr.warning("Please Enter Unit of Stack");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtUOMStackDesc").val())) {
+        toastr.warning("Please Enter Unit of Stack Description");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtConversionFactor").val())) {
+        toastr.warning("Please Enter Conversion Factor");
+        return false;
+    }
+}
+
+function fnGridRefreshUnitofMeasure() {
+
+    $("#jqgUnitofMeasure").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+function fnClearFields() {
+    $("#txtUnitofMeasure").val('');
+    $("#txtUOMPurchase").val('');
+    $("#txtUOMPurchaseDesc").val('');
+    $("#txtUOMStack").val('');
+    $("#txtUOMStackDesc").val('');
+    $("#txtConversionFactor").val('');
+    $("#chkActiveStatus").prop('disabled', false);
+}
+
+function SetGridControlByAction() {
+    $('#jqgAdd').removeClass('ui-state-disabled');
+    var eleEnable = document.querySelectorAll('#jqgEdit');
+
+    for (var i = 0; i < eleEnable.length; i++) {
+        eleEnable[i].disabled = false;
+    }
+    if (_userFormRole.IsInsert === false) {
+        $('#jqgAdd').addClass('ui-state-disabled');
+    }
+    if (_userFormRole.IsEdit === false) {
+        var eleDisable = document.querySelectorAll('#jqgEdit');
+        for (var i = 0; i < eleDisable.length; i++) {
+            eleDisable[i].disabled = true;
+            eleDisable[i].className = "ui-state-disabled";
+        }
+    }
+}
+
+
+function fnEnableUnitofMeasure(val) {
+    $("input,textarea").attr('readonly', val);
+    $("#chkActiveStatus").attr('disabled', val);
+}
+
+

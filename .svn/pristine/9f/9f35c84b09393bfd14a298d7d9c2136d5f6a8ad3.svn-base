@@ -1,0 +1,144 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+
+<div class="row">
+    <input type="hidden" id="hdvDoctorScheduleSerialNo" value="" />
+    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+        <div class="form-group">
+            <label class="lable-color"> @Localizer["Location"]</label>
+            <select class="selectpicker" data-live-search="true" title="Select" id="cboDoctorLocation" asp-items="@ViewBag.BusinessKeyList" onchange="fnLoadScheduleSpecialty()"></select>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+        <div class="form-group">
+
+            <label class="lable-color">@Localizer["Specialty"]</label>
+            <select class="selectpicker input" title="Select" id="cboDoctorScheduleSpecialty" onchange="fnLoadScheduleClinic()"></select>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+        <div class="form-group">
+            <label class="lable-color"> @Localizer["Clinic"]</label>
+            <select class="selectpicker input" title="Select" id="cboDoctorClinic" onchange="fnLoadScheduleConsultationType()"></select>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+        <div class="form-group">
+            <label class="lable-color"> @Localizer["ConsultationType"]</label>
+            <select class="selectpicker input" title="Select" id="cboScheduleConsultationType"></select>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+        <div class="form-group">
+
+            <label class="lable-color">@Localizer["Dayoftheweek"]</label>
+            <select class="selectpicker" id="cboDoctorScheduleWeekDays">
+                <option value="0">Choose day</option>
+                <option value="Sunday">Sunday</option>
+                <option value="Monday">Monday</option>
+                <option value="Tuesday">Tuesday</option>
+                <option value="Wednesday">Wednesday</option>
+                <option value="Thursday">Thursday</option>
+                <option value="Friday">Friday</option>
+                <option value="Saturday">Saturday</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+        <div class="form-group">
+            <label>  @Localizer["FromTime"]</label>
+            <input id="txtFromTime" class="form-control" type="time" autocomplete="off" />
+
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+        <div class="form-group">
+            <label>  @Localizer["ToTime"]</label>
+            <input id="txtToTime" class="form-control" type="time" autocomplete="off" />
+
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+        <label class="lable-color">@Localizer["NumberofPatients"]</label>
+        <input id="txtNumberOfPatients" class="form-control integerFormat" type="text" maxlength="3" autocomplete="off" />
+    </div>
+
+    <div class="col-lg-1 col-md-1 col-sm-3 col-xs-12">
+        <div class="default-checkbox">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkWeek1">
+                <input type="checkbox" id="chkWeek1" class="mdl-checkbox__input">
+                <span class="mdl-checkbox__label">@Localizer["Week1"]</span>
+            </label>
+        </div>
+    </div>
+
+    <div class="col-lg-1 col-md-1 col-sm-3 col-xs-12">
+        <div class="default-checkbox">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkWeek2">
+                <input type="checkbox" id="chkWeek2" class="mdl-checkbox__input">
+                <span class="mdl-checkbox__label">@Localizer["Week2"]</span>
+            </label>
+        </div>
+    </div>
+
+    <div class="col-lg-1 col-md-1 col-sm-3 col-xs-12">
+        <div class="default-checkbox">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkWeek3">
+                <input type="checkbox" id="chkWeek3" class="mdl-checkbox__input">
+                <span class="mdl-checkbox__label">@Localizer["Week3"]</span>
+            </label>
+        </div>
+    </div>
+
+    <div class="col-lg-1 col-md-1 col-sm-3 col-xs-12">
+        <div class="default-checkbox">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkWeek4">
+                <input type="checkbox" id="chkWeek4" class="mdl-checkbox__input">
+                <span class="mdl-checkbox__label">@Localizer["Week4"]</span>
+            </label>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+        <div class="default-checkbox">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkWeek5">
+                <input type="checkbox" id="chkWeek5" class="mdl-checkbox__input">
+                <span class="mdl-checkbox__label">@Localizer["Week5"]</span>
+            </label>
+        </div>
+    </div>
+
+    <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+        <div class="default-checkbox">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkScheduleActive">
+                <input type="checkbox" id="chkScheduleActive" class="mdl-checkbox__input">
+                <span class="mdl-checkbox__label">@Localizer["Active"]</span>
+            </label>
+        </div>
+    </div>
+
+</div>
+
+
+<div class="row  form-group">
+    <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+        <hr />
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent btn-back mr-10 c-white" onclick="fnGridRefreshDoctorMaster()"><i class="fas fa-chevron-left"></i> @Localizer["Back"]</button>
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button mr-10" id="btnSaveDoctorSchedule" onclick="fnSaveDoctorSchedule()"><i class="far fa-save"></i>  @Localizer["Save"]</button>
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button" id="btnClearDoctorSchedule" onclick="fnClearDoctorSchedule()"><i class="fa fa-redo"></i> @Localizer["Clear"]</button>
+    </div>
+</div>
+
+
+<div class=" row form-group">
+    <div class="col-lg-12">
+        <table id="jqgDoctorSchedule"></table>
+        <div id="jqpDoctorSchedule"></div>
+    </div>
+</div>

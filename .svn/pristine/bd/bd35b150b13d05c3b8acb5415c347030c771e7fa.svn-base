@@ -1,0 +1,455 @@
+﻿body {
+}
+@media only screen and (min-width:1200px){
+    #mainContent {
+        scroll-behavior: smooth;
+    }
+
+    .divFixedBar {
+        position: fixed;
+        top: 107px;
+        height: 36px;
+        border-bottom: 1px solid #ccc;
+        width: 100%;
+        margin: 0px -15px;
+    }
+
+        .divFixedBar p:not(span) {
+            font-size: 15px;
+            margin: 0px 5px;
+            display: inline-block;
+            padding: 8px 15px 0px;
+        }
+
+    [id^="lbl"] {
+        color: gold;
+        font-weight: 600;
+        letter-spacing: 0.75px;
+        font-size: 16px;
+    }
+
+    .buttonSection {
+        margin-right: 15px !important;
+        position: relative;
+        display: inline-block;
+        position: absolute;
+        right: 0px;
+        cursor: pointer;
+    }
+
+        .buttonSection .fa-save {
+            color: green;
+        }
+
+    .sidebar-sticky .svg-inline--fa {
+        width: 16px;
+        height: 16px;
+        vertical-align: text-bottom;
+        color: #999;
+        transition: 0.3s ease-in-out;
+    }
+
+    .sidebar-sticky .nav-link:hover .svg-inline--fa {
+        color: black;
+    }
+    /*
+ * Sidebar
+ */
+    .sidebar {
+        position: fixed;
+        top: 143px;
+        bottom: 0;
+        left: 0;
+        z-index: 100; /* Behind the navbar */
+        padding: 15px 0 0; /* Height of navbar */
+        box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+    }
+
+    .sidebar-sticky {
+        position: relative;
+        top: 0;
+        height: calc(100vh - 48px);
+        padding-top: .5rem;
+        overflow-x: hidden;
+        overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+    }
+
+    @supports ((position: -webkit-sticky) or (position: sticky)) {
+        .sidebar-sticky {
+            position: -webkit-sticky;
+            position: sticky;
+        }
+    }
+
+    .sidebar .nav-item {
+        margin-left: 15px;
+    }
+
+    .sidebar .nav-link {
+        font-weight: 600;
+        color: #757575;
+        letter-spacing: 1px;
+        padding-left: 15px;
+        border-left: 4px solid transparent;
+    }
+
+        .sidebar .nav-link .feather {
+            margin-right: 4px;
+            color: #999;
+        }
+
+        .sidebar .nav-link.active, .sidebar .nav-link:hover {
+            color: #fbd626;
+            border-left: 4px solid #fbd227;
+            background: #fffff4;
+        }
+
+            .sidebar .nav-link:hover .feather,
+            .sidebar .nav-link.active .feather {
+                color: inherit;
+            }
+
+    .sidebar-heading {
+        font-size: .75rem;
+        text-transform: uppercase;
+    }
+
+    /*
+ * Content
+ */
+
+    [role="main"] {
+        padding-top: 48px; /* Space for fixed navbar */
+    }
+
+    /*
+ * Navbar
+ */
+
+    .pageSection h4 {
+        color: #fbd626;
+    }
+
+    .navbar .form-control {
+        padding: .75rem 1rem;
+        border-width: 0;
+        border-radius: 0;
+    }
+
+    .form-control-dark {
+        color: #fff;
+        background-color: rgba(255, 255, 255, .1);
+        border-color: rgba(255, 255, 255, .1);
+    }
+
+        .form-control-dark:focus {
+            border-color: transparent;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
+        }
+}
+
+@media only screen and (min-width:992px) {
+    #mainContent {
+        scroll-behavior: smooth;
+    }
+
+    .divFixedBar {
+        position: fixed;
+        top: 107px;
+        height: 36px;
+        border-bottom: 1px solid #ccc;
+        width: 100%;
+        margin: 0px -15px;
+    }
+
+        .divFixedBar p:not(span) {
+            font-size: 15px;
+            margin: 0px 5px;
+            display: inline-block;
+            padding: 8px 15px 0px;
+        }
+
+    [id^="lbl"] {
+        color: gold;
+        font-weight: 600;
+        letter-spacing: 0.75px;
+        font-size: 16px;
+    }
+
+    .buttonSection {
+        margin-right: 15px !important;
+        position: relative;
+        display: inline-block;
+        position: absolute;
+        right: 0px;
+        cursor: pointer;
+    }
+
+        .buttonSection .fa-save {
+            color: green;
+        }
+
+    .sidebar-sticky .svg-inline--fa {
+        width: 16px;
+        height: 16px;
+        vertical-align: text-bottom;
+        color: #999;
+        transition: 0.3s ease-in-out;
+    }
+
+    .sidebar-sticky .nav-link:hover .svg-inline--fa {
+        color: black;
+    }
+    /*
+ * Sidebar
+ */
+    ul{
+        font-size:12px;
+    }
+    .sidebar {
+        width:240px;
+        position: fixed;
+        top: 143px;
+        bottom: 0;
+        left: 0;
+        z-index: 100; /* Behind the navbar */
+        padding: 15px 0 0; /* Height of navbar */
+        box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+    }
+
+    .sidebar-sticky {
+        position: relative;
+        top: 0;
+        height: calc(100vh - 48px);
+        padding-top: .5rem;
+        overflow-x: hidden;
+        overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+    }
+
+    @supports ((position: -webkit-sticky) or (position: sticky)) {
+        .sidebar-sticky {
+            position: -webkit-sticky;
+            position: sticky;
+        }
+    }
+
+    .sidebar .nav-item {
+        margin-left: 5px;
+    }
+
+    .sidebar .nav-link {
+        font-weight: 600;
+        color: #757575;
+        letter-spacing: 1px;
+        padding-left: 7px;
+        border-left: 4px solid transparent;
+    }
+
+        .sidebar .nav-link .feather {
+            margin-right: 4px;
+            color: #999;
+        }
+
+        .sidebar .nav-link.active, .sidebar .nav-link:hover {
+            color: #fbd626;
+            border-left: 4px solid #fbd227;
+            background: #fffff4;
+        }
+
+            .sidebar .nav-link:hover .feather,
+            .sidebar .nav-link.active .feather {
+                color: inherit;
+            }
+
+    .sidebar-heading {
+        font-size: .75rem;
+        text-transform: uppercase;
+    }
+
+    /*
+ * Content
+ */
+
+    [role="main"] {
+        padding-top: 48px; /* Space for fixed navbar */
+    }
+
+    /*
+ * Navbar
+ */
+
+    .pageSection h4 {
+        color: #fbd626;
+    }
+
+    .navbar .form-control {
+        padding: .75rem 1rem;
+        border-width: 0;
+        border-radius: 0;
+    }
+
+    .form-control-dark {
+        color: #fff;
+        background-color: rgba(255, 255, 255, .1);
+        border-color: rgba(255, 255, 255, .1);
+    }
+
+        .form-control-dark:focus {
+            border-color: transparent;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
+        }
+}
+
+@media only screen and (min-width:768px) {
+    #mainContent {
+        scroll-behavior: smooth;
+        max-width:73% !important;
+    }
+
+    .divFixedBar {
+        position: fixed;
+        top: 107px;
+        height: 36px;
+        border-bottom: 1px solid #ccc;
+        width: 100%;
+        margin: 0px -15px;
+    }
+
+        .divFixedBar p:not(span) {
+            font-size: 12px;
+            margin: 0px 5px;
+            display: inline-block;
+            padding: 8px 15px 0px;
+        }
+
+    [id^="lbl"] {
+        color: gold;
+        font-weight: 600;
+        letter-spacing: 0.75px;
+        font-size: 16px;
+    }
+
+    .buttonSection {
+        margin-right: 15px !important;
+        position: relative;
+        display: inline-block;
+        position: absolute;
+        right: 0px;
+        cursor: pointer;
+    }
+
+        .buttonSection .fa-save {
+            color: green;
+        }
+
+    .sidebar-sticky .svg-inline--fa {
+        width: 16px;
+        height: 16px;
+        vertical-align: text-bottom;
+        color: #999;
+        transition: 0.3s ease-in-out;
+    }
+
+    .sidebar-sticky .nav-link:hover .svg-inline--fa {
+        color: black;
+    }
+    /*
+ * Sidebar
+ */
+    ul {
+        font-size: 12px;
+    }
+
+    .sidebar {
+        max-width: 25% !important;
+        position: fixed;
+        top: 143px;
+        bottom: 0;
+        left: 0;
+        z-index: 100; /* Behind the navbar */
+        padding: 15px 0 0; /* Height of navbar */
+        box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+    }
+
+    .sidebar-sticky {
+        position: relative;
+        top: 0;
+        height: calc(100vh - 48px);
+        padding-top: .5rem;
+        overflow-x: hidden;
+        overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+    }
+
+    @supports ((position: -webkit-sticky) or (position: sticky)) {
+        .sidebar-sticky {
+            position: -webkit-sticky;
+            position: sticky;
+        }
+    }
+
+    .sidebar .nav-item {
+        margin-left: 5px;
+    }
+
+    .sidebar .nav-link {
+        font-weight: 600;
+        color: #757575;
+        letter-spacing: 1px;
+        padding-left: 7px;
+        border-left: 4px solid transparent;
+    }
+
+        .sidebar .nav-link .feather {
+            margin-right: 4px;
+            color: #999;
+        }
+
+        .sidebar .nav-link.active, .sidebar .nav-link:hover {
+            color: #fbd626;
+            border-left: 4px solid #fbd227;
+            background: #fffff4;
+        }
+
+            .sidebar .nav-link:hover .feather,
+            .sidebar .nav-link.active .feather {
+                color: inherit;
+            }
+
+    .sidebar-heading {
+        font-size: .75rem;
+        text-transform: uppercase;
+    }
+
+    /*
+ * Content
+ */
+
+    [role="main"] {
+        padding-top: 48px; /* Space for fixed navbar */
+    }
+
+    /*
+ * Navbar
+ */
+
+    .pageSection h4 {
+        color: #fbd626;
+    }
+
+    .navbar .form-control {
+        padding: .75rem 1rem;
+        border-width: 0;
+        border-radius: 0;
+    }
+
+    .form-control-dark {
+        color: #fff;
+        background-color: rgba(255, 255, 255, .1);
+        border-color: rgba(255, 255, 255, .1);
+    }
+
+        .form-control-dark:focus {
+            border-color: transparent;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
+        }
+}

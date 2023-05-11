@@ -1,0 +1,170 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "_UserCreation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/jsTree.css" rel="stylesheet" />
+@section scripts{
+    <script src="~/js/jsTree.js"></script>
+    <script src="~/js/Config/UserCreation.js"></script>
+
+}
+
+<style>
+    .mdl-tabs__tab-bar {
+        justify-content: flex-start !important;
+    }
+
+    .mdl-tabs__tab {
+        width: 220px;
+    }
+
+    .mdl-tabs__panel {
+        padding: 24px 15px;
+    }
+</style>
+<div class="row">
+    <div class="col-lg-12 padbot10">
+        <div class="mdl-tabs is-upgraded mdl-js-tabs mdl-js-ripple-effect">
+            <div class="mdl-tabs__tab-bar">
+                <a href="#userInfo" class="mdl-tabs__tab is-active">User Info</a>
+                <a href="#userPrivileges" class="mdl-tabs__tab">User Privileges</a>
+            </div>
+            <div class="mdl-tabs__panel is-active" id="userInfo">
+                <div class="row">
+                    <div class="col-lg-3 col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label>Login ID </label>
+                            <input type="text" name="LoginID" value="" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label>Login Name </label>
+                            <input type="text" name="LoginName" value="" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label>Password </label>
+                            <input type="password" name="Password" value="" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label>Re-enter Password </label>
+                            <input type="password" name="Reenterpassword" value="" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label>Country </label>
+                            <input type="text" name="country" value="" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label>Mobile No </label>
+                            <input type="text" name="mobileno" value="" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                        <div class="form-group">
+                            <label>Email ID </label>
+                            <input type="password" name="emailid" value="" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-sm-12">
+                        <div class="form-group checkbox">
+                            <label><input type="checkbox" name="isadoctor" value="" /> <span class="checkbox-text"> Is a Doctor </span></label>
+                            <label><input type="checkbox" name="isadoctor" value="" /> <span class="checkbox-text"> Allow MFY </span></label>
+                            <label><input type="checkbox" name="isadoctor" value="" /> <span class="checkbox-text"> Allow MSG </span></label>
+
+                        </div>
+                    </div>
+
+                    <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12 col-xs-12 form-group">
+                        <table id="jqgUserBusinessSegment"></table>
+                        <div id="jqpUserBusinessSegment"></div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label>Photo </label>
+                            <img src="#" alt="" id="imgPhotoPreview" />
+                            @*<input id="imgFlag" class="form-control" type="file" accept="image/x-png,image/jpeg" />*@
+                            <input type="file" id="imgPhoto" style="display: none;" />
+                            <input type="button" value="Add Photo" onclick="document.getElementById('imgPhoto').click();" class="btn-upload" />
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label>Digital Signature </label>
+                            <img src="#" alt="" id="imgSignaturePreview" />
+                            @*<input id="imgFlag" class="form-control" type="file" accept="image/x-png,image/jpeg" />*@
+                            <input type="file" id="imgSignature" style="display: none;" />
+                            <input type="button" value="Add Signature" onclick="document.getElementById('imgSignature').click();" class="btn-upload" />
+
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </div>
+            <div class="mdl-tabs__panel" id="userPrivileges">
+                <div class="row">
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div id="jstUserGroup"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btn-previous">
+        Save
+        </button>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent cancel-button"> Cancel</button>
+    </div>
+</div>
+<script>
+    function readURLforPhoto(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#imgPhotoPreview').attr('src', e.target.result);
+                
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $("#imgPhoto").change(function () {
+        readURLforPhoto(this);
+    });
+
+    function readURLforSignature(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#imgSignaturePreview').attr('src', e.target.result);
+
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $("#imgSignature").change(function () {
+        readURLforSignature(this);
+    });
+
+</script>

@@ -1,0 +1,49 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
+using eSyaEnterprise_UI.Areas.Config.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+namespace eSyaEnterprise_UI.Areas.Config.Controllers
+{
+    public class UserManagementController : Controller
+    {
+        ESyaWebAPI _eSyaWebAPI = new ESyaWebAPI();
+        //User Group
+        [Area("Config")]
+        public IActionResult V_51_00()
+        {
+            var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+            int ug_ctype = 1;
+            HttpResponseMessage ug_response = client.GetAsync("ConfigMasterData/GetApplicationCodesByCodeType?codeType="+ ug_ctype).Result;
+            string ugdata = ug_response.Content.ReadAsStringAsync().Result;
+            List<DO_ApplicationCodes> ugapp_codes = JsonConvert.DeserializeObject<List<DO_ApplicationCodes>>(ugdata);
+            ViewBag.UGappcodes = ugapp_codes;
+
+            int ut_ctype = 2;
+            HttpResponseMessage ut_response = client.GetAsync("ConfigMasterData/GetApplicationCodesByCodeType?codeType=" + ut_ctype).Result;
+            string utdata = ut_response.Content.ReadAsStringAsync().Result;
+            List<DO_ApplicationCodes> utapp_codes = JsonConvert.DeserializeObject<List<DO_ApplicationCodes>>(utdata);
+            ViewBag.UTappcodes = utapp_codes;
+            return View();
+        }
+        //User Creation Grid
+        [Area("Config")]
+        public IActionResult V_52_00()
+        {
+            return View();
+        }
+        // User Creation form
+        [Area("Config")]
+        public IActionResult _UserCreation()
+        {
+            return View();
+        }
+    }
+}

@@ -1,0 +1,64 @@
+2022-06-25 10:50:23.4958|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2022-06-25 10:51:19.8045|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2022-06-25 11:18:23.9722|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2022-06-25 11:22:55.0087||ERROR|eSyaEnterprise_UI.Areas.eSyaUser.Controllers.UserManagementController|UD:GetConfigureMenuTreeView System.Threading.Tasks.TaskCanceledException: A task was canceled.|url: http://localhost/UserManagement/GetConfigureMenulist|action: GetConfigureMenulist
+2022-06-25 11:23:43.4922|1|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An unhandled exception has occurred while executing the request. System.Threading.Tasks.TaskCanceledException: A task was canceled.|url: http://localhost/UserManagement/GetConfigureMenulist|action: GetConfigureMenulist
+2022-06-25 11:23:43.5475|3|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An exception was thrown attempting to execute the error handler. System.ArgumentNullException: Value cannot be null.
+Parameter name: logger
+   at Microsoft.Extensions.Logging.LoggerExtensions.Log(ILogger logger, LogLevel logLevel, EventId eventId, Exception exception, String message, Object[] args)
+   at Microsoft.Extensions.Logging.LoggerExtensions.LogError(ILogger logger, Exception exception, String message, Object[] args)
+   at eSyaEnterprise_UI.Extension.ExceptionMiddlewareExtensions.<>c.<<ConfigureExceptionHandler>b__0_1>d.MoveNext() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Extension\ExceptionMiddlewareExtensions.cs:line 44
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/UserManagement/GetConfigureMenulist|action: GetConfigureMenulist
+2022-06-25 11:23:43.5651|1|ERROR|Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware|An unhandled exception has occurred while executing the request. System.Threading.Tasks.TaskCanceledException: A task was canceled.|url: http://localhost/UserManagement/GetConfigureMenulist|action: GetConfigureMenulist
+2022-06-25 11:27:20.0797||ERROR|eSyaEnterprise_UI.Areas.eSyaUser.Controllers.UserManagementController|UD:GetMenuKeysbyUserGroupAndUserType:For UserGroup 10006 with UserType entered 20001 System.Exception: Internal Server Error|url: http://localhost/UserManagement/GetMenuKeysbyUserGroupAndUserType|action: GetMenuKeysbyUserGroupAndUserType
+2022-06-25 11:27:20.0617||ERROR|eSyaEnterprise_UI.Areas.eSyaUser.Controllers.UserManagementController|UD:GetMenuKeysbyUserGroupAndUserType:For UserGroup 10006 with UserType entered 20002 System.Exception: Internal Server Error|url: http://localhost/UserManagement/GetMenuKeysbyUserGroupAndUserType|action: GetMenuKeysbyUserGroupAndUserType
+2022-06-25 11:28:19.4420||ERROR|eSyaEnterprise_UI.Areas.eSyaUser.Controllers.UserManagementController|UD:GetUserDetails:For UserID 10 System.Exception: Internal Server Error|url: http://localhost/UserManagement/GetUserDetails|action: GetUserDetails
+2022-06-25 11:28:50.8830||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.GuestBookingController|UD:GetActiveRoomTypes System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it ---> System.Net.Sockets.SocketException: No connection could be made because the target machine actively refused it
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.CreateConnectionAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.WaitForCreatedConnectionAsync(ValueTask`1 creationTask)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.SendWithRetryAsync(HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncBuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at eSyaEssentials_UI.HttpClientServices.GetAsync[T](String url)
+   at eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.GuestBookingController.V_ENC_05_00() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNatureCure\Controllers\GuestBookingController.cs:line 36|url: http://localhost/eSyaNatureCure/GuestBooking/V_ENC_05_00|action: V_ENC_05_00
+2022-06-25 11:29:09.1410||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.BedMasterController|UD:GetAllBedMastersbyRoomType System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it ---> System.Net.Sockets.SocketException: No connection could be made because the target machine actively refused it
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.CreateConnectionAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.WaitForCreatedConnectionAsync(ValueTask`1 creationTask)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.SendWithRetryAsync(HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncBuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at eSyaEssentials_UI.HttpClientServices.GetAsync[T](String url)
+   at eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.BedMasterController.GetAllBedMastersbyRoomType(Int32 roomtype) in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNatureCure\Controllers\BedMasterController.cs:line 78|url: http://localhost/BedMaster/GetAllBedMastersbyRoomType|action: GetAllBedMastersbyRoomType
+2022-06-25 11:29:15.4722||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.BedMasterController|UD:GetAllBedMastersbyRoomType System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it ---> System.Net.Sockets.SocketException: No connection could be made because the target machine actively refused it
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.CreateConnectionAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.WaitForCreatedConnectionAsync(ValueTask`1 creationTask)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.SendWithRetryAsync(HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncBuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at eSyaEssentials_UI.HttpClientServices.GetAsync[T](String url)
+   at eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.BedMasterController.GetAllBedMastersbyRoomType(Int32 roomtype) in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNatureCure\Controllers\BedMasterController.cs:line 78|url: http://localhost/BedMaster/GetAllBedMastersbyRoomType|action: GetAllBedMastersbyRoomType

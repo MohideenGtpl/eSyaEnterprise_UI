@@ -1,0 +1,369 @@
+﻿
+@{
+    ViewData["Title"] = "Facility Stay Form";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/css/material.min.css" rel="stylesheet" /> 
+<link href="~/css/eSyaNursingStation/patientClinicalInformation.css" rel="stylesheet" />
+@section scripts{
+    
+    <script src="~/js/eSyaNursingStation/facilitystay.js"></script>
+    <script src="~/js/material.min.js"></script>
+
+}
+
+
+
+<style>
+    .lblCheck{
+        display:flex;align-items:center;
+    }
+    label span{
+        padding-left:5px;
+    }
+    /*.ui-jqgrid .ui-jqgrid-bdiv {
+        overflow-x: auto;
+    }*/
+    
+    .ui-jqgrid .ui-jqgrid-bdiv {
+        /*position: relative;
+        margin: 0;
+        padding: 0;*/
+        overflow: auto;
+        text-align: left;
+    }
+
+    .ui-state-default ui-th-column-header ui-th-ltr {
+        background: #555 !important;
+        color: bisque !important;
+    }
+
+    .ui-jqgrid .ui-jqgrid-htable th {
+        background: #555 !important;
+        color: gold !important;
+    }
+
+    .jqg-first-row-header {
+        visibility: collapse !important;
+    }
+</style>
+
+
+<input type="hidden" id="hdIPNumber" value="0" />
+<input type="hidden" id="hdUHID" value="800" />
+<input type="hidden" id="hdTransactionID" value="0" />
+
+<div class="divFixedBar">
+    <div class="row mr-0">
+        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-xs-12 d-flex align-items-center">
+            
+            <div>
+                <p><span class="labelname"><i class="fas fa-chevron-right c-lightgrey"></i> Patient Name</span><span id="lblPatientName"></span></p>
+                <p><span class="labelname"><i class="fas fa-chevron-right c-lightgrey"></i> Gender:</span><span id="lblGender"></span>&nbsp;&nbsp;<span class="labelname"> Age:</span><span id="lblAge"></span></p>
+            </div>
+        </div>
+        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-xs-12 d-flex align-items-center">
+            
+            <div>
+                <p><span class="labelname"><i class="fas fa-chevron-right c-lightgrey"></i> Doctor Name:</span><span id="lblConsultantName"></span></p>
+                <p><span class="labelname"><i class="fas fa-chevron-right c-lightgrey"></i> Patient ID:</span> <span id="lblRoomType"></span>&nbsp;<span class="labelname"> BMI:</span><span id="lblBedNumber"></span></p>
+
+            </div>
+        </div>
+        
+        <div id="floatButtons" class="col-xl-4 col-lg-12 text-right p-0">
+            <button class="mdl-button" id="btnBackNS" onclick="fnBackToNSGrid()"><i class="fas fa-chevron-left"></i> <span class="btntext">Back</span></button>
+            <button class="mdl-button" id="btnSaveFacilityStay" onclick="fnSaveFacilityStay()"><i class="far fa-save c-green"></i> <span class="btntext">Save</span></button>
+        </div>
+    </div>
+</div>
+
+<div class="row" style="margin-right: 0px !important;">
+    <div class="col-lg-3 col-md-3 col-sm-3 sidebar" id="navbar-preoperative">
+        <div class="sidebar-sticky">
+            <ul class="nav flex-column" id="nav_menu">
+                <li><a href="#" id="v-fs-tab" data-bs-toggle="pill" data-bs-target="#v-fs" class="nav-link active" role="tab" aria-controls="v-fs" aria-selected="true">Facility Stay</a></li>
+               </ul>
+        </div>
+    </div>
+    <div class="" id="mainContent">
+        <div class="tab-content" id="v-pills-tabContent">
+
+            <div class="tab-pane fade show active" id="v-fs" role="tabpanel" aria-labelledby="v-po-tab">
+                <div class="row">
+                    <div class="col-12 p-0">
+                        <h6 class="main-heading"><i class="fa fa-bars mr-10"></i>Facility Stay</h6>
+                    </div>
+                </div>
+                <div class="row mr-0" style="margin-right:0px;">
+                    <div class="col-lg-12 col-md-12 col-sm-12 mb-2 divNursingCarePlan">
+                        <div id="dvFacilityStayTemplate"></div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 mb-2 divNursingCarePlan">
+                        <div id="dvFacilityStayDetailsTemplate"></div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade in" id="PopupMedications" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Medications</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row" hidden>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input class="form-control datepicker" type="text" maxlength="8" id="dpMedicationsDate" />
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Time</label>
+                            <input class="form-control timepicker" type="time" maxlength="8" id="tpMedicationsTime" />
+                        </div>
+                    </div>
+                </div>
+                <div id="dvMedications"></div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button"
+                                id="btnMedications" onclick="saveMedications()">
+                            <i class="fa fa-save"></i> Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal"><i class="fa fa-times"></i> Cancel </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade in" id="PopupInvestigations" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Investigations</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row" hidden>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input class="form-control datepicker" type="text" maxlength="8" id="dpInvestigationsDate" />
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Time</label>
+                            <input class="form-control timepicker" type="time" maxlength="8" id="tpInvestigationsTime" />
+                        </div>
+                    </div>
+                </div>
+                <div id="dvInvestigations"></div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button"
+                                id="btnInvestigations" onclick="saveInvestigations()">
+                            <i class="fa fa-save"></i> Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal"><i class="fa fa-times"></i> Cancel </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade in" id="PopupInterventions" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Interventions</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row" hidden>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input class="form-control datepicker" type="text" maxlength="8" id="dpInterventionsDate" />
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Time</label>
+                            <input class="form-control timepicker" type="time" maxlength="8" id="tpInterventionsTime" />
+                        </div>
+                    </div>
+                </div>
+                <div id="dvInterventions"></div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button"
+                                id="btnInterventions" onclick="saveInterventions()">
+                            <i class="fa fa-save"></i> Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal"><i class="fa fa-times"></i> Cancel </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade in" id="PopupProgressNotes" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Progress Notes</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row" hidden>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input class="form-control datepicker" type="text" maxlength="8" id="dpProgressNotesDate" />
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Time</label>
+                            <input class="form-control timepicker" type="time" maxlength="8" id="tpProgressNotesTime" />
+                        </div>
+                    </div>
+                </div>
+                <div id="dvProgressNotes"></div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button"
+                                id="btnProgressNotes" onclick="saveProgressNotes()">
+                            <i class="fa fa-save"></i> Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal"><i class="fa fa-times"></i> Cancel </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade in" id="PopupStaples" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Staples</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row" hidden>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input class="form-control datepicker" type="text" maxlength="8" id="dpStaplesDate" />
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Time</label>
+                            <input class="form-control timepicker" type="time" maxlength="8" id="tpStaplesTime" />
+                        </div>
+                    </div>
+                </div>
+                <div id="dvStaples"></div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button"
+                                id="btnStaples" onclick="saveStaples()">
+                            <i class="fa fa-save"></i> Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal"><i class="fa fa-times"></i> Cancel </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade in" id="PopupConsultations" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Consultations</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row" hidden>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input class="form-control datepicker" type="text" maxlength="8" id="dpConsultationsDate" />
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Time</label>
+                            <input class="form-control timepicker" type="time" maxlength="8" id="tpConsultationsTime" />
+                        </div>
+                    </div>
+                </div>
+                <div id="dvConsultations"></div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button"
+                                id="btnConsultations" onclick="saveConsultations()">
+                            <i class="fa fa-save"></i> Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal"><i class="fa fa-times"></i> Cancel </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
+
+    <script>
+
+        $(".nav li a").click(function () {
+            $(".nav li a").removeClass("active");
+            $(this).addClass("active");
+            $('.tab-pane').removeClass('show active');
+            var v = $(this).attr('data-bs-target');
+            //console.log(v);
+            $(v).addClass('show active');
+        });
+
+        $(document).ready(function () {
+
+        });
+
+        function fnBackToNSGrid() {
+            window.location.href = getBaseURL() + "/eSyaNursingStation/OperativeAnaesthesiaCare/V_6004_00";
+        }
+
+    </script>

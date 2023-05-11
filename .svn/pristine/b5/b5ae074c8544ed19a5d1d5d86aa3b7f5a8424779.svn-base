@@ -1,0 +1,115 @@
+﻿
+$(document).ready(function () {
+    fnLoadCultureKeysGrid();
+});
+
+function fnLoadCultureKeysGrid() {
+
+    var culture = $("#cboCulture").val();
+  
+
+    $("#jqgCulturekeys").GridUnload();
+
+    if (!IsStringNullorEmpty(culture)) {
+
+        $("#jqgCulturekeys").jqGrid({
+            url: getBaseURL() + '/Localization/GetDistinictCultureKeys?Culture=' + culture,
+            datatype: "json",
+            contenttype: "application/json; charset-utf-8",
+            mtype: 'POST',
+            colNames: ["Key", "Value",  "Culture Value"],
+            colModel: [
+                { name: "Key", width: 100, editable: false, editoptions: { disabled: true }, align: 'left', edittype: 'text' },
+                { name: "Value", width: 100, editable: false, editoptions: { disabled: true }, align: 'left', edittype: 'text' },
+                { name: "CultureValue", width: 100, editable: true, align: 'left', edittype: 'text' }
+            ], 
+            rowNum: 100,
+            pager: "#jqpCulturekeys",
+            pgtext: null,
+            pgbuttons: null,
+            viewrecords: false,
+            gridview: true,
+            rownumbers: true,
+            height: 'auto',
+            width: 'auto',
+            autowidth: true,
+            shrinkToFit: false,
+            forceFit: false,
+            loadonce: true,
+            cellEdit: true,
+            editurl: 'url',
+            cellsubmit: 'clientArray',
+            onSelectRow: function (id) {
+                if (id) { $('#jqgCulturekeys').jqGrid('editRow', id, true); }
+            },
+            ondblClickRow: function (rowid) {
+            },
+            loadComplete: function (data) {
+                $(this).find(">tbody>tr.jqgrow:odd").addClass("myAltRowClassEven");
+                $(this).find(">tbody>tr.jqgrow:even").addClass("myAltRowClassOdd");
+                $("#jqgCulturekeys").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+                SetGridControlByAction();
+            }
+        }).jqGrid('navGrid', '#jqpCulturekeys', { add: false, edit: false, search: false, del: false, refresh: false });
+    }
+}
+
+function fnSaveCultureKeys() {
+    debugger;
+    if (IsStringNullorEmpty($("#cboCulture").val())) {
+        toastr.warning("please select Culture");
+        return ;
+    }
+
+    var $grid = $("#jqgCulturekeys");
+    var cul_keys = [];
+    var ids = jQuery("#jqgCulturekeys").jqGrid('getDataIDs');
+    for (var i = 0; i < ids.length; i++) {
+        var rowId = ids[i];
+        var rowData = jQuery('#jqgCulturekeys').jqGrid('getRowData', rowId);
+
+        if (!IsStringNullorEmpty(rowData.CultureValue)) {
+            cul_keys.push({
+                Culture: $("#cboCulture").val(),
+                Key: rowData.Key,
+                CultureValue: rowData.CultureValue
+            });
+        }
+    }
+
+    $("#btnSave").attr("disabled", true);
+    $.ajax({
+        url: getBaseURL() + '/Localization/InsertOrUpdateCultureKeys',
+        type: 'POST',
+        datatype: 'json',
+        data: { obj: cul_keys },
+        async: false,
+        success: function (response) {
+            if (response.Status === true) {
+                toastr.success("saved");
+                $("#jqgCulturekeys").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+            }
+            else {
+                toastr.error(response.Message);
+            }
+            $("#btnSave").attr("disabled", false);
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnSave").attr("disabled", false);
+        }
+    });
+
+}
+
+
+$(document).on('focusout', '[role="gridcell"] *', function () {
+    $("#jqgCulturekeys").jqGrid('editCell', 0, 0, false);
+});
+
+function SetGridControlByAction() {
+    $("#btnSave").attr("disabled", false);
+    if (_userFormRole.IsEdit === false) {
+        $("#btnSave").attr("disabled", true);
+    }
+}

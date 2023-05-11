@@ -1,0 +1,167 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.Areas.Config.Models;
+using eSyaEnterprise_UI.Areas.eSyaCustomer.Data;
+using eSyaEnterprise_UI.Areas.eSyaCustomer.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Mvc;
+
+namespace eSyaEnterprise_UI.Areas.eSyaCustomer.Controllers
+{
+    public class CustomerCodesController : Controller
+    {
+        private readonly IeSyaCustomerAPIServices _eSyaCustomerAPIServices;
+        public CustomerCodesController(IeSyaCustomerAPIServices eSyaCustomerAPIServices)
+        {
+            _eSyaCustomerAPIServices = eSyaCustomerAPIServices;
+        }
+
+        [Area("eSyaCustomer")]
+        public IActionResult Create()
+        {
+            ViewBag.formName = "Customer Codes";
+
+            try
+            {
+                var serviceResponse = _eSyaCustomerAPIServices.HttpClientServices.GetAsync<List<DO_CountryCodes>>("CommonData/GetISDCodes").Result;
+                ViewBag.isd_co = serviceResponse.Data;
+                return View();
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+
+        /// <summary>
+        ///Get Customer Code Information By Customer Name Prefix
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetCustomerCodeInformationByNamePrefix(string customerNamePrefix)
+        {
+            try
+            {
+                var serviceResponse = _eSyaCustomerAPIServices.HttpClientServices.GetAsync<List<DO_CustomerCodes>>("CustomerMaster/GetCustomerCodeInformationByNamePrefix?customerNamePrefix=" + customerNamePrefix).Result;
+                return Json(serviceResponse.Data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        ///Get Customer Contact By Customer Id
+        /// </summary>
+        //[HttpPost]
+        public JsonResult GetCustomerContactInformationByCustomerId(int customerId)
+        {
+            try
+            {
+                var serviceResponse = _eSyaCustomerAPIServices.HttpClientServices.GetAsync<List<DO_CustomerContact>>("CustomerMaster/GetCustomerContactInformationByCustomerId?customerId=" + customerId).Result;
+                return Json(serviceResponse.Data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        [Area("eSyaCustomer")]
+        public IActionResult _CustomerDetails()
+        {
+            ViewBag.formName = "Customer Codes";
+            return View();
+        }
+
+        /// <summary>
+        /// Insert Into Customer Codes
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertIntoCustomerCode(DO_CustomerCodes cs_cc)
+        {
+            try
+            {
+                cs_cc.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                cs_cc.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                cs_cc.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext).ToString();
+
+                var serviceResponse = _eSyaCustomerAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("CustomerMaster/InsertIntoCustomerCode", cs_cc).Result;
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        /// <summary>
+        /// Update Customer Codes
+        /// </summary>
+        [HttpPost]
+        public JsonResult UpdateCustomerCode(DO_CustomerCodes cs_cc)
+        {
+            try
+            {
+                cs_cc.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                cs_cc.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                cs_cc.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext).ToString();
+
+                var serviceResponse = _eSyaCustomerAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("CustomerMaster/UpdateCustomerCode", cs_cc).Result;
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        [Area("eSyaCustomer")]
+        public IActionResult _CustomerContact()
+        {
+            ViewBag.formName = "Customer Codes";
+            return View();
+        }
+
+        [Area("eSyaCustomer")]
+        public IActionResult _BusinessLink()
+        {
+            ViewBag.formName = "Customer Codes";
+            return View();
+        }
+        [Area("eSyaCustomer")]
+        public IActionResult _StatutoryDetails()
+        {
+            ViewBag.formName = "Customer Codes";
+            return View();
+        }
+
+        [Area("eSyaCustomer")]
+        public IActionResult _BankDetails()
+        {
+            ViewBag.formName = "Customer Codes";
+            return View();
+        }
+        [Area("eSyaCustomer")]
+        public IActionResult _ItemLink()
+        {
+            ViewBag.formName = "Customer Codes";
+            return View();
+        }
+        [Area("eSyaCustomer")]
+        public IActionResult _PartNumber()
+        {
+            ViewBag.formName = "Customer Codes";
+            return View();
+        }
+    }
+}

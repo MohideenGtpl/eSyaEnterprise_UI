@@ -1,0 +1,248 @@
+﻿var ServiceClassID = "0"
+var ServiceGroupID = "0"
+var ClassParentID = "0"
+var flag = "f"
+$(document).ready(function () {
+    fnLoadServiceClassTree()
+    $('#chkActiveStatus').parent().addClass("is-checked");
+    $("#btnSCAdd").attr("disabled", _userFormRole.IsInsert === false);
+});
+function fnLoadServiceClassTree() {
+    $.ajax({
+        url: getBaseURL() + '/ServiceManagement/GetServiceClasses',
+        type: 'GET',
+        datatype: 'json',
+        contentType: 'application/json; charset=utf-8',
+        async: false,
+        success: function (result) {
+            $("#ServiceClassTree").jstree({ core: { data: result, multiple: false } });
+        },
+        error: function (error) {
+            alert(error.statusText)
+        }
+    });
+    $('#ServiceClassTree').on("changed.jstree", function (e, data) {
+        ClassParentID = "0";
+        if (data.node != undefined) {
+            var parentNode = $("#ServiceClassTree").jstree(true).get_parent(data.node.id);
+            $('#Edit').remove();
+            // If Service Type node is selected
+            if (parentNode == '#') {
+                
+            }
+            // If Service Group node is selected
+            else if (parentNode.startsWith('T')) {
+                $("#pnlAddServiceClass .mdl-card__title-text").text("Add Service Class");
+                $("#txtServiceClassDesc").val('');
+                $('#chkActiveStatus').parent().addClass("is-checked");
+                $("#btnSCAdd").html("<i class='fa fa-plus'></i> Save");
+                $("#btnSCAdd").attr("disabled", _userFormRole.IsInsert === false);
+                $("#dvServiceClass").show();
+                ServiceClassID = "0";
+                ServiceGroupID = data.node.id;
+                eSyaParams.ClearValue();
+
+            }
+            // If Service Class node is selected
+            else
+            {
+                if (parentNode.startsWith('C')) {
+                    $("#pnlAddServiceClass .mdl-card__title-text").text("Edit Service Class");
+                    $("#btnSCAdd").html("<i class='fa fa-sync'></i> Update");
+                    $("#btnSCAdd").attr("disabled", _userFormRole.IsEdit === false);
+                    $("#dvServiceClass").show();
+                    ServiceClassID = data.node.id;
+                    ServiceClassID = ServiceClassID.substring(1);
+                    ServiceGroupID = $("#ServiceClassTree").jstree(true).get_parent(parentNode);
+                    fnFillServiceClassDetail(ServiceClassID);
+                    flag = "f";
+                }
+                else {
+                    if (flag == "f" + data.node.id)
+                    {
+                        $("#pnlAddServiceClass .mdl-card__title-text").text("Edit Service Class");
+                        $("#btnSCAdd").html("<i class='fa fa-sync'></i> Update");
+                        $("#btnSCAdd").attr("disabled", _userFormRole.IsEdit === false);
+                        $("#dvServiceClass").show();
+                        ServiceClassID = data.node.id;
+                        ServiceClassID = ServiceClassID.substring(1);
+                        ServiceGroupID = parentNode;
+                        fnFillServiceClassDetail(ServiceClassID);
+                        flag = "f";
+                    }
+                    else
+                    {
+                        $("#pnlAddServiceClass .mdl-card__title-text").text("Add Service Class");
+                        $("#txtServiceClassDesc").val('');
+                        $('#chkActiveStatus').parent().addClass("is-checked");
+                        $("#btnSCAdd").html("<i class='fa fa-plus'></i> Save");
+                        $("#btnSCAdd").attr("disabled", _userFormRole.IsInsert === false);
+                        $("#dvServiceClass").show();
+                        ServiceClassID = "0";
+                        ServiceGroupID = parentNode;
+                        eSyaParams.ClearValue();
+                        ClassParentID = data.node.id.substring(1);
+                        flag = "f" + data.node.id;
+                        $('#' + data.node.id + "_anchor").html($('#' + data.node.id + "_anchor").html() + '<span id="Edit">&nbsp;<i class="fa fa-pen" style="color:#337ab7"aria-hidden="true"></i></span>')
+                
+
+                    }
+                }
+                
+                
+
+            }
+
+        }
+    });
+}
+function fnFillServiceClassDetail(ServiceClassID) {
+    $.ajax({
+        url: getBaseURL() + '/ServiceManagement/GetServiceClassByID',
+        data: {
+            ServiceClassID: ServiceClassID
+        },
+        success: function (result) {
+            $("#txtServiceClassDesc").val(result.ServiceClassDesc);
+            if (result.ActiveStatus == true)
+                $('#chkActiveStatus').parent().addClass("is-checked");
+            else
+                $('#chkActiveStatus').parent().removeClass("is-checked");
+            eSyaParams.ClearValue();
+            eSyaParams.SetJSONValue(result.l_ClassParameter);
+        }
+    });
+
+}
+function fnAddOrUpdateServiceClass() {
+
+    var txtServiceClassDesc = $("#txtServiceClassDesc").val()
+    if (txtServiceClassDesc == "" || txtServiceClassDesc == null || txtServiceClassDesc == undefined) {
+        toastr.error("Please enter the Service Class Description");
+        return false;
+    }
+
+    else {
+       
+        if (ServiceGroupID == "0") {
+            if (ServiceClassID == "0" || ServiceClassID == null || ServiceClassID == undefined) {
+                toastr.error("Please select Service Group or Service Class");
+                return false;
+            }
+        }
+        $("#btnSCAdd").attr("disabled", true);
+        var cPar = eSyaParams.GetJSONValue();
+        var obj = {
+            ServiceGroupID: ServiceGroupID,
+            ServiceClassID: ServiceClassID,
+            ServiceClassDesc: $("#txtServiceClassDesc").val(),
+            ParentID: ClassParentID,
+            ActiveStatus: $("#chkActiveStatus").parent().hasClass("is-checked"),
+            l_ClassParameter: cPar
+        }
+        $.ajax({
+            url: getBaseURL() + '/ServiceManagement/AddOrUpdateServiceClass',
+            type: 'POST',
+            datatype: 'json',
+            data: {
+                obj
+            },
+            async: false,
+            success: function (response) {
+                if (response.Status == true) {
+                    if (ServiceClassID == 0) {
+                        toastr.success("Service Class Added");
+                        $("#txtServiceClassDesc").val('');
+                        $('#chkActiveStatus').parent().addClass("is-checked");
+                        ServiceGroupID = "0";
+                        eSyaParams.ClearValue();
+                        flag = "f";
+                    }
+                    else {
+                        toastr.success("Service Class Updated");
+                    }
+                    $("#ServiceClassTree").jstree("destroy");
+                    fnLoadServiceClassTree();
+
+                }
+                else {
+                    toastr.error(response.Message);
+                }
+                $("#btnSCAdd").attr("disabled", false);
+            },
+            error: function (error) {
+                toastr.error(error.statusText);
+                $("#btnSCAdd").attr("disabled", false);
+            }
+        });
+    }
+}
+function fnExpandAll() {
+    $("#ServiceClassTree").jstree('open_all');
+}
+function fnCollapseAll() {
+    $("#ServiceClassTree").jstree('close_all');
+}
+
+function fnMoveItemUpDown(updown) {
+    var isMoveUp = false, isMoveDown = false;
+    var str;
+    if (updown === "U") {
+        isMoveUp = true;
+        str = ' up';
+    }
+    else if (updown === "D") {
+        isMoveDown = true;
+        str = ' down';
+    }
+    var selectedNode = $('#ServiceClassTree').jstree().get_selected(true);
+
+    if (selectedNode.length != 1) {
+        toastr.warning('Please select a Service Class to move.');
+    }
+    else {
+
+        selectedNode = selectedNode[0];
+
+        if (!selectedNode.id.startsWith("C")) {
+            toastr.warning('Please select a Service Class to move.');
+        }
+        else {
+            var data = {};
+            data.isMoveUp = isMoveUp;
+            data.isMoveDown = isMoveDown;
+            data.serviceGroupId = ServiceGroupID;
+            data.ServiceClassId = selectedNode.id.substring(1);
+
+            $("#btnMoveUp").attr("disabled", true);
+            $("#btnMoveDown").attr("disabled", true);
+            if (confirm('Do you want to move node ' + selectedNode.text + str + ' ?')) {
+
+                $.ajax({
+                    url: getBaseURL() + '/ServiceManagement/UpdateServiceClassIndex',
+                    type: 'POST',
+                    datatype: 'json',
+                    data: data,
+                    async: false,
+                    success: function (response) {
+                        if (response.Status === true) {
+                            toastr.success("Moved");
+                            $("#ServiceClassTree").jstree("destroy");
+                            fnLoadServiceClassTree();
+                        }
+                        else {
+                            toastr.error(response.Message);
+                        }
+                        $("#btnMoveUp").attr("disabled", false);
+                        $("#btnMoveDown").attr("disabled", false);
+                    },
+                    error: function (error) {
+                        toastr.error(error.statusText);
+                        $("#btnMoveUp").attr("disabled", false);
+                        $("#btnMoveDown").attr("disabled", false);
+                    }
+                });
+            }
+        }
+    }
+}

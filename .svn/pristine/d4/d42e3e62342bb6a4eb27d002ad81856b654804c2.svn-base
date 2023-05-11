@@ -1,0 +1,26 @@
+//{
+//  "Logging": {
+//    "LogLevel": {
+//      "Default": "Debug",
+//      "System": "Information",
+//      "Microsoft": "Information"
+//    }
+//  },
+//  "eSyaUserMgmt_API": "https://localhost:8090/api/"
+//}
+
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Debug",
+      "System": "Information",
+      "Microsoft": "Information"
+    }
+  },
+  //"eSyaUserMgmt_API": "http://localhost:52457/API/",
+  // "eSyaConfig_API": "http://localhost:56328/API/"
+  //"eSyaVendor_API": "http://localhost:59936/API/"
+  //"eSyaCustomer_API": "http://localhost:49812/API/"
+  // "eSyaMCSevices_API": "http://localhost:57312/API/"
+  "eSyaOutSourcedVendor_API": "http://localhost:44370/API/"
+}

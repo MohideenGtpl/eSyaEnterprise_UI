@@ -1,0 +1,603 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.ActionFilter;
+using Microsoft.AspNetCore.Mvc;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using eSyaEnterprise_UI.Areas.eSyaPharma.Data;
+using eSyaEnterprise_UI.Areas.eSyaPharma.Models;
+
+namespace eSyaEnterprise_UI.Areas.eSyaPharma.Controllers
+{
+    [SessionTimeout]
+    public class DrugInventoryController : Controller
+    {
+        private readonly IeSyaPharmaAPIServices _eSyaPharmaAPIServices;
+        private readonly ILogger<DrugInventoryController> _logger;
+
+        public DrugInventoryController(IeSyaPharmaAPIServices eSyaPharmaAPIServices, ILogger<DrugInventoryController> logger)
+        {
+            _eSyaPharmaAPIServices = eSyaPharmaAPIServices;
+            _logger = logger;
+        }
+        
+        #region Drug Business Link
+        [Area("eSyaPharma")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public async Task<IActionResult> V_9010_00()
+        {
+            try
+            {
+                ///Getting Business Key
+                var Bk_response = await _eSyaPharmaAPIServices.HttpClientServices.GetAsync<List<DO_BusinessLocation>>("CommonData/GetBusinessKey");
+
+                if (Bk_response.Status)
+                {
+                    if (Bk_response.Data != null)
+                    {
+                        ViewBag.BusinessKeyList = Bk_response.Data.Select(b => new SelectListItem
+                        {
+                            Value = b.BusinessKey.ToString(),
+                            Text = b.LocationDescription.ToString(),
+                        }).ToList();
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(Bk_response.Message), "UD:BusinessSubscription");
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(Bk_response.Message), "UD:BusinessSubscription");
+                }
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:BusinessSubscription");
+                throw ex;
+            }
+        }
+
+        [Produces("application/json")]
+        [HttpGet]
+        public async Task<JsonResult> GetGenericDrugList(int businessKey)
+        {
+            try
+            {
+                List<jsTreeObject> GenericDrugTree = new List<jsTreeObject>();
+
+                jsTreeObject jsObj = new jsTreeObject
+                {
+                    id = "GS0",
+                    parent = "#",
+                    text = "Generics",
+                    icon = "/images/jsTree/foldergroupicon.png",
+                    state = new stateObject { opened = true, selected = false }//, checkbox_disabled = true, disabled = true
+                };
+                GenericDrugTree.Add(jsObj);
+
+                var clinicResponse = await _eSyaPharmaAPIServices.HttpClientServices.GetAsync<List<DO_DrugBusinessLink>>("DrugBrand/GetGenericDrugList?businessKey=" + businessKey);
+                if (clinicResponse.Status)
+                {
+                    if (clinicResponse.Data != null)
+                    {
+                        List<DO_DrugBusinessLink> clinic_list = clinicResponse.Data.Select(x => new DO_DrugBusinessLink { GenericID = x.GenericID, GenericDesc = x.GenericDesc }).GroupBy(y => y.GenericID, (key, grp) => grp.FirstOrDefault()).ToList();
+                        foreach (DO_DrugBusinessLink cl in clinic_list)
+                        {
+                            jsObj = new jsTreeObject
+                            {
+                                id = cl.GenericID.ToString(),
+                                text = cl.GenericDesc.ToString(),
+                                icon = "/images/jsTree/openfolder.png",
+                                parent = "GS0",
+                                state = new stateObject { opened = true, selected = false },//, checkbox_disabled = true, disabled = true
+                            };
+                            GenericDrugTree.Add(jsObj);
+                        }
+
+                        var conusltant_list = clinicResponse.Data;
+                        foreach (var co in conusltant_list.Where(w => conusltant_list.Any(f => f.GenericID == w.GenericID)))
+                        {
+                            jsObj = new jsTreeObject
+                            {
+                                text = co.DrugBrand,
+                                parent = co.GenericID.ToString()
+                            };
+                            if (co.BusinessKey > 0)
+                            {
+                                jsObj.id = co.DrugCode.ToString() + "_" + "Y" + "_" + co.DrugBrand;
+                                jsObj.icon = "/images/jsTree/fileIcon.png";
+                                //jsObj.icon = "/images/jsTree/checkedstate.jpg";
+                                if (co.ActiveStatus)
+                                    jsObj.state = new stateObject { opened = true, selected = true, Checked = true };
+                                else
+                                    jsObj.state = new stateObject { opened = true, selected = false, Checked = false };
+                            }
+                            else
+                            {
+                                jsObj.id = co.DrugCode.ToString() + "_" + "N" + "_" + co.DrugBrand;
+                                jsObj.icon = "/images/jsTree/fileIcon.png";
+                                jsObj.state = new stateObject { opened = true, selected = false, Checked = false };
+                            }
+
+                            GenericDrugTree.Add(jsObj);
+                        }
+                    }
+
+                    return Json(GenericDrugTree);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(clinicResponse.Message), "UD:GetClinicConsultantTreeList");
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Insert / Update Drug Business Link
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> InsertUpdateDrugBusinessLink(List<DO_DrugBusinessLink> dr_bl)
+        {
+            try
+            {
+                dr_bl.All(c =>
+                {
+                    c.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                    c.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                    c.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                    return true;
+                });
+
+                var Insertresponse = await _eSyaPharmaAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("DrugBrand/InsertUpdateDrugBusinessLink", dr_bl);
+                if (Insertresponse.Status)
+                    return Json(Insertresponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(Insertresponse.Message), "UD:InsertUpdateDrugBusinessLink:params:" + JsonConvert.SerializeObject(dr_bl));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = Insertresponse.Message });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertUpdateDrugBusinessLink:params:" + JsonConvert.SerializeObject(dr_bl));
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+        #endregion
+
+        #region Drug Re-order Level
+        [Area("eSyaPharma")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public async Task<IActionResult> V_9011_00()
+        {
+            try
+            {
+                var bk_serviceResponse = await _eSyaPharmaAPIServices.HttpClientServices.GetAsync<List<DO_BusinessLocation>>("CommonData/GetBusinessKey");
+
+                if (bk_serviceResponse.Status)
+                {
+                    if (bk_serviceResponse.Data != null)
+                    {
+                        ViewBag.BusinessKeyList = bk_serviceResponse.Data.Select(b => new SelectListItem
+                        {
+                            Value = b.BusinessKey.ToString(),
+                            Text = b.LocationDescription.ToString(),
+                        }).ToList();
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(bk_serviceResponse.Message), "UD:DrugReorderLevel");
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(bk_serviceResponse.Message), "UD:DrugReorderLevel");
+                }
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:DrugReorderLevel");
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        ///Get Store List by Business Key
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetStoreListByBusinessKey(int BusinessKey)
+        {
+            try
+            {
+                var parameter = "?BusinessKey=" + BusinessKey;
+                var serviceResponse = await _eSyaPharmaAPIServices.HttpClientServices.GetAsync<List<DO_StoreMaster>>("CommonData/GetStoreListByBusinessKey" + parameter);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetStoreListByBusinessKey:For BusinessKey {0}", BusinessKey);
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetStoreListByBusinessKey:For BusinessKey {0}", BusinessKey);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetStoreListByBusinessKey:For BusinessKey {0}", BusinessKey);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        ///Get Item Reorder Level
+        /// </summary>
+        [HttpGet]
+        public async Task<JsonResult> GetDrugReorderLevel(int BusinessKey, int StoreCode)
+        {
+            try
+            {
+                var parameter = "?BusinessKey=" + BusinessKey + "&StoreCode=" + StoreCode;
+                var serviceResponse = await _eSyaPharmaAPIServices.HttpClientServices.GetAsync<List<DO_DrugReorderLevel>>("DrugBrand/GetDrugReorderLevel" + parameter);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetDrugReorderLevel:For BusinessKey {0} and with StoreCode {1}", BusinessKey, StoreCode);
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetDrugReorderLevel:For BusinessKey {0} and with StoreCode {1}", BusinessKey, StoreCode);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetDrugReorderLevel:For BusinessKey {0} and with StoreCode {1}", BusinessKey, StoreCode);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Insert Into Item Reorder Level
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> InsertOrUpdateDrugReorderLevel(List<DO_DrugReorderLevel> bu_bd)
+        {
+            try
+            {
+                bu_bd.All(c =>
+                {
+                    c.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                    c.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                    c.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext).ToString();
+                    return true;
+                });
+
+                foreach (var sd in bu_bd.Where(w => !String.IsNullOrEmpty(w.DrugBrand)))
+                {
+                    if (sd.BusinessKey == 0 || string.IsNullOrEmpty(sd.BusinessKey.ToString()))
+                    {
+                        return Json(new DO_ReturnParameter() { Status = false, Message = "Please Select Business Location" });
+                    }
+                    else if (sd.StoreCode == 0 || string.IsNullOrEmpty(sd.StoreCode.ToString()))
+                    {
+                        return Json(new DO_ReturnParameter() { Status = false, Message = "Please Select Store" });
+                    }
+                    else if (sd.SafetyStockLevel != 0 && sd.MinimumStockLevel != 0 && sd.MaximumStockLevel != 0 && sd.ReorderLevel != 0)
+                    {
+                        if (sd.SafetyStockLevel > sd.MinimumStockLevel)
+                        {
+                            return Json(new DO_ReturnParameter() { Status = false, Message = "Safety Stock Should Not Be Greater Than Minimum Stock for " + sd.DrugBrand });
+                        }
+                        else if (sd.MinimumStockLevel > sd.ReorderLevel)
+                        {
+                            return Json(new DO_ReturnParameter() { Status = false, Message = "Minimum Stock Should Not Be Greater Than ROL Stock for " + sd.DrugBrand });
+                        }
+                        else if (sd.ReorderLevel > sd.MaximumStockLevel)
+                        {
+                            return Json(new DO_ReturnParameter() { Status = false, Message = "Reorder Level Stock Should Not Be Greater Than Maximum Stock for " + sd.DrugBrand });
+                        }
+                    }
+                }
+
+                var serviceResponse = await _eSyaPharmaAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("DrugBrand/InsertOrUpdateDrugReorderLevel", bu_bd);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:InsertOrUpdateDrugReorderLevel:params:" + JsonConvert.SerializeObject(bu_bd));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertOrUpdateDrugReorderLevel:params:" + JsonConvert.SerializeObject(bu_bd));
+                throw ex;
+            }
+        }
+        #endregion
+
+        #region Drug Bin Info
+        [Area("eSyaPharma")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public async Task<IActionResult> V_9012_00()
+        {
+            try
+            {
+                var bk_serviceResponse = await _eSyaPharmaAPIServices.HttpClientServices.GetAsync<List<DO_BusinessLocation>>("CommonData/GetBusinessKey");
+
+                if (bk_serviceResponse.Status)
+                {
+                    if (bk_serviceResponse.Data != null)
+                    {
+                        ViewBag.BusinessKeyList = bk_serviceResponse.Data.Select(b => new SelectListItem
+                        {
+                            Value = b.BusinessKey.ToString(),
+                            Text = b.LocationDescription.ToString(),
+                        }).ToList();
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(bk_serviceResponse.Message), "UD:DrugBinInfo");
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(bk_serviceResponse.Message), "UD:DrugBinInfo");
+                }
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:DrugBinInfo");
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        ///Get Item Reorder Level
+        /// </summary>
+        [HttpGet]
+        public async Task<JsonResult> GetDrugBinInfo(int BusinessKey, int StoreCode)
+        {
+            try
+            {
+                var parameter = "?BusinessKey=" + BusinessKey + "&StoreCode=" + StoreCode;
+                var serviceResponse = await _eSyaPharmaAPIServices.HttpClientServices.GetAsync<List<DO_DrugBinInfo>>("DrugBrand/GetDrugBinInfo" + parameter);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetDrugBinInfo:For BusinessKey {0} and with StoreCode {1}", BusinessKey, StoreCode);
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetDrugBinInfo:For BusinessKey {0} and with StoreCode {1}", BusinessKey, StoreCode);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetDrugBinInfo:For BusinessKey {0} and with StoreCode {1}", BusinessKey, StoreCode);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Insert Into Item Reorder Level
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> InsertOrUpdateDrugBinInfo(List<DO_DrugBinInfo> dr_bi)
+        {
+            try
+            {
+                dr_bi.All(c =>
+                {
+                    c.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                    c.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                    c.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext).ToString();
+                    return true;
+                });
+
+                foreach (var sd in dr_bi.Where(w => !String.IsNullOrEmpty(w.BinInfo)))
+                {
+                    if (sd.BusinessKey == 0 || string.IsNullOrEmpty(sd.BusinessKey.ToString()))
+                    {
+                        return Json(new DO_ReturnParameter() { Status = false, Message = "Please Select Business Location" });
+                    }
+                    else if (sd.StoreCode == 0 || string.IsNullOrEmpty(sd.StoreCode.ToString()))
+                    {
+                        return Json(new DO_ReturnParameter() { Status = false, Message = "Please Select Store" });
+                    }
+                }
+
+                var serviceResponse = await _eSyaPharmaAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("DrugBrand/InsertOrUpdateDrugBinInfo", dr_bi);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:InsertOrUpdateDrugBinInfo:params:" + JsonConvert.SerializeObject(dr_bi));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertOrUpdateDrugBinInfo:params:" + JsonConvert.SerializeObject(dr_bi));
+                throw ex;
+            }
+        }
+        #endregion
+
+        #region Vendor Drug Link
+        [Area("eSyaPharma")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public async Task<IActionResult> V_9013_00()
+        {
+            try
+            {
+                var bk_serviceResponse = await _eSyaPharmaAPIServices.HttpClientServices.GetAsync<List<DO_DrugVendorLink>>("CommonData/GetVendorList");
+                var dc_serviceResponse = await _eSyaPharmaAPIServices.HttpClientServices.GetAsync<List<DO_DrugBrand>>("CommonData/GetDrugList");
+                if (bk_serviceResponse.Status && dc_serviceResponse.Status)
+                {
+                    if (bk_serviceResponse.Data != null && dc_serviceResponse.Data != null)
+                    {
+                        ViewBag.VendorList = bk_serviceResponse.Data.Select(b => new SelectListItem
+                        {
+                            Value = b.VendorCode.ToString(),
+                            Text = b.VendorName.ToString(),
+                        }).ToList();
+
+                        ViewBag.DrugList = dc_serviceResponse.Data.Select(b => new SelectListItem
+                        {
+                            Value = b.DrugCode.ToString(),
+                            Text = b.DrugBrand,
+                        }).ToList();
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(bk_serviceResponse.Message), "UD:VendorDrugLink");
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(bk_serviceResponse.Message), "UD:VendorDrugLink");
+                }
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:VendorDrugLink");
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        ///Get Drug Vendor Link List
+        /// </summary>
+        [HttpGet]
+        public async Task<JsonResult> GetDrugVendorLink(int VendorCode)
+        {
+            try
+            {
+                var parameter = "?VendorCode=" + VendorCode;
+                var serviceResponse = await _eSyaPharmaAPIServices.HttpClientServices.GetAsync<List<DO_DrugVendorLink>>("DrugBrand/GetDrugVendorLink" + parameter);
+
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetDrugVendorLink:For VendorCode {0}", VendorCode);
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetDrugVendorLink:For VendorCode {0}", VendorCode);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetDrugVendorLink:For VendorCode {0}", VendorCode);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Insert Into Item Reorder Level
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> InsertOrUpdateVendorDrugLink(DO_DrugVendorLink obj)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(obj.DrugCode.ToString()) || obj.DrugCode == 0)
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Select Drug" });
+                }
+                else if (string.IsNullOrEmpty(obj.VendorCode.ToString()))
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Select Vendor" });
+                }
+                else if (string.IsNullOrEmpty(obj.BusinessShare.ToString()) || obj.BusinessShare == 0)
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Enter Business Share" });
+                }
+                else if (string.IsNullOrEmpty(obj.MinimumSupplyQty.ToString()) || obj.MinimumSupplyQty == 0)
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Enter Minimum Supply Quantity" });
+                }
+                else if (string.IsNullOrEmpty(obj.RateType.ToString()))
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Select Rate Type" });
+                }
+                else if (obj.RateType.ToString() == "PO" && (string.IsNullOrEmpty(obj.Rate.ToString()) || obj.Rate == 0))
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Enter Rate" });
+                }
+                else
+                {
+                    obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                    obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                    obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext).ToString();
+                    obj.ActiveStatus = true;
+                    if (string.IsNullOrEmpty(obj.Rate.ToString()))
+                        obj.Rate = 0;
+                    var serviceResponse = await _eSyaPharmaAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("DrugBrand/InsertOrUpdateVendorDrugLink", obj);
+                    if (serviceResponse.Status)
+                        return Json(serviceResponse.Data);
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:InsertOrUpdateVendorDrugLink:params:" + JsonConvert.SerializeObject(obj));
+                        return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertOrUpdateVendorDrugLink:params:" + JsonConvert.SerializeObject(obj));
+                throw ex;
+            }
+        }
+        #endregion
+    }
+}

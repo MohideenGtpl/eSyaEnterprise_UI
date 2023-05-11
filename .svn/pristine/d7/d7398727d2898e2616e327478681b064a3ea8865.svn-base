@@ -1,0 +1,268 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Net.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using eSyaEnterprise_UI.Utility;
+using eSyaEnterprise_UI.Areas.Config.Models;
+using eSyaEnterprise_UI.Areas.eSyaFixedAssets.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Areas.eSyaFixedAssets.Data;
+using eSyaEnterprise_UI.ActionFilter;
+
+namespace eSyaEnterprise_UI.Areas.eSyaFixedAssets.Controllers
+{
+    [SessionTimeout]
+    public class FixedAssetsController : Controller
+    {
+        ESyaFA_WebAPI _eSyaFAWebAPI = new ESyaFA_WebAPI();
+        private readonly ILogger<FixedAssetsController> _logger;
+
+        private readonly IeSyaFixedAssetsAPIServices _eSyaFixedAssetsAPIServices;
+        public FixedAssetsController(IeSyaFixedAssetsAPIServices eSyaFixedAssetsAPIServices, ILogger<FixedAssetsController> logger)
+        {
+            _eSyaFixedAssetsAPIServices = eSyaFixedAssetsAPIServices;
+            _logger = logger;
+        }
+        #region Asset Group
+        [Area("eSyaFixedAssets")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public IActionResult V_2001_00()
+        {
+            try
+            {
+                
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:AssetGroup_V_2001_00");
+                throw ex;
+            }
+        }
+
+        [HttpPost]
+        public IActionResult GetAssetGroupTreeView()
+        {
+            try
+            {
+
+                List<jsTreeObject> jsTree = new List<jsTreeObject>();
+                jsTreeObject jsObj1 = new jsTreeObject
+                {
+                    id = "MM",
+                    parent = "#",
+                    text = "Asset Group",
+                    icon = "/images/jsTree/foldergroupicon.png",
+                    state = new stateObject { opened = true, selected = false }
+                };
+                jsTree.Add(jsObj1);
+
+                var serviceResponse = _eSyaFixedAssetsAPIServices.HttpClientServices.GetAsync<List<DO_AssetGroup>>("AssetGroup/GetAssetGroupTreeView").Result;
+                if (serviceResponse.Status)
+                {
+                    var configureMenu = serviceResponse.Data;
+
+                    if (configureMenu != null)
+                    {
+
+                        List<DO_AssetGroup> AssetList = new List<DO_AssetGroup>();
+                        AssetList = configureMenu;
+                        var Parents = AssetList.Where(x => x.ParentId == 0).ToList();
+                        foreach (var parent in Parents)
+                        {
+                            SetSubGroup(parent, AssetList);
+                        }
+                        foreach (var m in Parents)
+                        {
+                            jsTreeObject jsObj = new jsTreeObject
+                            {
+                                id = "MM" + m.AssetGroupId.ToString(),
+                                text = m.AssetGroupDesc,
+                                icon = m.ActiveStatus ? "/images/jsTree/openfolder.png" : "/images/jsTree/inactive.png",
+                                GroupIndex = m.AssetGroupId.ToString(),
+                                parent = "MM",
+                            };
+                            jsTree.Add(jsObj);
+
+                            foreach (var s in m.AssetGroupList)
+                            {
+                                if (s.ParentId == m.AssetGroupId)
+                                {
+                                    jsTreeObject js = new jsTreeObject
+                                    {
+                                        id = "SM" + s.AssetGroupId.ToString(),
+                                        text = s.AssetGroupDesc,
+                                        icon = s.ActiveStatus ? "/images/jsTree/openfolder.png" : "/images/jsTree/openfolder.png",
+                                        GroupIndex = s.AssetGroupId.ToString(),
+                                        parent = m.ParentId == 0 ? "MM" + m.AssetGroupId.ToString() : "SM" + s.AssetGroupId.ToString()
+
+                                    };
+                                    jsTree.Add(js);
+                                }
+                                foreach (var s1 in s.AssetGroupList)
+                                {
+                                    if (s1.ParentId == s.AssetGroupId)
+                                    {
+                                        jsTreeObject js = new jsTreeObject
+                                        {
+                                            id = "SM" + s1.AssetGroupId.ToString(),
+                                            text = s1.AssetGroupDesc,
+                                            icon = s1.ActiveStatus ? "/images/jsTree/openfolder.png" : "/images/jsTree/openfolder.png",
+                                            GroupIndex = s1.AssetGroupId.ToString(),
+                                            parent =  "SM" + s.AssetGroupId.ToString()
+
+                                        };
+                                        jsTree.Add(js);
+                                    }
+                                    foreach (var s2 in s1.AssetGroupList)
+                                    {
+                                        if (s2.ParentId == s1.AssetGroupId)
+                                        {
+                                            jsTreeObject js = new jsTreeObject
+                                            {
+                                                id = "SM" + s2.AssetGroupId.ToString(),
+                                                text = s2.AssetGroupDesc,
+                                                icon = s2.ActiveStatus ? "/images/jsTree/openfolder.png" : "/images/jsTree/openfolder.png",
+                                                GroupIndex = s2.AssetGroupId.ToString(),
+                                                parent = "SM" + s1.AssetGroupId.ToString()
+
+                                            };
+                                            jsTree.Add(js);
+                                        }
+                                        foreach (var s3 in s2.AssetGroupList)
+                                        {
+                                            if (s3.ParentId == s2.AssetGroupId)
+                                            {
+                                                jsTreeObject js = new jsTreeObject
+                                                {
+                                                    id = "SM" + s3.AssetGroupId.ToString(),
+                                                    text = s3.AssetGroupDesc,
+                                                    icon = s3.ActiveStatus ? "/images/jsTree/openfolder.png" : "/images/jsTree/openfolder.png",
+                                                    GroupIndex = s3.AssetGroupId.ToString(),
+                                                    parent = "SM" + s2.AssetGroupId.ToString()
+
+                                                };
+                                                jsTree.Add(js);
+                                            }
+                                            foreach (var s4 in s3.AssetGroupList)
+                                            {
+                                                if (s4.ParentId == s3.AssetGroupId)
+                                                {
+                                                    jsTreeObject js = new jsTreeObject
+                                                    {
+                                                        id = "SM" + s4.AssetGroupId.ToString(),
+                                                        text = s4.AssetGroupDesc,
+                                                        icon = s4.ActiveStatus ? "/images/jsTree/openfolder.png" : "/images/jsTree/openfolder.png",
+                                                        GroupIndex = s4.AssetGroupId.ToString(),
+                                                        parent = "SM" + s3.AssetGroupId.ToString()
+
+                                                    };
+                                                    jsTree.Add(js);
+                                                }
+                                            }
+
+                                        }
+                                    }
+                                }
+
+                            }
+
+
+                        }
+
+                        return Json(jsTree);
+
+
+                    }
+                    return Json(jsTree);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetAssetGroupTreeView");
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetAssetGroupTreeView");
+                throw ex;
+            }
+        }
+
+        private void SetSubGroup(DO_AssetGroup model,List<DO_AssetGroup> assGroupList)
+        {
+            var childs= assGroupList.Where(x => x.ParentId == model.AssetGroupId).ToList();
+            if (childs.Count > 0)
+            {
+                foreach(var child in childs)
+                {
+                    SetSubGroup(child, assGroupList);
+                    model.AssetGroupList.Add(child);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Insert Or Update Asset Group
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> InsertOrUpdateAssetGroup(DO_AssetGroup obj)
+        {
+            try
+            {
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                obj.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext).ToString();
+
+                var serviceResponse = await _eSyaFixedAssetsAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("AssetGroup/InsertOrUpdateAssetGroup", obj);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:InsertOrUpdateAssetGroup:params:" + JsonConvert.SerializeObject(obj));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertOrUpdateAssetGroup:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+        /// <summary>
+        /// Getting Asset Group by Asset Group Id
+        /// </summary>
+        [HttpGet]
+        public async Task<JsonResult> GetAssetGroupbyId(int AssetId)
+        {
+
+            try
+            {
+
+                var parameter = "?AssetId=" + AssetId;
+                var serviceResponse = await _eSyaFixedAssetsAPIServices.HttpClientServices.GetAsync<DO_AssetGroup>("AssetGroup/GetAssetGroupbyId" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetAssetGroupbyId:For AssetId {0} ", AssetId);
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+        #endregion Asset Group
+
+        
+    }
+
+}

@@ -1,0 +1,300 @@
+﻿
+@{
+    ViewData["Title"] = "Operative Anaesthasic Care";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<link href="~/css/eSyaNursingStation/patientClinicalInformation.css" rel="stylesheet" />
+@section scripts{
+    
+    <script src="~/js/eSyaNursingStation/operativeanaesthesiacare.js"></script>
+}
+
+
+
+<style>
+    /*.ui-jqgrid .ui-jqgrid-bdiv {
+        overflow-x: auto;
+    }*/
+    .ui-jqgrid .ui-jqgrid-bdiv {
+        /*position: relative;
+        margin: 0;
+        padding: 0;*/
+        overflow: auto;
+        text-align: left;
+    }
+
+    .ui-state-default ui-th-column-header ui-th-ltr {
+        background: #555 !important;
+        color: bisque !important;
+    }
+
+    .ui-jqgrid .ui-jqgrid-htable th {
+        background: #555 !important;
+        color: gold !important;
+    }
+
+    .jqg-first-row-header {
+        visibility: collapse !important;
+    }
+</style>
+
+
+<input type="hidden" id="hdIPNumber" value="@ViewBag.IpNumber" />
+<input type="hidden" id="hdUHID" value="@ViewBag.UHID" />
+
+<div class="divFixedBar">
+    <div class="row mar0">
+        <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-xs-6 d-flex align-items-center">
+            <span class="mr-3"><i class="far fa-user-circle f-28 c-lightgrey"></i></span>
+            <div>
+                <p><span id="lblPatientName"></span></p>
+                <p><span id="lblGender"></span> | <span id="lblAge"></span></p>
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-xs-6 d-flex align-items-center">
+            <span class="mr-3"><i class="fas fa-user-md f-28 mr-2 c-lightgrey"></i></span>
+            <div>
+                <p><span class="labelname"> DOA</span> <span id="lblDOA"></span></p>
+                <p><span id="lblConsultantName"></span></p>
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-xs-6 d-flex align-items-center">
+            <span class="mr-3"><i class="fas fa-hotel f-28 mr-2 c-lightgrey"></i></span>
+            <div>
+                <p><span class="labelname"> Room Type</span> <span id="lblRoomType"></span></p>
+                <p><span class="labelname"> Room No</span> <span id="lblBedNumber"></span></p>
+            </div>
+        </div>
+
+        <div id="floatButtons" class="col-xl-3 col-lg-12 text-right">
+            <button class="mdl-button" id="btnBackNS" onclick="fnBackToNSGrid()"><i class="fas fa-chevron-left"></i> <span class="btntext">Back</span></button>
+            <button class="mdl-button" id="btnSaveOperativeAnaesthesicCare" onclick="fnSaveOperativeAnaesthesicCare()"><i class="far fa-save c-green"></i> <span class="btntext">Save</span></button>
+        </div>
+    </div>
+</div>
+
+<div class="row" style="margin-right: 0px !important;">
+    <div class="col-lg-3 col-md-3 col-sm-3 sidebar" id="navbar-example2">
+        <div class="sidebar-sticky">
+            <ul class="nav flex-column" id="nav_menu">
+                <li><a href="#" id="v-ot1-tab" data-bs-toggle="pill" data-bs-target="#v-ot1" class="nav-link active" role="tab" aria-controls="v-ot1" aria-selected="true">Pre Operative Checklist</a></li>
+                <li><a href="#" id="v-ot2-tab" data-bs-toggle="pill" data-bs-target="#v-ot2" class="nav-link" role="tab" aria-controls="v-ot2" aria-selected="true">Surgical Safety Checklist</a></li>
+                <li><a href="#" id="v-ot3-tab" data-bs-toggle="pill" data-bs-target="#v-ot3" class="nav-link" aria-controls="v-ot3" aria-selected="true">Pre-Anaesthetic Evaluation</a></li>
+                <li><a href="#" id="v-ot4-tab" data-bs-toggle="pill" data-bs-target="#v-ot4" class="nav-link" aria-controls="v-ot4" aria-selected="true">Additional Pre-OP Assessment</a></li>
+                <li><a href="#" id="v-ot5-tab" data-bs-toggle="pill" data-bs-target="#v-ot5" class="nav-link" aria-controls="v-ot5" aria-selected="true">Immediate Pre-Operative Re-Evaluation</a></li>
+                <li><a href="#" id="v-ot6-tab" data-bs-toggle="pill" data-bs-target="#v-ot6" class="nav-link" aria-controls="v-ot6" aria-selected="true">Aneasthesia Record</a></li>
+                <li><a href="#" id="v-ot7-tab" data-bs-toggle="pill" data-bs-target="#v-ot7" class="nav-link" aria-controls="v-ot7">Surgeons Notes</a></li>
+                <li><a href="#" id="v-ot8-tab" data-bs-toggle="pill" data-bs-target="#v-ot8" class="nav-link" aria-controls="v-ot8">Intra Operative Nursing Record</a></li>
+                <li><a href="#" id="v-ot9-tab" data-bs-toggle="pill" data-bs-target="#v-ot9" class="nav-link" aria-controls="v-ot9">Recovery Room Record</a></li>
+                <li><a href="#" id="v-ot10-tab" data-bs-toggle="pill" data-bs-target="#v-ot10" class="nav-link" aria-controls="v-ot10">Post-Operative Instructions</a></li>
+                <li><a href="#" id="v-ot11-tab" data-bs-toggle="pill" data-bs-target="#v-ot11" class="nav-link" aria-controls="v-ot11">Post-Anaesthesia Care</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="" id="mainContent">
+        <div class="tab-content" id="v-pills-tabContent">
+
+            <div class="tab-pane fade show active" id="v-ot1" role="tabpanel" aria-labelledby="v-ot1-tab">
+                <div class="row">
+                    <div class="col-12 p-0">
+                        <h6 class="main-heading"><i class="fa fa-bars mr-10"></i>Pre Operative Checklist</h6>
+                    </div>
+                </div>
+                <div class="row mr-0" style="margin-right:0px;">
+                    <div class="col-lg-12 col-md-12 col-sm-12 mb-2 divNursingCarePlan">
+                        <div id="dvPreOperativeChecklistTemplate"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="v-ot2" role="tabpanel" aria-labelledby="v-ot2-tab">
+                <div class="row">
+                    <div class="col-12 p-0">
+                        <h6 class="main-heading"><i class="fa fa-bars mr-10"></i>Surgical Safety Checklist</h6>
+                    </div>
+                </div>
+                <div class="row mr-0" style="margin-right:0px;">
+                    <div class="col-lg-12 col-md-12 col-sm-12" style="padding-right:0px">
+                        <div id="dvSurgicalSafetyTemplate"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="v-ot3" role="tabpanel" aria-labelledby="v-ot3-tab">
+                <div class="row">
+                    <div class="col-12 p-0">
+                        <h6 class="main-heading"><i class="fa fa-bars mr-10"></i>Pre-Anaesthetic Evaluation</h6>
+                    </div>
+                </div>
+                <div class="row mr-0" style="margin-right:0px;">
+                    <div class="col-lg-12 col-md-12 col-sm-12" style="padding-right:0px">
+                        <div id="dvPreAnaestheticEvaluationTemplate"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="v-ot4" role="tabpanel" aria-labelledby="v-ot4-tab">
+                <div class="row">
+                    <div class="col-12 p-0">
+                        <h6 class="main-heading"><i class="fa fa-bars mr-10"></i>Additional Pre-OP Assessment</h6>
+                    </div>
+                </div>
+                <div class="row mr-0" style="margin-right:0px;">
+                    <div class="col-lg-12 col-md-12 col-sm-12" style="padding-right:0px">
+                        <div id="dvAdditionalPreOPAssessmentTemplate"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="v-ot5" role="tabpanel" aria-labelledby="v-ot5-tab">
+                <div class="row">
+                    <div class="col-12 p-0">
+                        <h6 class="main-heading"><i class="fa fa-bars mr-10"></i>Immediate Pre-Operative Re-Evaluation</h6>
+                    </div>
+                </div>
+                <div class="row mr-0" style="margin-right:0px;">
+                    <div class="col-lg-12 col-md-12 col-sm-12" style="padding-right:0px">
+                        <div id="dvImmediatePreOperativePreEvaluationTemplate"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="v-ot6" role="tabpanel" aria-labelledby="v-ot6-tab">
+                <div class="row">
+                    <div class="col-12 p-0">
+                        <h6 class="main-heading"><i class="fa fa-bars mr-10"></i>Aneasthesia Record</h6>
+                    </div>
+                </div>
+                <div class="row mr-0" style="margin-right:0px;">
+                    <div class="col-lg-12 col-md-12 col-sm-12" style="padding-right:0px">
+                        <div id="dvAneasthesiaRecordTemplate"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="v-ot7" role="tabpanel" aria-labelledby="v-ot7-tab">
+                <div class="row">
+                    <div class="col-12 p-0">
+                        <h6 class="main-heading"><i class="fa fa-bars mr-10"></i>Surgeons Notes</h6>
+                    </div>
+                </div>
+                <div class="row mr-0" style="margin-right:0px;">
+                    <div class="col-lg-12 col-md-12 col-sm-12" style="padding-right:0px">
+                        <div id="dvSurgeonsNotesTemplate"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="v-ot8" role="tabpanel" aria-labelledby="v-ot8-tab">
+                <div class="row">
+                    <div class="col-12 p-0">
+                        <h6 class="main-heading"><i class="fa fa-bars mr-10"></i>Intra Operative Nursing Record</h6>
+                    </div>
+                </div>
+                <div class="row mr-0" style="margin-right:0px;">
+                    <div class="col-lg-12 col-md-12 col-sm-12" style="padding-right:0px;width:2000px;overflow:auto;">
+                        <div id="dvIntraOperativeNursingTemplate"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="v-ot9" role="tabpanel" aria-labelledby="v-ot9-tab">
+                <div class="row">
+                    <div class="col-12 p-0">
+                        <h6 class="main-heading"><i class="fa fa-bars mr-10"></i>Recovery Room Record</h6>
+                    </div>
+                </div>
+                <div class="row mr-0" style="margin-right:0px;">
+                    <div class="col-lg-12 col-md-12 col-sm-12" style="padding-right:0px">
+                        <div id="dvRecoveryRoomTemplate"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="v-ot10" role="tabpanel" aria-labelledby="v-ot10-tab">
+                <div class="row">
+                    <div class="col-12 p-0">
+                        <h6 class="main-heading"><i class="fa fa-bars mr-10"></i>Post-Operative Instructions</h6>
+                    </div>
+                </div>
+                <div class="row mr-0" style="margin-right:0px;">
+                    <div class="col-lg-12 col-md-12 col-sm-12" style="padding-right:0px;width:2000px;overflow:auto;">
+                        <div id="dvPostOpeativeInstructionsTemplate"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="v-ot11" role="tabpanel" aria-labelledby="v-ot11-tab">
+                <div class="row">
+                    <div class="col-12 p-0">
+                        <h6 class="main-heading"><i class="fa fa-bars mr-10"></i>Post-Anaesthesia Care</h6>
+                    </div>
+                </div>
+                <div class="row mr-0" style="margin-right:0px;">
+                    <div class="col-lg-12 col-md-12 col-sm-12" style="padding-right:0px;width:2000px;overflow:auto;">
+                        <div id="dvPostAnaesthesiaCaresTemplate"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade in" id="PopupAneasthesiaRecord" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Aneasthesia Record</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input class="form-control datepicker" type="text" maxlength="8" id="dpAneasthesiaRecordDate" />
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Time</label>
+                            <input class="form-control timepicker" type="time" maxlength="8" id="tpAneasthesiaRecordTime" />
+                        </div>
+                    </div>
+                </div>
+                <div id="dvAneasthesiaRecordTemplate"></div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button"
+                                id="btnSaveVitalCharts" onclick="saveAneasthesiaRecord()">
+                            <i class="fa fa-save"></i> Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal"><i class="fa fa-times"></i> Cancel </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $(".nav li a").click(function () {
+        $(".nav li a").removeClass("active");
+        $(this).addClass("active");
+        $('.tab-pane').removeClass('show active');
+        var v = $(this).attr('data-bs-target'); console.log(v);
+        $(v).addClass('show active');
+    });
+
+    $(document).ready(function () {
+    });
+
+</script>

@@ -1,0 +1,203 @@
+﻿
+@{
+    ViewData["Title"] = "V_76_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts{
+    <script src="~/js/Config/ItemReorderLevel.js"></script>
+}
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label>Business Key</label>
+            <select class="selectpicker" data-live-search="true" id="" title="" data-size="8">
+                <option> Choose Business Key</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label>Accounting Store</label>
+            <select class="selectpicker" data-live-search="true" id="" title="" data-size="8">
+                <option> Choose Accounting Store</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12 col-xl-12 col-sm-12  form-group">
+        <label>Choose Item by alphabets</label>
+        <span class="dot">A</span>
+        <span class="dot">B</span>
+        <span class="dot">C</span>
+        <span class="dot">D</span>
+        <span class="dot">E</span>
+        <span class="dot">F</span>
+        <span class="dot">G</span>
+        <span class="dot">H</span>
+        <span class="dot">I</span>
+        <span class="dot">J</span>
+        <span class="dot">K</span>
+        <span class="dot">L</span>
+        <span class="dot">M</span>
+        <span class="dot">N</span>
+        <span class="dot">O</span>
+        <span class="dot">P</span>
+        <span class="dot">Q</span>
+        <span class="dot">R</span>
+        <span class="dot">S</span>
+        <span class="dot">T</span>
+        <span class="dot">U</span>
+        <span class="dot">V</span>
+        <span class="dot">W</span>
+        <span class="dot">X</span>
+        <span class="dot">Y</span>
+        <span class="dot">Z</span>
+        <span class="dot">All</span>
+    </div>
+    <div class="col-lg-12 col-sm-12 col-md-12 form-group">
+        <table id="jqgItemReorderLevel"></table>
+        <div id="jqpItemReorderLevel"></div>
+    </div>
+</div>
+
+<div class="modal fullscreen fade" id="PopupItemReorderLevel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Add Item Reorder Level</h4>
+            </div>
+            <div class="modal-body bg-lightgrey">
+                <div class="row padbot4">
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                        <section class="bg-white pad15 borderLite">
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                    <p class="subheading">Item Details</p>
+                                    <hr class="left" />
+                                </div>
+                                <div class="col-sm-12">
+                                    <input type="text" class="form-control" id="" style="display:none">
+                                </div>
+                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                    <div class="form-group">
+                                        <label> Item Description</label>
+                                        <input type="text" name="itemdescription" value="" class="form-control" />
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6">
+                                    <div class="form-group">
+                                        <label> Unit of Measure</label>
+                                        <select class="selectpicker" data-live-search="true" id="" title="" data-size="8">
+                                            <option> Choose Unit</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6">
+                                    <div class="form-group">
+                                        <label> Barcode ID</label>
+                                        <input type="text" name="barcodeid" value="" class="form-control" />
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6">
+                                    <div class="form-group">
+                                        <label> Pack Unit</label>
+                                        <input id="" class="form-control" type="text" autocomplete="off" maxlength="500" />
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6">
+                                    <div class="form-group">
+                                        <label> Pack Size</label>
+                                        <input id="" class="form-control" type="text" autocomplete="off" maxlength="500" />
+
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6">
+                                    <div class="form-group">
+                                        <label> Inventory Class</label>
+                                        <select class="selectpicker" data-live-search="true" id="" title="" data-size="8">
+                                            <option> Choose Inventory Class</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6">
+                                    <div class="form-group">
+                                        <label> Item Class</label>
+                                        <select class="selectpicker" data-live-search="true" id="" title="" data-size="8">
+                                            <option> Choose Item Class</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Item Source</label>
+                                        <select class="selectpicker" data-live-search="true" id="" title="" data-size="8">
+                                            <option> Choose Item Source</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Item Criticality</label>
+                                        <select class="selectpicker" data-live-search="true" id="" title="" data-size="8">
+                                            <option> Choose Item Criticality</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Active Status</label>
+                                        <select class="selectpicker" data-live-search="true" id="" title="" data-size="8">
+                                            <option> Choose Status</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </section>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+
+
+                        <section class="bg-white pad15 borderLite">
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                    <p class="subheading">eSya Parameters</p>
+                                    <hr class="left" />
+                                </div>
+                                <div class="col-lg-12 col-md-12 col-sm-12 padbot10">
+                                    <div class="SpecialtyParameterContainer">
+                                        <table id="jqgSpecialtyParameter"></table>
+                                        <div id="jqpSpecialtyParameter"></div>
+                                    </div>
+                                </div>
+
+
+
+
+
+                            </div>
+                        </section>
+
+
+                    </div>
+                </div>
+                <hr />
+ 
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSave" onclick="fnSaveLocalizationTableMapping()">
+                            Save
+                        </button>
+                        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button" data-dismiss="modal"> Cancel</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

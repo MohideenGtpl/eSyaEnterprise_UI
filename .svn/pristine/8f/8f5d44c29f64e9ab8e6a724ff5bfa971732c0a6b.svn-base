@@ -1,0 +1,109 @@
+﻿
+
+@model IEnumerable<eSyaEnterprise_UI.Areas.Config.Models.DO_Parameters>
+<style>
+   
+</style>
+<table id="tbParameter">
+    <tr>
+        <th>ID</th>
+        <th>Parameter Desc</th>
+        <th style="display:none">Type</th>
+        <th style="text-align:center">Value</th>
+    </tr>
+    @foreach (var p in Model)
+    {
+        <tr>
+            <td>@p.ParameterId</td>
+            <td>
+                @p.ParameterDesc
+            </td>
+            <td style="display:none">
+                <input id='ParamType_@(p.ParameterId)' type="text" value="@p.ParameterValueType" readonly />
+            </td>
+            <td style="text-align:center">
+                @if (p.ParameterValueType == "B")
+                {
+                    <input id='ParamValue_@(p.ParameterId)' type="checkbox" />
+                }
+                @if (p.ParameterValueType == "P")
+                {
+                    <input id='ParamValue_@(p.ParameterId)' class="form-control perctFormat" />
+                }
+                @if (p.ParameterValueType == "A")
+                {
+                    <input id='ParamValue_@(p.ParameterId)' class="form-control currencyFormat" />
+                }
+                @if (p.ParameterValueType == "V")
+                {
+                    <input id='ParamValue_@(p.ParameterId)' class="form-control integerFormat" />
+                }
+                @if (p.ParameterValueType == "T")
+                {
+                    <input id='ParamValue_@(p.ParameterId)' class="form-control" />
+                }
+            </td>
+        </tr>
+    }
+</table>
+
+
+
+
+<script>
+
+        var eSyaParams = {
+
+            SetValue: function (params) {
+                $.each(params, function (key, item) {
+                    if ($('#ParamType_' + item.ParameterID).val() === "B") {
+                        $('#ParamValue_' + item.ParameterID).prop('checked', item.ParameterValue);
+                    }
+                    else {
+                        $('#ParamValue_' + item.ParameterID).val(item.ParameterValue);
+                    }
+                });
+            },
+
+            GetValue: function () {
+                var params = [];
+                var table = document.getElementById("tbParameter");
+                for (var i = 1; i < (table.rows.length); i++) {
+                    var paramID = table.rows[i].cells[0].innerHTML;
+                    var paramValue = "";
+
+                    var paramValueID = "ParamValue_" + paramID;
+                    if ($('#ParamType_' + paramID).val() === "B") {
+                        paramValue = $('#' + paramValueID).is(":checked");
+                    }
+                    else {
+                        paramValue = $('#' + paramValueID).val();
+                    }
+                    params.push({
+                        ParameterID: paramID,
+                        ParameterType: $('#ParamType_' + paramID).val(),
+                        ParameterValue: paramValue
+                    });
+                }
+                return params;
+            },
+
+            ClearValue: function () {
+                var params = [];
+                var table = document.getElementById("tbParameter");
+                for (var i = 1; i < (table.rows.length); i++) {
+                    var paramID = table.rows[i].cells[0].innerHTML;
+                    var paramValueID = "ParamValue_" + paramID;
+                    if ($('#ParamType_' + paramID).val() === "B") {
+                        $('#' + paramValueID).prop('checked', false);
+                    }
+                    else {
+                        $('#' + paramValueID).val("");
+                    }
+                }
+            }
+
+        };
+
+
+</script>

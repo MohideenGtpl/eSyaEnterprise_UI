@@ -1,0 +1,60 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace eSyaEnterprise_UI.Areas.Config.Controllers
+{
+    public class CommonController : Controller
+    {
+        [Area("Config")]
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        public JsonResult ChangeCultureFormat(string cultureFormat, DateTime dtDatePicker)
+        {
+            
+            var rqf = Request.HttpContext.Features.Get<IRequestCultureFeature>();
+            var culture = rqf.RequestCulture.Culture;
+
+            //CultureInfo cultureInfo = Thread.CurrentThread.CurrentCulture;
+            //var cultureInfo = Thread.CurrentThread.CurrentCulture.Clone() as CultureInfo;
+
+            culture.ClearCachedData();
+            rqf.RequestCulture.UICulture.ClearCachedData();
+
+            var cultureInfo = new RequestCulture(cultureFormat);
+            //var dateformat = new DateTimeFormatInfo
+            //{
+            //    ShortDatePattern = "MM-dd-yyyy",
+            //    LongDatePattern = "MM-dd-yyyy hh:mm:ss tt"
+            //};
+            //cultureInfo.Culture.DateTimeFormat = dateformat;
+            //Thread.CurrentThread.CurrentCulture = cultureInfo.Culture;
+            //Thread.CurrentThread.CurrentUICulture = cultureInfo.UICulture;
+
+            //CultureInfo.DefaultThreadCurrentUICulture = cultureInfo.Culture;
+            //CultureInfo.DefaultThreadCurrentCulture = cultureInfo.UICulture;
+
+            CultureInfo newCulture = (CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
+            newCulture.DateTimeFormat.ShortDatePattern = "MM-dd-yyyy";
+            newCulture.DateTimeFormat.DateSeparator = "-";
+            Thread.CurrentThread.CurrentCulture = newCulture;
+
+            Response.Cookies.Append(
+      CookieRequestCultureProvider.DefaultCookieName,
+      CookieRequestCultureProvider.MakeCookieValue(cultureInfo),
+            new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
+            );
+
+            return Json(new { Status = true });
+        }
+    }
+}

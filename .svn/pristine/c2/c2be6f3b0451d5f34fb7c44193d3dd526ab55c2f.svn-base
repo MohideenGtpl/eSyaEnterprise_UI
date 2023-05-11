@@ -1,0 +1,73 @@
+﻿$(document).ready(function () {
+    fnGridLoadAttendanceProcess();
+});
+var actiontype = "";
+function fnGridLoadAttendanceProcess() {
+    $("#jqgAttendanceProcess").jqGrid('GridUnload');
+    $("#jqgAttendanceProcess").jqGrid({
+        //url: getBaseURL() + '' ,
+        //mtype: 'Post',
+        datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Employee Name", "Working Days", "LOP days", "Attended days", "Actions"],
+        colModel: [
+            { name: "EmployeeName", width: 50, editable: true, align: 'left', hidden: false },
+            { name: "WorkingDays", width: 70, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "LOPDays", width: 170, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            { name: "AttendedDays", width: 100, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 15 } },
+            {
+                name: 'edit', search: false, align: 'left', width: 54, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditAttendanceProcess(event,\'edit\')"><i class="fas fa-pencil-alt"></i> ' + localization.Edit + ' </button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnEditAttendanceProcess(event,\'view\')"><i class="far fa-file-alt"></i> ' + localization.View + ' </button>'
+
+                }
+            }],
+        pager: "#jqpAttendanceProcess",
+        rowNum: 10000,
+        pgtext: null,
+        pgbuttons: null,
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0,
+        loadComplete: function (data) {
+            SetGridControlByAction();
+        },
+        ondblClickRow: function (rowid, iRow, iCol) {
+            jQuery("#jqgAttendanceProcess").editCell(iRow, iCol, true);
+        }
+    }).jqGrid('navGrid', '#jqpAttendanceProcess', { add: false, edit: false, search: false, del: false, refresh: false });
+    $("#jqgAttendanceProcess").jqGrid('inlineNav', '#jqpAttendanceProcess', {
+        edit: true,
+        edittext: "Edit",
+        add: true,
+        addicon: 'fa fa-plus',
+        addtext: 'Add',
+        deltext: 'Delete',
+        editicon: 'fa fa-pen',
+        del: false,
+        search: false,
+        searchicon: 'fa fa-search',
+        save: true,
+        saveicon: 'fa fa-save',
+        savetext: 'Save',
+        cancel: true,
+        canceltext: 'Cancel',
+        cancelicon: 'fa fa-times'
+    });
+    fnAddGridSerialNoHeading();
+}
+function fnGridRefreshAttendanceProcess() {
+
+}
+function fnAddAttendanceProcess() {
+    $("#PopupAttendanceProcess").modal('show');
+}

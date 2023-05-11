@@ -1,0 +1,35 @@
+﻿
+@{
+    ViewData["Title"] = "FeedbackHeader";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/js/eSyaPatientFeedback/FeedbackHeader.js"></script>
+
+<div class="row">
+
+    <div class="col-lg-2 col-md-4 col-sm-6 form-group">
+        <label class="lable-color">From Date</label>
+        <input type="date" name="name" value="" class="form-control" id="dtfromDate" onchange="fnGridLoadPatientFeedbackHeader()"/>
+    </div>
+
+    <div class="col-lg-2 col-md-4 col-sm-6 form-group">
+        <label class="lable-color">To Date</label>
+        <input type="date" name="name" value="" class="form-control" id="dttoDate" onchange="fnGridLoadPatientFeedbackHeader()"/>
+    </div>
+    <div class="col-lg-2 col-md-4 col-sm-6 form-group">
+        <label class="lable-color">Feedback Type </label>
+        <select class="selectpicker" id="cboFeedbackType" onchange="fnGridLoadPatientFeedbackHeader()">
+            <option value="All">All</option>
+            <option value="IP">IN Patient</option>
+            <option value="OP">OUT Patient</option>
+        </select>
+    </div>
+    </div>
+
+    <div class="row padbot10">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <table id="jqgFeedbackHeader"></table>
+            <div id="jqpFeedbackHeader"></div>
+        </div>
+    </div>
+

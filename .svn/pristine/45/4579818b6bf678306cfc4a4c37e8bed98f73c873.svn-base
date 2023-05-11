@@ -1,0 +1,265 @@
+﻿var formID;
+var prevSelectedID;
+
+$(document).ready(function () {
+    //$("#pnlMainMenu").hide();
+    fnTreeSize();
+    LoadSpecialtyCode();
+    $('#cboActiveStatus').val('true');
+    $('#cboActiveStatus').selectpicker('refresh');
+});
+
+function LoadSpecialtyCode() {
+
+    $.ajax({
+        url: getBaseURL() + '/Specialty/GetSpecialtyTree',
+        success: function (result) {
+            $('#jstSpecialtyCode').jstree({
+                core: { 'data': result, 'check_callback': true, 'multiple': false }
+            });
+        }
+    });
+
+    $("#jstSpecialtyCode").on('loaded.jstree', function () {
+        $("#jstSpecialtyCode").jstree('open_all');
+
+    });
+
+    $('#jstSpecialtyCode').on("changed.jstree", function (e, data) {
+
+        if (data.node != undefined) {
+            if (data.node.parent == "#") {
+                $("#pnlrdoAddItem").show();
+                //$("#pnlMainMenu").hide();
+                $(".mdl-card__title-text").text("Add Specialty");
+                fnClearFields();
+                $("#btnSaveSpecialty").html('<i class="fa fa-plus"></i> Add');
+                $("#btnSaveSpecialty").attr("disabled", _userFormRole.IsInsert === false);
+            }
+            else if (data.node.parent == "H0") {
+                $("#dvForm").show();
+                $("#pnlrdoAddItem").hide();
+                fnShowSpecialtyDetail(data.node.id);
+                //$("#pnlMainMenu").show();
+                $(".mdl-card__title-text").text("Edit Specialty");
+                $("#btnSaveSpecialty").html('<i class="fa fa-sync"></i> Update');
+                $("#btnSaveSpecialty").attr("disabled", _userFormRole.IsEdit === false);
+            }
+            else {
+                fnClearFields();
+                //$("#pnlMainMenu").hide();
+            }
+
+        }
+    });
+}
+
+function fnShowSpecialtyDetail(specialtyId) {
+
+    $.ajax({
+        url: getBaseURL() + '/Specialty/GetSpecialtyCode?specialtyId=' + specialtyId,
+        type: 'POST',
+        datatype: 'json',
+        success: function (response) {
+
+            if (response != null) {
+                $('#txtSpecialtyId').val(response.SpecialtyID);
+                $('#txtSpecialtyDesc').val(response.SpecialtyDesc);
+                $('#cboGender').val(response.Gender);
+                $('#cboGender').selectpicker('refresh');
+                $('#cboSpecialtyType').val(response.SpecialtyType);
+                $('#cboSpecialtyType').selectpicker('refresh');
+                $('#cboAliedServices').val(response.AlliedServices);
+                $('#cboAliedServices').selectpicker('refresh');
+                $('#cboActiveStatus').val(response.ActiveStatus.toString());
+                $('#cboActiveStatus').selectpicker('refresh');
+            }
+            else {
+                fnClearFields();
+
+            }
+
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+
+        }
+    });
+}
+
+function fnDeleteNode() {
+
+    var selectedNode = $('#jstSpecialtyCode').jstree().get_selected(true);
+    
+    if (selectedNode.length != 1) {
+        toastr.warning('Please select any one Specialty Code.');
+    }
+    else {
+        selectedNode = selectedNode[0];
+        if (selectedNode.id == "H0") {
+            toastr.warning('Please select any one Specialty Code.');
+        }
+        else if (selectedNode.parent == "H0") {
+    
+            var obj = {};
+
+            obj.SpecialtyId = selectedNode.id;
+            obj.ActiveStatus = false;
+
+            $("#btnDeleteNode").attr("disabled", true);
+            $.ajax({
+                url: getBaseURL() + '/Specialty/DeleteSpecialtyCodes',
+                type: 'POST',
+                datatype: 'json',
+                data: obj,
+                async: false,
+                success: function (response) {
+                    if (response.Status === true) {
+                        toastr.success("Deleted");
+                        $("#jstSpecialtyCode").jstree("destroy");
+                        LoadSpecialtyCode();
+                        fnClearFields();
+                        //$('#pnlMainMenu').hide();
+                    }
+                    else {
+                        toastr.error(response.Message);
+                    }
+                    $("#btnDeleteNode").attr("disabled", false);
+                },
+                error: function (error) {
+                    toastr.error(error.statusText);
+                    $("#btnDeleteNode").attr("disabled", false);
+                }
+            });
+        }
+        else {
+            toastr.warning('Please select Specialty Code to Delete.');
+        }
+    }
+}
+
+function fnExpandAll() {
+    $('#jstSpecialtyCode').jstree('open_all');
+}
+
+function fnCollapseAll() {
+    $('#jstSpecialtyCode').jstree('close_all');
+}
+
+function fnTreeSize() {
+    $("#jstSpecialtyCode").css({
+        'height': $(window).innerHeight() - 136,
+        'overflow': 'auto'
+    });
+}
+
+//$('[name="rdoAddItem"]').change(function () {
+//    if ($('#rdoAddSpecialty').prop('checked')) {
+//        $('#pnlMainMenu').show();
+//    }
+//    else {
+//        $('#pnlMainMenu').hide();
+//    }
+//});
+
+function fnSaveSpecialtyCodes() {
+
+    if (fnValidateBeforeSave() == false)
+        return;
+
+    $("#btnSaveSpecialty").attr('disabled', true);
+
+    var obj =
+    {
+        SpecialtyID: $('#txtSpecialtyId').val(),
+        SpecialtyDesc: $('#txtSpecialtyDesc').val(),
+        Gender: $('#cboGender').val(),
+        SpecialtyType: $('#cboSpecialtyType').val(),
+        AlliedServices: $('#cboAliedServices').val(),
+        ActiveStatus: $('#cboActiveStatus').val()
+    };
+    alert(JSON.stringify(obj));
+    var URL;
+    if ($('#txtSpecialtyId').val() != "")
+        URL = getBaseURL() + '/Specialty/UpdateSpecialtyCodes';
+    else
+        URL = getBaseURL() + '/Specialty/InsertSpecialtyCodes';
+
+    $.ajax({
+        url: URL,
+        type: 'POST',
+        datatype: 'json',
+        data: obj,
+        //contentType: 'application/json; charset=utf-8',
+        success: function (response) {
+            if (response != null) {
+                if (response.Status) {
+                    toastr.success(response.Message);
+                    $("#btnSaveSpecialty").html('<i class="fa fa-spinner fa-spin"></i> wait');
+                    //$("#btnSaveSpecialty").attr('disabled', true);
+
+                    $('#jstSpecialtyCode').jstree("destroy");
+                    LoadSpecialtyCode();
+                    fnClearFields();
+                    //$("#pnlMainMenu").hide();
+                }
+                else {
+                    toastr.error(response.Message);
+                    $("#btnSaveSpecialty").attr('disabled', false);
+                }
+
+                $("#btnSaveSpecialty").html('<i class="fa fa-plus"></i> Add');
+                $("#btnSaveSpecialty").attr('disabled', false);
+            }
+            else {
+                toastr.error(response.Message);
+                $("#btnSaveSpecialty").attr('disabled', false);
+            }
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnSaveSpecialty").attr("disabled", false);
+            $("#btnSaveSpecialty").html('<i class="fa fa-plus"></i> Add');
+        }
+    });
+    $("#btnSaveSpecialty").attr('disabled', false);
+}
+
+function fnClearFields() {
+    $('#txtSpecialtyId').val('');
+    $('#txtSpecialtyDesc').val('');
+    $('#cboActiveStatus').val('true');
+    $('#cboActiveStatus').selectpicker('refresh');
+    $('#rdoAddSpecialty').prop('checked', false);
+
+}
+
+function fnValidateBeforeSave() {
+
+    if ($('#txtSpecialtyDesc').val() == "" || $('#txtSpecialtyDesc').val() == null) {
+        toastr.warning("Please Enter Specialty Description");
+        $('#txtSpecialtyDesc').focus();
+        return false;
+    }
+    if (IsStringNullorEmpty($('#cboGender').val())) {
+        toastr.warning("Gender can't be Empty");
+        $('#cboGender').focus();
+        return false;
+    }
+    if (IsStringNullorEmpty($('#cboSpecialtyType').val())) {
+        toastr.warning("Specialty Type can't be Empty");
+        $('#cboSpecialtyType').focus();
+        return false;
+    }
+    if (IsStringNullorEmpty($('#cboAliedServices').val())) {
+        toastr.warning("Allied Services Type can't be Empty");
+        $('#cboAliedServices').focus();
+        return false;
+    }
+    if ($('#txtSpecialtyId').val() == "" && $('#cboActiveStatus').val() == "false") {
+        toastr.warning("Status can't be Inactive For New Entry");
+        $('#cboActiveStatus').focus();
+        return false;
+    }
+    return true;
+}

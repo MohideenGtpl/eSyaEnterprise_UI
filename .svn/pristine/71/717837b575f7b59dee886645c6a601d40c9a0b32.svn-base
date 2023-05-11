@@ -1,0 +1,171 @@
+﻿
+@{
+    ViewData["Title"] = "MemberRegistration";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="row">
+    <div class="col-lg-2 col-md-6 col-sm-12 form-group">
+        <label>MemberShip ID</label>
+        <input type="text" name="MemberShipID" value="" class="form-control" />
+    </div>
+    <div class="col-lg-2 col-md-6 col-sm-12 form-group">
+        <label>Valid From</label>
+        <input type="date" name="validfrom" value="" class="form-control" />
+    </div>
+    <div class="col-lg-2 col-md-6 col-sm-12 form-group">
+        <label>Valid Till</label>
+        <input type="date" name="validtill" value="" class="form-control" />
+    </div>
+    <div class="col-lg-2 col-md-6 col-sm-12 form-group">
+        <label>Member Type</label>
+        <select class="form-control" name="membertype">
+            <option value="value">Select </option>
+        </select>
+    </div>
+    <div class="col-lg-2 col-md-6 col-sm-12 form-group">
+        <label>Room Type</label>
+        <select class="form-control" name="roomtype">
+            <option value="value">Select </option>
+        </select>
+    </div>
+    <div class="col-lg-2 col-md-6 col-sm-12 form-group">
+        <label>No of person</label>
+        <input type="text" name="noofperson" value="" class="form-control" />
+    </div>
+    <div class="col-lg-2 col-md-6 col-sm-12 form-group">
+        <label>Eligble Days/Year</label>
+        <input type="text" name="EligbleDaysYear" value="" class="form-control" />
+    </div>
+    <div class="col-lg-2 col-md-6 col-sm-12 form-group">
+        <label>Max carry over</label>
+        <input type="text" name="Maxcarryover" value="" class="form-control" />
+    </div>
+
+    <div class="col-lg-2 col-md-3 col-sm-12 form-group">
+        <label>Days Utilized</label>
+        <input type="text" name="daysutilized" value="" class="form-control" />
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-12 form-group">
+        <label>Available days</label>
+        <input type="text" name="Availabledays" value="" class="form-control" />
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-12 form-group d-flex align-items-end">
+        <label for="chkRoomUpgrade" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect">
+            <input type="checkbox" name="chkRoomupgrade" value="" class="mdl_checkbox__input" id="chkRoomUpgrade" onclick="fnOnRoomUpgrade()" />
+            <span class="mdl-checkbox__label"> Room upgrade</span>
+        </label>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-12 form-group" id="divRoomUpgrade" style="display:none">
+        <label>Room upgrade</label>
+        <input type="text" name="Roomupgrade" value="" class="form-control" />
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-12 form-group d-flex align-items-end">
+        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkAdditionalPerson">
+            <input type="checkbox" name="chkAdditionalperson" value="" class="mdl-checkbox__input" id="chkAdditionalPerson" onclick="fnOnAdditionalPerson()" />
+            <span class="mdl-checkbox__label"> Additional Person </span>
+        </label>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-12 form-group"  style="display:none" id="divAdditionalPerson">
+        <label>Additional Person</label>
+        <input type="text" name="additionalperson" value="" class="form-control" />
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 col-12 form-group">
+        <p class="subheading">Member Details</p>
+        <hr class="left" />
+    </div>
+    <div class="col-lg-4 col-md-6 col-sm-12 form-group">
+        <label>Member Name</label>
+        <input type="text" name="MemberName" value="" class="form-control" />
+    </div>
+    <div class="col-lg-4 col-md-6 col-sm-12 form-group">
+        <label>Nationality</label>
+        <select class="form-control" name="Nationality">
+            <option value="value">Select Nationality</option>
+        </select>
+    </div>
+    <div class="col-lg-4 col-md-6 col-sm-12 form-group">
+        <label>Profession </label>
+        <select class="form-control" name="Profession">
+            <option value="value">Select </option>
+        </select>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-12 form-group">
+        <label>Gender</label>
+        <select class="form-control" name="Gender">
+            <option value="value">Select </option>
+        </select>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-12 form-group">
+        <label>Date of birth</label>
+        <input type="date" name="dateofbirth" value="" class="form-control" />
+    </div>
+    <div class="col-lg-4 col-md-6 col-sm-12 form-group">
+        <label>Marital Status</label>
+        <select class="form-control" name="MaritalStatus">
+            <option value="value">Select </option>
+        </select>
+    </div>
+    <div class="col-lg-4 col-md-3 col-sm-12 form-group">
+        <label>Mobile Number</label>
+        @await Component.InvokeAsync("IsdMobileInput", new { id = "MobileNumber" })
+        @*<input type="text" name="Mobilenumber" value="" class="form-control" />*@
+    </div>
+    <div class="col-lg-4 col-md-6 col-sm-12 form-group">
+        <label>Email ID</label>
+        <input type="text" name="emailid" value="" class="form-control" />
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 col-12 form-group">
+        <p class="subheading">Contact Details</p>
+        <hr class="left" />
+    </div>
+    <div class="col-lg-4 col-md-6 col-sm-12 form-group">
+        <label>Address </label>
+        <input type="text" name="Address" value="" class="form-control" />
+    </div>
+    <div class="col-lg-4 col-md-6 col-sm-12 form-group">
+        <label>City</label>
+        <select class="selectpicker w-100" name="City">
+            <option value="value">Select</option>
+        </select>
+    </div>
+    <div class="col-lg-4 col-md-6 col-sm-12 form-group">
+        <label>State</label>
+        <select class="selectpicker w-100" name="State">
+            <option value="value">Select</option>
+        </select>
+    </div>
+    <div class="col-lg-4 col-md-6 col-sm-12 form-group">
+        <label>Country</label>
+        <select class=" selectpicker w-100" name="Country">
+            <option value="value">Select </option>
+        </select>
+    </div>
+    <div class="col-lg-12 col-md-12 col-12 text-center">
+        <hr />
+        <button type="button" class="btn btn-primary mr-2"><i class="fa fa-check"></i> Submit </button>
+        <button type="button" class="btn btn-primary"><i class="fa fa-times"></i> Cancel </button>
+    </div>
+</div>
+
+<script>
+    function fnOnRoomUpgrade() {
+
+        if ($("#chkRoomUpgrade").prop("checked") == true) {
+            $("#divRoomUpgrade").css('display', 'block');
+        }
+        else {
+            $("#divRoomUpgrade").css('display', 'none');
+        }
+    }
+
+    function fnOnAdditionalPerson() {
+        if ($("#chkAdditionalPerson").prop("checked") == true) {
+            $("#divAdditionalPerson").css('display', 'block');
+        }
+        else {
+            $("#divAdditionalPerson").css('display', 'none');
+        }
+    }
+</script>

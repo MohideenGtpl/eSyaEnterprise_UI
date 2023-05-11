@@ -1,0 +1,176 @@
+﻿
+$(document).ready(function () {
+    fnGridLoadApplicationCodes();
+});
+
+function fnGridLoadApplicationCodes() {
+    var codeType = $("#cboCodeType").val();
+    var URL = getBaseURL() + '/ApplicationCodes/GetApplicationCodesByCodeType?codeType=' + codeType;
+    $("#jqgApplicationCodes").jqGrid('GridUnload');
+    $("#jqgApplicationCodes").jqGrid({
+        url: URL,
+        mtype: 'Post',
+        datatype: 'json',
+        data: [{ CodeDesc: '1000', DefaultStatus: 'True', ActiveStatus: 'True' }],
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["ApplicationCode", "CodeType", "Description", "Default Status", "Status", ""],
+        colModel: [
+            { name: "ApplicationCode", width: 70, editable: true, align: 'left', hidden: true },
+            { name: "CodeType", width: 70, editable: false, hidden: true, align: 'left', resizable: true },
+            { name: "CodeDesc", width: 370, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            { name: "DefaultStatus", editable: true, width: 105, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            { name: "ActiveStatus", editable: true, width: 95, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: Inactive" } },
+            {
+                name: 'edit', search: false, align: 'center', width: 50, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all" style="padding: 2px 4px; background: #0b76bc!important; color: #fff!important; margin: 3px; " title="Edit" onclick="return fnEditApplicationCodes(event)"><i class="fa fa-edit"></i> Edit </button>'
+
+                }
+            },
+        ],
+        rowNum: 10,
+        loadonce: false,
+        pager: "#jpgApplicationCodes",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0
+    }).jqGrid('navGrid', '#jpgApplicationCodes', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jpgApplicationCodes', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshApplicationCodes
+    }).jqGrid('navButtonAdd', '#jpgApplicationCodes', {
+        caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Add', buttonicon: 'none', id: 'custAdd', position: 'first', onClickButton: fnGridAddApplicationCodes
+    });
+}
+
+function fnGridAddApplicationCodes() {
+    fnClearFields();
+    var id = $("#cboCodeType").val();
+    if (id == 0) {
+        toastr.warning("Please select any code type to add");
+    }
+    else {
+        $('#PopupApplicationCodes').modal('show');
+        $('#PopupApplicationCodes').modal({ backdrop: 'static', keyboard: false });
+        $('#PopupApplicationCodes').find('.modal-title').text("Add Application Code");
+        fnClearFields();
+        $("#btnSaveApplicationCode").html(' Save');
+       
+    }
+}
+
+function fnClearFields() {
+    $("#txtApplicationCodeDescription").val("");
+    $('#chkApplicationDefaultStatus').prop('checked', true);
+    $('#chkApplicationDefaultStatus').parent().removeClass('is-checked');
+    $('#chkApplicationDefaultStatus').prop('checked', false);
+    $('#cboActiveStatus').val("true");
+    $('#cboActiveStatus').selectpicker('refresh');
+    $("#txtApplicationCode").val("");
+    $("#btnSaveApplicationCode").attr('disabled', false);
+}
+
+function fnGridRefreshApplicationCodes() {
+    $("#jqgApplicationCodes").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+function fnEditApplicationCodes(e) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgApplicationCodes').jqGrid('getRowData', rowid);
+
+    $('#PopupApplicationCodes').modal('show');
+    $('#PopupApplicationCodes').find('.modal-title').text("Update Application Code");
+    $("#btnSaveApplicationCode").html(' Update');
+    $('#txtApplicationCode').val(rowData.ApplicationCode);
+    $("#txtApplicationCodeDescription")[0].parentElement.MaterialTextfield.change(rowData.CodeDesc);
+
+    if (rowData.DefaultStatus === "true") {
+        $("#chkApplicationDefaultStatus").parent().addClass("is-checked");
+    }
+    else { $("#chkApplicationDefaultStatus").parent().removeClass("is-checked"); }
+    $('#cboActiveStatus').attr('disabled', false);
+    $("#cboActiveStatus").val(rowData.ActiveStatus);
+    $("#cboActiveStatus").selectpicker('refresh');
+    $("#btnSaveApplicationCode").attr('disabled', false);
+}
+
+function fnSaveApplicationCode() {
+ 
+    var appCode = $("#txtApplicationCode").val();
+    var appDefaultStatus = $("#chkApplicationDefaultStatus").parent().hasClass("is-checked");
+
+    if (appDefaultStatus)
+    { IsDefaultStatus = true }
+    else
+    { IsDefaultStatus = false }
+
+    if ($("#txtApplicationCodeDescription").val().trim().length <= 0) {
+        toastr.warning("Please Enter Application Code Description");
+        return;
+    }
+
+    else if ($("#txtApplicationCodeDescription").val().trim().length > 50) {
+        toastr.warning("Application Description should not Exceeds 50 characters");
+        return false;
+    }
+    else if (appCode == null || appCode == "") {
+        $("#btnSaveApplicationCode").attr('disabled', true);
+        var app_codes = {
+            ApplicationCode:0,
+            CodeType: Number($("#cboCodeType").val()),
+            CodeDesc: $("#txtApplicationCodeDescription").val(),
+            DefaultStatus: appDefaultStatus,
+            ActiveStatus: $("#cboActiveStatus").val()
+        }
+    }
+    else {
+        app_codes = {
+            ApplicationCode: $("#txtApplicationCode").val(),
+            CodeType: Number($("#cboCodeType").val()),
+            CodeDesc: $("#txtApplicationCodeDescription").val(),
+            DefaultStatus: appDefaultStatus,
+            ActiveStatus: $("#cboActiveStatus").val()
+        };
+    }
+
+    $.ajax({
+        url: getBaseURL() + '/ApplicationCodes/InsertOrAudateApplicationCodes',
+        type: 'POST',
+        data: JSON.stringify(app_codes),
+        contentType: 'application/json; charset=utf-8',
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                $("#btnSaveApplicationCode").html('<i class="fa fa-spinner fa-spin"></i> wait');
+                $("#btnSaveApplicationCode").attr('disabled', true);
+                fnGridRefreshApplicationCodes();
+                fnClosePopUp();
+            }
+            else {
+                toastr.error(response.Message);
+                $("#btnSaveApplicationCode").attr('disabled', false);
+            }
+
+            function fnClosePopUp() {
+                setTimeout(function () {
+                    $("#PopupApplicationCodes").modal('hide');
+                }, 2000);
+            }
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnSaveApplicationCode").attr("disabled", false);
+        }
+    });
+}
+
+$("#btnCancelApplicationCode").click(function () {
+    fnClearFields();
+    $("#jqgApplicationCodes").jqGrid('resetSelection');
+    $('#PopupApplicationCodes').modal('hide');
+});

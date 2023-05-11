@@ -1,0 +1,185 @@
+﻿
+$(document).ready(function () {
+    fnGridLoadAssetGroup();
+    fnGridDepreciationMethod();
+});
+
+function fnGridLoadAssetGroup() {
+     $("#jqgAssetGroup").jqGrid('GridUnload');
+    $("#jqgAssetGroup").jqGrid({
+        //url: URL,
+        mtype: 'Post',
+        datatype: 'json',
+        data: [{ CodeDesc: '1000', DefaultStatus: 'True', ActiveStatus: 'True' }],
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Asset Group", "Sub Group", "Status", "Actions"],
+        colModel: [
+            { name: "AssetGroup", width: 70, editable: true, align: 'left', hidden: false },
+            { name: "SubGroup", width: 70, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "ActiveStatus", editable: true, width: 28, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: Inactive" } },
+            {
+                name: 'edit', search: false, align: 'left', width: 54, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" onclick="return fnEditDepreciationMethod(event)"><i class="fa fa-edit"></i> Edit </button><button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnViewDepreciationMethod(event)"><i class="fa fa-file"></i> View </button>'
+
+                }
+            },
+        ],
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        pager: "#jqpAssetGroup",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0
+    }).jqGrid('navGrid', '#jqpAssetGroup', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpAssetGroup', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first",
+        caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Add', buttonicon: 'none', id: 'custAdd', position: 'first', onClickButton: fnGridAddAssetGroup
+    });
+}
+
+function fnGridAddAssetGroup() {
+    
+    $('#PopupDepreciationMethod').modal('show');
+    //$('#PopupDepreciationMethod').modal({ backdrop: 'static', keyboard: false });
+    $('#PopupDepreciationMethod').find('.modal-title').text("Add Depreciation Method");
+        
+        $("#btnSaveApplicationCode").html(' Save');
+ 
+}
+
+
+
+
+function fnGridDepreciationMethod() {
+     
+    $('#jqgDepreciationMethod').jqGrid('GridUnload');
+    $("#jqgDepreciationMethod").jqGrid({
+        //url:,
+        datatype: 'json',
+        mtype: 'Post',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Depreciation Method", "Depreciation Percentage ", "Effective From", "Effective Date", "Status"],
+        colModel: [
+            { name: "DepreciationMethod", width: 150, editable: true, align: 'left', editoptions: { maxlength: 4 }, hidden: false },
+            { name: "DepreciationPercentage", width: 160, editable: true, align: 'left', editoptions: { maxlength: 10, onkeypress: 'return fnOnlyDigits(event)' } },
+            {
+                name: "EffectiveFrom", width: 200, editable: true, align: 'left', resizable: false, formatter: 'date',
+                editoptions: {
+                    size: 10, maxlength: 10,
+
+                } },
+            {
+                name: "EffectiveTill", editable: true, width: 150, align: 'left', resizable: false, hidden:true, formatter: 'date',
+                editoptions: {
+                    size: 10, maxlength: 10,
+                    
+                }
+            },
+            { name: "ActiveStatus", editable: true, width: 120, edittype: "select", align: 'left', formatter: 'select', editoptions: { value: "true:Active;false:Inactive" } },
+             
+        ],
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        emptyrecords: "No records to Veiw",
+        pager: "#jqpDepreciationMethod",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        width: 'auto',
+        autowidth: true,
+        shrinkToFit: true,
+        forceFit: true,
+        //editurl: getBaseURL() + '/CurrencyMaster/InsertUpdateCurrencyDenominationInformation?CCode=' + currencyCode,
+        ajaxRowOptions: {
+            type: "POST",
+            contentType: "application/json",
+            dataType: "json"
+        },
+        serializeRowData: function (postData) {
+            return JSON.stringify(postData);
+        },
+        extraparam: {
+           
+        },
+        ondblClickRow: function (rowid) {
+            $("#jqgDepreciationMethod").trigger('click');
+        },
+    }).jqGrid('navGrid', '#jqpDepreciationMethod', { add: false, edit: false, search: false, del: false, refresh: false });
+    $("#jqgDepreciationMethod").jqGrid('inlineNav', '#jqpDepreciationMethod',
+        {
+            edit: true,
+            editicon: " fa fa-pen",
+            edittext: " Edit",
+            add: false,
+            addicon: "fa fa-plus",
+            addtext: " Add",
+            save: false,
+            savetext: " Save",
+            saveicon: "fa fa-save",
+            cancelicon: "fa fa-ban",
+            canceltext: " Cancel",
+            editParams: {
+                keys: false,
+                oneditfunc: function (formid) {
+
+                  
+
+                },
+                url: null,
+                successfunc: function (result) {
+
+
+                    var res = JSON.stringify(result);
+                    var response = JSON.parse(res);
+                    var r = response.responseText;
+                    var p = JSON.parse(r)
+                    if (p.Status) {
+                        toastr.success(p.Message);
+                    }
+                    else {
+                        toastr.error(p.Message);
+                    }
+                    $("#jqgDepreciationMethod").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+                },
+                aftersavefun: null,
+                errorfun: null,
+                afterrestorefun: null,
+                restoreAfterError: true,
+                mtype: "POST",
+            },
+            addParams: {
+                useDefValues: true,
+                position: "last",
+                addRowParams: {
+                    keys: true,
+                    oneditfunc: null,
+                    successfunc: function (result) {
+
+
+                        var res = JSON.stringify(result);
+                        var response = JSON.parse(res);
+                        var r = response.responseText;
+                        var p = JSON.parse(r)
+                        if (p.Status) {
+                            toastr.success(p.Message);
+                        }
+                        else {
+                            toastr.error(p.Message);
+                        }
+                        $("#jqgDepreciationMethod").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+                    },
+                }
+            },
+        });
+}

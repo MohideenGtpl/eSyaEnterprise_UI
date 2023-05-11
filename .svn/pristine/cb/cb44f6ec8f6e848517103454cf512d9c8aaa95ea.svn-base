@@ -1,0 +1,158 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "ECA_23_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<style>
+    ._preg_mainheading {
+        font-family: helvetica-bold !important;
+        font-weight: bold;
+        line-height: 2rem !important;
+        background: #f9f9f9;
+        padding: 10px;
+        color: #515151;
+        margin: 20px -15px 20px !important;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+        font-size: 18px;
+        letter-spacing: 0.251px;
+        text-transform: uppercase;
+    }
+
+</style>
+@section scripts{
+    <script src="~/js/Config/BusinessAddress.js"></script>
+
+}
+@{
+    var userFormRole = (eSyaEnterprise_UI.Models.DO_UserFormRole)ViewBag.UserFormRole;
+}
+
+<script>
+    var _userFormRole = JSON.parse('@Html.Raw(Json.Serialize(userFormRole))');
+
+    var localization = {
+
+        BusinessLocation: '@Localizer["BusinessLocation"]',
+        BusinessAddress: '@Localizer["BusinessAddress"]',
+        BusinessAddress: '@Localizer["BusinessAddress"]',
+        ISDCode: '@Localizer["ISDCode"]',
+        State: '@Localizer["State"]',
+        City: '@Localizer["City"]',
+        Area: '@Localizer["Area"]',
+        PinCode: '@Localizer["PinCode"]',
+        Save: '@Localizer["Save"]',
+        Cancel: '@Localizer["Cancel"]',
+        Address: '@Localizer["Address"]',
+        PhoneNumber: '@Localizer["PhoneNumber"]',
+        EmergencyNumber: '@Localizer["EmergencyNumber"]',
+        EMailId: '@Localizer["EMailId"]',
+        WebSite: '@Localizer["WebSite"]',
+       
+    };
+</script>
+
+<div class="row padbot10">
+
+    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 ">
+        <div class="form-group">
+            <label class="lable-color"> @Localizer["BusinessLocation"]</label>
+            @await Component.InvokeAsync("UserBusinessLocation")
+        </div>
+
+    </div>
+
+</div>
+
+<section id="sectionBusinessAddress">
+
+    <div class="row mb-3">
+        @*<div class="col-lg-12 col-md-12 col-sm-12 form-group">
+                <p class="heading_preRegistration"><i class="fa fa-user"></i> Business Address</p>
+            </div>*@
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <p class="_preg_mainheading">@Localizer["BusinessAddress"]</p>
+
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-6 form-group">
+            <label>@Localizer["ISDCode"]</label>
+            <select class="w-100 selectpicker" id="cboIsdCode" data-size="8" data-live-search="false">
+            </select>
+        </div>
+
+        <div class="col-lg-4 col-md-6 col-sm-6 form-group">
+            <label>@Localizer["State"]</label>
+            <select class="w-100 selectpicker" id="cboState" data-size="8" data-live-search="true" onchange="fncboState_change()">
+                <option value="0">Select</option>
+
+            </select>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-6 form-group">
+            <label>@Localizer["City"]</label>
+            <select class="w-100 selectpicker" id="cboCity" data-size="8" data-live-search="true" onchange="fncboCity_change()">
+                <option value="0">Select</option>
+            </select>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-6 form-group d-flex justify-content-end flex-column">
+            <label>@Localizer["Area"]</label>
+            <select class="w-100 selectpicker" id="cboArea" data-size="8" data-live-search="true" onchange="fncboArea_change()">
+                <option value="0">Select</option>
+            </select>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-6 form-group d-flex justify-content-end flex-column">
+
+            <label>@Localizer["PinCode"]</label>
+            <input type="text" name="number" class="form-control " id="txtPinCode" maxlength="15"/>
+
+
+        </div>
+
+        <div class="col-lg-4 col-md-6 col-sm-12">
+            <div class="form-group">
+                <label>@Localizer["Address"]</label>
+                <textarea id="txtAddress" rows="3" class="form-control" maxlength="250"></textarea>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 col-sm-6 form-group d-flex justify-content-end flex-column">
+
+            <label>@Localizer["PhoneNumber"]</label>
+            <input type="text"  class="form-control" id="txtPhoneNumber" maxlength="50" />
+
+
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-6 form-group d-flex justify-content-end flex-column">
+
+            <label>@Localizer["EmergencyNumber"]</label>
+            <input type="text"  class="form-control" id="txtEmergencyNumber" maxlength="50" />
+
+
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-6 form-group d-flex justify-content-end flex-column">
+
+            <label>@Localizer["EMailId"]</label>
+            <input type="text"  class="form-control" id="txtEmailId" maxlength="50" />
+
+
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 form-group d-flex justify-content-end flex-column">
+
+            <label>@Localizer["WebSite"]</label>
+            <input type="text"  class="form-control" id="txtWebSite" maxlength="50" />
+
+
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 text-center div-button">
+            <hr />
+            <button type="button" class="btn btn-primary mr-10" id="btnSaveBusinessAddress" onclick="fnSaveBusinessAddress()"> <i class="fa fa-save"></i>@Localizer["Save"]  </button>
+            <button type="button" class="btn btn-primary  cancel-button" id="btnBusinessAddressCancel" onclick="fnClearBusinessAddressFields()"><i class="fa fa-times"></i>@Localizer["Cancel"] </button>
+        </div>
+
+    </div>
+
+</section>

@@ -1,0 +1,90 @@
+﻿$(document).ready(function () {
+    $(".dot").click(function () {
+        $('.dot').removeClass('active');
+        var alphabet = $(this).text();
+        //fnGridLoadCustomerCodes(alphabet);
+        $(this).addClass('active');
+    });
+    fnGridLoadCustomerCodes();
+});
+
+function fnGridLoadCustomerCodes() {
+    $("#jqgCustomerCodes").jqGrid('GridUnload');
+    $("#jqgCustomerCodes").jqGrid({
+        //url: URL,
+        //mtype: 'Post',
+        datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Customer Name", "Credit Period In Days", "Credit Limit", "Validate Limit", "On Hold", "Active Status", "Actions"],
+        colModel: [
+            { name: "CustomerName", width: 70, editable: true, align: 'left', hidden: false },
+            { name: "CreditPeriodInDays", width: 40, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "CreditLimit", width: 40, editable: true, align: 'left', hidden: false },
+            { name: "ValidateLimit", width: 40, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "OnHold", width: 40, editable: true, align: 'left', hidden: false },
+            { name: "ActiveStatus", editable: true, width: 28, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: Inactive" } },
+            {
+                name: 'Action', search: false, align: 'left', width: 54, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" onclick="return fnEditCustomerCodes(event)"><i class="fa fa-edit"></i> Edit </button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnEditCustomerCodes(event)"><i class="fa fa-file"></i> View </button>'
+
+                }
+            },
+        ],
+        pager: "#jqpCustomerCodes",
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0
+    }).jqGrid('navGrid', '#jqpCustomerCodes', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpCustomerCodes', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshCustomerCodes
+    }).jqGrid('navButtonAdd', '#jqpCustomerCodes', {
+        caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Add', buttonicon: 'none', id: 'custAdd', position: 'first', onClickButton: fnGridAddCustomerCodes
+    });
+}
+
+$('#v-pills-tab a').on('click', function (e) {
+    var activeTabName = "";
+    e.preventDefault()
+     $(".tab-pane").removeClass('show active');
+    activeTabName = $(this).attr("href");
+    $(activeTabName).addClass("show");
+})
+
+
+function fnSaveCustomerDetails() {
+    
+    $('#v-pills-tab a.active').removeClass('active').next().addClass('active');
+    $('.tab-pane.show.active').removeClass('show active').next().addClass('show active');
+}
+
+function fnGridAddCustomerCodes() {
+    $("#PopupCustomerCodes").modal('show');
+    $("#divForm").css("display", "block");
+    $("#divGrid").hide();
+}
+function fnGridRefreshCustomerCodes() {
+
+}
+
+function fnEditCustomerCodes() {
+
+}
+function fnCloseForm() {
+    $("#divGrid").show();
+    $("#divForm").css("display", "none");
+    $(".tab-pane").removeClass('show active');
+    $("#v-pills-tab a").removeClass("active");
+    $("#customerdetails-tab").addClass("active");
+    $("#customerdetails").addClass("show active");
+}

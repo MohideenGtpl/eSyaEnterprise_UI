@@ -1,0 +1,58 @@
+2022-05-21 09:53:09.2955|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/|action: 
+2022-05-21 09:53:09.4514|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2022-05-21 09:53:16.1099|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/css/animate.css|action: 
+2022-05-21 09:53:16.1323|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/js/bootbox.min.js|action: 
+2022-05-21 09:53:16.1562|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/js/Inputmask/bindings/inputmask.binding.js|action: 
+2022-05-21 09:53:16.0866|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/lib/bootstrap/dist/css/bootstrap.min.css|action: 
+2022-05-21 09:53:16.0682|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/css/material.min.css|action: 
+2022-05-21 09:53:16.2500|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/js/i18n/grid.locale-en.js|action: 
+2022-05-21 09:53:17.4395|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/css/bootstrap-select.css|action: 
+2022-05-21 09:53:17.5491|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/css/login.css|action: 
+2022-05-21 09:53:17.6127|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/css/esyafonts.css|action: 
+2022-05-21 09:53:17.6951|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/css/all.min.css|action: 
+2022-05-21 09:53:17.7067|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/css/esyaTheme.css|action: 
+2022-05-21 09:53:18.1822|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/images/logo/esya-logo-black.png|action: 
+2022-05-21 09:53:18.2025|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/images/esya-products-yellow-with-footer.jpg|action: 
+2022-05-21 09:53:20.2779|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/fonts/fa-solid-900.woff2|action: 
+2022-05-21 09:53:20.4760|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/fonts/esyaFonts/Roboto/Roboto-Regular.ttf|action: 
+2022-05-21 09:53:21.1297|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/favicon.ico|action: 
+2022-05-21 09:53:49.2758|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/esyaAccount/login|action: 
+2022-05-21 10:04:13.9667|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/eSyaAccount/Login|action: 
+2022-05-21 10:04:35.7235|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/eSyaConfig/FormsMenu/V_2_00|action: 
+2022-05-21 10:06:09.4065|1|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An unhandled exception has occurred while executing the request. System.Net.Http.HttpRequestException: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond ---> System.Net.Sockets.SocketException: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.CreateConnectionAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.WaitForCreatedConnectionAsync(ValueTask`1 creationTask)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.SendWithRetryAsync(HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncBuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at eSyaEssentials_UI.HttpClientServices.GetAsync[T](String url)|url: http://localhost/eSyaConfig/FormsMenu/V_2_00|action: V_2_00
+2022-05-21 10:06:09.5395|3|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An exception was thrown attempting to execute the error handler. System.ArgumentNullException: Value cannot be null.
+Parameter name: logger
+   at Microsoft.Extensions.Logging.LoggerExtensions.Log(ILogger logger, LogLevel logLevel, EventId eventId, Exception exception, String message, Object[] args)
+   at Microsoft.Extensions.Logging.LoggerExtensions.LogError(ILogger logger, Exception exception, String message, Object[] args)
+   at eSyaEnterprise_UI.Extension.ExceptionMiddlewareExtensions.<>c.<<ConfigureExceptionHandler>b__0_1>d.MoveNext() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Extension\ExceptionMiddlewareExtensions.cs:line 44
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/eSyaConfig/FormsMenu/V_2_00|action: V_2_00
+2022-05-21 10:06:09.5972|1|ERROR|Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware|An unhandled exception has occurred while executing the request. System.Net.Http.HttpRequestException: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond ---> System.Net.Sockets.SocketException: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.CreateConnectionAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.WaitForCreatedConnectionAsync(ValueTask`1 creationTask)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.SendWithRetryAsync(HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncBuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at eSyaEssentials_UI.HttpClientServices.GetAsync[T](String url)|url: http://localhost/eSyaConfig/FormsMenu/V_2_00|action: V_2_00

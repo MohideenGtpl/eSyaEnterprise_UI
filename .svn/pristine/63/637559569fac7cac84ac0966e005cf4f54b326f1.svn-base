@@ -1,0 +1,20 @@
+﻿$(document).ready(function () {
+
+    $('#jstClinicConsultanttree').jstree({
+        'core': {
+            'data': [
+                { "id": "ajson2", "parent": "#", "text": "Karnataka" },
+                { "id": "ajson3", "parent": "ajson2", "text": "Bengaluru" },
+                { "id": "ajson4", "parent": "ajson2", "text": "Mysuru" },
+            ]
+        }
+    });
+     
+    fnTreeSize();
+});
+function fnTreeSize() {
+    $("#jstClinicConsultanttree").css({
+        'height': $(window).innerHeight() - 136,
+        'overflow': 'auto'
+    });
+}

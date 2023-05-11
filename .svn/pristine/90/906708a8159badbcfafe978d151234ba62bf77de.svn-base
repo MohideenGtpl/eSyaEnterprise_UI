@@ -1,0 +1,365 @@
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/eSyaNatureCure.css" rel="stylesheet" />
+<link href="~/css/dashBoard.css" rel="stylesheet" />
+<input id="hdfUserId" type="hidden" value="@ViewBag.UserId" />
+<div class="container-fluid">
+    <div class="row bg-white my-2 mx-0">
+
+        <div class="col-lg-2 col-md-4 col-sm-6 mb-1">
+            <label class="lable-color">From Date</label>
+            <input type="date" name="fromdate" value="" class="form-control" id="txtfromdate" onchange="fnLoadDashboard()" />
+        </div>
+        <div class="col-lg-2 col-md-4 col-sm-6 mb-1" hidden>
+            <label class="lable-color">  To Date </label>
+            <input type="date" name="todate" value="" class="form-control" id="txttodate" onchange="fnLoadDashboard()" />
+        </div>
+        <div class="col-12">
+            <p class="text-small text-italics m-0"><i class="fa fa-info-circle"></i> Please double click on the highlighted parallelogram to view the Guest Details</p>
+        </div>
+    </div>
+
+    <div class="row overflow-y-auto">
+        <div class="col-lg-12 col-12">
+            <table class="table table-bordered bg-white table-fixed">
+                <thead></thead>
+                <tbody class=""></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalGuestStatus" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="txtGuestName"></h5>
+                <input type="hidden" id="hfdBookingKey" />
+                <input type="hidden" id="hfdGuestId" />
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fa fa-times"></i></span>
+                </button>
+            </div>
+            <div class="modal-body bg-snow">
+                <section class="bg-white">
+                    <div class="row">
+                        <div class="col-lg-5 col-5 p-0 border-right">
+                            <div class="row m-0">
+
+                                <div class="col-lg-6 form-group">
+                                    <label class="d-block"><i class="far fa-calendar-alt"></i>&nbsp;Check-In</label>
+                                    <span id="txtCheckin"></span>
+                                </div>
+                                <div class="col-lg-6 form-group">
+                                    <label class="d-block"><i class="far fa-calendar-alt"></i>&nbsp;Check-Out</label>
+                                    <span id="txtCheckout"></span>
+                                </div>
+                                <div class="col-lg-6 form-group">
+                                    <label class="d-block"><i class="fa fa-clock"></i>&nbsp; Arrival Time</label>
+                                    <span>10:00 AM</span>
+                                </div>
+                                <div class="col-lg-6 form-group">
+                                    <label class="d-block">Guests</label>
+                                    <span class="h6 text-center border" id="txtNoOfGuests"></span>
+                                </div>
+
+                                <div class="col-lg-6 form-group">
+                                    <label class="d-block" for="">Total</label>
+                                    <i class="fa fa-rupee-sign mr-1"></i><span id="txtTotalAmount"> </span>
+                                </div>
+                                <div class="col-lg-6 form-group">
+                                    <label class="d-block" for="">Balance-due</label>
+                                    <i class="fa fa-rupee-sign mr-1"></i> <span class="text-red"> </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-7 col-7">
+                            <a href="#" class="d-block text-dark" onclick=fnGuestCheckin()><i class="fa fa-chevron-right"></i> Check-In guest</a>
+                            @*<a href="#" class="d-block text-brown"><i class="fa fa-chevron-right"></i> Cancel Reservation</a>*@
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <div class="modal-footer">
+                @*<button type="button" class="btn btn-primary">Add</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>*@
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    $(document).ready(function () {
+        fnSetCurrentdate();
+        var d = new Date();
+        var getTot = daysInMonth(d.getMonth(), d.getFullYear()); //Get total days in a month
+        var sat = new Array();   //Declaring array for inserting Saturdays
+        var sun = new Array();   //Declaring array for inserting Sundays
+        const month = f => Array.from(Array(12), (e, i) => new Date(25e8 * ++i).toLocaleString('en-US', { month: f }));
+
+        for (var i = 1; i <= 7; i++) {    //looping through days in month
+            var newDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+            sun.push(i + ' ' + month`short`[d.getMonth()] + ' ' + d.getFullYear());
+            //if (newDate.getDay() == 0) {   //if Sunday
+            //    sun.push(i + ' ' + month `short`[d.getMonth()] + ' ' + d.getFullYear());
+            //}
+        }
+        var aa = new Array();
+        aa.push({ 'sTitle': '' });
+        for (var prop in sun) {
+            aa.push({ "sTitle": sun[prop] });
+        }
+        console.log(aa);
+        function daysInMonth(month, year) {
+            return new Date(year, month, 0).getDate();
+        }
+
+
+        $('tr:nth-of-type(2) td:nth-of-type(2)').html('<svg xmlns="http://www.w3.org/2000/svg"><g><rect x="10" y="0" rx="20" ry="80" width="200" height="50" fill="#efefef"></rect><text x="25" y="15" font-family="sans" font-size="15" fill="black">Hello</text></g></svg>');
+    });
+</script>
+<script>
+    var catalog = [];
+    var act_occu = [];
+    var startingdate = new Date();
+    function fnbuilddashbord() {
+        $("tbody").html('');
+        $('thead').html('');
+        var _dt = new Array();
+        var _tableContent = '';
+        var day = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        var myDate = $("#txtfromdate").val();
+        //-----------------
+        $.ajax({
+            url: getBaseURL() + '/BedMaster/GetAllBedMastersbyRoomType?roomtype=0',
+            type: 'POST',
+            datatype: 'json',
+            async: false,
+            success: function (response) {
+                catalog = response;
+                console.log(catalog)
+            },
+            error: function (error) {
+                toastr.error(error.statusText);
+            }
+        });
+        var _roomType = catalog.map(item => item.RoomTypeDesc);
+        _roomType = _roomType.filter(function (itm, i, _roomType) {
+            return i == _roomType.indexOf(itm);
+        });
+
+        //var _roomType = ['Special', 'Delux Non AC', 'Delux AC', 'Semi Cottage', 'Cottage'];
+        var _roomShareType = ['Single', 'Clubbed', 'Sharing'];
+        // var _roomNumber = ['001', '002'];
+        // var _roomSubNumber = ['A', 'B'];
+        var _content = '';
+        _tableContent += '<tr><td colspan="2">' +
+            '<button type="button" class="btn btn-primary mr-1"><i class="fa fa-bars"></i></button>' +
+            '<button type="button" class="btn btn-primary mr-1"><i class=" fa fa-calendar"></i></button>' +
+            '<button type="button" class="btn btn-primary mr-1"><i class="fa fa-search"></i></button>' +
+            '<button type="button" class="btn btn-primary mr-1"><i class="fa fa-plus" onclick="fnRedirectToGuestPortal()"></i></button></td>';
+
+        for (var v = 0; v < 21; v++) {
+            var myDate = new Date($("#txtfromdate").val());
+            myDate.setDate(myDate.getDate() + v);
+            // Sunday
+            //if (myDate.getDay() == 0) {
+            var dt = ("0" + (myDate.getDate())).slice(-2) + '/' + ("0" + (myDate.getMonth() + 1)).slice(-2) + '/' + myDate.getFullYear();
+            _dt.push(dt);
+            // _tableContent += '<td id="' + dt + '" class="text-center"><span>' + dt + '</span> <span class="d-block text-small"> ' + day[myDate.getDay()] + '</span></td>';
+            _tableContent += '<td id="' + dt + '" class="text-center"><span>' + moment(myDate).format("DD/MM") + '</span> <span class="d-block text-small"> ' + moment(myDate).format("ddd") + '</span></td>';
+            //}
+            ////Wednesday
+            //if (myDate.getDay() == 3) {
+            //    var dt = ("0" + (myDate.getDate())).slice(-2) + '/' + ("0" + (myDate.getMonth() + 1)).slice(-2) + '/' + myDate.getFullYear();
+            //    _dt.push(dt);
+            //    _tableContent += '<td id="' + dt + '" class="text-center"><span>' + dt + '</span> <span class="d-block text-small"> ' + day[myDate.getDay()] + '</span></td>';
+            //}
+            ////Thusday
+            //if (myDate.getDay() == 4) {
+            //    var dt = ("0" + (myDate.getDate())).slice(-2) + '/' + ("0" + (myDate.getMonth() + 1)).slice(-2) + '/' + myDate.getFullYear();
+            //    _dt.push(dt);
+            //    _tableContent += '<td id="' + dt + '" class="text-center"><span>' + dt + '</span> <span class="d-block text-small"> ' + day[myDate.getDay()] + '</span></td>';
+            //}
+
+        }
+        _tableContent += "</tr>"
+        $('thead').append(_tableContent);
+
+        for (var a = 0; a < _roomType.length; a++) {
+            _content += "<tr><td colspan='2'>" + _roomType[a] + "</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>"
+            var rn = catalog.filter(element => element.RoomTypeDesc === _roomType[a]);
+
+            var _roomNumber = rn.map(item => item.RoomNumber);
+            _roomNumber = _roomNumber.filter(function (itm, i, _roomNumber) {
+                return i == _roomNumber.indexOf(itm);
+            });
+
+            for (var b = 0; b < _roomNumber.length; b++) {
+                _content += "<tr><td rowspan='3'>" + _roomNumber[b] + "</td></tr>";
+                _content += "<tr>";
+
+                var bn = catalog.filter(element => element.RoomNumber === _roomNumber[b]);
+                var _roomSubNumber = bn.map(item => item.BedNumber);
+                _roomSubNumber = _roomSubNumber.filter(function (itm, i, _roomSubNumber) {
+                    return i == _roomSubNumber.indexOf(itm);
+                });
+
+                for (var c = 0; c < _roomSubNumber.length; c++) {
+                    _content += "<td class='' id=" + _roomType[a].charAt(0, 3) + _roomNumber[b] + _roomSubNumber[c] + "><span class='w-100 text-right d-inline-block'>" + _roomSubNumber[c] + "</span></td>";
+
+                    for (var v = 0; v < 21; v++) {
+                        var myDate = new Date($("#txtfromdate").val());
+                        myDate.setDate(myDate.getDate() + v);
+                        //  if (myDate.getDay() == 0 || myDate.getDay() == 3 || myDate.getDay() == 4) {
+                        var dt = ("0" + (myDate.getDate())).slice(-2) + '/' + ("0" + (myDate.getMonth() + 1)).slice(-2) + '/' + myDate.getFullYear();
+                        _content += "<td role='button' data-toggle='popover' data-placement='top' data-trigger='click' data-html='true' data-content='' id=" + _roomType[a].substring(0, 1) + '_' + _roomNumber[b] + _roomSubNumber[c].replace(/\s/g, '') + '_' + ("0" + (myDate.getDate())).slice(-2) + "></td>";
+                        //  }
+                    }
+                    _content += "</tr > ";
+
+                }
+            }
+
+
+        }
+        $("tbody").append(_content);
+
+
+
+        console.log($('td').width());
+    };
+
+    function fnLoadDashboard() {
+
+        var fromdate = $("#txtfromdate").val();
+        var todate = $("#txttodate").val();
+
+        if (fromdate == "" || fromdate == null) {
+            fnAlert("Please select From Date", "e");
+            return false;
+        }
+        if (todate == "" || todate == null) {
+            fnAlert("Please select To Date", "e");
+            return false;
+        }
+        console.log('-----------------------')
+        startingdate = fromdate;
+        console.log(fromdate)
+        console.log(startingdate)
+        fnbuilddashbord();
+        loadBookingData();
+    }
+
+    function loadBookingData() {
+
+        $.ajax({
+            url: getBaseURL() + '/FrontOffice/GetDashboardByDate?fromDate=' + $("#txtfromdate").val() + '&toDate=' + $("#txtfromdate").val(),
+            type: 'GET',
+            contentType: "application/json; charset-utf-8",
+            datatype: 'json',
+            async: false,
+            success: function (response) {
+                console.log(response)
+                act_occu = response;
+            },
+            error: function (error) {
+                toastr.error(error.statusText);
+            }
+        });
+        $.each(act_occu, function (key, booking) {
+            var _id = "#" + booking.RoomTypeDesc.substring(0, 1) + '_' + booking.RoomNumber + booking.BedNumber.replace(/\s/g, '') + '_' + ("0" + new Date(booking.CheckInDate).getDate()).slice(-2);
+
+            //$(_id).html("<span class='bookedBar three' data-toggle='popover' data-placement='top' onclick=fnGetGuestDetails('" + booking.BookingKey + "','" + booking.GuestId +"','"+ _id + "') data-html='true' data-content='' data-name='" + booking.GuestName + "'><p class='m-0'>" + booking.GuestName + "</p><p class='text-small m-0'>" + booking.MobileNumber + "</p></span>");
+            $(_id).html("<span class='bookedBar three' data-toggle='popover' data-placement='top' onclick=fnGetGuestDetails('" + booking.BookingKey + "','" + booking.GuestId + "','" + _id + "') data-html='true' data-content='' data-name='" + booking.GuestName + "'><p class='m-0'>" + booking.GuestName + "</p><p class='text-small m-0'>" + booking.MobileNumber + "</p></span>");
+
+        });
+
+    }
+    function fnGetGuestDetails(_bookingkey, _guestid, _id) {
+
+        $.each(act_occu, function (key, booking) {
+            if (booking.BookingKey == _bookingkey && booking.GuestId == _guestid) {
+
+                $('#hfdBookingKey').val(_bookingkey);
+                $('#hfdGuestId').val(_guestid);
+                $('#txtGuestName').html(booking.GuestName)
+                $('#txtCheckin').html(booking.CheckInDate.slice(0, 10).split('-').reverse().join('-'))
+                $('#txtCheckout').html(booking.CheckOutDate.slice(0, 10).split('-').reverse().join('-'))
+                $('#txtNoOfGuests').html((booking.NoOfFemaleGuest + booking.NoOfMaleGuest))
+                $('#txtTotalAmount').html(booking.TotalPackageAmount)
+
+                return;
+            }
+            console.log(booking.BookingKey.CheckInDate);
+        });
+    }
+
+    function fnGuestCheckin() {
+        var url = getBaseURL() + '/eSyaNatureCure/CheckInGuest/V_ENC_04_00?bookingKey=' + $('#hfdBookingKey').val() + '&guestId=' + $('#hfdGuestId').val();
+        window.location.href = url;
+    }
+
+    function fnSetCurrentdate() {
+        var date = new Date();
+
+        var day = date.getDate();
+        var month = date.getMonth() + 1;
+        var year = date.getFullYear();
+
+        if (month < 10) month = "0" + month;
+        if (day < 10) day = "0" + day;
+
+        var today = year + "-" + month + "-" + day;
+        document.getElementById("txtfromdate").value = today;
+
+        document.getElementById("txttodate").value = today;
+        fnbuilddashbord();
+        loadBookingData();
+    }
+</script>
+<script>
+    $('table').on('click', "span", function () {
+
+        //$("#modalGuestStatus").modal('show');
+        // $(this).attr('data-content', $(".modal-body").html());
+        // });
+        $(this).popover({
+            html: true,
+            trigger: 'manual',
+            sanitize: false,
+            content: function () {
+                var con = $(".modal-body").html();
+                return con;
+            },
+            placement: 'top',
+            title: function () {
+                var con = $(this).attr('data-name');
+                con += '<a href="#" class="close d-flex justify-content-end align-items-center" data-dismiss="alert"><i class="fa fa-times"></i></a>';
+                return con;
+            }
+        }).click(function (e) {
+            $(this).popover('toggle');
+        });
+    });
+    $(".popover-header").append('<a href="#" class="close d-flex justify-content-end align-items-center h-100" data-dismiss="alert"><i class="fa fa-times"></i></a>');
+    $(document).on("click", ".popover .close", function () {
+        $(this).parents(".popover").popover('hide');
+    });
+
+    function fnRedirectToGuestPortal() {
+        var userId = $('#hdfUserId').val();
+        var baseUrl = @Json.Serialize(@Configuration.GetSection("GuestPortalURL").Value);
+        baseUrl = baseUrl + userId;
+        window.open(baseUrl);
+    }
+
+</script>
+

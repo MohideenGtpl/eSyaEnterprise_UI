@@ -1,0 +1,56 @@
+﻿
+@{
+    ViewData["Title"] = "V_201_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts{
+
+<script src="~/js/Config/UserGroup.js"></script>
+<script src="~/js/jsTree.js"></script>
+}
+<link href="~/css/jsTree.css" rel="stylesheet" />
+<div class="row padbot10">
+
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> User Group</label>
+
+            <select class="selectpicker" data-live-search="true" id="cboUsergroup" title="" data-size="8" onchange="fnResetUserType()">
+                <option value="0"> Choose User Group</option>
+                @foreach (var ug in ViewBag.UGappcodes)
+                {
+                    <option value="@ug.ApplicationCode">@ug.CodeDesc</option>
+                }
+            </select>
+
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> User Type</label>
+
+            <select class="selectpicker" data-live-search="true" id="cboUserType" title="" data-size="8">
+                <option value="0"> Choose User Type</option>
+                @foreach (var ut in ViewBag.UTappcodes)
+                {
+                    <option value="@ut.ApplicationCode">@ut.CodeDesc</option>
+                }
+            </select>
+
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-4 col-sm-6 text-center  form-group padtop20">
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="saveMUG" onclick="fnsaveUserGroup()"> Save </button>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6">
+
+    </div>
+
+
+    <div class="col-lg-4 col-md-4 col-sm-12">
+
+        <div id="treeUG">
+        </div>
+    </div>
+</div>

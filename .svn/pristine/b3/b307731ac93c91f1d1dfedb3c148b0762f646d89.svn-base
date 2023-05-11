@@ -1,0 +1,191 @@
+﻿
+@{
+    ViewData["Title"] = "V_1010_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts{
+    <script src="~/js/eSyaMaterial/ItemMaster.js"></script>
+}
+
+    <div class="row padbot10">
+        <div class="col-lg-4 col-md-4 col-sm-6">
+            <div class="form-group">
+                <label>Select Item</label>
+                <select class="selectpicker" data-live-search="true" id="cboItemDesc" title="" data-size="8" onchange="fnGetItemDetails()">
+                    <option value="0"> Choose Item Description</option>
+                    @foreach (var mg in ViewBag.Itemcodes)
+                    {
+                        <option value="@mg.ItemCode">@mg.ItemDescription</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+
+<div class="row padbot10">
+    <div class="col-lg-4 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label>Item Group</label>
+            <select class="selectpicker" data-live-search="true" id="cboItemGroup" title="" data-size="8" onchange="fnGetItemCategory()">
+                <option value="0"> Choose Item Group</option>
+                @foreach (var mg in ViewBag.IGappcodes)
+                {
+                    <option value="@mg.ItemGroupId">@mg.ItemGroupDesc</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label>Item Category</label>
+            <select class="selectpicker" data-live-search="true" id="cboItemCategory" title="" data-size="8" onchange="fnGetItemSubCategory()">
+                <option value="0"> Choose Item Category</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label>Item Sub Category</label>
+            <select class="selectpicker" data-live-search="true" id="cboItemSubCategory" title="" data-size="8" onchange="fnItemSubCategoryOnChanges()">
+                <option value="0"> Choose Item Sub Category</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="row padbot10">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <table id="jqgItemMaster"></table>
+        <div id="jqpItemMaster"></div>
+    </div>
+</div>
+
+<div class="modal fade" id="PopupItemMaster">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Add Item</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row padbot4">
+                    <div class="col-sm-12">
+                        <input type="text" class="form-control" id="txtItemCode" style="display:none">
+                    </div>
+                    <div class="col-lg-9 col-md-9 col-sm-6">
+                        <div class="form-group">
+                            <label> Item Description</label>
+                            <input type="text" class="form-control" autocomplete="off" maxlength="200" id="txtItemDescription" />
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-12">
+                        <div class="form-group">
+                            <label> Unit of Measure</label>
+                            <select class="selectpicker" data-live-search="true" id="cboUnitOfMeasure" title="Choose Unit of Measure" data-size="8">
+                                <option value="0">Choose Unit of Measure</option>
+                                @foreach (var mg in ViewBag.UMappcodes)
+                                {
+                                    <option value="@mg.UnitOfMeasure">@mg.Uompdesc</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label> Pack Unit</label>
+                            <select class="selectpicker" data-live-search="true" id="cboPackUnit" title="Choose Pack Unit" data-size="8">
+                                <option value="0"> Choose Pack Unit</option>
+                                @foreach (var mg in ViewBag.PUappcodes)
+                                {
+                                    <option value="@mg.ApplicationCode">@mg.CodeDesc</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label> Pack Size</label>
+                            <input id="txtPackSize" class="form-control integerFormat" autocomplete="off" maxlength="4" value="1" />
+
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label> Inventory Class</label>
+                            <select class="selectpicker" data-live-search="true" id="cboInventoryClass" title="Choose Inventory Class" data-size="8">
+                                <option value="S">Stockable</option>
+                                <option value="N">Non-Stockable</option>
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label> Item Class</label>
+                            <select class="selectpicker" data-live-search="true" id="cboItemClass" title="Choose Item Class" data-size="8">
+                                <option value="B">Bought Out</option>
+                                <option value="C">Consignment</option>
+                                <option value="I">In-House</option>
+                                <option value="S">Sub Contract</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label>Item Source</label>
+                            <select class="selectpicker" data-live-search="true" id="cboItemSource" title="Choose Item Source" data-size="8">
+                                <option value="L">Local</option>
+                                <option value="I">Imported</option>
+                                <option value="O">Out Station</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label>Item Criticality</label>
+                            <select class="selectpicker" data-live-search="true" id="cboItemCriticality" title="Choose Item Criticality" data-size="8">
+                                <option value="D">Desirable</option>
+                                <option value="E">Essential</option>
+                                <option value="V">Vital</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label> Barcode ID</label>
+                            <input type="text" class="form-control" autocomplete="off" maxlength="20" id="txtBarCodeID" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label>Active Status</label>
+                            <select class="selectpicker" data-live-search="true" id="cboActiveStatus" title="" data-size="8">
+                                <option value="true">Active</option>
+                                <option value="false">In-Active</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mar0 padbot10">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <p class="subheading">Item Parameter</p>
+                        <hr class="left" />
+                        @await Component.InvokeAsync("eSyaParameter", new { parameterType = "IT" })
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveItem" onclick="fnSaveItemCreation()">
+                            Save
+                        </button>
+                        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button" data-dismiss="modal"> Cancel</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

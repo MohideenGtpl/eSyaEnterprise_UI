@@ -1,0 +1,485 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
+using eSyaEnterprise_UI.Areas.Config.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using eSyaEnterprise_UI.Areas.Config.Data;
+using eSyaEnterprise_UI.ActionFilter;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
+
+namespace eSyaEnterprise_UI.Areas.Config.Controllers
+{
+    public class InventoryController : Controller
+    {
+        private readonly IeSyaConfigAPIServices _eSyaConfigAPIServices;
+        private readonly ILogger<InventoryController> _logger;
+
+        public InventoryController(IeSyaConfigAPIServices eSyaConfigAPIServices, ILogger<InventoryController> logger)
+        {
+            _eSyaConfigAPIServices = eSyaConfigAPIServices;
+            _logger = logger;
+        }
+        
+
+        #region Store Master
+        //Store Master
+        [Area("eSyaConfig")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public IActionResult V_41_00()
+        {
+            return View();
+        }
+        /// <summary>
+        /// Get Store Codes List for Grid
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetStoreCodes()
+        {
+            try
+            {
+                var serviceResponse = await _eSyaConfigAPIServices.HttpClientServices.GetAsync<List<DO_StoreMaster>>("StoreMaster/GetStoreCodes");
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetStoreCodes");
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetStoreCodes");
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetStoreCodes");
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Get Store parameter
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetStoreParameterList(int StoreCode)
+        {
+            try
+            {
+                var serviceResponse = await _eSyaConfigAPIServices.HttpClientServices.GetAsync<DO_StoreMaster>("StoreMaster/GetStoreParameterList?StoreCode=" + StoreCode);
+
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetStoreParameterList:For StoreCode {0}", StoreCode);
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetStoreParameterList:For StoreCode {0}", StoreCode);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetStoreParameterList:For StoreCode {0}", StoreCode);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Insert or Update Store Codes
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> InsertOrUpdateStoreCodes(DO_StoreMaster storecodes)
+        {
+            try
+            {
+                storecodes.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                storecodes.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                storecodes.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+
+                var serviceResponse = await _eSyaConfigAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("StoreMaster/InsertOrUpdateStoreCodes", storecodes);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:InsertOrUpdateStoreCodes:params:" + JsonConvert.SerializeObject(storecodes));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertOrUpdateStoreCodes:params:" + JsonConvert.SerializeObject(storecodes));
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+        /// <summary>
+        /// Delete Store Codes
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> DeleteStoreCode(int StoreCode)
+        {
+
+            try
+            {
+                var parameter = "?StoreCode=" + StoreCode;
+                var serviceResponse = await _eSyaConfigAPIServices.HttpClientServices.GetAsync<DO_ReturnParameter>("StoreMaster/DeleteStoreCode"+ parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:DeleteStoreCode:For StoreCode {0}", StoreCode);
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:DeleteStoreCode:For StoreCode {0}", StoreCode);
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+        #endregion Store Master
+
+        #region Inventory Rules
+        //Inventory Rules
+        [Area("eSyaConfig")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public IActionResult V_42_00()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// Getting Inventory Rules for Grid
+        /// </summary>
+
+        [HttpPost]
+        public JsonResult GetInventoryRules()
+        {
+            try
+            {
+                var serviceResponse = _eSyaConfigAPIServices.HttpClientServices.GetAsync<List<DO_InventoryRules>>("InventoryRules/GetInventoryRules").Result;
+                return Json(serviceResponse.Data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Insert or Update Inventory Rules
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertOrUpdateInventoryRules(DO_InventoryRules rule)
+        {
+
+            try
+            {
+                rule.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                rule.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                rule.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                if (rule.Isadd == 1)
+                {
+
+                    var serviceResponse = _eSyaConfigAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("InventoryRules/InsertInventoryRule", rule).Result;
+                    if (serviceResponse.Status)
+                        return Json(serviceResponse.Data);
+                    else
+                        return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+                else
+                {
+                    var serviceResponse = _eSyaConfigAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("InventoryRules/UpdateInventoryRule", rule).Result;
+                    if (serviceResponse.Status)
+                        return Json(serviceResponse.Data);
+                    else
+                        return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        #endregion Inventory Rules
+
+        #region Unit of Measure
+        //Unit of Measure
+        [Area("eSyaConfig")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public IActionResult V_43_00()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// Getting Unit Measure List for Grid
+        /// </summary>
+
+        [HttpPost]
+        public JsonResult GetUnitofMeasurements()
+        {
+            try
+            {
+                var serviceResponse = _eSyaConfigAPIServices.HttpClientServices.GetAsync<List<DO_UnitofMeasure>>("UnitofMeasure/GetUnitofMeasurements").Result;
+                return Json(serviceResponse.Data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Insert or Update Unite of Measure
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertOrUpdateUnitofMeasurement(DO_UnitofMeasure uoms)
+        {
+
+            try
+            {
+                uoms.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                uoms.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                uoms.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                var serviceResponse = _eSyaConfigAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("UnitofMeasure/InsertOrUpdateUnitofMeasurement", uoms).Result;
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+        #endregion Unit of Measure
+
+        #region Store Business Link
+        //Unit of Measure
+        [Area("eSyaConfig")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public async Task<IActionResult> V_44_00()
+        {
+            try
+            {
+                var serviceResponse = await _eSyaConfigAPIServices.HttpClientServices.GetAsync<List<DO_BusinessLocation>>("StoreMaster/GetBusinessKey");
+
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        ViewBag.BusinessKey = serviceResponse.Data.Select(b => new SelectListItem
+                        {
+                            Value = b.BusinessKey.ToString(),
+                            Text = b.LocationDescription,
+                        }).ToList();
+
+                        return View();
+                        //return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:StoreBusinessLink");
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:StoreBusinessLink");
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:StoreBusinessLink");
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Get Store List for js tree
+        /// </summary>
+        [Produces("application/json")]
+        [HttpGet]
+        public async Task<JsonResult> GetStoreList(int BusinessKey)
+        {
+            try
+            {
+                List<jsTreeObject> jsTree = new List<jsTreeObject>();
+
+                jsTreeObject jsObj = new jsTreeObject
+                {
+                    id = "MM",
+                    parent = "#",
+                    text = "Stores",
+                    state = new stateObject { opened = true, selected = false }
+                };
+                jsTree.Add(jsObj);
+                var parameter = "?BusinessKey=" + BusinessKey;
+                var serviceResponse = await _eSyaConfigAPIServices.HttpClientServices.GetAsync<List<DO_StoreMaster>>("StoreMaster/GetStoreList" + parameter);
+                var storeList = serviceResponse.Data;
+
+                if (storeList != null)
+                {
+                    //Add Form
+                    foreach (var f in storeList.OrderBy(o => o.StoreCode))
+                    {
+                        if (f.ActiveStatus)
+                        {
+                            jsObj = new jsTreeObject
+                            {
+                                id = "ST" + "T" + "_" + f.StoreCode.ToString(),
+                                text = f.StoreDesc,
+                                GroupIndex = f.StoreCode.ToString(),
+                                parent = "MM",
+                                icon = "/images/jsTree/checkedstate.jpg",
+                                state = new stateObject { opened = true, selected = false }
+                            };
+                            jsTree.Add(jsObj);
+                        }
+                        else
+                        {
+                            jsObj = new jsTreeObject
+                            {
+                                id = "ST" + "F" + "_" + f.StoreCode.ToString(),
+                                text = f.StoreDesc,
+                                GroupIndex = f.StoreCode.ToString(),
+                                parent = "MM",
+                                state = new stateObject { opened = true, selected = false }
+                            };
+                            jsTree.Add(jsObj);
+                        }
+                    }
+                }
+                return Json(jsTree);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetStoreList");
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        ///Get Store Business Link Info
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetStoreBusinessLinkInfo(int BusinessKey, int StoreCode)
+        {
+            try
+            {
+                var parameter = "?BusinessKey=" + BusinessKey + "&StoreCode=" + StoreCode;
+                var serviceResponse = await _eSyaConfigAPIServices.HttpClientServices.GetAsync<DO_StoreBusinessLink>("StoreMaster/GetStoreBusinessLinkInfo" + parameter);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetStoreBusinessLinkInfo:For BusinessKey {0} with StoreCode entered {1}", BusinessKey, StoreCode);
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetStoreBusinessLinkInfo:For BusinessKey {0} with StoreCode entered {1}", BusinessKey, StoreCode);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetStoreBusinessLinkInfo:For BusinessKey {0} with StoreCode entered {1}", BusinessKey, StoreCode);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Insert or Update Store Business Link
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> InsertUpdateStoreBusinessLink(DO_StoreBusinessLink strbuss)
+        {
+            try
+            {
+                strbuss.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                strbuss.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                strbuss.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                var serviceResponse = await _eSyaConfigAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("StoreMaster/InsertUpdateStoreBusinessLink", strbuss);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:InsertUpdateStoreBusinessLink:params:" + JsonConvert.SerializeObject(strbuss));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertUpdateStoreBusinessLink:params:" + JsonConvert.SerializeObject(strbuss));
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+        #endregion Store Business Link
+
+        #region Item Master
+        //Unit of Measure
+        [Area("eSyaConfig")]
+        public IActionResult V_74_00()
+        {
+            ViewBag.formName = "Item Master";
+            return View();
+        }
+        #endregion Item Master
+
+        #region Item Business Link
+        //Unit of Measure
+        [Area("eSyaConfig")]
+        public IActionResult V_75_00()
+        {
+            ViewBag.formName = "Item Business Link";
+            return View();
+        }
+        #endregion Item Business Link
+
+
+        #region Item Reorder Level
+        //Unit of Measure
+        [Area("eSyaConfig")]
+        public IActionResult V_76_00()
+        {
+            ViewBag.formName = "Item Reorder Level";
+            return View();
+        }
+        #endregion Item Master
+
+
+        
+    }
+}

@@ -1,0 +1,265 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Areas.eSyaPatientPortal.Data;
+using eSyaEnterprise_UI.Areas.eSyaPatientPortal.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using eSyaEnterprise_UI.ActionFilter;
+using eSyaEnterprise_UI.Utility;
+
+namespace eSyaEnterprise_UI.Areas.eSyaPatientPortal.Controllers
+{
+    public class PreRegistrationController : Controller
+    {
+        private readonly IeSyaPatientPortalAPIServices _eSyaPatientPortalAPIServices;
+        private readonly ILogger<PreRegistrationController> _logger;
+        public PreRegistrationController(IeSyaPatientPortalAPIServices eSyaPatientPortalAPIServices, ILogger<PreRegistrationController> logger)
+        {
+            _eSyaPatientPortalAPIServices = eSyaPatientPortalAPIServices;
+            _logger = logger;
+        }
+
+        [Area("eSyaPatientPortal")]
+        public async Task<IActionResult> Index()
+        {
+            try
+            {
+                List<int> l_ac = new List<int>();
+                l_ac.Add(PatientCodeTypeValues.MotherTongue);
+                l_ac.Add(PatientCodeTypeValues.RelationShip);
+                l_ac.Add(PatientCodeTypeValues.SpeakingLanguage);
+                l_ac.Add(PatientCodeTypeValues.RefferedBy);
+                l_ac.Add(PatientCodeTypeValues.Complaints);
+               
+                var response = await _eSyaPatientPortalAPIServices.HttpClientServices.PostAsJsonAsync<List<DO_ApplicationCodes>>("CommonData/GetApplicationCodesByCodeTypeList", l_ac);
+                var nationality_Res = await _eSyaPatientPortalAPIServices.HttpClientServices.GetAsync<List<DO_IsdCodes>>(" PatientPreRegistration/GetISDCodes");
+
+
+                if (response.Status && nationality_Res.Status)
+                {
+                    if (response.Data != null)
+                    {
+                        List<DO_ApplicationCodes> app_codes = response.Data;
+
+                        ViewBag.MotherTongueList = app_codes.Where(w => w.CodeType == PatientCodeTypeValues.MotherTongue).Select(b => new SelectListItem
+                        {
+                            Value = b.ApplicationCode.ToString(),
+                            Text = b.CodeDesc,
+                        }).ToList();
+
+                        ViewBag.RelationShip = app_codes.Where(w => w.CodeType == PatientCodeTypeValues.RelationShip).Select(b => new SelectListItem
+                        {
+                            Value = b.ApplicationCode.ToString(),
+                            Text = b.CodeDesc,
+                        }).ToList();
+
+                        ViewBag.RefferedByList = app_codes.Where(w => w.CodeType == PatientCodeTypeValues.RefferedBy).Select(b => new SelectListItem
+                        {
+                            Value = b.ApplicationCode.ToString(),
+                            Text = b.CodeDesc,
+                        }).ToList();
+
+                        ViewBag.SpeakingLanguageList = app_codes.Where(w => w.CodeType == PatientCodeTypeValues.SpeakingLanguage).Select(b => new SelectListItem
+                        {
+                            Value = b.ApplicationCode.ToString(),
+                            Text = b.CodeDesc,
+                        }).ToList();
+
+                        ViewBag.ComplaintsList = app_codes.Where(w => w.CodeType == PatientCodeTypeValues.Complaints).Select(b => new SelectListItem
+                        {
+                            Value = b.ApplicationCode.ToString(),
+                            Text = b.CodeDesc,
+                        }).ToList();
+                        ViewBag.Nationality = nationality_Res.Data.Select(b => new SelectListItem
+                        {
+                            Value = b.IsdCode.ToString(),
+                            Text = b.Nationality.ToString()
+                        }).ToList();
+
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(response.Message), "UD:Index");
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(response.Message), "UD:Index");
+                }
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:Index");
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Get State List by isdCode.
+        /// </summary>
+        [HttpGet]
+        public async Task<JsonResult> GetStateList(int isdCode)
+        {
+            try
+            {
+                var parameter = "?isdCode=" + isdCode;
+                var serviceResponse = await _eSyaPatientPortalAPIServices.HttpClientServices.GetAsync<List<DO_Place>>("PatientPreRegistration/GetStateList" + parameter);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetStateList:For isdCode", isdCode);
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetStateList:For isdCode ", isdCode);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetStateList:For isdCode ", isdCode);
+                throw ex;
+            }
+        }
+        /// <summary>
+        /// Get City List by isdCode and stateCode.
+        /// </summary>
+        [HttpGet]
+        public async Task<JsonResult> GetCityList(int isdCode, int? stateCode)
+        {
+            try
+            {
+                var parameter = "?isdCode=" + isdCode + "&stateCode=" + stateCode;
+                var serviceResponse = await _eSyaPatientPortalAPIServices.HttpClientServices.GetAsync<List<DO_Place>>("PatientPreRegistration/GetCityList" + parameter);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetCityList:For isdCode {0} with stateCode entered {1}", isdCode, stateCode);
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetCityList:For isdCode {0} with stateCode entered {1}", isdCode, stateCode);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetCityList:For isdCode {0} with stateCode entered {1}", isdCode, stateCode);
+                throw ex;
+            }
+        }
+        /// <summary>
+        /// Get Get AreaList by isdCode and stateCode and cityCode and pincode.
+        /// </summary>
+        [HttpGet]
+        public async Task<JsonResult> GetAreaList(int isdCode, int? stateCode, int? cityCode, string pincode)
+        {
+            try
+            {
+                var parameter = "?isdCode=" + isdCode + "&stateCode=" + stateCode + "&cityCode=" + cityCode + "&pincode=" + pincode;
+                var serviceResponse = await _eSyaPatientPortalAPIServices.HttpClientServices.GetAsync<List<DO_AddressIN>>("PatientPreRegistration/GetAreaList" + parameter);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetAreaList:For isdCode {0} with stateCode cityCode pincode entered {1} {2}{3}", isdCode, stateCode, cityCode, pincode);
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetAreaList:For isdCode {0} with stateCode cityCode pincode entered {1} {2}{3}", isdCode, stateCode, cityCode, pincode);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetAreaList:For isdCode {0} with stateCode cityCode pincode entered {1} {2}{3}", isdCode, stateCode,cityCode,pincode);
+                throw ex;
+            }
+        }
+
+
+        /// <summary>
+        /// Get Patient Area details for select by default dropdown values based on  pincode Text box
+        /// UI Reffered - Patient PreRegistrations
+        [HttpGet]
+        public async Task<JsonResult> GetAreaDetailsbyPincode(int isdCode, string pincode)
+        {
+            try
+            {
+                var parameter = "?isdCode=" + isdCode  + "&pincode=" + pincode;
+                var serviceResponse = await _eSyaPatientPortalAPIServices.HttpClientServices.GetAsync<DO_AddressIN>("PatientPreRegistration/GetAreaDetailsbyPincode" + parameter);
+                if (serviceResponse.Status)
+                {
+
+                    return Json(serviceResponse.Data);
+                  
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetAreaDetailsbyPincode:For isdCode {0} with stateCode cityCode pincode entered {1} ", isdCode,  pincode);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetAreaDetailsbyPincode:For isdCode {0} with  pincode entered {1} }", isdCode,  pincode);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Insert into Patient PreRegistration.
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> InsertPatientPreRegistration(DO_PatientPreRegistration obj)
+        {
+            try
+            {
+                obj.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                obj.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                obj.Prdate = DateTime.Now;
+                var serviceResponse = await _eSyaPatientPortalAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("PatientPreRegistration/InsertPatientPreRegistration", obj);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:InsertPatientPreRegistration:params:" + JsonConvert.SerializeObject(obj));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertPatientPreRegistration:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+    }
+}

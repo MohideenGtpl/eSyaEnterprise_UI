@@ -1,0 +1,60 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+
+namespace eSyaEnterprise_UI.Areas.eSyaPayroll.Controllers
+{
+    public class EmployeeController : Controller
+    {
+        [Area("eSyaPayroll")]
+        public IActionResult V_4000_00()
+        {
+            return View();
+        }
+
+        [Area("eSyaPayroll")]
+        public IActionResult _EmployeeDetails()
+        {
+            return View();
+        }
+        [Area("eSyaPayroll")]
+        public IActionResult _PersonalInformation()
+        {
+            return View();
+        }
+        [Area("eSyaPayroll")]
+        public IActionResult _SalaryInfo()
+        {
+            return View();
+        }
+        [Area("eSyaPayroll")]
+        public IActionResult _FamilyInfo()
+        {
+            return View();
+        }
+
+        [Area("eSyaPayroll")]
+        public IActionResult _EducationInfo()
+        {
+            return View();
+        }
+
+        [Area("eSyaPayroll")]
+        public IActionResult _PreviousJobs()
+        {
+            return View();
+        }
+        [Area("eSyaPayroll")]
+        public IActionResult _CurrentJob()
+        {
+            return View();
+        }
+        [Area("eSyaPayroll")]
+        public IActionResult _FixedDeduction()
+        {
+            return View();
+        }
+    }
+}

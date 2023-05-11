@@ -1,0 +1,340 @@
+﻿
+@{
+    ViewData["Title"] = "_UserCreation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/css/jsTree.css" rel="stylesheet" />
+@section scripts{
+    <script src="~/js/jsTree.js"></script>
+    <script src="~/js/Config/UserCreation.js"></script>
+}
+
+<style>
+    .mdl-tabs__tab-bar {
+        justify-content: flex-start !important;
+    }
+
+    .mdl-tabs__tab {
+        width: 220px;
+    }
+
+    .mdl-tabs__panel {
+        padding: 24px 15px;
+    }
+</style>
+
+<div class="row">
+    <div class="col-lg-12 collapse">
+        <div class="form-group">
+            <label>User ID </label>
+            <input type="text" id="txtUserId" name="UserId" value="" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-4 col-sm-12">
+        <div class="form-group">
+            <label>Login ID </label>
+            <input type="text" id="txtLoginId" name="LoginID" value="" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-12">
+        <div class="form-group">
+            <label>Login Description </label>
+            <input type="text" id="txtLoginDescription" name="LoginDescription" value="" class="form-control" />
+        </div>
+    </div>
+    @*<div class="col-lg-3 col-md-4 col-sm-12">
+            <div class="form-group">
+                <label>Preferred Language </label>
+                <input type="text" id="txtPreferredLanguage" name="Preferred Language" value="" class="form-control" />
+            </div>
+        </div>*@
+    <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+        <div class="form-group">
+            <label>Preferred Language</label>
+            <select class="selectpicker" data-live-search="true" id="cboPreferredLanguage" data-size="5">
+                <option value="0">Choose Preferred Language</option>
+                @foreach (var mg in ViewBag.PLappcodes)
+                {
+                    <option value="@mg.ApplicationCode">@mg.CodeDesc</option>
+                }
+            </select>
+
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-4 col-sm-12">
+        <div class="form-group">
+            <label>Password </label>
+            <input type="password" id="txtPassword" name="Password" value="" class="form-control" />
+        </div>
+    </div>
+
+</div>
+<div class="row">
+
+
+    @*<div class="col-lg-3 col-md-4 col-sm-12">
+            <div class="form-group">
+                <label>Country </label>
+                <input type="text" id="txtcountry" name="country" value="" class="form-control" />
+            </div>
+        </div>*@
+    <div class="col-lg-2 col-md-4 col-sm-12">
+        <div class="form-group">
+            <label>Mobile No </label>
+            <input type="text" id="txtmobileno" name="mobileno" value="" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-12">
+        <div class="form-group">
+            <label>Email ID </label>
+            <input type="text" id="txtemailid" name="emailid" value="" class="form-control" />
+        </div>
+    </div>
+
+</div>
+
+@*<div class="row">
+    <div class="col-lg-2 col-md-4 col-sm-12">
+        <div class="form-group">
+            <label>Photo </label>
+            <img src="#" alt="" id="imgPhotoPreview" />
+            <input type="file" id="imgPhoto" style="display: none;" />
+            <input type="button" value="Add Photo" onclick="document.getElementById('imgPhoto').click();" class="btn-upload" />
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-12">
+        <div class="form-group">
+            <label>Digital Signature </label>
+            <img src="#" alt="" id="imgSignaturePreview" />
+            <input type="file" id="imgSignature" style="display: none;" />
+            <input type="button" value="Add Signature" onclick="document.getElementById('imgSignature').click();" class="btn-upload" />
+
+        </div>
+    </div>
+</div>*@
+
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-4">
+        <div class="form-group">
+            <label>Photo </label>
+            <div class="imagedig" style="border:thin; padding-bottom:5px;" id="imgPhoto">
+                <img id="imgPhotoimageblah" src="">
+                <input class="mdl-textfield__input fullwidth FileUpload" id="Photoimage" type="file" name="file" onchange="readPhotoimage(this);" enctype="multipart/form-data" style="border-bottom:none !important" />
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 col-md-4 col-sm-4">
+        <div class="form-group">
+            <label>Photo </label>
+            <div class="imagedig" style="border:thin; padding-bottom:5px;" id="imgDS">
+                <img id="imgDSimageblah" src="">
+                <input class="mdl-textfield__input fullwidth FileUpload" id="DSimage" type="file" name="file" onchange="readDSimage(this);" enctype="multipart/form-data" style="border-bottom:none !important" />
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="row padbot10">
+
+    <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button mr-10" id="btnSaveUserMaster" onclick="fnSaveUserMaster();">
+            Save
+        </button>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent cancel-button" id="btnCancelUserMaster" onclick="fnCancelUserMaster();"> Cancel</button>
+    </div>
+</div>
+
+<div class="row" id="jqBusinessSegmentDiv">
+    <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12 col-xs-12 form-group">
+        <table id="jqgUserBusinessSegment"></table>
+        <div id="jqpUserBusinessSegment"></div>
+    </div>
+</div>
+
+
+<div class="modal fade in" id="PopupBusinessSegment">
+    <div class="modal-dialog modal-md  " role="document" style="box-shadow:none;">
+        <div class="modal-content ">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Edit Business Segment</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <input type="text" class="form-control" id="txtCodeType" style="display:none">
+                    </div>
+                </div>
+                <div class="row padbot4">
+                    <div class="col-lg-12 collapse">
+                        <div class="form-group">
+                            <label>Business Key </label>
+                            <input type="text" id="txtBusinessKey" name="BusinessKey" value="" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label for="txtLocationDescription">Location Description</label>
+                            <input id="txtLocationDescription" class="form-control" maxlength="50" type="text" />
+
+                        </div>
+                    </div>
+                    <div class="col-lg-6  col-md-6 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label class="lable-color"> User Group</label>
+                            <select class="selectpicker" data-live-search="false" id="cboUserGroup" title="">
+                                <option>choose User Group</option>
+                                @foreach (var mg in ViewBag.UTappcodes)
+                                {
+                                    <option value="@mg.ApplicationCode">@mg.CodeDesc</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-6  col-md-6 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <div>
+                                <label class="lable-color"> User Type</label>
+                                <select class="selectpicker" data-live-search="false" id="cboUserType" title="">
+                                    <option>choose User Type</option>
+                                    @foreach (var mg in ViewBag.UTappcodes)
+                                    {
+                                        <option value="@mg.ApplicationCode">@mg.CodeDesc</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6  col-md-6 col-sm-12 col-xs-12">
+                        <div class="default-checkbox">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsMultiSegmentApplicable">
+                                <input type="checkbox" id="chkIsMultiSegmentApplicable" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">Allow Multiple Financial Year?</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3  col-md-3 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label class="lable-color">Status</label>
+                            <div>
+                                <select class="selectpicker" data-live-search="false" id="cboActiveStatus" title="">
+                                    <option value="true">Active</option>
+                                    <option value="false">Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveBusinessSegment">
+                            Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="#"> Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade in" id="PopupMenuLink">
+    <div class="modal-dialog modal-lg  " role="document" style="box-shadow:none;">
+        <div class="modal-content ">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Action</h4>
+            </div>
+
+            <div class="modal-body">
+                <div>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-6">
+                            <div id="jstUserGroup"></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveBusinessSegment">
+                            Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="#"> Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    //function readURLforPhoto(input) {
+    //    if (input.files && input.files[0]) {
+    //        var reader = new FileReader();
+
+    //        reader.onload = function (e) {
+    //            $('#imgPhotoPreview').attr('src', e.target.result);
+
+    //        }
+
+    //        reader.readAsDataURL(input.files[0]);
+    //    }
+    //}
+
+    //$("#imgPhoto").change(function () {
+    //    readURLforPhoto(this);
+    //});
+
+    //function readURLforSignature(input) {
+    //    if (input.files && input.files[0]) {
+    //        var reader = new FileReader();
+
+    //        reader.onload = function (e) {
+    //            $('#imgSignaturePreview').attr('src', e.target.result);
+
+    //        }
+
+    //        reader.readAsDataURL(input.files[0]);
+    //    }
+    //}
+
+    //$("#imgSignature").change(function () {
+    //    readURLforSignature(this);
+    //});
+
+    function readPhotoimage(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('imgPhotoimageblah').src = e.target.result;
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function readDSimage(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('imgDSimageblah').src = e.target.result;
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+
+</script>
+

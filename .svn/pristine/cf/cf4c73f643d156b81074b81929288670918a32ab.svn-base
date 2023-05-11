@@ -1,0 +1,242 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@section scripts{
+
+    <script src="~/js/jquery.jqGrid.min.js"></script>
+}
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-12">
+            <div class="card mb-2">
+                <div class="card-body">
+                    @*<h4>Patient Info</h4>
+                    <hr class="left" />*@
+                    <div class="divFixedBar">
+                        <div class="row mr-0">
+                            <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12 col-xs-12 d-flex align-items-center">
+
+                                <div>
+                                    <p><span class="labelname"><i class="fas fa-chevron-right c-lightgrey"></i> Patient Name:</span><span id="lblPatientName"></span>&nbsp;</p>
+                                    <p class="m-0"><span class="labelname"><i class="fas fa-chevron-right c-lightgrey"></i> Age:</span><span id="lblAge"></span>&nbsp;</p>
+
+
+                                </div>
+                            </div>
+                            <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12 col-xs-12 d-flex align-items-center">
+
+                                <div>
+                                    <p><span class="labelname"><i class="fas fa-chevron-right c-lightgrey"></i> ID:</span> <span id="lblPatientID"></span>&nbsp;</p>
+                                    <p class="m-0"><span class="labelname"><i class="fas fa-birthday-cake c-lightgrey"></i> DOB:</span><span id="lblDOB"></span>&nbsp;</p>
+                                </div>
+                            </div>
+                            <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12 col-xs-12 d-flex align-items-center">
+
+                                <div>
+                                    <p><span class="labelname"><i class="fas fa-chevron-right c-lightgrey"></i> Gender:</span><span id="lblGender"></span>&nbsp;</p>
+                                    <p><span class="labelname"><i class="fas fa-mobile c-lightgrey"></i> Tel:</span><span id="lblTel"></span>&nbsp;</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+             </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-6" hidden>
+            <div class="card">
+                <div class="card-body">
+                    <h4>Family Member</h4>
+                    <hr class="left" />
+                    <table id="jqgFamilyMember"></table>
+                    <div id="jqpFamilyMember"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-6" hidden>
+            <div class="card">
+                <div class="card-body">
+                    <h4>Allergy</h4>
+                    <hr class="left" />
+                    <table id="jqgAllergym"></table>
+                    <div id="jqpAllergym"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+ 
+
+        <div class="row">
+           
+            <div class="col-lg-12 col-md-12 col-12">
+                <div class="card my-2">
+                    <div class="card-body">
+                        
+                                <h4>Visit Info</h4>
+                                <hr class="left" />
+                                <table id="jqgVisitInfo"></table>
+                                <div id="jqpVisitInfo"></div>
+                   </div>
+                </div>
+
+            </div>
+</div>
+@*<script>
+    $(function () {
+        fnGridFamilyMember();
+        fnGridAllergy();
+        fnGridVisitInfo();
+    })
+    function fnGridFamilyMember() {
+        $("#jqgFamilyMember").jqGrid({
+            //  url: getBaseURL() + '/ApplicationCodes/GetApplicationCodesByCodeType?codeType=' + codeType,
+            mtype: 'Post',
+            datatype: 'json',
+            ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+            jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+            colNames: ["UHID", "Relation", "PatientName", "Age", "DOB", "Actions"],
+            colModel: [
+                { name: "UHID", width: 50, editable: true, align: 'left', hidden: false },
+                { name: "Relation", width: 70, editable: false, hidden: true, align: 'left', resizable: true },
+                { name: "PatientName", width: 120, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+                { name: "Age", width: 40, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 15 } },
+                { name: "DOB", width: 45, align: 'center', resizable: false, editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+                {
+                    name: 'edit', search: false, align: 'left', width: 45, sortable: false, resizable: false,
+                    formatter: function (cellValue, options, rowdata, action) {
+                        return '<button class="mr-1 btn btn-outline" id="btnApplicationCodes"><i class="fa fa-ellipsis-v"></i></button>'
+                    }
+                },
+            ],
+            pager: "#jqpFamilyMember",
+            rowNum: 10000,
+            rownumWidth: '55',
+            pgtext: null,
+            pgbuttons: null,
+            loadonce: true,
+            viewrecords: true,
+            gridview: true,
+            rownumbers: true,
+            height: 'auto',
+            align: "left",
+            width: 'auto',
+            autowidth: true,
+            shrinkToFit: true,
+            forceFit: true,
+            scrollOffset: 0, caption: 'Family Member',
+            loadComplete: function (data) {
+                SetGridControlByAction();
+                fnJqgridSmallScreen("jqgFamilyMember");
+            },
+            onSelectRow: function (rowid, status, e) {
+            },
+        }).jqGrid('navGrid', '#jqpFamilyMember', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpFamilyMember', {
+            caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshApplicationCodes
+        }).jqGrid('navButtonAdd', '#jqpFamilyMember', {
+            caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddApplicationCodes
+        });
+        fnAddGridSerialNoHeading();
+    }
+    function fnGridRefreshApplicationCodes() {
+
+    }
+    function fnAddApplicationCodes() {
+
+    }
+    function fnGridAllergy() {
+        $("#/*jqgAllergy*/").jqGrid({
+            //  url: getBaseURL() + '/ApplicationCodes/GetApplicationCodesByCodeType?codeType=' + codeType,
+            mtype: 'Post',
+            datatype: 'json',
+            ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+            jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+            colNames: ["Prepared by", "Allergy Description"],
+            colModel: [
+                { name: "PreparedBy", width: 50, editable: true, align: 'left', hidden: false },
+                { name: "AllergyDescription", width: 70, editable: false, hidden: true, align: 'left', resizable: true },
+               
+            ],
+            pager: "#jqpAllergy",
+            rowNum: 10000,
+            rownumWidth: '55',
+            pgtext: null,
+            pgbuttons: null,
+            loadonce: true,
+            viewrecords: true,
+            gridview: true,
+            rownumbers: true,
+            height: 'auto',
+            align: "left",
+            width: 'auto',
+            autowidth: true,
+            shrinkToFit: true,
+            forceFit: true,
+            scrollOffset: 0, caption: 'Allergy',
+            loadComplete: function (data) {
+                SetGridControlByAction();
+                fnJqgridSmallScreen("jqgAllergy");
+            },
+            onSelectRow: function (rowid, status, e) {
+            },
+        }).jqGrid('navGrid', '#jqpAllergy', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpAllergy', {
+            caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custAllergyRefresh", position: "first", onClickButton: fnGridRefreshAllergy
+            }).jqGrid('navButtonAdd', '#jqpAllergy', {
+                caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAllergyAdd', position: 'first', onClickButton: fnAddAllergy
+        });
+        fnAddGridSerialNoHeading();
+    }
+    function fnGridRefreshAllergy() {
+
+    }
+    function fnAddAllergy() {
+
+    }
+    function fnGridVisitInfo() {
+        $("#jqgVisitInfo").jqGrid({
+            //  url: getBaseURL() + '/ApplicationCodes/GetApplicationCodesByCodeType?codeType=' + codeType,
+            mtype: 'Post',
+            datatype: 'json',
+            ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+            jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+            colNames: ["Visit Date", "Doctor Name","Action"],
+            colModel: [
+                { name: "VisitDate", width: 50, editable: true, align: 'left', hidden: false },
+                { name: "DoctorName", width: 70, editable: false, hidden: true, align: 'left', resizable: true },
+                { name: "edit", width: 70, editable: false, hidden: true, align: 'left', resizable: true },
+
+            ],
+            pager: "#jqpVisitInfo",
+            rowNum: 10000,
+            rownumWidth: '55',
+            pgtext: null,
+            pgbuttons: null,
+            loadonce: true,
+            viewrecords: true,
+            gridview: true,
+            rownumbers: true,
+            height: 'auto',
+            align: "left",
+            width: 'auto',
+            autowidth: true,
+            shrinkToFit: true,
+            forceFit: true,
+            scrollOffset: 0, caption: 'Visit Info',
+            loadComplete: function (data) {
+                SetGridControlByAction();
+                fnJqgridSmallScreen("jqpVisitInfo");
+            },
+            onSelectRow: function (rowid, status, e) {
+            },
+        }).jqGrid('navGrid', '#jqpVisitInfo', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpVisitInfo', {
+            caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custVisitInfoRefresh", position: "first", onClickButton:''
+            }).jqGrid('navButtonAdd', '#jqpVisitInfo', {
+            caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgVisitInfoAdd', position: 'first', onClickButton: ''
+        });
+        fnAddGridSerialNoHeading();
+    }
+    function fnGridRefreshAllergy() {
+
+    }
+    function fnAddAllergy() {
+
+    }
+</script>*@

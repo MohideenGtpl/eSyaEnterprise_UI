@@ -1,0 +1,75 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.ActionFilter;
+using eSyaEnterprise_UI.Areas.eSyaOutPatient.Data;
+using eSyaEnterprise_UI.Areas.eSyaOutPatient.Models;
+using eSyaEnterprise_UI.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+
+namespace eSyaEnterprise_UI.Areas.eSyaOutPatient.Controllers
+{
+
+    public class AppointmentSchedularController : Controller
+    {
+        private readonly IeSyaOutPatientAPIServices _eSyaOutPatientAPIServices;
+        private readonly ILogger<AppointmentSchedularController> _logger;
+
+        public AppointmentSchedularController(IeSyaOutPatientAPIServices eSyaOutPatientAPIServices, ILogger<AppointmentSchedularController> logger)
+        {
+            _eSyaOutPatientAPIServices = eSyaOutPatientAPIServices;
+            _logger = logger;
+        }
+
+
+        [Area("eSyaOutPatient")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public IActionResult V_3010_00()
+        {
+            return View();
+        }
+
+        public async Task<JsonResult> GetClinicConsultationTypeByBKey(int businessKey)
+        {
+            try
+            {
+                var serviceResponse = await _eSyaOutPatientAPIServices.HttpClientServices.GetAsync<List<DO_ClinicConsultationType>>("DoctorClinic/GetClinicConsultationTypeByBKey?businessKey=" + businessKey);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetClinicConsultationTypeByBKey:params:businessKey:{0}" + businessKey);
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetClinicConsultationTypeByBKey:params:businessKey:{0}" + businessKey);
+                throw ex;
+            }
+        }
+
+        public JsonResult GetSpecialtyListByBKey(int businessKey)
+        {
+            try
+            {
+                var serviceResponse = _eSyaOutPatientAPIServices.HttpClientServices.GetAsync<List<DO_Specialty>>("DoctorClinic/GetSpecialtyListByBKey?businessKey=" + businessKey).Result;
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetSpecialtyListByBKey:params:businessKey:{0}" + businessKey);
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetSpecialtyListByBKey:params:businessKey:{0}" + businessKey);
+                throw ex;
+            }
+        }
+    }
+}

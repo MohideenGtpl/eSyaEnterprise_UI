@@ -1,0 +1,21 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace eSyaEnterprise_UI.Areas.ConfigureWardRoom.Models
+{
+    public class DO_WardRoomLink
+    {
+        public int BusinessKey { get; set; }
+        public int WardId { get; set; }
+        public int RoomId { get; set; }
+        public int LocationId { get; set; }
+        public int NoOfBeds { get; set; }
+        public int OccupiedBeds { get; set; }
+        public bool ActiveStatus { get; set; }
+        public string FormId { get; set; }
+        public int UserID { get; set; }
+        public string TerminalID { get; set; }
+    }
+}

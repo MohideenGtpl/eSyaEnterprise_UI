@@ -1,0 +1,26 @@
+﻿
+$(document).ready(function () {
+    $('#jstDoctorBusinessLink').jstree({
+        "checkbox": {
+            "keep_selected_style": false
+        },
+        "plugins": ["checkbox"],
+        'core': {
+            'data': [
+                
+                {
+                    'text': 'Doctor Business Link',
+                    'state': {
+                        'opened': true,
+                       
+                    },
+                    'children': [
+                        { 'text': 'Doctor 1' },
+                        'Doctor 2'
+                    ]
+                }
+            ]
+           
+        }
+    });
+})

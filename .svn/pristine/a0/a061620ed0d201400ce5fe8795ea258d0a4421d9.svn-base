@@ -1,0 +1,57 @@
+﻿function fnBusinessLinkGrid() {
+
+    $("#jqtBusinessLink").jqGrid(
+
+        {
+
+
+            //url:,
+            //mtype: 'POST',
+            datatype: 'json',
+            ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+
+            serializeGridData: function (postdata) {
+                postdata.Vendorcode = $("#txtVendorCode").val();
+                return JSON.stringify(postdata.Vendorcode);
+            },
+            colNames: ['', 'Segment Description', 'Business Location', 'Select'],
+            colModel: [
+                { name: "BusinessKey", width: 70, editable: true, align: 'left', hidden: true },
+                { name: 'BusinessSegment', index: 'BusinessSegment', width: '270', resizable: false },
+                { name: 'BusinessLocation', index: 'BusinessLocation', width: '228', resizable: false },
+                {
+                    name: 'ActiveStatus', index: 'ActiveStatus', width: 70, resizable: false, align: 'center',
+                    formatter: "checkbox", formatoptions: { disabled: false },
+                    edittype: "checkbox", editoptions: { value: "true:false" }
+                },
+            ],
+            rowList: [5, 10, 20],
+            rowNum: 5,
+            pager: "#jqpBusinessLink",
+            viewrecords: true,
+            gridview: true,
+            rownumbers: true,
+            height: 'auto',
+            width: 'auto',
+            autowidth: false,
+            shrinkToFit: false,
+            forceFit: false,
+            scroll: false, scrollOffset: 0,
+            onSelectRow: function (rowid) {
+                BusinessKey = $("#jqtBusinessLink").jqGrid('getCell', rowid, 'BusinessKey');
+
+            },
+            loadComplete: function (data) {
+                $(this).find(">tbody>tr.jqgrow:odd").addClass("myAltRowClassEven");
+                $(this).find(">tbody>tr.jqgrow:even").addClass("myAltRowClassOdd");
+            },
+        });
+    jQuery("#jqtBusinessLink").jqGrid('navGrid', '#jqtBusinessLink', { edit: false, add: false, del: false, refreshtext: 'Refresh', searchtext: 'Search' });
+  
+}
+
+function _vendorBusinessLinkSave() {
+    debugger;
+
+    
+}

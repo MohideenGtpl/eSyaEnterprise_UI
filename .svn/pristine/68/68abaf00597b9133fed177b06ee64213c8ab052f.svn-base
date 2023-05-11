@@ -1,0 +1,78 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "ETM_12_00";
+    Layout = "~/Views/Shared/_Layout_m.cshtml";
+}
+
+@section scripts{
+
+    <script src="~/js/TokenSystem/DisplaySystem.js"></script>
+    <script src="~/js/utility/cf-component.js"></script>
+}
+
+<input type="hidden" id="hdBusinessKey" value=@ViewBag.BusinessKey />
+<input type="hidden" id="hdCounters" value=@ViewBag.ArrayOfCounters />
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="google" content="notranslate">
+    <title>ETM_007_00</title>
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/material.min.css" rel="stylesheet" />
+    <link href="~/css/all.min.css" rel="stylesheet" />
+    <link href="~/css/animate.css" rel="stylesheet" />
+    <link href="~/css/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/css/ui.jqgrid.css" rel="stylesheet" />
+    <link href="~/css/bootstrap-select.css" rel="stylesheet" />
+    <link href="~/css/jqgridcustomstyle.css" rel="stylesheet" />
+    <link href="~/css/site.css" rel="stylesheet" />
+    <link href="~/css/master.css" rel="stylesheet" />
+    <link href="~/css/esyafonts.css" rel="stylesheet" />
+    <link href="~/css/esyaTheme.css" rel="stylesheet" />
+    <link href="~/css/TokenSystem/tokensystem.css" rel="stylesheet" />
+
+
+</head>
+<body>
+
+        <div class="row divTK_panel" style="background-color:rgba(255,255,255, 0.3);">
+            <div class="col-lg-10 col-md-12 col-sm-12 rightDisplay p-r-0 p-0">
+                <div class="row" >
+                    @foreach (var counter in ViewBag.CounterList)
+            {
+                    <div class='col-lg-5 col-md-5 border-bottom align-items-center'>
+                        <button type='button' class='btn btn-sm btn-link text-dark text-center'>Counter No. @counter</button>
+                        <hr class='left w-100' />
+                        <p class='m-0 text-small f-11 text-center'> Now Serving</p>
+                    </div>
+                    <div class='col-lg-7 col-md-7  border-right border-bottom d-flex justify-content-center flex-column'>
+                        <span class='tokenNumberDisplay' id="lblTokenNumber_@counter.Replace(" ", "")"></span>
+                    </div>
+
+
+
+                    @*<div style="padding:5px 3px">
+                            <p class="text-english clinicNumber font-weight-bold">Counter No. @counter</p>
+                            <span class="clearfix"></span>
+                            <p class="text-center text-tokenNumber" style="margin:5px" id="lblTokenNumber_@counter.Replace(" ", "")"></p>
+                        </div>*@
+                }
+
+
+</div>
+                
+            </div>
+        </div>
+  
+
+</body>
+
+
+
+
+

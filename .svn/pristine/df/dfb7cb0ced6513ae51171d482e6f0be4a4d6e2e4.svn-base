@@ -1,0 +1,12 @@
+﻿using Microsoft.Extensions.Configuration;
+using System.Net.Http;
+
+namespace eSyaEnterprise_UI.Areas.eSyaUserManagement.Data
+{
+    public interface IeSyaUserManagementAPIServices
+    {
+        HttpClient GetHttpClient();
+
+        HttpClient GetConfigCSHttpClient(IConfiguration iConfig);
+    }
+}

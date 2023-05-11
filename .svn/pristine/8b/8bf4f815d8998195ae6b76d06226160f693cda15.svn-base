@@ -1,0 +1,308 @@
+﻿var _isInsert;
+$(document).ready(function () {
+    fnGridLoadCurrencyDenomination();
+});
+function fnGridLoadCurrencyDenomination() {
+
+    $("#jqgCurrencyDenomination").jqGrid('GridUnload');
+    $("#jqgCurrencyDenomination").jqGrid({
+        url: getBaseURL() + '/Currency/GetCurrencyDenominationInfoByCurrencyCode?CurrencyCode=' + $('#cbocurrencycode').val(),
+        mtype: 'Post',
+        datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Currency Code", "DenomId", "Denomination Description", "BnorCnId", "Denom Conversion", "Sequence", "Effective Date", "Active", "Actions","Delete"],
+        colModel: [
+            { name: "CurrencyCode", width: 50, editable: true, align: 'left', hidden: true },
+            { name: "DenomId", width: 70, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "DenomDesc", width: 170, editable: false, hidden: false, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            { name: "BnorCnId", width: 70, editable: false, hidden: true, align: 'left', resizable: true },
+            { name: "DenomConversion", width: 70, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "Sequence", width: 50, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "EffectiveDate", editable: true, width: 90, align: 'left', formatter: 'date' },
+           
+            { name: "ActiveStatus", width: 35, editable: false, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+            {
+                name: 'Edit', search: false, align: 'left', width: '74', sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditCurrencyDenomination(event,\'edit\')"><i class="fas fa-pencil-alt"></i> Edit </button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnEditCurrencyDenomination(event,\'view\')"><i class="far fa-file-alt"></i> View </button>'
+                }
+            },
+            {
+                name: 'delete', search: false, align: 'left', width: 100, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid cancel-button" id="jqgDelete", onclick="return fnDeleteDenominationInformation(event)"><i class="far fa-trash-alt"></i> Delete </button>'
+                }
+            },
+        ],
+        pager: "#jqpCurrencyDenomination",
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0,
+        loadComplete: function (data) {
+            //SetDenominationGridControlByAction("jqgCurrencyDenomination");
+         },
+        
+    }).jqGrid('navGrid', '#jqpCurrencyDenomination', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpCurrencyDenomination', {
+        caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshCurrencyDenomination
+    }).jqGrid('navButtonAdd', '#jqpCurrencyDenomination', {
+        caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddCurrencyDenomination
+    });
+    //fnAddGridSerialNoHeading();
+}
+
+function fnAddCurrencyDenomination() {
+    fnClearFields();
+    var id = $("#CurrencyCode").val();
+    if (id === 0 || id === "0") {
+        toastr.warning("Please select any Currency code type to add Denomination");
+    }
+    else {
+        $('#PopupCurrencyDenomination').modal('show');
+        $('#PopupCurrencyDenomination').find('.modal-title').text("Add Currency Denomination");
+        $("#btnSaveCurrencyDenomination").show();
+        $("#btnSaveCurrencyDenomination").html("Save");
+        $('#cboBnorCnId').attr('disabled', false);
+        $('#cboBnorCnId').selectpicker('refresh');
+        $("#txtDenomId").prop('disabled', false);
+        $("#txtDenomDescription").prop('disabled', false);
+        $("#txtDenomConversion").prop('disabled', false);
+        $("#txtSequence").prop('disabled', false);
+        $("#txtEffectiveDate").prop('disabled', false);
+        $("#chkActiveStatus").prop('disabled', false);
+        $("#chkActiveStatus").parent().addClass("is-checked");
+        _isInsert = true;
+    }
+}
+
+function fnEditCurrencyDenomination(e, actiontype) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgCurrencyDenomination').jqGrid('getRowData', rowid);
+    $('#PopupCurrencyDenomination').find('.modal-title').text("Update Currency Denomination");
+    $('#PopupCurrencyDenomination').modal('show');
+    $("#btnSaveCurrencyDenomination").html("Update");
+    $('#cboBnorCnId').attr('disabled', true);
+    $('#cboBnorCnId').val(rowData.BnorCnId);
+    $('#cboBnorCnId').selectpicker('refresh');
+    $("#txtDenomId").val(rowData.DenomId);
+    $("#txtDenomId").prop('disabled', true);
+    $("#txtDenomDescription").val(rowData.DenomDesc);
+    $("#txtDenomConversion").val(rowData.DenomConversion);
+    $("#txtSequence").val(rowData.Sequence);
+    if (rowData.EffectiveDate !== null) {
+        setDate($('#txtEffectiveDate'), rowData.EffectiveDate);
+    }
+    else {
+        $('#txtEffectiveDate').val('');
+    }
+    if (rowData.ActiveStatus === "true") {
+        $("#chkActiveStatus").parent().addClass("is-checked");
+    }
+    else { $('#chkActiveStatus').parent().removeClass("is-checked"); }
+    _isInsert = false;
+
+    if (actiontype == "edit") {
+        $("#btnSaveCurrencyDenomination").show();
+        $("#txtDenomDescription").prop('disabled', false);
+        $("#txtDenomConversion").prop('disabled', false);
+        $("#txtSequence").prop('disabled', false);
+        $("#txtEffectiveDate").prop('disabled', false);
+        $("#chkActiveStatus").prop('disabled', false);
+                                    
+       
+    }
+    if (actiontype == "view") {
+        $('#PopupCurrencyDenomination').find('.modal-title').text("View Currency Denomination");
+        $('#PopupCurrencyDenomination').modal('show');
+        $("#btnSaveCurrencyDenomination").hide();
+        $("#txtDenomId").prop('disabled', true);
+        $("#txtDenomDescription").prop('disabled', true);
+        $("#txtDenomConversion").prop('disabled', true);
+        $("#txtSequence").prop('disabled', true);
+        $("#txtEffectiveDate").prop('disabled', true);
+        $("#chkActiveStatus").prop('disabled', true);
+    }
+
+}
+
+function fnSaveCurrencyDenomination() {
+    if (ValidateCurrencyDenomination() === false) {
+        return;
+    }
+    obj = {
+        CurrencyCode: $("#cbocurrencycode").val(),
+        BnorCnId: $("#cboBnorCnId").val(),
+        DenomId: $("#txtDenomId").val(),
+        DenomDesc: $("#txtDenomDescription").val(),
+        DenomConversion: $("#txtDenomConversion").val(),
+        Sequence: $("#txtSequence").val(),
+        EffectiveDate: $("#txtEffectiveDate").val(),
+        ActiveStatus: $("#chkActiveStatus").parent().hasClass("is-checked")
+    };
+
+    $("#btnSaveCurrencyDenomination").attr("disabled", true);
+
+    $.ajax({
+        url: getBaseURL() + '/Currency/InsertUpdateCurrencyDenominationInformation',
+        type: 'POST',
+        datatype: 'json',
+        data: { isInsert: _isInsert, obj: obj },
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                $("#btnSaveCurrencyDenomination").html('<i class="fa fa-spinner fa-spin"></i> wait');
+                $("#PopupCurrencyDenomination").modal('hide');
+                fnClearFields();
+                fnGridRefreshCurrencyDenomination();
+               
+            }
+            else {
+                toastr.error(response.Message);
+                $("#btnSaveCurrencyDenomination").attr("disabled", false);
+            }
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnSaveCurrencyDenomination").attr("disabled", false);
+        }
+    });
+}
+
+function fnClearFields() {
+    $("#cboBnorCnId").val("0");
+    $("#txtDenomId").val('');
+    $("#txtDenomDescription").val('');
+    $("#txtDenomConversion").val('');
+    $("#txtSequence").val('');
+    $("#txtEffectiveDate").val('');
+    $("#chkActiveStatus").parent().hasClass("is-checked");   
+    $("#btnSaveCurrencyDenomination").attr("disabled", false);
+}
+
+function fnGridRefreshCurrencyDenomination() {
+    $("#jqgCurrencyDenomination").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+function ValidateCurrencyDenomination() {
+    if ($("#cboBnorCnId").val() === "0" || $("#cboBnorCnId").val() === "") {
+        toastr.warning("Please Select BN Or CN Id");
+        return false;
+    }
+
+    if (IsStringNullorEmpty($("#txtDenomId").val())) {
+        toastr.warning("Please Enter Denomination Id");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtDenomDescription").val())) {
+        toastr.warning("Please Enter Denomination Description");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtDenomConversion").val())) {
+        toastr.warning("Please Enter Denomination Conversion");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtSequence").val())) {
+        toastr.warning("Please Enter Sequence Number");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtEffectiveDate").val())) {
+        toastr.warning("Please Select Effective Date");
+        return false;
+    }
+}
+
+function fnAllowNumbersOnly(input) {
+    let value = input.value;
+    let numbers = value.replace(/[^0-9]/g, "");
+    input.value = numbers;
+}
+
+function fnDeleteDenominationInformation(e) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgCurrencyDenomination').jqGrid('getRowData', rowid);
+    var cCode = rowData.CurrencyCode;
+    var cDenomId = rowData.DenomId;
+    var cBnorCnId = rowData.BnorCnId;
+    bootbox.confirm({
+        title: 'Currency Denomination',
+        message: "Are you sure you want to delete ?",
+        buttons: {
+            confirm: {
+                label: 'Yes',
+                className: 'mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button'
+            },
+            cancel: {
+                label: 'No',
+                className: 'mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button'
+            }
+        },
+        callback: function (result) {
+            if (result) {
+                if ((cCode == null || cCode == undefined || cCode == "0" || cCode == '')
+                    || (cDenomId == null || cDenomId == undefined || cDenomId == "0" || cDenomId == '') ||
+                    (cBnorCnId == null || cBnorCnId == undefined || cBnorCnId == "0" || cBnorCnId == '')) {
+                    alert("Could not Delete");
+                    return false;
+                }
+                $.ajax({
+                    type: 'POST',
+                    url: getBaseURL() + '/Currency/DeleteCurrencyDenominationInformation',
+                    data: {
+                        currencyCode: cCode,
+                        DenomId: cDenomId,
+                        BnorCNId: cBnorCnId
+                    },
+                    success: function (response) {
+
+                        if (response.Status) {
+                            toastr.success(response.Message);
+                            fnGridRefreshCurrencyDenomination();
+                        }
+                        else {
+                            toastr.error(response.Message);
+                        }
+                        $("#jqgCurrencyDenomination").setGridParam({ datatype: 'json' }).trigger('reloadGrid');
+                    },
+                    error: function (response) {
+                        toastr.error("Couldn't Delete");
+                    }
+                });
+            }
+        }
+    });
+}
+
+//function SetDenominationGridControlByAction(jqg) {
+//    $('#' + jqg + '_iladd').removeClass('ui-state-disabled');
+//    $('#' + jqg + '_iledit').removeClass('ui-state-disabled');
+//    if (_userFormRole.IsInsert === false) {
+//        $('#' + jqg + '_iladd').addClass('ui-state-disabled');
+//    }
+//    if (_userFormRole.IsEdit === false) {
+//        $('#' + jqg + '_iledit').addClass('ui-state-disabled');
+//    }
+//    var eleEnable = document.querySelectorAll('#jqgDelete');
+
+//    for (var i = 0; i < eleEnable.length; i++) {
+//        eleEnable[i].disabled = false;
+//    }
+
+//    if (_userFormRole.IsDelete === false) {
+//        var eleDisable = document.querySelectorAll('#jqgDelete');
+//        for (var i = 0; i < eleDisable.length; i++) {
+//            eleDisable[i].disabled = true;
+//            eleDisable[i].className = "ui-state-disabled";
+//        }
+//    }
+
+//}

@@ -1,0 +1,210 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = "Doctor Scheduler";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/css/bootstrap-timepicker.css" rel="stylesheet" />
+
+@section scripts{
+    <script src="~/js/bootstrap-timepicker.js"></script>
+    <script src="~/js/eSyaClinicalServices/DoctorScheduler.js"></script>
+}
+
+@{
+    var userFormRole = (eSyaEnterprise_UI.Models.DO_UserFormRole)ViewBag.UserFormRole;
+}
+
+<script>
+    var _userFormRole = JSON.parse('@Html.Raw(Json.Serialize(userFormRole))');
+    var localization = {
+        SerialNumber: '@Localizer["SerialNumber"]',
+        ScheduleDate: '@Localizer["ScheduleDate"]',
+        Location: '@Localizer["Location"]',
+        Clinic: '@Localizer["Clinic"]',
+        ConsultationType: '@Localizer["ConsultationType"]',
+        SpecialtyId: '@Localizer["SpecialtyId"]',
+        Specialty: '@Localizer["Specialty"]',
+        DoctorId: '@Localizer["DoctorId"]',
+        DoctorName: '@Localizer["DoctorName"]',
+        FromTime: '@Localizer["FromTime"]',
+        ToTime: '@Localizer["ToTime"]',
+        Satus: '@Localizer["Satus"]',
+        Actions: '@Localizer["Actions"]',
+        DeActivate: '@Localizer["DeActivate"]',
+        Activate: '@Localizer["Activate"]',
+        Save: '@Localizer["Save"]',
+        EditDoctorSchedule: '@Localizer["EditDoctorSchedule"]',
+        ViewDoctorSchedule: '@Localizer["ViewDoctorSchedule"]',
+        Update: '@Localizer["Update"]',
+        ActiveDeActiveDoctorSchedule: '@Localizer["ActiveDeActiveDoctorSchedule"]',
+    };
+</script>
+
+<div class="row padbot10">
+    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+        <div class="form-group">
+            <label class="lable-color">@Localizer["BusinessLocation"]</label>
+            <select class="selectpicker" data-live-search="false" id="cboHBusinessKey" title="Select" asp-items="@ViewBag.BusinessKeyList" onchange="fnLoadSchedulerClinic()"></select>
+        </div>
+    </div>
+    <div class="col-lg-1 col-md-1 col-sm-4 col-xs-12">
+        <div class="form-group">
+            <label>@Localizer["FromDate"] </label>
+            <input id="dtFromDate" class="form-control datepicker" type="text" autocomplete="off" onkeydown="return false" />
+        </div>
+    </div>
+    <div class="col-lg-1 col-md-1 col-sm-4 col-xs-12">
+        <div class="form-group">
+            <label>@Localizer["ToDate"] </label>
+            <input id="dtToDate" class="form-control datepicker" type="text" autocomplete="off" onkeydown="return false" />
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-3 col-md-3 col-sm-4">
+        <div class="form-group">
+            <label><i class="lable-color"></i>@Localizer["Clinic"] </label>
+            <select class="selectpicker" data-live-search="false" id="cboHClinic" title="Select" onchange="fnLoadSchedulerConsultationType()"></select>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-4">
+        <div class="form-group">
+            <label><i class="lable-color"></i>@Localizer["ConsultationType"] </label>
+            <select class="selectpicker" data-live-search="false" id="cboHConsultationType" title="Select" onchange="fnLoadSchedulerSpecialty()"></select>
+        </div>
+    </div>
+</div>
+<div class="row form-group">
+    <div class="col-lg-12">
+        <table id="jqgDoctorScheduler"></table>
+        <div id="jqpDoctorScheduler"></div>
+    </div>
+</div>
+<div class="modal fade in" id="PopupDoctorScheduler" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content ">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">@Localizer["AddDoctorSchedule"] </h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <input type="text" class="form-control" id="txtSerialNumber" style="display:none">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label class="lable-color">@Localizer["Location"] </label>
+                            <input class="form-control" type="text" autocomplete="off" id="txtBusinessDesc" readonly />
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label class="lable-color">@Localizer["Clinic"] </label>
+                            <input class="form-control" type="text" autocomplete="off" id="txtClinicDesc" readonly />
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label class="lable-color">@Localizer["ConsultationType"] </label>
+                            <input class="form-control" type="text" autocomplete="off" id="txtConsultationDesc" readonly />
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label class="lable-color">@Localizer["Specialty"] </label>
+                            <select class="selectpicker" data-live-search="false" id="cboSpecialty" title="Select" onchange="fnLoadSchedulerDoctor()"></select>
+                        </div>
+                    </div>
+                    <div class="col-lg-6  col-md-6 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            <label class="lable-color">@Localizer["DoctorName"] </label>
+                            <select class="selectpicker" data-live-search="false" id="cboDoctorName" title="Select" onchange=""></select>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+                        <div class="form-group">
+                            <label>@Localizer["ScheduleDate"] </label>
+                            <input id="dtScheduleDate" class="mdl-textfield__input" type="text" autocomplete="off" onkeydown="return false" />
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+                        <div class="form-group">
+                            <label>@Localizer["FromTime"] </label>
+                            <input id="txtFromTime" class="form-control" type="time" autocomplete="off" />
+
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+                        <div class="form-group">
+                            <label>@Localizer["ToTime"] </label>
+                            <input id="txtToTime" class="form-control" type="time" autocomplete="off" />
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                        <div class="default-checkbox">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActiveStatus">
+                                <input type="checkbox" id="chkActiveStatus" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">@Localizer["Active"] </span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveDoctorSchedule" onclick="fnSaveDoctorScheduler()">
+                            @Localizer["Save"]
+                        </button>
+                        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" id="btnDeactivateDoctorScheduler" onclick="fnDeleteDoctorScheduler()"><i class="fas fa-ban"></i>  @Localizer["Deactivate"] </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="#">@Localizer["Cancel"] </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+
+        $("#dtFromDate").datepicker({
+            dateFormat: _cnfDateFormat,
+            minDate: new Date(),
+            onSelect: function (date) {
+                var startDate = $(this).datepicker('getDate');
+                var minDate = $(this).datepicker('getDate');
+                startDate.setDate(startDate.getDate() + 30);
+
+            }
+        });
+
+        $("#dtToDate").datepicker({
+            dateFormat: _cnfDateFormat,
+            minDate: new Date(),
+            onSelect: function (date) {
+                var startDate = $(this).datepicker('getDate');
+                var minDate = $(this).datepicker('getDate');
+                startDate.setDate(startDate.getDate() + 30);
+
+            }
+        });
+
+        $("#dtScheduleDate").datepicker({
+            dateFormat: _cnfDateFormat,
+            minDate: new Date(),
+            onSelect: function (date) {
+                var startDate = $(this).datepicker('getDate');
+                var minDate = $(this).datepicker('getDate');
+                startDate.setDate(startDate.getDate() + 30);
+
+            }
+        });
+    });
+</script>

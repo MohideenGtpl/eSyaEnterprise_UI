@@ -1,0 +1,69 @@
+﻿$(document).ready(function () {
+ 
+    fnGridLoadTaxCodeRules();
+   
+});
+
+function fnGridLoadTaxCodeRules() {
+
+
+    $("#jqgTaxCodeRules").jqGrid('GridUnload');
+    $("#jqgTaxCodeRules").jqGrid({
+        //url: URL,
+        mtype: 'Post',
+        datatype: 'json',
+        data: [{ CodeDesc: '1000', DefaultStatus: 'True', ActiveStatus: 'True' }],
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["ISD Code", "Tax Code", "Tax Short Code", "Tax Description", "Slab or Precentage", "Is Split Applicable", "Split Category Percentage", "Actions"],
+        colModel: [
+            { name: "ISDCode", width: 30, editable: true, align: 'left', hidden: true },
+            { name: "TaxCode", width: 30, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "TaxShortCode", width: 30, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            { name: "TaxDescription", editable: true, width: 65, align: 'left', resizable: false },
+            { name: "SlaborPercentage", editable: true, width: 25, align: 'left', resizable: false },
+            { name: "IsSplitApplicable", editable: true, width: 25, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            { name: "SplitCategoryPercentage", editable: true, width: 25, align: 'left', resizable: false },
+            {
+                name: 'edit', search: false, align: 'center', width: 50, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" onclick="return fnEditTaxRule(event)"><i class="fa fa-edit"></i> Edit </button>'
+                        + '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title ="View" onclick="return fnViewTaxRule(event)"> <i class="fa fa-file"></i> View </button>'
+
+                }
+            },
+
+        ],
+        rowNum: 10,
+        loadonce: false,
+        pager: "#jqpTaxCodeRules",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0
+    }).jqGrid('navGrid', '#jqpTaxCodeRules', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpTaxCodeRules', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshTaxCodeRules
+    }).jqGrid('navButtonAdd', '#jqpTaxCodeRules', {
+        caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Add', buttonicon: 'none', id: 'custAdd', position: 'first', onClickButton: fnGridAddTaxCodeRules
+    });
+}
+function fnGridAddTaxCodeRules() {
+    $("#PopupTaxCodeRules").modal('show');
+    $(".modal-title").text('Add Tax Code Rule');
+}
+function fnGridRefreshTaxCodeRules() {
+
+}
+function fnEditTaxCodeRule(e){
+    $("#PopupTaxCodeRules").modal('show');
+    $(".modal-title").text('Edit Tax Code Rule');
+}
+function fnViewTaxCodeRule(e) {
+    $("#PopupTaxCodeRules").modal('show');
+    $(".modal-title").text('View Tax Code Rule');
+}

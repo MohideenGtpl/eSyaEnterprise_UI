@@ -1,0 +1,198 @@
+﻿
+
+
+
+
+
+$(document).ready(function () {
+
+    $("#txtCalDefFRMDate").prop("disabled", true);
+    $("#txtCalDefTillDate").prop("disabled", true);
+
+    $("#txtfinancialyear").blur(function () {
+
+        var year = $("#txtfinancialyear").val();
+        $("#txtCalDefFRMDate").val(year + '-01-01');
+        $("#txtCalDefTillDate").val(year + '-12-31');
+
+        $.ajax({
+            //url: getBaseURL() + '/CalendarDefinition/Get_CalendarDetails?FinancialYear=' + year,
+            type: "GET",
+            async: false,
+            success: function (response) {
+
+                if (response.length > 0) {
+                    $("#btnSaveCalDefinition").prop("disabled", true);
+                    CalDefinitionGrid(year);
+                }
+                if (response.length <= 0) {
+                    $("#btnSaveCalDefinition").prop("disabled", false);
+
+
+                }
+
+
+            }
+        })
+
+
+
+
+
+
+    });
+
+});
+
+
+
+
+
+
+
+
+
+function fnCheckFromDateTodate() {
+    var Fromdate = new Date($("#txtCalDefFRMDate").val());
+    var Todate = new Date($("#txtCalDefTillDate").val());
+
+    var Days = parseInt((Todate - Fromdate) / (24 * 3600 * 1000));
+
+    if (Days < 0) {
+        fnAlert("From date should be greater than To date", "e");
+        return false;
+    }
+}
+
+
+
+function fnAddCalDefinition() {
+    debugger;
+    if (_validCalDefinition() === false) {
+        return;
+    }
+
+    var calendarheader = {
+        Financialyear: $("#txtfinancialyear").val(),
+
+        //MonthYearDesc: $("#txtdescription").val(),
+        FromDate: $("#txtCalDefFRMDate").val(),
+        ToDate: $("#txtCalDefTillDate").val()
+
+    }
+
+    $.ajax({
+        url: getBaseURL() + '/CalendarDefinition/Insert_CalenderHeader',
+        type: "post",
+        data: JSON.stringify(calendarheader),
+        contentType: "application/json",
+        success: function (response) {
+            var MSG;
+            MSG = JSON.parse(response);
+
+            if (MSG.Status === false) {
+                fnAlert(MSG.Message, 'e');
+                return false;
+            }
+
+            if (MSG.Status === true) {
+                fnAlert(MSG.Message, 's');
+                CalDefinitionGrid($("#txtfinancialyear").val());
+                fnClearCalDefinition();
+
+
+
+                return true;
+            }
+
+
+        }
+    })
+}
+
+function _validCalDefinition() {
+    debugger;
+    var CalDefFRMDate = $("#txtCalDefFRMDate").val();
+    var CalDefTillDate = $("#txtCalDefTillDate").val();
+    var ClaDefFinancialyear = $("#txtfinancialyear").val();
+    //var description = $("#txtdescription").val();
+
+    if (ClaDefFinancialyear === "" || ClaDefFinancialyear === null || ClaDefFinancialyear === 0) {
+        fnAlert("Please Enter Financial year ", "e");
+        return false;
+    }
+
+    if (isNaN(ClaDefFinancialyear)) {
+        fnAlert("Financial Year should be number only", "e");
+        return false;
+    }
+
+
+
+    if (CalDefFRMDate === "" || CalDefFRMDate === null) {
+        fnAlert("Please Enter From Date", "e");
+        return false;
+    }
+
+    if (CalDefTillDate === "" || CalDefTillDate === null) {
+        fnAlert("Please Enter Till Date", "e");
+        return false;
+    }
+}
+
+
+function AllowOnlyNumbers(e) {
+    e = (e) ? e : window.event;
+    var clipboardData = e.clipboardData ? e.clipboardData : window.clipboardData;
+    var key = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
+    var str = (e.type && e.type == "paste") ? clipboardData.getData('Text') : String.fromCharCode(key);
+    return (/^\d+$/.test(str));
+}
+
+
+
+
+
+
+
+
+
+//function myValidate1(value, PatientIdserial) {
+//    debugger;
+//    if (isNaN(value)) {
+//        //return [true, ""];
+//        return [true, ""]
+//    }
+//    else
+//    {
+//        useCustomDialog = false;
+//        fnAlert("PatientId Serial should be Alphabet only","e");
+//        return [false, PatientIdserial];
+
+
+
+//        //return [false, " PatientIdserial should be Alphabet only'" +
+//        // PatientIdserial + "'\nonly Alphabet char is allowed"];
+//    }
+//}
+
+function OnlyDigits(e) {
+    if ((e.which < 48 || e.which > 57)) {
+        if (e.which == 8 || e.which == 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+}
+
+function fnClearCalDefinition() {
+    $("#txtfinancialyear").val("");
+    $("#txtCalDefFRMDate").val("");
+    $("#txtCalDefTillDate").val("");
+
+}
+
+
+

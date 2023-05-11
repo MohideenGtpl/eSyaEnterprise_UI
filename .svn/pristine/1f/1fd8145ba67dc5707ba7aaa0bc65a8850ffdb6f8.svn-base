@@ -1,0 +1,215 @@
+﻿
+@{
+    ViewData["Title"] = "V_6000_01";
+}
+
+<link href="~/css/emergency.css" rel="stylesheet" />
+@section scripts{
+    <script src="~/js/eSyaOutPatient/emergency.js"></script>
+
+    <script src="~/js/utility/emotion-ratings.min.js"></script>
+}
+
+<style>
+
+    .dropdown bootstrap-select {
+        width: 100% !important;
+    }
+</style>
+
+<script>
+    var emotionsArray = ['angry', 'disappointed', 'meh', 'happy', 'inLove'];
+
+    $("#myRating").emotionsRating({
+	  emotions: emotionsArray
+	});
+</script>
+
+
+
+<div class="divFixedBar">
+    <div class="row mar0">
+
+
+        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6 d-flex align-items-center">
+            <span class="mr-3"><i class="far fa-user-circle f-28 c-gold"></i></span>
+            <div>
+                <p><span id="lblpatientname">Mr.Arun Kumar</span></p>
+                <p><span id="lblgender">Male</span> | <span id="lblage">55</span></p>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6 d-flex align-items-center">
+            <span class="mr-3"><i class="far fa-calendar-plus f-28 mr-2 c-gold"></i></span>
+            <div>
+                <p><span class="labelname"> DOA</span> <span id="lbldoa">DD/MM/YYYY</span></p>
+                <p><span id="lblconsultantname">Dr.Riyaz Khan</span></p>
+            </div>
+        </div>
+
+
+        <div id="floatButtons" class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-right">
+            <button class="mdl-button"><i class="far fa-save c-green"></i> <span class="btntext">Save Draft</span></button><button class="mdl-button"><i class="far fa-check-circle c-brown"></i> <span class="btntext">Submit</span></button><button class="mdl-button"><i class="fas fa-print c-blue"></i> <span class="btntext">Print</span></button>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <nav class="col-md-3 col-lg-2 col-sm-3 sidebar" id="navbar-example2" style="display:none">
+        <div class="sidebar-sticky">
+            <ul class="nav flex-column" id="nav_menu"></ul>
+        </div>
+    </nav>
+
+    <main class="" id="mainContent" data-spy="scroll" data-target="#navbar-example2" data-offset="30">
+
+
+
+
+    </main>
+
+  
+</div>
+
+
+
+<script>
+    $(function () {
+
+        var nav = "";
+        var section_item = "";
+        $.getJSON(getBaseURL() + "/json/nurseassesment.json", function (data) {
+            var i = 0;
+            $.each(data, function (key, item_nav) {
+                i++;
+                $("#nav_menu").append("<li class='nav-item'><a class='nav-link' href = '#assessment" + i + "'>" + item_nav.name + "<span class='sr-only'> (current)</span></a></li>");
+
+                section_item += "<div class='pageSection'> <h4 id='assessment" + i + "'>" + item_nav.name + "</h4>";
+
+                $.each(item_nav.category, function (keys, item_category) {
+
+                    section_item += "<div class='row border-bottom py-3 px-3 my-3'>";
+
+                    $.each(item_category.item, function (keys, item_control) {
+
+                        if (item_control.valuetype === "float") {
+                            section_item += "<div class='col-lg-4 col-md-4 col-sm-4'><div class= 'form-group'>";
+                            section_item += "<label>" + item_control.name + "</label>";
+                            section_item += "<input class='form-control decimalNumber d-inline' style='width:80px'>" + item_control.unittype + '</input>';
+                            section_item += "</div></div>";
+                        }
+                        if (item_control.valuetype === "text") {
+                            section_item += "<div class='col-lg-4 col-md-4 col-sm-4'><div class= 'form-group'>";
+                            section_item += "<label>" + item_control.name + "</label>";
+                            section_item += "<input class='form-control' type='text' />";
+                            section_item += "</div></div>";
+                        }
+                        if (item_control.valuetype === "textarea") {
+                            section_item += "<div class='col-lg-4 col-md-4 col-sm-12'><div class= 'form-group'>";
+                            section_item += "<label>" + item_control.name + "</label>";
+                            section_item += "<textarea class='form-control' rows='3' cols='50'></textarea>";
+                            section_item += "</div></div>";
+                        }
+                        if (item_control.valuetype === "checkbox") {
+                            section_item += "<div class='col-lg-12 col-md-12 col-sm-6'><div class='row pb-2'>";
+                            section_item += "<div class='col-lg-4 col-md-5 col-sm-6'><label>" + item_control.name + "</label></div>";
+                            section_item += "<div class='col-lg-2 col-md-2 col-sm-2'><label class=''><input type='radio' id='" + item_control.controlid + "_y' class='mr-1' name=" + item_control.controlid + " value='1'>Yes</label></div>";
+                            section_item += "<div class='col-lg-2 col-md-2 col-sm-2'><label class=''><input type='radio' id='" + item_control.controlid + "_n' class='mr-1' name=" + item_control.controlid + " value='1'>No</label></div>";
+                            section_item += "</div></div>";
+                        }
+                        if (item_control.valuetype === "combox") {
+                            section_item += "<div class='col-lg-4 col-md-4 col-sm-12'><div class= 'form-group'>";
+                            section_item += "<label>" + item_control.name + "</label>";
+                            section_item += "<select class='selectpicker form-control' id='" + item_control.controlid + "'>";
+                            section_item += "<option value='0' selected>NA</option>";
+                            $.each(item_control.values, function (keyv, item_values) {
+                                section_item += "<option value='" + item_values.value + "'>" + item_values.name + "</option>";
+                            });
+                            section_item += "</select>";
+                            section_item += "</div></div>";
+                        }
+                        if (item_control.valuetype === "PainScore") {
+                            section_item += "<div class='col-lg-12 col-md-12 col-sm-12'><div class= 'form-group'>";
+                            section_item += "<label>" + item_control.name + "</label><div id='myRating'></div></div ></div > ";
+                        }
+
+                    });
+
+                    if (item_category.type === "morsefallscale") {
+
+                        //section_item += "<div class='col-lg-12 col-md-12 col-sm-12'><div class='row'>";
+                        //section_item += "<div class='col-lg-4 col-md-4 col-sm-7'>Variables</div>";
+                        //section_item += "<div class='col-lg-4 col-md-4 col-sm-5'>Scoring</div>";
+                        //section_item += "</div></div>";
+
+                        //$.each(item_category.Variables, function (keys, item_control) {
+                        //    section_item += "<div class='col-lg-12 col-md-12 col-sm-12'><div class='row'>";
+                        //    section_item += "<div class='col-lg-4 col-md-4 col-sm-7'><label>" + item_control.name + "</label></div>";
+                        //    section_item += "<div class='col-lg-4 col-md-4 col-sm-5'><select class='selectpicker form-control' id='" + item_control.controlid + "'>";
+                        //    section_item += "<option value='0' selected>NA</option>";
+                        //    //alert(JSON.stringify(item_control.values));
+                        //    $.each(item_control.values, function (keyv, item_values) {
+                        //        section_item += "<option>" + item_values.name + " (" + item_values.score + ")</option>";
+                        //    });
+                        //    section_item += "</select></div>";
+                        //    section_item += "</div></div>";
+                        //});
+                        section_item += "<div class='col-lg-12 col-md-12 col-sm-12'>";
+                        section_item += "<div class='table-responsive'>";
+                        section_item += "<table class='table'>";
+                        section_item += "<thead><th scope='col'>Variables</th><th scope='col'></th><th scope='col'>Scores</th></tr></thead>";
+                        section_item += "<tbody>";
+                        $.each(item_category.Variables, function (keys, item_control) {
+                            section_item += "<tr><td>" + item_control.name + "</td><td>";
+                            $.each(item_control.values, function (keyv, item_values) {
+                                section_item += "<label class=''><input type='radio' id='" + item_values.name + "' class='' name=" + item_control.controlid + " value='1'> " + item_values.name + "</label>";
+                            });
+                            section_item += "</td><td><input id='' class='form-control decimalNumber' style='width:80px'/></td></tr>";
+                        });
+                        section_item += "<tfoot><tr><td></td><td>Total Scores</td><td><input id='' class='form-control decimalNumber' style='width:80px'/></td></td></tr></tfoot>";
+                        section_item += "</tbody></table>";
+
+
+                        section_item += "<table class='table'>";
+                        section_item += "<thead><th scope='col'>Risk Level</th><th scope='col'>MFS Score</th><th scope='col'>Action</th></tr></thead>";
+                        section_item += "<tbody>";
+                        $.each(item_category.level, function (keys, item_control) {
+                            section_item += "<tr><td>" + item_control.score + "</td><td>" + item_control.risklevel + "</td><td>" + item_control.Action + "</td></tr>";
+                        });
+                        section_item += "</tbody></table>";
+                        section_item += "</div>";
+                        section_item += "</div>";
+                    }
+
+                    section_item += "</div>";
+
+                });
+
+                section_item += "</div>";
+            });
+
+        }).done(function () {
+            $("#mainContent").html(section_item);
+
+            fnRating();
+
+            $(".selectpicker").selectpicker('refresh');
+            $('.decimalNumber').inputmask("decimal", { digits: 2, allowMinus: true });
+            $('.pageSection:last-child').css('min-height', $('.sidebar').height());
+        });
+
+    });
+</script>
+
+<script type="text/javascript">
+
+    function fnRating() {
+        $("#myRating").emotionsRating({
+            emotionSize: 70,
+            color: "green",
+            emotions: emotionsArray
+        });
+    }
+
+</script>
+
+

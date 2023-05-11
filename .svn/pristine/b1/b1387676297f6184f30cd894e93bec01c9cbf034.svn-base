@@ -1,0 +1,143 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+<style>
+    label input[type="checkbox"] {
+        vertical-align: text-top;
+    }
+</style>
+
+<div class="row">
+    <div class="col-lg-12">
+        <p class="subheading"> Salary Info</p>
+        <hr class="left" />
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-4 form-group">
+        <label>Salary Amount</label>
+        <input type="text" id="txtsalary" name="salary" class="form-control" />
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-4 form-group">
+        <label>Salary Currency</label>
+        <select class="selectpicker" data-live-search="false" id="cboSalaryCurrency" title="Select" data-size="8" asp-items="@ViewBag.CurrencyList">
+            <option value="0">Select</option>
+            @*<option value="1">INR</option>
+                <option value="2">KES</option>
+                <option value="3">USD</option>*@
+        </select>
+    </div>
+
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <p class="subheading">Breakup by Currency</p>
+        <hr class="left" />
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 c_jqgSalaryInfo">
+        <table id="jqgSalaryInfo"></table>
+        <div id="jqpSalaryInfo"></div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+        <div class="default-checkbox">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkBankChargeApplicable">
+                <input type="checkbox" id="chkBankChargeApplicable" class="mdl-checkbox__input">
+                <span class="mdl-checkbox__label">Is Bank Charge Applicable ?</span>
+            </label>
+        </div>
+        <div class="default-checkbox">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIncentiveApplicable">
+                <input type="checkbox" id="chkIncentiveApplicable" class="mdl-checkbox__input">
+                <span class="mdl-checkbox__label">Is Incentive Applicable ?</span>
+            </label>
+        </div>
+        <div class="default-checkbox">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkNHIF">
+                <input type="checkbox" id="chkNHIF" class="mdl-checkbox__input">
+                <span class="mdl-checkbox__label">Is NHIF Applicable ?</span>
+            </label>
+        </div>
+        <div class="default-checkbox">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkNSSF">
+                <input type="checkbox" id="chkNSSF" class="mdl-checkbox__input">
+                <span class="mdl-checkbox__label">Is NSSF Applicable ?</span>
+            </label>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+     <div class="col-lg-3 col-md-3 col-sm-6 form-group" id="divNHIF" style="display:none">
+        <label> Amount</label>
+        <input type="text" id="txtNHIFPercentage" name="Incentive Percentage" class="form-control" value="" />
+    </div>
+</div>
+
+<div class="row">
+     
+    <div class="col-lg-3 col-md-3 col-sm-6 form-group" id="divNSSF" style="display:none">
+        <label> Amount</label>
+        <input type="text" id="txtNSSFPercentage" name="Incentive Percentage" class="form-control" value="" />
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+      
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent btn-back mr-10 c-white" onclick="fnCloseEmployeeDetails()"><i class="fas fa-chevron-left"></i> Back</button>
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button mr-10" id="btnSaveEmployeeDetails" onclick="fnSaveSalaryInfo()">
+            <i class="fa fa-save"></i>   Save
+        </button>
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button" id="btnCancel" onclick="fnCloseEmployeeDetails()"><i class="fa fa-redo"></i> Cancel</button>
+    </div>
+</div>
+
+<script>
+
+
+
+    $(document).ready(function () {
+        $('input[id^="chkIncentive"]').click(function () {
+
+            if ($(this).prop('checked')) {
+                $("#divIncentivePercentage").css('display', 'block');
+            }
+            else {
+                $("#divIncentivePercentage").css('display', 'none');
+            }
+        });
+
+        $('input[id^="chkNHIF"]').click(function () {
+            $('#txtNHIFPercentage').val('0');
+            if ($(this).prop('checked')) {
+
+                $("#divNHIF").css('display', 'block')
+            }
+            else {
+                $("#divNHIF").css('display', 'none')
+            }
+        });
+
+        $('input[id^="chkNSSF"]').click(function () {
+            $('#txtNSSFPercentage').val('0');
+            if ($(this).prop('checked')) {
+
+                $("#divNSSF").css('display', 'block')
+            }
+            else {
+                $("#divNSSF").css('display', 'none')
+            }
+        });
+
+        $('input[id^="chkCashPayment"]').click(function () {
+
+            if ($(this).prop('checked')) {
+
+                $("#divCashPayment").css('display', 'block')
+            }
+            else {
+                $("#divCashPayment").css('display', 'none')
+            }
+        });
+
+    });
+</script>

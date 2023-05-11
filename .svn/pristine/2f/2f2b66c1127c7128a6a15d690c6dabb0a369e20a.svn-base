@@ -1,0 +1,710 @@
+﻿
+@{
+    ViewData["Title"] = "Doctor Schedule";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/Outpatient/Scheduler.css" rel="stylesheet" />
+
+<link href="~/css/downupPopup.css" rel="stylesheet" />
+<script src="~/js/downupPopup.js"></script>
+
+<style>
+    #PopupDoctorScheduler .modal-body {
+        background: #fff !important;
+    }
+
+    .dateBox {
+        padding: 10px 15px;
+        font-size: 13px;
+        cursor: pointer;
+        display: inline-block;
+        font-weight: 600;
+    }
+
+        /*.dateBox:nth-child(1) {
+            transition: 0.3s ease-in-out;
+            color: #1759f5;
+            border-bottom: 2px solid;
+        }*/
+        .dateBox.active {
+            transition: 0.3s ease-in-out;
+            color: #1759f5;
+            border-bottom: 2px solid;
+        }
+
+
+    #divDate {
+        box-shadow: 0 0px 0px rgba(0, 0, 0, 0.16), 0 0px 3px rgba(0, 0, 0, 0.23);
+        background: #ffffff;
+        white-space: nowrap;
+        margin-bottom: 10px;
+        display: inline-block;
+    }
+
+    #btnNext {
+        display: inline-block;
+        /* padding: 15px; */
+        height: 40px !important;
+        background: #FFF !important;
+        border-radius: 0px !important;
+        margin-left: 16px;
+    }
+
+        #btnNext .svg-inline--fa, #btnPrevious .svg-inline--fa {
+            color: #1094f8 !important;
+        }
+
+    #btnPrevious {
+        display: inline;
+        /* padding: 15px; */
+        height: 40px !important;
+        background: #FFF !important;
+        border-radius: 0px !important;
+    }
+
+    .doctorIcon .svg-inline--fa {
+        font-size: 36px;
+        color: rgba(0, 0, 0, 0.23) !important;
+        background: #f5f7f9;
+        width: 50px;
+        height: 50px;
+        padding: 10px;
+        display: inline;
+    }
+
+    .sessionIcon .svg-inline--fa {
+        color: #1759f5 !important;
+    }
+
+    .doctorSection {
+        /*box-shadow: 0 0px 0px rgba(0, 0, 0, 0.16), 0 0px 3px rgba(0, 0, 0, 0.23);*/
+        padding: 10px;
+        background: #fff;
+        margin-bottom: 8px;
+        border-bottom: 1px solid #efefef;
+        border-left: 3px solid transparent;
+    }
+
+        .doctorSection:hover {
+            transition: 0.3s ease-in-out;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            transform: scale(1.2);
+            border-radius: 3px;
+            border-left: 3px solid #1590c0;
+        }
+
+    .spanDoctorName {
+        font-size: 13px;
+        margin: 0px;
+        display: block;
+        word-break: break-word;
+        margin-bottom: 4px;
+        letter-spacing: 0.75px;
+        font-weight: 600;
+    }
+
+    .qualification {
+        margin: 0px;
+        font-size: 12px;
+        color: #787887;
+    }
+
+    table.doctorSchedule th, table.doctorSchedule td {
+        padding: .15em;
+    }
+
+    .doctorSchedule a {
+        color: #1759f5 !important;
+    }
+
+    .doctorSchedule {
+        /*box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12);*/
+        font-size: 12px !important;
+        margin: 0px !important;
+    }
+
+    .doctorIcon {
+        display: inline;
+    }
+
+    .martop10 {
+        margin-top: 10px;
+    }
+
+    .doctorSchedule button {
+        background: transparent !important;
+        color: #1759f5;
+        box-shadow: none !important;
+        border: none !important;
+        cursor: pointer;
+    }
+
+    .plain-button {
+        background: #fff !important;
+        border: 1px solid #ccc;
+        cursor: pointer;
+        width: 84px;
+        border-radius: 3px;
+        border: 1px solid #e0e0e4;
+        padding: 5px 0;
+        display: inline-block;
+        text-align: center;
+        color: #2d2d32;
+        cursor: pointer;
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+
+        .plain-button:hover {
+            background: aliceblue !important;
+            transition: 0.3s ease-in-out;
+        }
+
+    .table-bordered, .table thead th, .table-bordered td, .table-bordered th {
+        border-bottom: none !important;
+        border-top: none !important;
+    }
+
+
+        .table-bordered td, .table-bordered th {
+            border: 1px solid #f2f4f7;
+        }
+
+
+    .doctorSchedule button {
+        background: transparent !important;
+        color: #b7bdcc;
+        box-shadow: none !important;
+        border: none !important;
+        cursor: pointer;
+        font-size: 11px;
+    }
+
+    .doctorSchedule {
+        /* box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12); */
+        font-size: 10.5px !important;
+        margin: 0px !important;
+        position: relative;
+        top: 10px;
+    }
+
+    .table thead th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #dee2e6;
+        color: #6b6b6d;
+    }
+
+    #dvDoctorScheduleView {
+        background: linear-gradient(to bottom,#fafafa,#fff);
+    }
+
+    .qualification .svg-inline--fa {
+        color: #8c8c8c !important;
+    }
+
+    .spanDoctorName .svg-inline--fa {
+        color: #1759f5 !important;
+    }
+
+    #btnBookAppointment {
+        font-size: 12px !important;
+        padding: 5px !important;
+        line-height: 16px !important;
+        height: auto !important;
+    }
+</style>
+
+<div class="row">
+    <div class="col-lg-3 col-md-4 col-sm-12">
+        <div class="form-group">
+            <label>Clinic Type</label>
+            <select id="cboClinicType" class="selectpicker" onchange="fnLoadDoctor()">
+                <option value="0">Select</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-12">
+        <div class="form-group">
+            <label>Specialty</label>
+            <select class="selectpicker" data-live-search="true" id="cboSpecialty" title="" onchange="fnLoadDoctor()">
+                <option value="0" selected>All</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-12">
+        <div class="form-group">
+            <label>Doctor Name</label>
+            <select class="selectpicker" data-live-search="true" id="cboDoctor" title="" onchange="fnLoadDoctorScheduleList()">
+                <option value="0" selected>All</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+
+<div id="dvDoctorScheduleView">
+
+</div>
+<div id="dvDoctorSchedulersheet">
+    <div class="downupPopup-content">
+        <div class="container-fluid bg-lightgrey py-3">
+            <div class="row">
+                <div class="col-lg-11  col-md-11 col-sm-11 padbot10 martop10">
+                    <div style=" overflow-x:scroll;overflow-y:hidden; white-space: nowrap;">
+                        <div id="divDate"> </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+
+                <div class="col-lg-2 col-md-2 col-sm-2 padright0   padbot10 ">
+                    <p class="d-inline-b sessionIcon"> <i class="fa fa-sun"></i> Available Slot </p>
+                </div>
+                <div class="col-lg-10 col-md-10 col-sm-10   padbot10 ">
+                    <div id="dvTimeSlot" class="d-inline-block">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+ 
+
+<div class="modal fade in " id="PopupDoctorScheduler" tabindex="-1" role="dialog" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title" id="hdDoctorName">Doctor Appointment</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-11  col-md-11 col-sm-11 padbot10 martop10">
+                        <div style=" overflow-x:scroll;overflow-y:hidden; white-space: nowrap;">
+                            <div id="divDate"> </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="col-lg-2 col-md-2 col-sm-2 padright0   padbot10 ">
+                        <p class="d-inline-b sessionIcon"> <i class="fa fa-sun"></i> Available Slot </p>
+                    </div>
+                    <div class="col-lg-10 col-md-10 col-sm-10   padbot10 ">
+                        <div id="dvTimeSlot" class="d-inline-block">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade in " id="PopupAppointmentScheduler" tabindex="-1" role="dialog" aria-hidden="true" data-keyboard="false" data-backdrop="static" style="overflow: scroll;">
+    <div class="modal-dialog modal-lg " role="document">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title"> Appointment Confirmation</h4>
+            </div>
+            <div class="modal-body">
+                @await Html.PartialAsync("~/Areas/DoctorScheduler/Views/Appointment/_Confirmation.cshtml")
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button " id="btnSaveAppointment" onclick="fnSaveAppointmentConfirmation()"><i class="fa fa-save"></i> Save </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" id="btnCancelBusinessKey" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    $(document).ready(function () {
+        onFormLoad();
+        fnLoadDoctor();
+        $("#dvDoctorSchedulersheet").downupPopup({
+            distance: 20,
+            contentScroll: true,
+            width: "100%",
+            radiusLeft: "25px",
+            radiusRight: "25px",
+            headerText: "Doctor Appointment"
+        });
+    });
+
+    function onFormLoad() {
+
+        $.get(getBaseURL() + '/Appointment/GetClinicConsultationTypeByBKey',
+            function (data) {
+                var s = '<option value="-1">select</option>';
+                for (var i = 0; i < data.length; i++) {
+                    s += '<option data-clinictype=' + data[i].ClinicType + ' data-clinictypecode=' + data[i].ClinicTypeCode + ' data-consultationtype=' + data[i].ConsultationType + '  data-consultationtypecode=' + data[i].ConsultationTypeCode + '>' +
+                        data[i].ClinicTypeDesc + ' - ' + data[i].ConsultationTypeDesc + '' + '</option>';
+                }
+                $("#cboClinicType").html(s);
+                $("#cboClinicType").selectpicker('refresh');
+            });
+
+        $.get(getBaseURL() + '/Appointment/GetSpecialtyList',
+            function (data) {
+                var s = '<option value="-1">select</option>';
+                for (var i = 0; i < data.length; i++) {
+                    if (data.length == 1)
+                        s += '<option value="' + data[i].SpecialtyId + '" selected>' + data[i].SpecialtyDesc + '</option>';
+                    else
+                        s += '<option value="' + data[i].SpecialtyId + '" >' + data[i].SpecialtyDesc + '</option>';
+                }
+                $("#cboSpecialty").html(s);
+                $("#cboSpecialty").selectpicker('refresh');
+            });
+    }
+
+    function fnLoadDoctor() {
+
+        $("#cboDoctor").html("");
+        $.ajax({
+            url: getBaseURL() + '/Appointment/GetDoctorListByClinicType',
+            type: 'get',
+            data: {
+                clinicType: $(':selected', $('#cboClinicType')).data('clinictype'),
+                consultationType: $(':selected', $('#cboClinicType')).data('consultationtype'),
+                specialtyId: $("#cboSpecialty").val(),
+            },
+            async: false,
+            success: function (result) {
+                $("#cboDoctor").append($("<option></option>").val(0).html("All"));
+                $.each(result, function (i, item) {
+                    $("#cboDoctor").append($("<option></option>").val(item.DoctorId).html(item.DoctorName));
+                });
+                $('#cboDoctor').val(0);
+                $('#cboDoctor').selectpicker('refresh');
+            }
+        });
+
+        fnLoadDoctorScheduleList();
+    }
+
+    function fnLoadDoctorScheduleList() {
+        $.ajax({
+            url: getBaseURL() + '/Appointment/GetDoctorListWeeklyScheduleTime',
+            type: 'get',
+            data: {
+                clinicType: $(':selected', $('#cboClinicType')).data('clinictype'),
+                consultationType: $(':selected', $('#cboClinicType')).data('consultationtype'),
+                specialtyId: $("#cboSpecialty").val(),
+                doctorId: $("#cboDoctor").val(),
+            },
+            success: function (result) {
+                var dvDoctor = "";
+                var doctors = {};
+
+                var groupedByDoctor = groupBy(result, 'DoctorId');
+
+                $.each(groupedByDoctor, function (g_i, g_item) {
+
+                    dvDoctor += "<section class='doctorSection animated slideInUp'>";
+                    dvDoctor += "<div class='row'>";
+                    dvDoctor += "<div class='col-lg-3 col-md-3 col-sm-3'>";
+                    dvDoctor += "<div class='row'>";
+                    dvDoctor += "<div class='col-lg-10 col-md-10 col-sm-10'>";
+                    dvDoctor += "<p class='spanDoctorName' style='color:#1590c0'> Dr." + g_item[0].DoctorName + "</p>";
+                    dvDoctor += "<p class='qualification'><i class= 'far fa-sun'></i> " + g_item[0].SpecialtyDesc + "</p>";
+                    dvDoctor += "<p class='qualification'><i class='fas fa-graduation-cap'></i> MBBS</p>";
+                    dvDoctor += "</div>";
+                    dvDoctor += "<div class='col-lg-2 col-md-2 col-sm-2'>";
+                    dvDoctor += "<input type='image' src='../../images/calendar_1.png' alt='Submit' title='Book Appointment' width='25' height='25' onclick=fnShowBookAppointment('" + g_item[0].SpecialtyId + "','" + g_item[0].SpecialtyDesc.split(" ").join("-") + "','" + g_item[0].DoctorId + "',\'" + g_item[0].DoctorName.split(" ").join("-") + "\')>";
+                    dvDoctor += "</div>";
+                    dvDoctor += "</div>";
+                    dvDoctor += "</div>";
+
+                    dvDoctor += "<div class='col-lg-9 col-md-9 col-sm-9 '>";
+
+                    dvDoctor += "<table class='table table-bordered doctorSchedule' style='table-layout:fixed;width:100% '>";
+                    dvDoctor += "<thead>";
+                    dvDoctor += "<tr>";
+                    dvDoctor += "<th scope='col' class='text-center' style='width:14.28%;'>Saturday</th>";
+                    dvDoctor += "<th scope='col' class='text-center' style='width:14.28%;'>Sunday</th>";
+                    dvDoctor += "<th scope='col' class='text-center' style='width:14.28%;'>Monday</th>";
+                    dvDoctor += "<th scope='col' class='text-center' style='width:14.28%;'>Tuesday</th>";
+                    dvDoctor += "<th scope='col' class='text-center' style='width:14.28%;'>Wednesday</th>";
+                    dvDoctor += "<th scope='col' class='text-center' style='width:14.28%;'>Thursday</th>";
+                    dvDoctor += "<th scope='col' class='text-center' style='width:14.28%;'>Friday</th>";
+                    dvDoctor += "</tr>";
+                    dvDoctor += "</thead>";
+                    dvDoctor += "<tbody>";
+
+                    var sat = "", sun = "", mon = "", tue = "", wed = "", thu = "", fri = "";
+
+                    $.each(g_item, function (d_i, d_item) {
+
+                        d_item.FromTime = fnConvertTimeTo12Format(d_item.FromTime);
+                        d_item.ToTime = fnConvertTimeTo12Format(d_item.ToTime);
+
+                        if (d_item.DayOfWeek.toUpperCase() == "SUNDAY") {
+                            if (sun != "")
+                                sun += "<br/>"
+                            sun += d_item.FromTime + " - " + d_item.ToTime;
+                        }
+                        if (d_item.DayOfWeek.toUpperCase() == "MONDAY") {
+                            if (mon != "")
+                                mon += "<br/>"
+                            mon += d_item.FromTime + " - " + d_item.ToTime;
+                        }
+                        if (d_item.DayOfWeek.toUpperCase() == "TUESDAY") {
+                            if (tue != "")
+                                tue += "<br/>"
+                            tue += d_item.FromTime + " - " + d_item.ToTime;
+                        }
+                        if (d_item.DayOfWeek.toUpperCase() == "WEDNESDAY") {
+                            if (wed != "")
+                                wed += "<br/>"
+                            wed += d_item.FromTime + " - " + d_item.ToTime;
+                        }
+                        if (d_item.DayOfWeek.toUpperCase() == "THURSDAY") {
+                            if (thu != "")
+                                thu += "<br/>"
+                            thu += d_item.FromTime + " - " + d_item.ToTime;
+                        }
+                        if (d_item.DayOfWeek.toUpperCase() == "FRIDAY") {
+                            if (fri != "")
+                                fri += "<br/>"
+                            fri += d_item.FromTime + " - " + d_item.ToTime;
+                        }
+                        if (d_item.DayOfWeek.toUpperCase() == "SATURDAY") {
+                            if (sat != "")
+                                sat += "<br/>"
+                            sat += d_item.FromTime + " - " + d_item.ToTime;
+                        }
+                    });
+
+                    dvDoctor += "<tr class='text-center'>";
+                    dvDoctor += "<td style='color:#1590c0'> " + sat + "</td>";
+                    dvDoctor += "<td style='color:#1590c0'> " + sun + "</td>";
+                    dvDoctor += "<td style='color:#1590c0'> " + mon + "</td>";
+                    dvDoctor += "<td style='color:#1590c0'> " + tue + "</td>";
+                    dvDoctor += "<td style='color:#1590c0'> " + wed + "</td>";
+                    dvDoctor += "<td style='color:#1590c0'> " + thu + "</td>";
+                    dvDoctor += "<td style='color:#1590c0'> " + fri + "</td>";
+                    dvDoctor += "</tr>";
+
+                    dvDoctor += "</tbody>";
+                    dvDoctor += "</table>";
+                    dvDoctor += "</div>";
+                    dvDoctor += "</div>";
+                    dvDoctor += "</section>";
+                    dvDoctor += "</div>";
+                });
+
+                $('#dvDoctorScheduleView').html(dvDoctor);
+
+            }
+        });
+    }
+
+
+    // Accepts the array and key
+    const groupBy = (array, key) => {
+        // Return the end result
+        return array.reduce((result, currentValue) => {
+            // If an array already present for key, push it to the array. Else create an array and push the object
+            (result[currentValue[key]] = result[currentValue[key]] || []).push(
+                currentValue
+            );
+            // Return the current iteration `result` value, this will be taken as next iteration `result` value and accumulate
+            return result;
+        }, {}); // empty object is the initial value for result object
+    };
+
+    var _specialtyId, _doctorId;
+    var _doctorName, _specialtyName;
+    var _appDate, _appTime;
+    var _appKey = 0;
+
+    function fnShowBookAppointment(specialtyId, specialtyName, doctorId, doctorName) {
+
+        $('#hdDoctorName').html("Dr. " + doctorName);
+        _specialtyId = specialtyId;
+        _doctorId = doctorId;
+        _doctorName = doctorName;
+        _specialtyName = specialtyName;
+
+        fnGenerateDateList(startDate, 21);
+        
+        //$('#PopupDoctorScheduler').modal('show');
+        $("#dvDoctorSchedulersheet").downupPopup('open');
+        fnScheduleDateClick(startDate);
+    }
+
+    function fnGenerateDateList(startDate, daysToAdd) {
+
+        $("#divDate").html("");
+        for (var i = 0; i <= daysToAdd; i++) {
+            var dtDisplayDate = new Date();
+            dtDisplayDate.setDate(startDate.getDate() + i);
+
+            var displayDateFormat = DayAsString(dtDisplayDate.getDay()) + ", " + dtDisplayDate.getDate() + " \t " + MonthAsString(dtDisplayDate.getMonth()) + "\t";
+            var span = "<span class='dateBox' id='dateBox" + i + "' onclick=fnScheduleDateClick('" + dtDisplayDate.toISOString() + "') >";
+            span += displayDateFormat;
+            span += "</span>";
+
+            $("#divDate").append(span);
+            $(".dateBox").first().addClass('active');
+
+        }
+
+        $(".dateBox").click(function () {
+            $(".dateBox").removeClass('active');
+            $(this).addClass('active');
+
+        });
+    }
+
+    function MonthAsString(monthIndex) {
+        var d = new Date();
+        var month = new Array();
+        month[0] = "Jan";
+        month[1] = "Feb";
+        month[2] = "Mar";
+        month[3] = "Apr";
+        month[4] = "May";
+        month[5] = "Jun";
+        month[6] = "Jul";
+        month[7] = "Aug";
+        month[8] = "Sep";
+        month[9] = "Oct";
+        month[10] = "Nov";
+        month[11] = "Dec";
+
+        return month[monthIndex];
+    }
+
+    function DayAsString(dayIndex) {
+        var weekdays = new Array(7);
+        weekdays[0] = "Sun";
+        weekdays[1] = "Mon";
+        weekdays[2] = "Tue";
+        weekdays[3] = "Wed";
+        weekdays[4] = "Thu";
+        weekdays[5] = "Fri";
+        weekdays[6] = "Sat";
+
+        return weekdays[dayIndex];
+    }
+
+
+    function Converttimeformat(time) {
+        var hours = time.getHours();
+        var minutes = time.getMinutes();
+        return hours + ":" + minutes + ":00";
+    }
+
+
+    function fnConvertTimeTo12Format(time) {
+        // Check correct time format and split into components
+        time = time.replace(/:[^:]*$/, '');
+        time = time.toString().match(/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
+
+        if (time.length > 1) { // If time format correct
+            time = time.slice(1);  // Remove full string match value
+            time[5] = +time[0] < 12 ? ' AM' : ' PM'; // Set AM/PM
+            time[0] = +time[0] % 12 || 12; // Adjust hours
+        }
+        return time.join(''); // return adjusted time or original string
+    }
+
+    function fnScheduleDateClick(date) {
+
+        _appDate = date;
+        $('#dvTimeSlot').html("");
+        $.ajax({
+            url: getBaseURL() + '/Appointment/GetDoctorAvailableTimeSlotGivenDate',
+            type: 'get',
+            async: false,
+            data: {
+                clinicType: $(':selected', $('#cboClinicType')).data('clinictype'),
+                consultationType: $(':selected', $('#cboClinicType')).data('consultationtype'),
+                specialtyId: _specialtyId,
+                doctorId: _doctorId,
+                appointmentDate: new Date(date).toDateString()
+            },
+            success: function (result) {
+                $.each(result, function (i, item) {
+                    var time = fnConvertTimeTo12Format(item);
+                    $('#dvTimeSlot').append("<button type='button' class='plain-button' onclick=fnTimeSlotClick('" + item + "')> " + time + " </button>");
+                });
+            }
+        });
+    }
+
+    function fnTimeSlotClick(timeSlot) {
+
+        $('#PopupDoctorScheduler').modal('hide');
+        // _appTime = fnConvertTimeTo12Format(timeSlot);
+        _appTime = new Date(new Date(_appDate).toDateString() + ' ' + timeSlot);
+        fnShowAppointmentConfirmation();
+    }
+
+
+    function fnRefreshScreen() {
+
+    }
+
+
+</script>
+
+
+<script>
+    var startDate = new Date();
+
+    $(function () {
+        var x = $(".dateBox").position();
+        //console.log(x.left);
+    })
+
+    function nxtdates() {
+        debugger;
+        console.log($("#divDate").find(".active").attr('id'))
+        if ($("#divDate").find(".active")) {
+            var id = $("#divDate").find(".active").attr('id');
+            $('#' + id + '').next().addClass('active');
+            $('#' + id + '').removeClass('active');
+        }
+
+    }
+    function beforedates() {
+        debugger;
+        console.log($("#divDate").find(".active").attr('id'));
+        if ($("#divDate").find(".active").attr('id') == 'dateBox0') {
+            $("#dateBox0").addClass('active');
+        }
+        else {
+
+
+            if ($("#divDate").find(".active")) {
+                var id = $("#divDate").find(".active").attr('id');
+                $('#' + id + '').prev().addClass('active');
+                $('#' + id + '').removeClass('active');
+            }
+        }
+    }
+
+
+
+
+
+
+
+</script>

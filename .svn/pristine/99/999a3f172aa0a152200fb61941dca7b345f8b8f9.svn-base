@@ -1,0 +1,324 @@
+﻿
+$(document).ready(function () {
+    fnGridLoadDoctorMaster("0");
+    $(".dot").click(function () {
+        $('.dot').removeClass('active');
+        var doctorNamePrefix = $(this).text();
+        if (doctorNamePrefix == "All")
+            doctorNamePrefix = "";
+        fnGridLoadDoctorMaster(doctorNamePrefix);
+        $(this).addClass('active');
+    });
+});
+
+function fnGridLoadDoctorMaster(doctorPrefix) {
+    $("#jqgDoctorMaster").jqGrid('GridUnload');
+    $("#jqgDoctorMaster").jqGrid({
+        url: getBaseURL() + '/Doctor/GetDoctorMasterList?doctorNamePrefix=' + doctorPrefix,
+        mtype: 'Post',
+        datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        async: false,
+        jsonReader: { repeatDoctors: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Doctor Id", "Doctor Short Name", "Doctor Name", "Gender", "Qualification", "Mobile Number", "Doctor Class Code", "Doctor Class", "Doctor Category Code", "Doctor Category", "Allow Consultation", "Allow SMS", "Is Revenue Share Appicable", "Active", "Action"],
+        colModel: [
+            { name: "DoctorId", width: 40, editable: true, align: 'left', hidden: true },
+            { name: "DoctorShortName", width: 35, editable: true, align: 'left', hidden: false },
+            { name: "DoctorName", width: 70, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "Gender", width: 25, editable: true, align: 'left', hidden: false, editoptions: { value: "M: Male;F: Female" } },
+            { name: "Qualification", width: 40, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "MobileNumber", width: 35, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "DoctorClass", width: 40, editable: false, hidden: true, align: 'left', resizable: true },
+            { name: "DoctorClassDesc", width: 40, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "DoctorCategory", width: 60, editable: false, hidden: true, align: 'left', resizable: true },
+            { name: "DoctorCategoryDesc", width: 60, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "AllowConsultation", width: 40, editable: true, align: 'left', hidden: true },
+            { name: "AllowSMS", width: 40, editable: false, hidden: true, align: 'left', resizable: true },
+            { name: "IsRevenueShareAppicable", width: 40, editable: true, align: 'left', hidden: true },
+            { name: "ActiveStatus", editable: true, width: 20, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+            {
+                name: 'Action', search: false, align: 'left', width: 40, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" onclick="return fnEditDoctorMaster(event)"><i class="fa fa-edit"></i> Edit </button>' + 
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title = "View" onclick = "return fnViewDoctorMaster(event)" > <i class="far fa-eye"></i> View </button > '
+
+                }
+            },
+        ],
+        pager: "#jqpDoctorMaster",
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0
+    }).jqGrid('navGrid', '#jqpDoctorMaster', { add: false, edit: false, search: true, del: false, refresh: false }, {}, {}, {}, { multipleSearch: true }).jqGrid('navButtonAdd', '#jqpDoctorMaster', {
+        caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshDoctorMaster
+    }).jqGrid('navButtonAdd', '#jqpDoctorMaster', {
+        caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'custAdd', position: 'first', onClickButton: fnGridAddDoctorMaster
+    });
+
+    fnAddGridSerialNoHeading();
+}
+
+function fnGridAddDoctorMaster() {
+    fnClearFields();
+    $('#PopupDoctorMaster').find('.modal-title').text("Add Doctor");
+    $("#btnSaveDoctorMaster").html('<i class="far fa-save"></i> Save');
+    $("#btnClearDoctor").show();
+    $("#divGrid").hide();
+    $('#divDoctorCodesForm').css('display', 'block');
+
+    fnGridDoctorBusinessLink();
+    fnGridDoctorSpecialtyLink();
+    fnLoadDoctorSchedulerGrid();
+    fnLoadDoctorScheduleChangeGrid();
+    fnLoadDoctorLeaveGrid();
+}
+
+function fnGridRefreshDoctorMaster() {
+    $("#jqgDoctorMaster").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+    $("#btnSaveDoctorMaster").show();
+    $("input,textarea").attr('readonly', false);
+    $("select").next().attr('disabled', false);
+    $("input[type=checkbox]").attr('disabled', false);
+    $("#divGrid").show();
+    $('#divDoctorCodesForm').css('display', 'none');
+}
+
+function fnEditDoctorMaster(e) {
+    $("#divGrid").hide();
+    $('#divDoctorCodesForm').css('display', 'block');
+    fnClearFields();
+    $("#btnSaveDoctorMaster").html('<i class="far fa-save"></i> Update');
+    $("#btnClearDoctor").hide();
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgDoctorMaster').jqGrid('getRowData', rowid);
+    
+    fnGetDoctorMaster(rowData);
+   
+}
+function fnViewDoctorMaster(e) {
+    fnClearFields();
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgDoctorMaster').jqGrid('getRowData', rowid);
+
+    fnGetDoctorMaster(rowData);
+
+    $("#divGrid").hide();
+    $('#divDoctorCodesForm').css('display', 'block');
+    $("#btnSaveDoctorMaster").hide();
+    $("#btnClearDoctor").hide();
+    $("input,textarea").attr('readonly', true);
+    $("select").next().attr('disabled', true);
+    $("input[type=checkbox]").attr('disabled', true);
+    $("#PopupDoctorMaster").on('hidden.bs.modal', function () {
+        $("#btnSaveDoctorMaster").show();
+        $("input,textarea").attr('readonly', false);
+        $("select").next().attr('disabled', false);
+        $("input[type=checkbox]").attr('disabled', false);
+    })
+}
+
+function fnGetDoctorMaster(data) {
+    //alert(JSON.stringify(data));
+    if (data != null) {
+        //alert(data.DoctorId);
+        $.ajax({
+            url: getBaseURL() + '/Doctor/GetDoctorMaster?doctorId=' + data.DoctorId,
+            type: 'POST',
+            datatype: 'json',
+            success: function (response) {
+                //alert(js.stringify(response));
+                if (response != null) {
+                    fnFillDataMasterData(response);
+                }
+                else {
+                    fnClearFields();
+                    
+                }
+
+            },
+            error: function (error) {
+                toastr.error(error.statusText);
+                
+            }
+        });
+    }
+}
+
+function fnFillDataMasterData(data) {
+
+    $('#hdvDoctorId').val(data.DoctorId);
+    $('#txtDoctorId').val(data.DoctorId);
+    $('#hdDoctorName').html(data.DoctorName);
+    $('#txtDoctorName').val(data.DoctorName);
+    $('#txtDoctorShortName').val(data.DoctorShortName);
+    $('#cboGender').val(data.Gender);
+    $('#cboGender').selectpicker('refresh');
+    $('#txtQualification').val(data.Qualification);
+    $('#txtEMailId').val(data.EMailId);
+    $('#txtMobileNumber').val(data.MobileNumber);
+    $('#cboDoctorClass').val(data.DoctorClass);
+    $('#cboDoctorClass').selectpicker('refresh');
+    $('#cboDoctorCategory').val(data.DoctorCategory);
+    $('#cboDoctorCategory').selectpicker('refresh');
+    //alert(data.AllowConsultation);
+    if (data.AllowConsultation == true)
+        $('#chkAllowConsultation').parent().addClass("is-checked");
+    else
+        $('#chkAllowConsultation').parent().removeClass("is-checked");
+    if (data.IsRevenueShareApplicable == true)
+        $('#chkIsRevenueShareApplicable').parent().addClass("is-checked");
+    else
+        $('#chkIsRevenueShareApplicable').parent().removeClass("is-checked");
+    if (data.AllowSMS == true)
+        $('#chkAllowSMS').parent().addClass("is-checked");
+    else
+        $('#chkAllowSMS').parent().removeClass("is-checked");
+    if (data.ActiveStatus == true)
+        $('#chkActiveStatus').parent().addClass("is-checked");
+    else
+        $('#chkActiveStatus').parent().removeClass("is-checked");
+
+    fnGridDoctorBusinessLink();
+    fnGridDoctorSpecialtyLink();
+    fnLoadDoctorSchedulerGrid();
+    fnLoadDoctorScheduleChangeGrid();
+    fnLoadDoctorLeaveGrid();
+}
+
+function fnSaveDoctorMaster() {
+    
+    if ($('#txtDoctorShortName').val() == '') {
+        toastr.warning("Please Enter Doctor Short Name");
+        $('#txtDoctorShortName').focus();
+        return;
+    }
+    if ($('#txtDoctorName').val() == '') {
+        toastr.warning("Please Enter Doctor Name");
+        $('#txtDoctorName').focus();
+        return;
+    }
+    if ($('#cboGender').val() == '') {
+        toastr.warning("Please Select Gender");
+        $('#cboGender').focus();
+        return;
+    }
+    if ($('#txtQualification').val() == '') {
+        toastr.warning("Please Enter Doctor Qualification");
+        $('#txtQualification').focus();
+        return;
+    }
+    if ($('#cboISDCode').val() == '') {
+        toastr.warning("Please Select ISD Code");
+        $('#cboISDCode').focus();
+        return;
+    }
+    if ($('#txtMobileNumber').val() == '') {
+        toastr.warning("Please Enter Mobile Number");
+        $('#txtMobileNumber').focus();
+        return;
+    }
+    if ($('#cboDoctorClass').val() == '') {
+        toastr.warning("Please Select Doctor Class");
+        $('#cboDoctorClass').focus();
+        return;
+    }
+    if ($('#cboDoctorCategory').val() == '') {
+        toastr.warning("Please Select Doctor Category");
+        $('#cboDoctorCategory').focus();
+        return;
+    }
+    if ($('#txtEMailId').val() != '') {
+        if (!IsValidateEmail($('#txtEMailId').val())) {
+            toastr.warning("Please Enter Valid Email Id");
+            $('#txtEMailId').focus();
+            return;
+        }
+    }
+
+    $("#btnSaveDoctorMaster").attr("disabled", true);
+
+    var obj = {
+        DoctorId: $('#hdvDoctorId').val(),
+        DoctorName: $('#txtDoctorName').val(),
+        DoctorShortName: $('#txtDoctorShortName').val(),
+        Gender: $('#cboGender').val(),
+        Qualification: $('#txtQualification').val(),
+        EMailId: $('#txtEMailId').val(),
+        DoctorRegnNo: '-',
+        MobileNumber: $('#txtMobileNumber').val(),
+        DoctorClass: $('#cboDoctorClass').val(),
+        DoctorCategory: $('#cboDoctorCategory').val(),
+        AllowConsultation: $('#chkAllowConsultation').parent().hasClass("is-checked"),
+        IsRevenueShareApplicable: $('#chkIsRevenueShareApplicable').parent().hasClass("is-checked"),
+        AllowSMS: $('#chkAllowSMS').parent().hasClass("is-checked"),
+        ActiveStatus: $('#chkActiveStatus').parent().hasClass("is-checked")
+    }
+  
+    var Url;
+    if ($('#hdvDoctorId').val() == null || $('#hdvDoctorId').val() == '')
+        Url = getBaseURL() + '/Doctor/InsertDoctorMaster';
+    else
+        Url = getBaseURL() + '/Doctor/UpdateDoctorMaster'
+
+    $.ajax({
+        url: Url,
+        type: 'POST',
+        datatype: 'json',
+        data: { obj },
+        success: function (response) {
+            if (response != null) {
+                if (response.Status) {
+                    toastr.success(response.Message);
+                    fnGridLoadDoctorMaster();
+                    fnClearFields();
+                    $('#txtDoctorId').val(response.ID);
+                    $('#PopupDoctorMaster').modal('hide');
+                    $("#btnSaveDoctorMaster").attr('disabled', false);
+                }
+                else {
+                    toastr.error(response.Message);
+                    $("#btnSaveDoctorMaster").attr('disabled', false);
+                }
+            }
+            else {
+                toastr.error(response.Message);
+                $("#btnSaveDoctorMaster").attr('disabled', false);
+            }
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnSaveDoctorMaster").attr("disabled", false);
+        }
+    });
+    $("#btnSaveDoctorMaster").attr('disabled', false);
+}
+
+function fnClearFields() {
+
+    $('#hdvDoctorId').val('');
+    $('#txtDoctorId').val('');
+    $('#txtDoctorName').val('');
+    $('#hdDoctorName').val('');
+    $('#txtDoctorShortName').val('');
+    $('#txtQualification').val('');
+    $('#txtEMailId').val('');
+    $('#txtMobileNumber').val('');
+    $('#cboDoctorClass').val('');
+    $('#cboDoctorClass').selectpicker('refresh');
+    $('#cboDoctorCategory').val('');
+    $('#cboDoctorCategory').selectpicker('refresh');
+    $('#chkAllowConsultation').parent().removeClass("is-checked");
+    $('#chkIsRevenueShareApplicable').parent().removeClass("is-checked");
+    $('#chkAllowSMS').parent().removeClass("is-checked");
+    $('#chkActiveStatus').parent().addClass("is-checked");
+    $("#btnSaveDoctorMaster").html('<i class="far fa-save"></i> Save');
+}

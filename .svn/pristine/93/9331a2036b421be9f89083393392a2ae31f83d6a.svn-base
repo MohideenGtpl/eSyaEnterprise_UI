@@ -1,0 +1,27 @@
+﻿using eSyaEnterprise_UI.Areas.Config.Data;
+using eSyaEnterprise_UI.Areas.Config.Models;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace eSyaEnterprise_UI.Controllers
+{
+    public class MenuViewComponent : ViewComponent
+    {
+        private readonly IeSyaConfigAPIServices _eSyaConfigAPIServices;
+        public MenuViewComponent(IeSyaConfigAPIServices eSyaConfigAPIServices)
+        {
+            _eSyaConfigAPIServices = eSyaConfigAPIServices;
+
+        }
+        public async Task<IViewComponentResult> InvokeAsync()
+        {
+            var serviceResponse = await _eSyaConfigAPIServices.HttpClientServices.GetAsync<List<DO_MainMenu>>("UserAccount/GeteSyaMenulist");
+            var fn_list = serviceResponse.Data;
+
+            return View("_UserMenu", fn_list);
+        }
+    }
+}

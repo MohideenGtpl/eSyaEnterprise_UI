@@ -1,0 +1,69 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.ActionFilter;
+using eSyaEnterprise_UI.Areas.TokenSystem.Data;
+using eSyaEnterprise_UI.Areas.TokenSystem.Models;
+using eSyaEnterprise_UI.DataServices;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
+using eSyaEnterprise_UI.Extension;
+using Microsoft.AspNetCore.Mvc.Rendering;
+namespace eSyaEnterprise_UI.Areas.TokenSystem.Controllers
+{
+    public class DisplaySystemController : Controller
+    {
+        private readonly ITokenSystemAPIServices _TokenSystemAPIServices;
+        private readonly ILogger<DisplaySystemController> _logger;
+
+        public DisplaySystemController(ITokenSystemAPIServices TokenSystemAPIServices, ILogger<DisplaySystemController> logger)
+        {
+            _TokenSystemAPIServices = TokenSystemAPIServices;
+            _logger = logger;
+        }
+
+        [Area("TokenSystem")]
+        public async Task<IActionResult> ETM_10_00(int businesskey, string arrayOfCounterID)
+        {
+            ViewBag.BusinessKey = businesskey;
+            ViewBag.CounterList = arrayOfCounterID.Split(',').ToList();
+            ViewBag.ArrayOfCounters = arrayOfCounterID;
+            return View();
+        }
+
+        /// <summary>
+        /// Getting Tokens for Counter Display
+        /// </summary>
+        [HttpGet]
+        public async Task<JsonResult> GetTokenForCounterDisplay(int businessKey, string counterList)
+        {            
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&arrayOfCounterList=" + counterList.ToString();
+                var serviceResponse = await _TokenSystemAPIServices.HttpClientServices.GetAsync<List<DO_Token>>("DisplaySystem/GetTokenForCounterDisplay" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError(ex, string.Format("UD:GetTokenForCounterDisplay:params: businessKey:{0},counterList:{1}",
+                        AppSessionVariables.GetSessionBusinessKey(HttpContext).ToString(), counterList));
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+    }
+}

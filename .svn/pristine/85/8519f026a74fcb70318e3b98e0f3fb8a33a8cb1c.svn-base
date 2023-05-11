@@ -1,0 +1,99 @@
+﻿
+@{
+    ViewData["Title"] = "V_4532_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@*@section scripts{
+    <script src="~/js/eSyaPayrollExpat/ReleaseSalary.js"></script>
+        }*@
+
+<div class="row">
+    <div class="col-lg-5 col-md-5 col-sm-12 form-group">
+        <label>Business Key</label>
+        @await Component.InvokeAsync("UserBusinessLocation")
+    </div>
+</div>
+<div class="row form-group">
+    <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+        <label>Bank Name</label>
+        <select class="selectpicker" id="cboBanks" name="cboBanks"
+                asp-items="@ViewBag.l_Banks" onchange="fnRefreshGrid()">
+            <option selected>Select</option>
+            <option value="C">Cash</option>
+        </select>
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-12 form-group">
+        <label>Bank Date</label>
+        <input type="text" name="name" id="dtBankDate" value="" class="form-control datepicker" onchange="fnRefreshGrid()"/>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 form-group text-right padtop20">
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveSalaryPayment" onclick="fnSaveSalaryPayment()">
+            Excel Download
+        </button>
+    </div>
+</div>
+
+<div class="row form-group">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <table id="jqgSalary"></table>
+        <div id="jqpSalary"></div>
+    </div>
+</div>
+
+<script>
+
+    $(function () {
+        fnLoadSalaryGrid();
+    })
+
+    function fnBusinessLocation_onChange() {
+        fnRefreshGrid();
+    }
+
+    function fnRefreshGrid() {
+        $("#jqgSalary").jqGrid("setGridParam", { datatype: "json" })
+            .trigger("reloadGrid", [{ current: true }]);
+    }
+
+    function fnLoadSalaryGrid() {
+        $("#jqgSalary").jqGrid({
+            url: getBaseURL() + '/SalaryPayment/GetBankStatement',
+            datatype: "json",
+           // contenttype: "application/json; charset-utf-8",
+            mtype: 'GET',
+            postData: {
+                businessKey: function () { return $("#cboBusinessLocation").val(); },
+                orgBankCode: function () { return $("#cboBanks").val(); },
+                bankDate: function () { return getDate($("#dtBankDate")); },
+            },
+            jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+            colNames: ["EmployeeNumber", "Employee Name", 'PayPeriod', 'SerialNumber', 'Amount In local Currency ', 'Account Holder Name', 'Account Number', 'IFSC Code'],
+            colModel: [
+                { name: "EmployeeNumber", width: '100', align: 'left', editable: false, hidden: true },
+                { name: "EmployeeName", index: 'EmployeeName', width: '200', align: 'left', editable: false, sortable: true, },
+                { name: "PayPeriod", index: 'PayPeriod', width: '50', align: 'left', editable: false, sortable: true, },
+                { name: "SerialNumber", index: 'SerialNumber', hidden: true },
+                { name: 'PayableAmount', index: 'PayableAmount', width: 80, align: "right", sorttype: "float", formatter: "number" },
+                { name: 'AccountHolderName', index: 'AccountHolderName', width: 120 },
+                { name: 'AccountNumber', index: 'AccountNumber', width: 120 },
+                { name: 'IFSCCode', index: 'IFSCCode', width: 120 },
+            ],
+            rowNum: 100000,
+            loadonce: true,
+            height: 'auto',
+            scroll: false,
+            width: '150',
+            autowidth: false,
+            shrinkToFit: false,
+            forceFit: false,
+            cellEdit: true,
+            editurl: 'url',
+            cellsubmit: 'clientArray',
+            loadComplete: function () {
+            },
+        });
+    }
+
+
+
+</script>

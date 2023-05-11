@@ -1,0 +1,123 @@
+﻿$(document).ready(function () {
+    fnGridFixedDeduction();
+});
+
+var actiontype = "";
+function fnGridFixedDeduction() {
+    $("#jqgFixedDeduction").jqGrid({
+        //url: getBaseURL() + '',
+        datatype: 'json',
+        mtype: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        colNames: ["ER Description", "Amount", "No of Installments", "Paid Amount", "Balance Amount", "Reference Detail","Status","Skip Payroll",""],
+        colModel: [
+            { name: "ERDescription", width: 50, align: 'left', editable: true, editoptions: { maxlength: 6 }, resizable: false, hidden: true },
+            { name: "Amount", width: 50, align: 'left', editable: true, editoptions: { maxlength: 50 }, resizable: false, hidden: false },
+            { name: "NoOfInstallments ", width: 50, align: 'left', editable: true, editoptions: { maxlength: 50 }, resizable: false },
+            { name: "PaidAmount", width: 55, align: 'left', editable: true, editoptions: { maxlength: 50 }, resizable: false },
+            { name: "BalanceAmount", width: 55, align: 'left', editable: true, editoptions: { maxlength: 50 }, resizable: false },
+            { name: "RefDetail", width: 95, align: 'left', editable: true, editoptions: { maxlength: 50 }, resizable: false },
+            { name: "Status", width: 35, editable: false, align: 'left', editoptions: { maxlength: 50 }, resizable: false },
+            { name: "SkipPayroll", width: 35, editable: false, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+           {
+                name: 'edit', search: false, align: 'left', width: 88, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditFixedDeductions(event,\'edit\');"><i class="fa fa-edit"></i>' + localization.Edit + '</button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnEditFixedDeductions(event,\'view\');"><i class="far fa-eye"></i>' + localization.View + '</button>'
+                }
+            },
+        ],
+        pager: "#jqpFixedDeduction",
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        scroll: false,
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        forceFit: false,
+        loadComplete: function (data) {
+            SetGridControlByAction();
+        },
+    }).jqGrid('navGrid', '#jqpFixedDeduction', { add: false, edit: false, search: false, del: false, refresh: false, refreshtext: 'Reload' }).jqGrid('navButtonAdd', '#jqpFixedDeduction', {
+        caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshFixedDeduction
+    }).jqGrid('navButtonAdd', '#jqpFixedDeduction', {
+        caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddFixedDeduction
+    });
+
+    $(window).on("resize", function () {
+        var $grid = $("#jqgFixedDeduction"),
+            newWidth = $grid.closest(".FixedDeductioncontainer").parent().width();
+        $grid.jqGrid("setGridWidth", newWidth, true);
+    });
+    fnAddGridSerialNoHeading();
+}
+
+function fnAddFixedDeduction() {
+    _isInsert = true;
+    $("#divForm").css("display", "block");
+    $("#divGrid").hide();
+    fnClearFields();
+    $('#PopupFixedDeduction').find('.modal-title').text("Add Fixed Deduction Details");
+    $('#PopupFixedDeduction').modal('show');
+    $("#btnSaveFixedDeduction").html('Save');
+}
+
+function fnEditEmployeeDetails(e, actiontype) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgFixedDeduction').jqGrid('getRowData', rowid);
+
+    $('#PopupFixedDeduction').modal('show');
+    $("#btnSaveFixedDeduction").attr("disabled", false);
+    $("#txtFixedDeduction").attr("readonly", "readonly");
+    _isInsert = false;
+
+    if (actiontype.trim() == "edit") {
+        $('#PopupFixedDeduction').find('.modal-title').text("Update Fixed Deduction Details");
+        $("#btnSaveFixedDeduction").html(' Update');
+        $("#chkActiveStatus").prop('disabled', false);
+    }
+
+    if (actiontype.trim() == "view") {
+        $('#PopupFixedDeductions').find('.modal-title').text("View Fixed Deduction Details");
+        $("#btnSaveFixedDeduction").html(' Update');
+        $("#btnSaveFixedDeduction").attr("disabled", false);
+        $("input,textarea").attr('readonly', true);
+        $("select").next().attr('disabled', true);
+        $("#btnSaveFixedDeduction").hide();
+        $("#chkActiveStatus").prop('disabled', true);
+        $("#PopupFixedDeductions").on('hidden.bs.modal', function () {
+            $("#btnSaveFixedDeduction").show();
+            $("input,textarea").attr('readonly', false);
+            $("select").next().attr('disabled', false);
+        });
+    }
+}
+
+var _isInsert = true;
+
+function fnGridRefreshFixedDeduction() {
+    $("#jqgFixedDeduction").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+function fnClearFields() {
+    $("#btnSaveFixedDeduction").show();
+    $("input,textarea").attr('readonly', false);
+    $("select").next().attr('disabled', false);
+}
+
+$("#btnCancelFixedDeduction").click(function () {
+    $("#jqgFixedDeduction").jqGrid('resetSelection');
+    $('#PopupFixedDeductions').modal('hide');
+    fnClearFields();
+});
+
+function fnCloseEmployeeDetails() {
+    $("#divGrid").show();
+    $("#divForm").css("display", "none");
+}

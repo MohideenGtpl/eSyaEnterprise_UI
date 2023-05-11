@@ -1,0 +1,182 @@
+﻿
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/js/eSyaNatureCure/PackagePrice.js"></script>
+@{
+    var userFormRole = (eSyaEnterprise_UI.Models.DO_UserFormRole)ViewBag.UserFormRoles;
+}
+<script>
+    var _userFormRole = JSON.parse('@Html.Raw(Json.Serialize(userFormRole))');
+
+     var localization = {
+         AddPackagePrice: '@Localizer["AddDaywiseActivity"]',
+         Package: '@Localizer["Package"]',
+         OccupancyType: '@Localizer["OccupancyType"]',
+         Price:'@Localizer["Price"]',
+         NoOfWeeks: '@Localizer["NoOfWeeks"]',
+         PackageId: '@Localizer["PackageId"]',
+         PackageDescription: '@Localizer["PackageDescription"]',
+         Active: '@Localizer["Active"]',
+         Actions: '@Localizer["Actions"]',
+         Edit: '@Localizer["Edit"]',
+         View: '@Localizer["View"]',
+         Save: '@Localizer["Save"]',
+         Update: '@Localizer["Update"]',
+         Delete: '@Localizer["Delete"]',
+         Activate: '@Localizer["Activate"]',
+         DActivate: '@Localizer["DActivate"]',
+         AddPackageprice: '@Localizer["AddPackageprice"]',
+         UpdatePackagePrice: '@Localizer["UpdatePackagePrice"]',
+         ViewPackagePrice: '@Localizer["ViewPackagePrice"]',
+         RoomTypeDescription: '@Localizer["RoomTypeDescription"]',
+         RoomTypeId: '@Localizer["RoomTypeId"]',
+    };
+
+</script>
+<style>
+    .bootstrap-select {
+        width: 100% !important;
+    }
+</style>
+
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color">@Localizer["Package"] </label>
+            <select class="selectpicker" data-live-search="true" id="cboPackageId" title="" onchange="fnGridLoadPackagePrice()" data-size="10">
+                <option value="0"> All</option>
+                @if (ViewBag.package != null)
+                {
+                    foreach (var pkg in ViewBag.package)
+                    {
+                        <option value="@pkg.PackageId">@pkg.PackageDesc</option>
+                    }
+
+                }
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="row padbot10">
+    <div class="col-lg-12 col-md-12 col-sm-12 PackagePricecontainer">
+        <table id="jqgPackagePrice"></table>
+        <div id="jqpPackagePrice"></div>
+    </div>
+</div>
+
+<div class="modal fade in" id="PopupPackagePrice" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-md  " role="document" style="box-shadow:none;">
+        <div class="modal-content ">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">@Localizer["AddPackagePrice"]</h4>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="row padbot4">
+
+                    <div class="col-lg-6  col-md-6 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <div>
+                                <label class="lable-color">@Localizer["RoomType"] </label>
+                                <select class="selectpicker" data-live-search="true" id="cboRoomTypeId" title="" data-size="10">
+                                    <option value="0"> Select</option>
+                                    @if (ViewBag.roomtypes != null)
+                                    {
+                                        foreach (var room in ViewBag.roomtypes)
+                                        {
+                                            <option value="@room.RoomTypeId">@room.RoomTypeDesc</option>
+                                        }
+
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6  col-md-6 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <div>
+                                <label class="lable-color">@Localizer["OccupancyType"] </label>
+                                <select class="selectpicker" data-live-search="true" id="cboOccupancyType" title="" data-size="10">
+                                    <option value="0"> Select</option>
+                                    <option value="T"> Sharing</option>
+                                    <option value="C"> Clubbed</option>
+                                    <option value="S"> Single</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+
+                    <div class="col-lg-6  col-md-6 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label for="txtPrice"> @Localizer["Price"]</label>
+                            <input id="txtPrice" class="form-control currency" maxlength="9" type="text" data-inputmask="'mask': '9', 'repeat': 10, 'greedy' : false" />
+
+                        </div>
+                    </div>
+                    <div class="col-lg-6  col-md-6 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label for="txtNoofWeeks"> @Localizer["NoofWeeks"]</label>
+                            <input id="txtNoofWeeks" class="form-control" maxlength="9" type="text" data-inputmask="'mask': '9', 'repeat': 10, 'greedy' : false" />
+
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3  col-md-3 col-sm-12 col-xs-12">
+                        <div class="default-checkbox">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActiveStatus">
+                                <input type="checkbox" id="chkActiveStatus" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">@Localizer["Active"]</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSavePackagePrice" onclick="fnSavePackagePrice();">
+                            <i class="fa fa-save"></i> @Localizer["Save"]
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="btnCancelPackagePrice"><i class="fa fa-times"></i> @Localizer["Cancel"] </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" id="btndeActivePackagePrice" onclick="fnDeletePackagePrice();"><i class="fa fa-times"></i> @Localizer["DeActivate"] </button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+<script>
+
+
+
+    $(document).ready(function () {
+        $(".decimal").inputmask('decimal', { rightAlign: true });
+        $(".currency").inputmask('currency', { rightAlign: true });
+        
+    });
+
+
+</script>
+
+
+

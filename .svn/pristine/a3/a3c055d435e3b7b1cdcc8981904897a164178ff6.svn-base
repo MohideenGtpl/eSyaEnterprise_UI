@@ -1,0 +1,238 @@
+﻿
+@{
+    ViewData["Title"] = "V_ENC_08_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+ 
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+ 
+<link href="~/css/iconfont/sharp.css" rel="stylesheet" />
+<link href="~/css/iconfont/material-icons.css" rel="stylesheet" />
+<link href="~/css/eSyaNatureCure/GuestActivities.css" rel="stylesheet" />
+<section>
+    <div class="row">
+        <div class="col-lg-2 col-md-3 ga-sidebar">
+            <div class="ga-patientdetails ga-patientdetails-bg">
+                <span class="ga-usericon"><span class="material-icons">account_circle</span></span>
+                <div class="ga-userinfo">
+                    <p class="ga-username">Patient Name</p>
+                    <p class="ga-agegender"><span class="f-11">40  / </span><span class="f-11">M</span></p>
+                </div>
+            </div>
+
+            <div class="row m-0 ga-patientdetails-bg">
+                <div class="col-12 border-bottom border-top">
+                    <label class="ga-packagedetails f-11"> <span>Deluxe</span></label>
+                </div>
+                <div class="col-6 ga-checkin border-right">
+                    <label class="ga-label"><i class="fa fa-building"></i> Room Type</label>
+                    <span class="number">Deluxe</span>
+                </div>
+                <div class="col-6 ga-checkout">
+                    <label class=""><i class="fa fa-bed"></i> Room No</label>
+                    <span class="number">D100</span>
+                </div>
+
+                @*<div class="col-12">
+                        <label class="ga-packagedetails"><i class="fa fa-bed"></i>Deluxe - <span>010101</span></label>
+                    </div>*@
+            </div>
+            <div class="row m-0 border-bottom  ga-patientdetails-bg">
+                <div class="col-6 ga-checkin border-right">
+                    <label class="ga-label"><i class="fa fa-calendar-check"></i> Check-in</label>
+                    <span class="number">17-12-2022</span>
+                </div>
+                <div class="col-6 ga-checkout">
+                    <label class=""><i class="fa fa-calendar-check"></i> Check-out</label>
+                    <span class="number">18-12-2022</span>
+                </div>
+            </div>
+            <ul class="nav nav-tabs flex-column ga-menu">
+                <li class="nav-item" role="presentation"><button type="button" class="nav-link active" data-target="#personalinformation" data-toggle="tab" role="tab" aria-controls="home" aria-selected="true"><i class="fa fa-info-circle"></i> Personal Information</button></li>
+               
+                <li class="nav-item" role="presentation"><button type="button" class="nav-link" data-target="#myactivities" data-toggle="tab" role="tab" aria-controls="myactivities" aria-selected="true"><i class="fa fa-file-alt"></i> My Activities</button></li>
+            </ul>
+        </div>
+        <main class="col-lg-10 col-md-9 p-0" id="ga-timeline">
+
+            <div class="tab-content">
+                @*personalinformation tab starts*@
+                <div class="tab-pane active" id="personalinformation" role="tabpanel" aria-labelledby="home-tab">
+                    <section>
+                        <div class="row m-0">
+                            <div class="col-lg-12">
+                                <h1 class="ga-heading">Personal Information</h1>
+                            </div>
+                        </div>
+
+                         
+
+                         
+                    </section>
+
+                        <section class="">
+                            <div class="row m-0  ga-personalinfo">
+                                <div class="col-lg-2 col-md-6 col-sm-12 ga-boxshadow">
+                                    @*<span class="box-icon w-100"><i class="fas fa-user-md fa-2x"></i></span>*@
+                                    <div class="text-center"><div class="ga-patientinfo"></div></div>
+                                   
+                                </div>
+                                <div class="col-lg-10 ga-boxshadow">
+                                    <div class="row m-0">
+                                        <div class="col-12">
+                                            <p class="ga-patientName m-0">Basic Info</p>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6 col-sm-6">
+
+                                            <div class="pl-0 pb-2 d-block">
+                                                <label class="mb-1"><span class="text-black-50">Name :</span></label>
+                                                <label class="text-black-50"><span class="">Patient Name</span></label>
+                                            </div>
+
+
+                                            <div class="pl-0 pb-2 d-block">
+                                                <label class="mb-1"><span class="text-black-50">Age :</span></label>
+                                                <label class="text-black-50"><span class="">40</span></label>
+                                            </div>
+
+
+                                           
+
+                                        </div>
+                                        <div class="col-lg-6 col-md-6 col-sm-6">
+                                            <div class="pl-0 pb-2">
+                                                <label class=""><span class="text-black-50">Mobile No:</span></label>
+                                                <label class=""><span class="text-label">+91 789 879 4521</span></label>
+                                            </div>
+                                            <div class="pl-0 d-block">
+                                                <label class="mb-1"><span class="text-black-50">Email :</span></label>
+                                                <label class="text-black-50"><span>sampleemailID@gmail.com :</span></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+
+                   
+                </div>
+                @*personalinformation tab ends*@
+
+                @*projects tab starts*@
+                <div class="tab-pane" id="projects" role="tabpanel" aria-labelledby="projects-tab">
+                    <section>
+                        <div class="row m-0">
+                            <div class="col-lg-12">
+                                <h1 class="ga-heading">Projects</h1>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                @*projects tab starts*@
+
+                @*reports starts here*@
+                <div class="tab-pane" id="reports" role="tabpanel" aria-labelledby="reports-tab">
+                    <section>
+                        <div class="row m-0">
+                            <div class="col-lg-12">
+                                <h1 class="ga-heading">Reports</h1>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                @*reports ends here*@
+
+                @*myactivities starts here*@
+                <div class="tab-pane" id="myactivities" role="tabpanel" aria-labelledby="myactivities-tab">
+                    <section>
+                        <div class="row m-0">
+                            <div class="col-lg-12">
+                                <h1 class="ga-heading">My Activities</h1>
+                            </div>
+
+                        </div>
+                    </section>
+                    <section class="">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-12 border-bottom pl-0">
+                                <a class="bold m-0" href="#dec19" data-toggle="collapse" role="button" aria-expanded="false"><i class="fa fa-chevron-circle-right"></i> Dec 19  <span class="timeline-duration"><i class="fa fa-circle f-11"></i> Tracked 12 hrs</span></a>
+                            </div>
+                        </div>
+                        <div id="dec19" class="collapse">
+                            <div class="row  border-bottom ">
+                                <div class="col-lg-2 col-md-2 my-4">
+                                    <p class="m-0">08:00 pm - 08:00am </p>
+                                    <span class="text-black-50 f-11">12 hrs</span>
+                                </div>
+                                <div class="col-lg-2 col-md-2 pl-0 my-4">
+                                    <p class="m-0">Editing</p>
+                                    <span class="text-black-50 f-11">MUO</span>
+                                </div>
+                                <div class="col-lg-2 col-md-2 p-0 my-3 offset-lg-2 offset-md-2 border-left border-right text-center">
+                                    <p class="text-black-50 m-0 f-11">0 Keyboard hits</p>
+                                    <p class="text-black-50 m-0 f-11">0 Mouse hits</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </section>
+
+                    <section class="mt-4">
+                        <div class="row border-bottom">
+                            <div class="col-lg-12 col-md-12 col-12  pl-0">
+                                <a class="bold m-0" href="#dec20" data-toggle="collapse" role="button"><i class="fa fa-chevron-circle-down"></i> Dec 20  <span class="timeline-duration"><i class="fa fa-circle f-11"></i> Tracked 05 hrs</span></a>
+                            </div>
+                        </div>
+
+                        <div id="dec20" class="collapse">
+                            <div class="row">
+                                <div class="col-lg-2 col-md-2 my-4">
+                                    <p class="m-0">08:00 am - 10:00am </p>
+                                    <span class="text-black-50 f-11">02 hrs</span>
+                                </div>
+                                <div class="col-lg-2 col-md-2 pl-0 my-4">
+                                    <p class="m-0">Editing</p>
+                                    <span class="text-black-50 f-11">MUO</span>
+                                </div>
+                                <div class="col-lg-2 col-md-2 p-0 my-3 offset-lg-2 offset-md-2 border-left border-right text-center">
+                                    <p class="text-black-50 m-0 f-11">0 Keyboard hits</p>
+                                    <p class="text-black-50 m-0 f-11">0 Mouse hits</p>
+                                </div>
+                            </div>
+                            <div class="row border-bottom">
+                                <div class="col-lg-2 col-md-2 my-0">
+                                    <p class="m-0">06:00 am - 09:00am </p>
+                                    <span class="text-black-50 f-11">3 hours</span>
+                                </div>
+                                <div class="col-lg-2 col-md-2 pl-0 my-0">
+                                    <p class="m-0">Editing</p>
+                                    <span class="text-black-50 f-11">MUO</span>
+                                </div>
+                                <div class="col-lg-2 col-md-2 p-0 my-0 offset-lg-2 offset-md-2 border-left border-right text-center">
+                                    <p class="text-black-50 m-0 f-11">0 Keyboard hits</p>
+                                    <p class="text-black-50 m-0 f-11">0 Mouse hits</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                @*myactivities starts here*@
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+        </main>
+    </div>
+</section>
+

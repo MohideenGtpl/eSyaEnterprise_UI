@@ -1,0 +1,241 @@
+﻿
+$(document).ready(function () {
+    fnGridLoadERCodes();
+});
+var actiontype = "";
+function fnGridLoadERCodes() {
+
+    $("#jqgERCode").GridUnload();
+
+    $("#jqgERCode").jqGrid({
+        url: getBaseURL() + '/ERCodes/GetAllERCodes',
+        datatype: 'json',
+        mtype: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        colNames: ["ER Code", "Description", "Active", "", "","","","","", "Actions"],
+        colModel: [
+            { name: "Ercode", width: 40, align: 'left', editable: true, editoptions: { maxlength: 6 }, resizable: false, hidden: false },
+            { name: "Erdesc", width: 280, align: 'left', editable: true, editoptions: { maxlength: 50 }, resizable: false },
+            { name: "ActiveStatus", width: 35, editable: true, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            { name: "ParameterId", width: 40, align: 'left', editable: true, editoptions: { maxlength: 15 }, resizable: false, hidden: true },
+            { name: "ParmDesc", width: 280, align: 'left', editable: true, editoptions: { maxlength: 25 }, resizable: false, hidden: true },
+            { name: "ParmPerc", width: 40, align: 'left', editable: true, editoptions: { maxlength: 15 }, resizable: false, hidden: true },
+            { name: "ParmValue", width: 40, align: 'left', editable: true, editoptions: { maxlength: 15 }, resizable: false, hidden: true },
+            { name: "ParmAction", width: 35, editable: true, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, hidden: true },
+            { name: "ParamActiveStatus", width: 35, editable: true, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, hidden: true },
+            {
+                name: 'edit', search: false, align: 'left', width: 88, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditERCode(event,\'edit\');"><i class="fa fa-edit"></i>' +'Edit'+ '</button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnEditERCode(event,\'view\');"><i class="far fa-eye"></i>' +'View' + '</button>'
+                }
+            },
+        ],
+        
+        pager: "#jqpERCode",
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        scroll: false,
+        width: 'auto',
+        autowidth: true,
+        shrinkToFit: false,
+        forceFit: false,
+        loadComplete: function (data) {
+            //SetGridControlByAction();
+        },
+
+    }).jqGrid('navGrid', '#jqpERCode', { add: false, edit: false, search: false, del: false, refresh: false, refreshtext: 'Reload' }).jqGrid('navButtonAdd', '#jqpERCode', {
+        caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshERCode
+        }).jqGrid('navButtonAdd', '#jqpERCode', {
+        caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddERCode
+    });
+
+    $(window).on("resize", function () {
+        var $grid = $("#jqgERCode"),
+            newWidth = $grid.closest(".codetypecontainer").parent().width();
+        $grid.jqGrid("setGridWidth", newWidth, true);
+    });
+    fnAddGridSerialNoHeading();
+}
+
+function fnAddERCode() {
+    _isInsert = true;
+    fnClearERCodeFields(); 
+    $('#PopupERCodes').modal('show');
+    $("#chkActiveStatus").parent().addClass("is-checked");
+    $("#chkParamActiveStatus").parent().addClass("is-checked");
+    $('#PopupERCodes').find('.modal-title').text("Add ER Code");
+    $("#btnSaveERCode").html('Save');
+    $("#btnSaveERCode").attr("disabled", false);
+    $("#chkParamAction").parent().removeClass("is-checked");
+}
+
+function fnEditERCode(e, actiontype) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgERCode').jqGrid('getRowData', rowid);
+
+    $('#PopupERCodes').modal('show');
+    $('#txtERCode').val(rowData.Ercode);
+    $('#txtErCodeDescription').val(rowData.Erdesc);
+    if (rowData.ActiveStatus == 'true') {
+        $("#chkActiveStatus").parent().addClass("is-checked");
+    }
+    else {
+        $("#chkActiveStatus").parent().removeClass("is-checked");
+    }
+
+    $('#txtParameterId').val(rowData.ParameterId);
+    $('#txtParameterDescription').val(rowData.ParmDesc);
+    $('#txtParameterValue').val(rowData.ParmValue);
+    $('#txtParameterPercentage').val(rowData.ParmPerc);
+    if (rowData.ParmAction == 'true') {
+        $("#chkParamAction").parent().addClass("is-checked");
+    }
+    else {
+        $("#chkParamAction").parent().removeClass("is-checked");
+    }
+    if (rowData.ParamActiveStatus == 'true') {
+        $("#chkParamActiveStatus").parent().addClass("is-checked");
+    }
+    else {
+        $("#chkParamActiveStatus").parent().removeClass("is-checked");
+    }
+    $("#btnSaveERCode").attr("disabled", false);
+
+    $("#txtERCode").attr("readonly", "readonly");
+    _isInsert = false;
+
+    if (actiontype.trim() == "edit") {
+        $('#PopupERCodes').find('.modal-title').text("Update ER Code");
+        $("#btnSaveERCode").html(' Update');
+        $("#chkActiveStatus").prop('disabled', false);
+    }
+
+    if (actiontype.trim() == "view") {
+        $('#PopupERCodes').find('.modal-title').text("View ER Code");
+        $("#btnSaveERCode").html(' Update');
+        $("#btnSaveERCode").attr("disabled", false);
+        $("input,textarea").attr('readonly', true);
+        $("select").next().attr('disabled', true);
+        $("#btnSaveERCode").hide();
+        $("#chkActiveStatus").prop('disabled', true);
+        $("#PopupERCodes").on('hidden.bs.modal', function () {
+            $("#btnSaveERCode").show();
+            $("input,textarea").attr('readonly', false);
+            $("select").next().attr('disabled', false);
+        });
+    }
+}
+
+var _isInsert = true;
+function fnSaveERCode() {
+    if (IsStringNullorEmpty($("#txtERCode").val())) {
+        toastr.warning("Please Enter ER Code");
+        return;
+    }
+    if (IsStringNullorEmpty($("#txtErCodeDescription").val())) {
+        toastr.warning("Please Enter ER Code Description");
+        return;
+    }
+   
+    if (IsStringNullorEmpty($("#txtParameterDescription").val())) {
+        toastr.warning("Please Enter Parameter Description");
+        return;
+    }
+    if (IsStringNullorEmpty($("#txtParameterValue").val())) {
+        toastr.warning("Please Enter ER Parameter Value");
+        return;
+    }
+    if (IsStringNullorEmpty($("#txtParameterPercentage").val())) {
+        toastr.warning("Please Enter Percentage");
+        return;
+    }
+
+    Er_code = {
+        Ercode: $("#txtERCode").val(),
+        Erdesc: $("#txtErCodeDescription").val(),
+        ActiveStatus: $("#chkActiveStatus").parent().hasClass("is-checked"),
+        ParameterId: $("#txtParameterId").val(),
+        ParmPerc: $("#txtParameterPercentage").val(),
+        ParmDesc: $("#txtParameterDescription").val(),
+        ParmValue: $("#txtParameterValue").val(),
+        ParmAction: $("#chkParamAction").parent().hasClass("is-checked"),
+        ParamActiveStatus: $("#chkParamActiveStatus").parent().hasClass("is-checked"),
+    };
+
+    $("#btnSaveERCode").attr("disabled", true);
+
+    $.ajax({
+        url: getBaseURL() + '/ERCodes/InsertOrUpdateERCodes',
+        type: 'POST',
+        datatype: 'json',
+        data: { isInsert: _isInsert, obj: Er_code },
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                $("#btnSaveERCode").html('<i class="fa fa-spinner fa-spin"></i> wait');
+                $("#PopupERCodes").modal('hide');
+                fnClearERCodeFields();
+                fnGridRefreshERCode();
+            }
+            else {
+                toastr.error(response.Message);
+                $("#btnSaveERCode").attr("disabled", false);
+            }
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnSaveERCode").attr("disabled", false);
+        }
+    });
+}
+
+function fnGridRefreshERCode() {
+    $("#jqgERCode").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+function fnClearERCodeFields() {
+    $("#txtERCode").removeAttr("readonly");
+    $("#txtERCode").val('');
+    $("#txtErCodeDescription").val('');
+    $("#chkActiveStatus").prop('disabled', false);
+    $("#btnSaveERCode").attr("disabled", false);
+    $("#txtParameterId").val('');
+    $("#txtParameterPercentage").val('');
+    $("#txtParameterDescription").val('');
+    $("#txtParameterValue").val('');
+    $("#chkParamAction").prop('disabled', false);
+    $("#chkParamActiveStatus").prop('disabled', false);
+    
+}
+
+$("#btnCancelERCode").click(function () {
+    $("#jqgERCode").jqGrid('resetSelection');
+    $('#PopupERCodes').modal('hide');
+    fnClearERCodeFields();
+});
+
+function SetGridControlByAction() {
+    $('#jqgAdd').removeClass('ui-state-disabled');
+    var eleEnable = document.querySelectorAll('#jqgEdit');
+
+    for (var i = 0; i < eleEnable.length; i++) {
+        eleEnable[i].disabled = false;
+    }
+    if (_userFormRole.IsInsert === false) {
+        $('#jqgAdd').addClass('ui-state-disabled');
+    }
+    if (_userFormRole.IsEdit === false) {
+        var eleDisable = document.querySelectorAll('#jqgEdit');
+        for (var i = 0; i < eleDisable.length; i++) {
+            eleDisable[i].disabled = true;
+            eleDisable[i].className = "ui-state-disabled";
+        }
+    }
+}

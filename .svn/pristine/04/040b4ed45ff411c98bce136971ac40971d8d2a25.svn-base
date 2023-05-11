@@ -1,0 +1,210 @@
+﻿
+$(document).ready(function () {
+    fnGridLoadStatutoryCode();
+});
+
+function fnGridLoadStatutoryCode() {
+
+    $("#jqgStatutoryCode").jqGrid('GridUnload');
+    var ISDCode = $('#cboIsdcode').val();
+    $("#jqgStatutoryCode").jqGrid({
+        url: getBaseURL() + '/Country/GetStatutoryCodesbyIsdcode?Isdcode=' + ISDCode,
+        mtype: 'Post',
+        datatype: 'json',
+
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["ISD Code", "Statutory Code", "Stat Short Code", "Statutory Description", "Stat Pattern", "Active Status"],
+        colModel: [
+            { name: "Isdcode", width: 70, editable: true, hidden: true, align: 'left', resizable: true, editoptions: { size: "20", maxlength: "10" }, edittype: "text" },
+            { name: "StatutoryCode", width: 70, editable: true, hidden: true, align: 'left', resizable: true, editoptions: { size: "20", maxlength: "10" }, edittype: "text" },
+            {
+                name: "StatShortCode", width: 70, editable: true, hidden: false, align: 'left', resizable: true, editoptions: { size: "20", maxlength: "10" }, edittype: "text", editrules: {
+                    custom_func: validateStatShortCode,
+                    custom: true,
+                }
+            },
+            {
+                name: "StatutoryDescription", width: 170, editable: true, hidden: false, align: 'left', resizable: true, editoptions: { size: "50", maxlength: "50" }, edittype: "text", editrules: {
+                    custom_func: validateStatutoryDesc,
+                    custom: true,
+                }
+            },
+            {
+                name: "StatPattern", width: 170, editable: true, hidden: false, align: 'left', resizable: true, editoptions: { size: "20", maxlength: "15" }, edittype: "text", editrules: {
+                    custom_func: validateStatPattern,
+                    custom: true,
+                }
+            },
+            { name: "ActiveStatus", editable: true, width: 45, hidden: false, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: Inactive" } },
+        ],
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        pager: "#jqpStatutoryCode",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0,
+        editurl: getBaseURL() + '/Country/InsertOrUpdateStatutoryCodes',
+        ajaxRowOptions: {
+            type: "POST",
+            dataType: "json"
+        },
+        serializeRowData: function (postData) {
+            if (postData.StatutoryCode == 0 || postData.StatutoryCode == "") {
+                postData.StatutoryCode = 0;
+
+            }
+            postData.Isdcode = $('#cboIsdcode').val();
+            return (postData);
+        },
+        
+        beforeSubmit: function (postdata, formid) {
+
+            return [success, message];
+        },
+        ondblClickRow: function (rowid) {
+            $("#jqgStatutoryCode").trigger('click');
+        },
+        loadComplete: function (data) {
+            SetGridControlByAction("jqgStatutoryCode");
+        },
+    }).jqGrid('navGrid', '#jqpStatutoryCode', { add: false, edit: false, search: false, del: false, refresh: false })
+    $("#jqgStatutoryCode").jqGrid('inlineNav', '#jqpStatutoryCode',
+        {
+            edit: true,
+            editicon: " fa fa-pen",
+            edittext: " Edit",
+            add: true,
+            addicon: "fa fa-plus",
+            addtext: " Add",
+            save: true,
+            savetext: " Save",
+            saveicon: "fa fa-save",
+            cancelicon: "fa fa-ban",
+            canceltext: " Cancel",
+            editParams: {
+                keys: false,
+                url: null,
+                successfunc: function (result) {
+                    var resp = JSON.parse(result.responseText);
+                    if (resp.Status) {
+                        toastr.success(resp.Message);
+                        RefreshStatutoryGrid();
+                        return true;
+                    }
+                    else{
+                        toastr.error(resp.Message);
+                        RefreshStatutoryGrid();
+                        return false;
+                    }
+                },
+                aftersavefun: null,
+                errorfun: null,
+                afterrestorefun: null,
+                restoreAfterError: true,
+                mtype: "POST",
+            },
+
+            addParams: {
+                useDefValues: true,
+                position: "last",
+                addRowParams: {
+                    keys: true,
+                    oneditfunc: null,
+                    successfunc: function (result) {
+                        var response = JSON.parse(result.responseText);
+                        if (response.Status) {
+                            toastr.success(response.Message);
+                            RefreshStatutoryGrid();
+                            return true;
+                        }
+                        else{
+                            toastr.error(response.Message);
+                            RefreshStatutoryGrid();
+                            return false;
+                        }
+
+                    },
+                }
+            },
+        });
+}
+
+function validateStatShortCode(value, StatShortCode) {
+
+    if (value == "" || value == null) {
+        toastr.warning("Please Enter the Statutory ShortCode");
+
+        return [false, "Please Enter the Statutory ShortCode"];
+
+    }
+    else {
+        return [true, ""];
+    }
+
+}
+
+function validateStatutoryDesc(value, StatutoryDescription) {
+
+    if (value == "" || value == null) {
+        toastr.warning("Please Enter the Statutory description");
+
+        return [false, "Please Enter the Statutory description"];
+
+    }
+    else {
+        return [true, ""];
+    }
+
+}
+
+function validateStatPattern(value, StatPattern) {
+
+    if (value == "" || value == null) {
+        toastr.warning("Please Enter the Statutory Pattern");
+
+        return [false, "Please Enter the Statutory Pattern"];
+
+    }
+    else {
+        return [true, ""];
+    }
+
+}
+
+function validateStoreDesc(value, StoreDesc) {
+    if (value == "" || value == null) {
+        toastr.warning("Please Enter the Store description");
+
+        return [false, "Please Enter the Store description"];
+
+    }
+    else {
+        return [true, ""];
+    }
+
+}
+
+function RefreshStatutoryGrid() {
+    $("#jqgStatutoryCode").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+   
+}
+
+function SetGridControlByAction(jqg) {
+   
+    $('#' + jqg + '_iladd').removeClass('ui-state-disabled');
+    $('#' + jqg + '_iledit').removeClass('ui-state-disabled');
+    if (_userFormRole.IsInsert === false) {
+        $('#' + jqg + '_iladd').addClass('ui-state-disabled');
+    }
+    if (_userFormRole.IsEdit === false) {
+        $('#' + jqg + '_iledit').addClass('ui-state-disabled');
+    }
+}

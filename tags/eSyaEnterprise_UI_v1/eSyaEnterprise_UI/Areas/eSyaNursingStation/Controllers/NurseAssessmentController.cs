@@ -1,0 +1,186 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.ActionFilter;
+using eSyaEnterprise_UI.Areas.eSyaNursingStation.Data;
+using eSyaEnterprise_UI.Areas.eSyaNursingStation.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Hosting;
+
+namespace eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers
+{
+    public class NurseAssessmentController : Controller
+    {
+        private readonly IeSyaNursingStationAPIServices _eSyaNursingStationAPIServices;
+        private readonly ILogger<NurseAssessmentController> _logger;
+
+        private readonly IHostingEnvironment _hostingEnvironment;
+
+        public NurseAssessmentController(IeSyaNursingStationAPIServices eSyaNursingStationAPIServices, ILogger<NurseAssessmentController> logger, IHostingEnvironment hostingEnvironment)
+        {
+            _eSyaNursingStationAPIServices = eSyaNursingStationAPIServices;
+            _logger = logger;
+            _hostingEnvironment = hostingEnvironment;
+        }
+
+        [Area("eSyaNursingStation")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public IActionResult V_6000_00()
+        {
+            return View();
+        }
+
+        [Area("eSyaNursingStation")]
+        public IActionResult V_6000_NS(int UHID, int ipNumber)
+        {
+            ViewBag.UHID = UHID;
+            ViewBag.IpNumber = ipNumber;
+            return View();
+        }
+
+        public async Task<JsonResult> GetInPatientDetails()
+        {
+            try
+            {
+                var serviceResponse = await _eSyaNursingStationAPIServices.HttpClientServices.GetAsync<List<DO_InPatientDetail>>("NurseAssessment/GetInPatientDetails");
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), string.Format("UD:GetInPatientDetails"));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, string.Format("UD:GetInPatientDetails"));
+                throw ex;
+            }
+        }
+
+        public async Task<JsonResult> GetInPatientDetailsByIPNumber(int ipNumber)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&ipNumber=" + ipNumber.ToString();
+
+                var serviceResponse = await _eSyaNursingStationAPIServices.HttpClientServices.GetAsync<DO_InPatientDetail>("NurseAssessment/GetInPatientDetailsByIPNumber?" + parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), string.Format("UD:GetInPatientDetails"));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, string.Format("UD:GetInPatientDetails"));
+                throw ex;
+            }
+        }
+
+
+        public async Task<JsonResult> GetNurseAssessmentValueForPatient(int UHID, int ipnumber)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&UHID=" + UHID.ToString();
+                parameter += "&ipnumber=" + ipnumber.ToString();
+
+                var serviceResponse = await _eSyaNursingStationAPIServices.HttpClientServices.GetAsync<List<DO_NS_ControlValue>>("NurseAssessment/GetNurseAssessmentValueForPatient" + parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), string.Format("UD:GetNurseAssessmentValueForPatient:params: businessKey:{0},UHID:{1},ipnumber:{2}",
+                        AppSessionVariables.GetSessionBusinessKey(HttpContext).ToString(), UHID, ipnumber));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, string.Format("UD:GetNurseAssessmentValueForPatient:params: businessKey:{0},UHID:{1},ipnumber:{2}",
+                        AppSessionVariables.GetSessionBusinessKey(HttpContext).ToString(), UHID, ipnumber));
+                throw ex;
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> InsertIntoNurseAssessment(DO_NurseAssessment obj)
+        {
+            try
+            {
+                //l_obj.All(c =>
+                //{
+                //    c.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                //    c.ActiveStatus = true;
+                //    c.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                //    c.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                //    c.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                //    return true;
+                //});
+
+                obj.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                obj.ActiveStatus = true;
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+
+                var serviceResponse = await _eSyaNursingStationAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("NurseAssessment/InsertIntoNurseAssessment", obj);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data.Status)
+                        return Json(new { Status = true, serviceResponse.Data.Message });
+                    else
+                        return Json(new { Status = false, serviceResponse.Data.Message });
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:InsertIntoNurseAssessment:params:" + JsonConvert.SerializeObject(obj));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertIntoNurseAssessment:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Warning = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        
+
+      
+    }
+
+    //public interface IFormFile
+    //{
+    //    string ContentType { get; }
+    //    string ContentDisposition { get; }
+    //    IHeaderDictionary Headers { get; }
+    //    long Length { get; }
+    //    string Name { get; }
+    //    string FileName { get; }
+    //    Stream OpenReadStream();
+    //    void CopyTo(Stream target);
+    //    Task CopyToAsync(Stream target, CancellationToken cancellationToken = null);
+    //}
+
+   
+}

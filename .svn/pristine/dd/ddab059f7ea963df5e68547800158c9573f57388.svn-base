@@ -1,0 +1,734 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.Areas.eSyaNatureCure.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Areas.eSyaNatureCure.Data;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using eSyaEnterprise_UI.Utility;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+
+namespace eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers
+{
+    public class CheckInGuestController : Controller
+    {
+        private readonly IeSyaNatureCureAPIServices _eSyaNatureCureAPIServices;
+        private readonly ILogger<CheckInGuestController> _logger;
+        private readonly IHostingEnvironment _appEnvironment;
+
+        public CheckInGuestController(IeSyaNatureCureAPIServices eSyaNatureCureAPIServices, ILogger<CheckInGuestController> logger, IHostingEnvironment hostingEnvironment)
+        {
+            _eSyaNatureCureAPIServices = eSyaNatureCureAPIServices;
+            _logger = logger;
+            _appEnvironment = hostingEnvironment;
+        }
+
+        [Area("eSyaNatureCure")]
+        public async Task<IActionResult> V_ENC_04_00(long bookingKey, int guestId)
+        {
+            ViewBag.BookingKey = bookingKey;
+            ViewBag.GuestId = guestId;
+
+            var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+            parameter += "&bookingKey=" + bookingKey;
+            parameter += "&guestId=" + guestId;
+            var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<DO_GuestCheckInDetails>("GuestCheckIn/GetGuestDetailById" + parameter);
+            return View(serviceResponse.Data);
+        }
+
+        public async Task<JsonResult> GetGuestDetailById(long bookingKey, int guestId)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&bookingKey=" + bookingKey;
+                parameter += "&guestId=" + guestId;
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<DO_GuestCheckInDetails>("GuestCheckIn/GetGuestDetailById"+ parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetGuestDetails:params:bookingKey:{0}:guestId{1}" , bookingKey, guestId);
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetGuestDetails:params:bookingKey:{0}:guestId{1}", bookingKey, guestId);
+                throw ex;
+            }
+        }
+
+        public async Task<JsonResult> GetCityList()
+        {
+            try
+            {
+                var parameter = "?isdCode=91";
+                parameter += "&placeType=2";
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<List<DO_CountryPlaces>>("CommonMaster/GetCountryPlaceList" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetCityList");
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetCityList");
+                throw ex;
+            }
+        }
+
+        public async Task<JsonResult> GetGuestDetailsByBookingKey(long bookingKey)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&bookingKey=" + bookingKey;
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<List<DO_GuestCheckInDetails>>("GuestCheckIn/GetGuestDetailsByBookingKey" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetGuestDetailsByBookingKey:params:bookingKey:{0}", bookingKey);
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetGuestDetails:params:GetGuestDetailsByBookingKey:{0}", bookingKey);
+                throw ex;
+            }
+        }
+
+        public async Task<IActionResult> GetPatientProfileByUHID(long uhid)
+        {
+            try
+            {
+                var parameter = "?uhid=" + uhid;
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<DO_PatientProfile>("PatientInfo/GetPatientProfileByUHID" + parameter);
+                if (serviceResponse.Status)
+                    return Ok(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetPatientProfileByUHID:params:uhid:{0}" + uhid.ToString());
+                    return Ok(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetPatientProfileByUHID:params:uhid:{0}" + uhid.ToString());
+                throw ex;
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> CreateGuestCheckin(DO_GuestCheckInDetails obj)
+        {
+            try
+            {
+                obj.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                var serviceResponse = await  _eSyaNatureCureAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("GuestCheckIn/CreateGuestCheckin", obj);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data.Status)
+                        return Json(new { Status = true, serviceResponse.Data.Warning, serviceResponse.Data.WarningMessage });
+                    else
+                        return Json(new { Status = false, serviceResponse.Data.Warning, serviceResponse.Data.WarningMessage, serviceResponse.Data.Message });
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:CreateGuestCheckin:params:" + JsonConvert.SerializeObject(obj));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:CreateGuestCheckin:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Warning = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        public async Task<JsonResult> GetGuestPaymentReceiptDetails(long bookingKey)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&bookingKey=" + bookingKey;
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<List<DO_GuestPaymentReceiptDetails>>("GuestPayment/GetGuestPaymentReceiptDetails" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetGuestPaymentReceiptDetails:params:bookingKey:{0}", bookingKey);
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetGuestPaymentReceiptDetails:params:bookingKey:{0}", bookingKey);
+                throw ex;
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> InsertPatientReceipt(DO_GuestPaymentReceiptDetails obj)
+        {
+            try
+            {
+                obj.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("GuestPayment/InsertPatientReceipt", obj);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data.Status)
+                        return Json(new { Status = true, serviceResponse.Data.Warning, serviceResponse.Data.WarningMessage });
+                    else
+                        return Json(new { Status = false, serviceResponse.Data.Warning, serviceResponse.Data.WarningMessage, serviceResponse.Data.Message });
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:InsertPatientReceipt:params:" + JsonConvert.SerializeObject(obj));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertPatientReceipt:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Warning = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        /// <summary>
+        /// Insert or Update Document Upload
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> InsertOrUpdateDocumentUpload(DO_GuestDocumentUpload obj)
+        {
+
+            try
+            {
+                if (obj.Imagefile != null && (obj.Imagefile.Length > 0))
+                {
+                    var file = obj.Imagefile;
+                    
+                    var uploads = Path.Combine(_appEnvironment.WebRootPath, "Uploads\\DocumentUploads");
+                    if (file.Length > 0)
+                    {
+                       
+                        var fileName = Path.GetFileName(file.FileName);
+                        using (var fileStream = new FileStream(Path.Combine(uploads, fileName), FileMode.Create))
+                        {
+                            await file.CopyToAsync(fileStream);
+                            string filePath = "\\Uploads\\DocumentUploads\\" + fileName;
+                            obj.DocumentUrl = filePath;
+                        }
+
+                    }
+                }
+
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                obj.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                obj.BusinessKey= AppSessionVariables.GetSessionBusinessKey(HttpContext);
+
+                if (obj.isInsert)
+                {
+                    var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("GuestCheckIn/InsertGuestDocumentUpload", obj);
+                    if (serviceResponse.Status)
+                        return Json(serviceResponse.Data);
+                    else
+                        return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+                else
+                {
+                    var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("GuestCheckIn/UpdateGuestDocumentUpload", obj);
+                    if (serviceResponse.Status)
+                        return Json(serviceResponse.Data);
+                    else
+                        return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertOrUpdateDocumentUpload:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetGuestDocumentUploadDetailsByBookingKey(long bookingKey, int guestId)
+        {
+
+            try
+            {
+                int businessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                var parameter = "?businessKey=" + businessKey + "&bookingKey=" + bookingKey + "&guestId=" + guestId;
+
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<List<DO_GuestDocumentUpload>>("GuestCheckIn/GetGuestDocumentUploadDetailsByBookingKey"+parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetGuestDocumentUploadDetailsByBookingKey");
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetGuestDocumentUploadDetailsByBookingKey");
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+
+        }
+
+
+        [HttpPost]
+        public async Task<JsonResult> GetDocumentUploadbySerialNumber(int businessKey, long bookingKey, int guestId,int serialno)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + businessKey + "&bookingKey=" + bookingKey + "&guestId=" + guestId + "&serialno=" + serialno;
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<DO_GuestDocumentUpload>("GuestCheckIn/GetDocumentUploadbySerialNumber" + parameter);
+                if (serviceResponse.Status)
+                {
+                    var domainname = this.Request.PathBase;
+                    if (serviceResponse.Data != null)
+                    {
+                        if (serviceResponse.Data.DocumentUrl != null)
+                        {
+                            string filename = null;
+                            // using the method
+                            filename = Path.GetFileName(serviceResponse.Data.DocumentUrl);
+                            serviceResponse.Data.FileName = filename;
+
+                            serviceResponse.Data.DocumentUrl = domainname + serviceResponse.Data.DocumentUrl;
+
+
+                        }
+                    }
+                    else
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetDocumentUploadbySerialNumber");
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetDocumentUploadbySerialNumber");
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DownloadDocument(int businessKey, long bookingKey, int guestId, int serialno)
+        {
+
+            var parameter = "?businessKey=" + businessKey + "&bookingKey=" + bookingKey + "&guestId=" + guestId + "&serialno=" + serialno;
+            var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<DO_GuestDocumentUpload>("GuestCheckIn/GetDocumentUploadbySerialNumber" + parameter);
+            if (serviceResponse.Status)
+            {
+                var domainname = this.Request.PathBase;
+                if (serviceResponse.Data != null)
+                {
+                    if (serviceResponse.Data.DocumentUrl != null)
+                    {
+                        string filename = null;
+                        // using the method
+                        filename = Path.GetFileName(serviceResponse.Data.DocumentUrl);
+                        serviceResponse.Data.FileName = filename;
+
+                        //Build the File Path.
+                        string path = Path.Combine(this._appEnvironment.WebRootPath, "Uploads/DocumentUploads/") + filename;
+
+                        //Read the File data into Byte Array.
+                        byte[] bytes = System.IO.File.ReadAllBytes(path);
+
+                        //Send the File to Download.
+                       
+                        return File(bytes, System.Net.Mime.MediaTypeNames.Application.Octet, serviceResponse.Data.FileName);
+
+                    }
+                }
+                else
+                {
+                    return Json(serviceResponse.Data);
+                }
+
+                return Json(serviceResponse.Data);
+            }
+            else
+            {
+                _logger.LogError(new Exception(serviceResponse.Message), "UD:DownloadDocument");
+                return Json(new { Status = false, StatusCode = "500" });
+            }
+
+        }
+
+        
+        [HttpPost]
+        public async Task<IActionResult> DeleteDocument(int businessKey, long bookingKey, int guestId, int serialno)
+        {
+
+            var parameter = "?businessKey=" + businessKey + "&bookingKey=" + bookingKey + "&guestId=" + guestId + "&serialno=" + serialno;
+            var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<DO_GuestDocumentUpload>("GuestCheckIn/DeleteDocument" + parameter);
+            if (serviceResponse.Status)
+            {
+                var domainname = this.Request.PathBase;
+                if (serviceResponse.Data != null)
+                {
+                    if (serviceResponse.Data.DocumentUrl != null)
+                    {
+                        string filename = null;
+                        // using the method
+                        filename = Path.GetFileName(serviceResponse.Data.DocumentUrl);
+                        serviceResponse.Data.FileName = filename;
+
+                        //Build the File Path.
+                        string path = Path.Combine(this._appEnvironment.WebRootPath, "Uploads/DocumentUploads/") + filename;
+
+                        if (System.IO.File.Exists(path))
+                        {
+                            System.IO.File.Delete(path);
+
+                        }
+
+                    }
+                }
+                else
+                {
+                    return Json(serviceResponse.Data);
+                }
+
+                return Json(serviceResponse.Data);
+            }
+            else
+            {
+                _logger.LogError(new Exception(serviceResponse.Message), "UD:DeleteDocument");
+                return Json(new { Status = false, StatusCode = "500" });
+            }
+
+        }
+
+        public async Task<JsonResult> GetServiceList()
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<List<DO_ServiceRates>>("ServiceRate/GetServiceList" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetServiceList");
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetServiceList");
+                throw ex;
+            }
+        }
+
+        public async Task<JsonResult> GetServiceRates(int serviceId)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&serviceId=" + serviceId;
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<DO_ServiceRates>("ServiceRate/GetServiceRates" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetServiceRates");
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetServiceRates");
+                throw ex;
+            }
+        }
+
+
+        public async Task<JsonResult> GetGuestServiceBilling(long bookingKey)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&bookingKey=" + bookingKey;
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<List<DO_PatientBillDetails>>("GuestCheckOut/GetGuestServiceBilling" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetGuestServiceBilling:params:bookingKey:{0}", bookingKey);
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetGuestServiceBilling:params:bookingKey:{0}", bookingKey);
+                throw ex;
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> CreateGuestBill(DO_PatientBillHeader obj)
+        {
+            try
+            {
+                obj.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("GuestCheckOut/CreateGuestBill", obj);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data.Status)
+                        return Json(new { Status = true, serviceResponse.Data.Warning, serviceResponse.Data.WarningMessage });
+                    else
+                        return Json(new { Status = false, serviceResponse.Data.Warning, serviceResponse.Data.WarningMessage, serviceResponse.Data.Message });
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:CreateGuestBill:params:" + JsonConvert.SerializeObject(obj));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:CreateGuestBill:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Warning = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        public async Task<JsonResult> GetGuestBillingSummary(long bookingKey)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&bookingKey=" + bookingKey;
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<DO_PatientBillHeader>("GuestCheckOut/GetGuestBillingSummary" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetGuestBillingSummary");
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetGuestBillingSummary");
+                throw ex;
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<JsonResult> GuestCheckOutProcess(DO_GuestCheckInDetails obj)
+        {
+            try
+            {
+                obj.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("GuestCheckOut/GuestCheckOutProcess", obj);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data.Status)
+                        return Json(new { Status = true, serviceResponse.Data.Warning, serviceResponse.Data.WarningMessage });
+                    else
+                        return Json(new { Status = false, serviceResponse.Data.Warning, serviceResponse.Data.WarningMessage, serviceResponse.Data.Message });
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GuestCheckOutProcess:params:" + JsonConvert.SerializeObject(obj));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GuestCheckOutProcess:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Warning = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        public async Task<JsonResult> GetGuestCheckOutStatus(long bookingKey, int guestId)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&bookingKey=" + bookingKey;
+                parameter += "&guestId=" + guestId;
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<DO_ReturnParameter>("GuestCheckOut/GetGuestCheckOutStatus" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetGuestCheckOutStatus:params:bookingKey:{0}:guestId{1}", bookingKey, guestId);
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetGuestCheckOutStatus:params:bookingKey:{0}:guestId{1}", bookingKey, guestId);
+                throw ex;
+            }
+        }
+
+        #region Address
+        [HttpGet]
+        public async Task<JsonResult> GetStateList(int isdCode)
+        {
+            try
+            {
+                var parameter = "?isdCode=" + isdCode;
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<List<DO_Place>>("GuestCheckIn/GetStateList" + parameter);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetStateList:For isdCode", isdCode);
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetStateList:For isdCode ", isdCode);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetStateList:For isdCode ", isdCode);
+                throw ex;
+            }
+        }
+        [HttpGet]
+        public async Task<JsonResult> GetCityList(int isdCode, int? stateCode)
+        {
+            try
+            {
+                var parameter = "?isdCode=" + isdCode + "&stateCode=" + stateCode;
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<List<DO_Place>>("GuestCheckIn/GetCityList" + parameter);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetCityList:For isdCode {0} with stateCode entered {1}", isdCode, stateCode);
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetCityList:For isdCode {0} with stateCode entered {1}", isdCode, stateCode);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetCityList:For isdCode {0} with stateCode entered {1}", isdCode, stateCode);
+                throw ex;
+            }
+        }
+        [HttpGet]
+        public async Task<JsonResult> GetAreaList(int isdCode, int? stateCode, int? cityCode)
+        {
+            try
+            {
+                var parameter = "?isdCode=" + isdCode + "&stateCode=" + stateCode + "&cityCode=" + cityCode;
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<List<DO_AddressIN>>("GuestCheckIn/GetAreaList" + parameter);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetAreaList:For isdCode {0} with stateCode cityCode entered {1} {2}", isdCode, stateCode, cityCode);
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetAreaList:For isdCode {0} with stateCode cityCode pincode entered {1} {2}{3}", isdCode, stateCode, cityCode);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetAreaList:For isdCode {0} with stateCode cityCode pincode entered {1} {2}", isdCode, stateCode, cityCode);
+                throw ex;
+            }
+        }
+        [HttpGet]
+        public async Task<JsonResult> GetAreaDetailsbyPincode(int isdCode, string pincode)
+        {
+            try
+            {
+                var parameter = "?isdCode=" + isdCode + "&pincode=" + pincode;
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<DO_AddressIN>("GuestCheckIn/GetAreaDetailsbyPincode" + parameter);
+                if (serviceResponse.Status)
+                {
+
+                    return Json(serviceResponse.Data);
+
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetAreaDetailsbyPincode:For isdCode {0} with stateCode cityCode pincode entered {1} ", isdCode, pincode);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetAreaDetailsbyPincode:For isdCode {0} with  pincode entered {1} }", isdCode, pincode);
+                throw ex;
+            }
+        }
+        #endregion
+    }
+}

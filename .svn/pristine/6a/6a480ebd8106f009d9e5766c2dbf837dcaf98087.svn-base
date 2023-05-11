@@ -1,0 +1,162 @@
+﻿$(document).ready(function () {
+
+  
+});
+function fnBusinessLocation_onChange() {
+
+    fnLoadScheduleSpecialty();
+}
+function fnLoadScheduleSpecialty() {
+
+    fnLoadDoctorSchedulerGrid();
+
+    $('#cboDoctorScheduleSpecialty').selectpicker('refresh');
+    $('#cboDoctorClinic').selectpicker('refresh');
+    $('#cboScheduleConsultationType').selectpicker('refresh');
+
+    $.ajax({
+        url: getBaseURL() + '/Doctors/GetSpecialtyListByBKeyDoctorId?businessKey=' + $('#cboBusinessLocation').val() + '&doctorId=' + $('#txtDoctorId').val(),
+        type: 'POST',
+        datatype: 'json',
+        async: false,
+        success: function (response) {
+
+            var options = $("#cboDoctorScheduleSpecialty");
+            $("#cboDoctorScheduleSpecialty").empty();
+            $("#cboDoctorScheduleSpecialty").append($("<option value='0'>Choose Specialty</option>"));
+            $.each(response, function () {
+                options.append($("<option />").val(this.SpecialtyID).text(this.SpecialtyDesc));
+            });
+            if ($('#cboDoctorScheduleSpecialty option').length == 2) {
+                $('#cboDoctorScheduleSpecialty').prop('selectedIndex', 1);
+                $('#cboDoctorScheduleSpecialty').selectpicker('refresh');
+            } else {
+
+                $("#cboDoctorScheduleSpecialty").val($('#cboDoctorScheduleSpecialty option:first').val());
+                $('#cboDoctorScheduleSpecialty').selectpicker('refresh');
+            }
+
+            $('#chkScheduleActive').parent().addClass("is-checked");
+            fnLoadScheduleClinic();
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+
+        }
+    });
+}
+
+var lstClinicConsultationType;
+
+function fnLoadScheduleClinic() {
+
+    $('#cboDoctorClinic').selectpicker('refresh');
+    $('#cboScheduleConsultationType').selectpicker('refresh');
+
+    $.ajax({
+        url: getBaseURL() + '/Doctors/GetDoctorClinicLinkList?businessKey=' + $('#cboDoctorLocation').val() + '&doctorId=' + $('#txtDoctorId').val() + '&specialtyId=' + $('#cboDoctorScheduleSpecialty').val(),
+        type: 'POST',
+        datatype: 'json',
+        async: false,
+        success: function (response) {
+            if (response != null) {
+
+                lstClinicConsultationType = response;
+                var clinics = [];
+                $.each(response, function (j, v) {
+                    var cl = { ClinicId: v.ClinicId, ClinicDesc: v.ClinicDesc };
+                    if (clinics.length == 0) {
+                        clinics.push(cl);
+                    }
+                    else {
+                        var valExist = false;
+                        $.each(clinics, function (i, value) {
+                            if (value.ClinicId == v.ClinicId) {
+                                valExist = true;
+                                return false;
+                            }
+
+                        });
+                        if (valExist == false) {
+                            clinics.push(cl);
+                        }
+                    }
+                });
+
+                var options = $("#cboDoctorClinic");
+                $("#cboDoctorClinic").empty();
+                $("#cboDoctorClinic").append($("<option value='0'>Choose Clinic</option>"));
+                $.each(clinics, function () {
+                    options.append($("<option />").val(this.ClinicId).text(this.ClinicDesc));
+                });
+
+                if ($('#cboDoctorClinic option').length == 2) {
+                    $('#cboDoctorClinic').prop('selectedIndex', 1);
+                    $('#cboDoctorClinic').selectpicker('refresh');
+                } else {
+
+                    $("#cboDoctorClinic").val($('#cboDoctorClinic option:first').val());
+                    $('#cboDoctorClinic').selectpicker('refresh');
+                }
+
+                fnLoadScheduleConsultationType();
+            }
+
+
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+
+        }
+    });
+}
+
+function fnLoadScheduleConsultationType() {
+
+    $('#cboScheduleConsultationType').selectpicker('refresh');
+
+    var value = $('#cboDoctorClinic').val();
+
+    var options = $("#cboScheduleConsultationType");
+    $("#cboScheduleConsultationType").empty();
+    $("#cboScheduleConsultationType").append($("<option value='0'>Choose Consultation Type</option>"));
+    $.each(lstClinicConsultationType, function () {
+        if (this.ClinicId == value) {
+            options.append($("<option />").val(this.ConsultationId).text(this.ConsultationDesc));
+        }
+    })
+    if ($('#cboScheduleConsultationType option').length == 2) {
+        $('#cboScheduleConsultationType').prop('selectedIndex', 1);
+        $('#cboScheduleConsultationType').selectpicker('refresh');
+    } else {
+
+        $("#cboScheduleConsultationType").val($('#cboScheduleConsultationType option:first').val());
+        $('#cboScheduleConsultationType').selectpicker('refresh');
+    }
+}
+
+function fnClearDoctorSchedule() {
+    //$('#cboDoctorLocation').val('0');
+    //$('#cboDoctorLocation').selectpicker('refresh');
+    $('#cboDoctorScheduleSpecialty').val('0');
+    $('#cboDoctorScheduleSpecialty').selectpicker('refresh');
+    $('#cboDoctorClinic').val('0');
+    $('#cboDoctorClinic').selectpicker('refresh');
+    $('#cboScheduleConsultationType').val('0');
+    $('#cboScheduleConsultationType').selectpicker('refresh');
+    $('#cboDoctorScheduleWeekDays').val('0');
+    $('#cboDoctorScheduleWeekDays').selectpicker('refresh');
+    $('#txtFromTime').val('');
+    $('#txtToTime').val('');
+    $('#txtNumberOfPatients').val('');
+    $('#chkWeek1').parent().removeClass("is-checked");
+    $('#chkWeek2').parent().removeClass("is-checked");
+    $('#chkWeek3').parent().removeClass("is-checked");
+    $('#chkWeek4').parent().removeClass("is-checked");
+    $('#chkWeek5').parent().removeClass("is-checked");
+    $('#chkScheduleActive').parent().addClass("is-checked");
+
+    $('#hdvDoctorScheduleSerialNo').val('');
+
+    $("#btnSaveDoctorSchedule").html('<i class="far fa-save"></i> ' + localization.Save);
+}

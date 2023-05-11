@@ -1,0 +1,88 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.Areas.eSyaOutPatient.Data;
+using eSyaEnterprise_UI.Areas.eSyaOutPatient.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+
+namespace eSyaEnterprise_UI.Areas.eSyaOutPatient.Controllers
+{
+    public class PatientRegistrationController : Controller
+    {
+        private readonly IeSyaOutPatientAPIServices _eSyaOutPatientAPIServices;
+        private readonly ILogger<AppointmentSchedularController> _logger;
+
+        public PatientRegistrationController(IeSyaOutPatientAPIServices eSyaOutPatientAPIServices, ILogger<AppointmentSchedularController> logger)
+        {
+            _eSyaOutPatientAPIServices = eSyaOutPatientAPIServices;
+            _logger = logger;
+        }
+
+
+        [Area("eSyaOutPatient")]
+        public IActionResult V_3021_00()
+        {
+            return View();
+        }
+        [Area("eSyaOutPatient")]
+        public IActionResult V_3022_00()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> GetAppointmentDetailByDate( DateTime startDate, DateTime endDate, string vType, string status)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&startDate=" + startDate.ToString("dd-MMM-yyyy");
+                parameter += "&endDate=" + endDate.ToString("dd-MMM-yyyy");
+                parameter += "&vType=" + vType.ToString();
+                parameter += "&status=" + status.ToString();
+                var serviceResponse = await _eSyaOutPatientAPIServices.HttpClientServices.GetAsync<List<DO_PatientAppointmentDetail>>("PatientRegistration/GetAppointmentDetailByDate" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetAppointmentDetailByDate:params:businessKey:{0},startDate:{1},endDate:{2},status:{3}" + AppSessionVariables.GetSessionBusinessKey(HttpContext),startDate,endDate,status);
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetAppointmentDetailByDate:params:businessKey:{0},startDate:{1},endDate:{2},status:{3}" + AppSessionVariables.GetSessionBusinessKey(HttpContext), startDate, endDate, status);
+                throw ex;
+            }
+           
+
+        }
+        public async Task<IActionResult> GetPatientByAppointmentKey(int uhid)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&uhid=" + uhid.ToString();
+                var serviceResponse = await _eSyaOutPatientAPIServices.HttpClientServices.GetAsync<List<DO_PatientAppointmentDetail>>("PatientRegistration/GetPatientByAppointmentKey" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetPatientByAppointmentKey:params:businessKey:{0},uhid:{1}" + AppSessionVariables.GetSessionBusinessKey(HttpContext), uhid);
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetPatientByAppointmentKey:params:businessKey:{0},uhid:{1}" + AppSessionVariables.GetSessionBusinessKey(HttpContext), uhid);
+                throw ex;
+            }
+
+
+        }
+
+    }
+}

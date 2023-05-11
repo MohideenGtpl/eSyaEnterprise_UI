@@ -1,0 +1,129 @@
+﻿
+@{
+    ViewData["Title"] = "V_19_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/js/Config/CodeTypes.js"></script>
+
+@{
+    var userFormRole = (eSyaEnterprise_UI.Models.DO_UserFormRole)ViewBag.UserFormRole;
+}
+<script>
+    var _userFormRole = JSON.parse('@Html.Raw(Json.Serialize(userFormRole))');
+</script>
+<style>
+    .bootstrap-select {
+        width: 100% !important;
+    }
+
+    .err_div_mar {
+        margin-top: -36px;
+    }
+
+    .errorMsg_p {
+        background: #dc3545;
+        color: #fff;
+        text-align: center;
+        border-radius: 2px;
+        padding: 10px;
+        position: initial;
+        z-index: 1;
+        left: 2%;
+        bottom: 0px;
+        font-size: 16px;
+        margin-bottom: 0px;
+        height: 36px;
+        border-top-left-radius: 12px !important;
+        border-top-right-radius: 12px !important;
+    }
+
+    .succMsg_p {
+        background: #28a745;
+        color: #fff;
+        text-align: center;
+        border-radius: 2px;
+        padding: 10px;
+        position: initial;
+        z-index: 1;
+        left: 2%;
+        bottom: 0px;
+        font-size: 16px;
+        margin-bottom: 0px;
+        height: 36px;
+        border-top-left-radius: 12px !important;
+        border-top-right-radius: 12px !important;
+    }
+</style>
+
+
+
+<div class="row">
+
+    <div class="col-lg-12 overflow-auto">
+        <table id="jqgCodeType"></table>
+        <div id="jqpCodeType"></div>
+    </div>
+</div>
+
+<div class="modal fade in" id="PopupCodeTypes" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-md  " role="document" style="box-shadow:none;">
+        <div class="modal-content ">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Add Code Type</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label for="txtCodeType"> Code Type</label>
+                            <input type="text" class="form-control" id="txtCodeType">
+                        </div>
+                    </div>
+                </div>
+                <div class="row padbot4">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label for="txtCodeDescription"> Description</label>
+                            <input id="txtCodeDescription" class="form-control" maxlength="50" type="text" />
+
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <div>
+                                <label class="lable-color"> Control</label>
+                                <select class="selectpicker" data-live-search="false" id="cboCodeTypeControl" title="">
+                                    <option value="S">System Defined</option>
+                                    <option value="U">User Defined</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3  col-md-3 col-sm-12 col-xs-12">
+                            <div class="default-checkbox">
+                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActiveStatus">
+                                    <input type="checkbox" id="chkActiveStatus" class="mdl-checkbox__input">
+                                    <span class="mdl-checkbox__label">Is Active ?</span>
+                                </label>
+                            </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveCodeType" onclick="fnSaveCodeType();">
+                            Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="btnCancelCodeType"> Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

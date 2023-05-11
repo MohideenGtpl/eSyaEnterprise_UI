@@ -1,0 +1,31 @@
+﻿$(document).ready(function () {
+
+    $('#jstClinicDoctorLinktree').jstree({
+        'core': {
+            'data': [
+                { "id": "ajson2", "parent": "#", "text": "ClinicDotorLink" },
+                { "id": "ajson3", "parent": "ajson2", "text": "Dr.K.L.Rahul" },
+                { "id": "ajson4", "parent": "ajson2", "text": "Dr.Sam Curran" },
+            ]
+        }
+    });
+    $('#jstClinicConsultanttree').jstree({
+        'core': {
+            'data': [
+                { "id": "ajson2", "parent": "#", "text": "Karnataka" },
+                { "id": "ajson3", "parent": "ajson2", "text": "Bengaluru" },
+                { "id": "ajson4", "parent": "ajson2", "text": "Mysuru" },
+            ]
+        }
+    });
+
+
+
+    fnTreeSize();
+});
+function fnTreeSize() {
+    $("#jstClinicDoctorLinktree").css({
+        'height': $(window).innerHeight() - 136,
+        'overflow': 'auto'
+    });
+}

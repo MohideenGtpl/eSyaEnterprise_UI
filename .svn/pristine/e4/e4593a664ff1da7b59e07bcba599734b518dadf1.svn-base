@@ -1,0 +1,101 @@
+﻿
+@{
+    ViewData["Title"] = "V_9001_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts{
+<script src="~/js/eSyaPharma/DrugManufacturers.js"></script>
+}
+<section id="divGridDrugManufacturers">
+    <div class="row form-group">
+        <div class="col-lg-12 col-xl-12 col-sm-12">
+            <label>Choose Drug Manufacturer by alphabets</label>
+            <span class="dot">A</span>
+            <span class="dot">B</span>
+            <span class="dot">C</span>
+            <span class="dot">D</span>
+            <span class="dot">E</span>
+            <span class="dot">F</span>
+            <span class="dot">G</span>
+            <span class="dot">H</span>
+            <span class="dot">I</span>
+            <span class="dot">J</span>
+            <span class="dot">K</span>
+            <span class="dot">L</span>
+            <span class="dot">M</span>
+            <span class="dot">N</span>
+            <span class="dot">O</span>
+            <span class="dot">P</span>
+            <span class="dot">Q</span>
+            <span class="dot">R</span>
+            <span class="dot">S</span>
+            <span class="dot">T</span>
+            <span class="dot">U</span>
+            <span class="dot">V</span>
+            <span class="dot">W</span>
+            <span class="dot">X</span>
+            <span class="dot">Y</span>
+            <span class="dot">Z</span>
+            <span class="dot">All</span>
+        </div>
+    </div>
+
+    <div class="row padbot10">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <table id="jqgManufacturers"></table>
+            <div id="jqpManufacturers"></div>
+        </div>
+    </div>
+</section>
+
+<section id="divManufacturersForm" style="display:none;">
+    <div class="row">
+        <div class="col-lg-2 col-md-2 col-sm-6">
+            <div class="form-group">
+                <label class="lable-color"> ISD Code</label>
+                <select class="selectpicker" data-live-search="false" id="cboISDCode" title="Choose ISD Code"></select>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-6">
+            <div class="form-group">
+                <label for="txtManufacturer"> Manufacturer</label>
+                <input id="txtManufacturer" type="text" class="form-control" maxlength="75" />
+            </div>
+        </div>
+
+        <div class="col-lg-2 col-md-2 col-sm-6">
+            <div class="form-group">
+                <label class="lable-color"> Origin Code</label>
+
+                <select class="selectpicker" data-live-search="false" id="cboOriginCode" title="Choose Origin Code"></select>
+
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-4 col-sm-6">
+            <div class="form-group">
+                <label for="txtMarketedBy"> Marketed by</label>
+                <input id="txtMarketedBy" type="text" class="form-control" maxlength="75" />
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-6">
+            <div class="form-group">
+                <label class="lable-color"> Status</label>
+                <div>
+                    <select class="selectpicker" data-live-search="false" id="cboActiveStatus" title="">
+                        <option value="true">Active</option>
+                        <option value="false">Inactive</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+            <hr />
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button m-r-15" id="btnSaveDrugManufacturer">
+                Save
+            </button>
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button" id="" onclick="fnBackToGrid()"> Cancel</button>
+
+        </div>
+    </div>
+</section>

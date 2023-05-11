@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace eSyaEnterprise_UI.Areas.eSyaOutPatient.Models
+{
+    public class DO_ClinicConsultationType
+    {
+        public int ClinicType { get; set; }
+        public string ClinicTypeCode { get; set; }
+        public string ClinicDesc { get; set; }
+        public int ConsultationType { get; set; }
+        public string ConsultationTypeCode { get; set; }
+        public string ConsultationDesc { get; set; }
+    }
+}

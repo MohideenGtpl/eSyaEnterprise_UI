@@ -1,0 +1,23 @@
+﻿
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<script>
+    var localization = {
+        PreparedOn: '@Localizer["PreparedOn"]',
+        PreparedBy: '@Localizer["PreparedBy"]',
+        PreparedBy: '@Localizer["Action"]'
+ }
+</script>
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-12">
+        <div class="card">
+            <div class="card-body">
+                <table id="jqgDocumentUpload"></table>
+                <div id="jqpDocumentUpload"></div>
+                <br />
+                
+            </div>
+        </div>
+    </div>
+</div>
+<button type="button" class="mdl-button btn-float" onclick=fnAddToGrid('DOC','Document')><i class='fa fa-plus'></i></button>

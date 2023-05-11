@@ -1,0 +1,192 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_PatientLayout.cshtml";
+}
+
+
+<div class="row">
+    <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+        <label>First Name</label>
+        <input type="text" name="First name" value="" class="form-control" />
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+        <label>Middle Name</label>
+        <input type="text" name="Middle name" value="" class="form-control" />
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+        <label>Last Name</label>
+        <input type="text" name="Last name" value="" class="form-control" />
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+        <label>Sex</label>
+        <input type="text" name="Sex" value="" class="form-control" />
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+        <label>Age</label>
+        <input type="text" name="Age" value="" class="form-control" />
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+        <label>DOB</label>
+        <input type="text" name="DOB" value="" class="form-control" />
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+        <label>Occupation</label>
+        <input type="text" name="Occupation" value="" class="form-control" />
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+        <label>Phone</label>
+        <input type="text" name="Phone" value="" class="form-control" />
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+        <label>Mobile</label>
+        <input type="text" name="Mobile no" value="" class="form-control" />
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+        <label>Mother Tongue</label>
+        <input type="text" name="Mother Tongue" value="" class="form-control" />
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+        <label>Email ID</label>
+        <input type="text" name="Email ID" value="" class="form-control" />
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+        <label>Address</label>
+        <textarea name="Address" rows="1" cols="30" value="" class="form-control"></textarea>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 form-group pt-3_5">
+        <label>City</label>
+        <input type="text" name="City" value="" class="form-control" />
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 form-group pt-3_5">
+        <label>Pincode</label>
+        <input type="text" name="Pincode" value="" class="form-control" />
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 form-group pt-3_5">
+        <label>Ref by:</label>
+        <select class="w-100 selectpicker"></select>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 form-group pt-5">
+        <input type="text" name="" value="" class="form-control" />
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+        <label>Present Complaint</label>
+        <textarea name="Present Complaint" rows="1" cols="30" value="" class="form-control"></textarea>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6 ">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 default-checkbox single form-group">
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkPatientatHosmat">
+                    <input type="checkbox" id="chkPatientatHosmat" class="mdl-checkbox__input">
+                    <span class="mdl-checkbox__label">Have been a Patient at Hosmat Before</span>
+                </label>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                <div class="default-checkbox single">
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkMedicalInsurance">
+                        <input type="checkbox" id="chkMedicalInsurance" class="mdl-checkbox__input">
+                        <span class="mdl-checkbox__label">Medical Insurance</span>
+                    </label>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 form-group vertical-center-end">
+                <input type="text" name="medical insurance" value="" class="form-control" />
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                <div class="default-checkbox single">
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkMedicalPersonalInsurance">
+                        <input type="checkbox" id="chkMedicalPersonalInsurance" class="mdl-checkbox__input">
+                        <span class="mdl-checkbox__label">Medical Personal Insurance</span>
+                    </label>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 form-group vertical-center">
+                <input type="text" name="Medical Personal Insurance" value="" class="form-control" />
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                <div class="default-checkbox single">
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkInsuranceThrucompany">
+                        <input type="checkbox" id="chkInsuranceThrucompany" class="mdl-checkbox__input">
+                        <span class="mdl-checkbox__label">Insurance Thru company</span>
+                    </label>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 form-group vertical-center">
+                <input type="text" name="Insurance Thru company" value="" class="form-control" />
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+                <div class="default-checkbox single">
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkReImbursment">
+                        <input type="checkbox" id="chkReImbursment" class="mdl-checkbox__input">
+                        <span class="mdl-checkbox__label">Re-Imbursment </span>
+                    </label>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+
+    <div class="col-lg-6 col-md-6 col-sm-6">
+        <label>Language you can speak</label>
+        <div class="row ">
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="default-checkbox checkbox-group">
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkEnglish">
+                        <input type="checkbox" id="chkEnglish" class="mdl-checkbox__input">
+                        <span class="mdl-checkbox__label">English</span>
+                    </label>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="default-checkbox checkbox-group">
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkKannada">
+                        <input type="checkbox" id="chkKannada" class="mdl-checkbox__input">
+                        <span class="mdl-checkbox__label">Kannada</span>
+                    </label>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="default-checkbox checkbox-group">
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkTamil">
+                        <input type="checkbox" id="chkTamil" class="mdl-checkbox__input">
+                        <span class="mdl-checkbox__label">Tamil</span>
+                    </label>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="default-checkbox checkbox-group">
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkTelugu">
+                        <input type="checkbox" id="chkTelugu" class="mdl-checkbox__input">
+                        <span class="mdl-checkbox__label">Telugu</span>
+                    </label>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="default-checkbox checkbox-group">
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkMalayalam">
+                        <input type="checkbox" id="chkMalayalam" class="mdl-checkbox__input">
+                        <span class="mdl-checkbox__label">Malayalam</span>
+                    </label>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="default-checkbox checkbox-group">
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkHindi">
+                        <input type="checkbox" id="chkHindi" class="mdl-checkbox__input">
+                        <span class="mdl-checkbox__label">Hindi</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+        <hr />
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button mr-10"> <i class="fa fa-save"></i>  Save</button>
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button">Cancel</button>
+    </div>
+</div>
+

@@ -1,0 +1,55 @@
+﻿
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <table id="jqgDoctorBusinessLink"> </table>
+        <div id="jqpDoctorBusinessLink"></div>
+    </div>
+</div>
+
+
+<script>
+    function fnGridDoctorBusinessLink() {
+        $("#jqgDoctorBusinessLink").jqGrid('GridUnload');
+        $("#jqgDoctorBusinessLink").jqGrid(
+            {
+                //url: getBaseURL() + '',
+               // datatype: 'json',
+               // mtype: 'GET',
+                ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+                colNames: ['Business Key', 'Segment Description', 'Business Location', 'Select'],
+                colModel: [
+                    { name: "BusinessKey", width: 70, editable: true, align: 'left', hidden: true },
+                    { name: 'SegmentDesc', index: 'BusinessSegment', width: '270', resizable: false },
+                    { name: 'LocationDescription', index: 'BusinessLocation', width: '228', resizable: false },
+                    {
+                        name: 'ActiveStatus', index: 'ActiveStatus', width: 70, resizable: false, align: 'center',
+                        formatter: "checkbox", formatoptions: { disabled: false },
+                        edittype: "checkbox", editoptions: { value: "true:false" }
+                    },
+                ],
+                rowNum: 10,
+                rowList: [10, 20, 50, 100],
+                loadonce: true,
+                pager: "#jqpDoctorBusinessLink",
+                viewrecords: true,
+                gridview: true,
+                rownumbers: true,
+                height: 'auto',
+                width: 'auto',
+                autowidth: false,
+                shrinkToFit: false,
+                forceFit: false,
+                scroll: false,
+                scrollOffset: 0,
+            }).jqGrid('navGrid', '#jqpDoctorBusinessLink', { add: false, edit: false, search: false, del: false, refresh: false });
+    }
+
+    
+
+    function fnGridRefreshDoctorBusinessLinkGrid() {
+        $("#jqgDoctorBusinessLink").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid')
+    }
+</script>

@@ -1,0 +1,113 @@
+﻿
+@{
+    ViewData["Title"] = "V_5010_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts{
+    <script src="~/js/eSyaPayrollExpat/SalaryProcess.js"></script>
+}
+<div class="row">
+    <div class="col-lg-2 col-md-2 col-sm-6 form-group">
+        <label>Pay Period</label>
+        <input type="text" name="name" value="" class="form-control datepicker" />
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-12 form-group text-center">
+        <table id="jqgSalaryInfo"></table>
+        <div id="jqpSalaryInfo"></div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 form-group text-right padtop20">
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveBankDetails" onclick="fnSaveBankDetails()">
+            Salary Process
+        </button>
+    </div>
+
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <hr />
+        <table id="jqgSalaryProcess"></table>
+        <div id="jqpSalaryProcess"></div>
+    </div>
+</div>
+
+<div class="modal fade in" id="PopupSalaryProcess" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Add Salary Process</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-12 form-group">
+                        <label>Employee Name</label>
+                        <input type="text" class="form-control" id="" />
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-12 form-group">
+                        <label>Salary Amount</label>
+                        <input type="text" class="form-control" id="" />
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-12 form-group">
+                        <label>Attr Factor</label>
+                        <input type="text" class="form-control" id="" />
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12 form-group">
+                        <label>Currency</label>
+                        <input type="text" class="form-control" id="" />
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12 form-group">
+                        <label>Incentive Amount</label>
+                        <input type="text" class="form-control" id="" />
+                    </div>
+                </div>
+                <div class="row ">
+                    <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+                        <label> <input type="checkbox" name="NHIF" id="chkNHIF" class="" value="" /> Is NHIF ?</label>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 form-group" id="divNHIF" style="display:none">
+                        <label> Amount</label>
+                        <input type="text" name="Incentive Percentage" class="form-control" value="" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+                        <label> <input type="checkbox" name="NSSF" id="chkNSSF" class="" value="" /> Is NSSF Applicable ? </label>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 form-group" id="divNSSF" style="display:none">
+                        <label> Amount</label>
+                        <input type="text" name="Incentive Percentage" class="form-control" value="" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-12 form-group">
+                        <label>Bank Charge</label>
+                        <input type="text" class="form-control" id="" />
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12 form-group">
+                        <label>Process</label>
+                        <input type="text" class="form-control" id="" />
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12 form-group">
+                        <label>Net Pay</label>
+                        <input type="text" class="form-control" id="" />
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12 form-group">
+                        <label>Net Pay(LocalCurrency) </label>
+                        <input type="text" class="form-control" id="" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveBankDetails" onclick="fnSaveBankDetails()">
+                            Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="btnCancelBankDetails" onclick="fnClearEmpBankFields()"> Cancel </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

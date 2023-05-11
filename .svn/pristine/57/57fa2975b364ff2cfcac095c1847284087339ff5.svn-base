@@ -1,0 +1,28 @@
+﻿body {
+    direction: rtl;
+    text-align: right !important;
+}
+
+.padright0 {
+    padding-left: 0px !important;
+    padding-right: unset !important;
+}
+.login-form {
+    border-right: none !important;
+    border-left: 1px solid #dad9d9 !important;
+}
+.mdl-layout__tab {
+    padding: 7px 45px 7px 15px !important
+}
+    .mdl-layout__tab svg {
+        position: absolute;
+        right: 12px;
+        left:auto !important;
+    }
+.login-form{
+    margin-right:-15px !important;
+    margin-left:0px !important;
+}
+.getUserId{
+    text-align:right !important;
+}

@@ -1,0 +1,110 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.ActionFilter;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using eSyaEnterprise_UI.Areas.eSyaNatureCure.Data;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Areas.eSyaNatureCure.Models;
+
+namespace eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers
+{
+    public class GuestBookingController : Controller
+    {
+        private readonly IeSyaNatureCureAPIServices _eSyaNatureCureAPIServices;
+        private readonly ILogger<GuestBookingController> _logger;
+
+        public GuestBookingController(IeSyaNatureCureAPIServices eSyaNatureCureAPIServices, ILogger<GuestBookingController> logger)
+        {
+            _eSyaNatureCureAPIServices = eSyaNatureCureAPIServices;
+            _logger = logger;
+        }
+
+        [Area("eSyaNatureCure")]
+        public async Task<IActionResult> V_ENC_05_00()
+        {
+            try
+            {
+
+                var roomtypeResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<List<DO_RoomType>>("RoomType/GetActiveRoomTypes");
+
+                var roomNoResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<List<DO_BedMaster>>("BedMaster/GetActiveRoomNumber");
+
+                var bedNoResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<List<DO_BedMaster>>("BedMaster/GetActiveBedNumber");
+
+
+                if (roomtypeResponse.Status && roomNoResponse.Status && bedNoResponse.Status)
+                {
+                    ViewBag.RoomTypes = roomtypeResponse.Data;
+                    ViewBag.RoomNumbers = roomNoResponse.Data;
+                    ViewBag.BedNumbers = bedNoResponse.Data;
+                    
+                    return View();
+
+                }
+                else
+                {
+                    _logger.LogError(new Exception(roomtypeResponse.Message), "UD:GetActiveRoomTypes");
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetActiveRoomTypes");
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> GetGuestBookingBySearchCreteria(int roomTypeId,
+           string roomNumber, string bedNumber, string occupancyType, string gender, DateTime? bookingFrom, DateTime? bookingTo, DateTime? checkInDate, DateTime? checkOutDate)
+        {
+
+            try
+            {
+                //var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                //parameter += "&roomTypeId=" + roomTypeId;
+                //parameter += "&roomNumber=" + roomNumber;
+                //parameter += "&bedNumber=" + bedNumber;
+                //parameter += "&occupancyType=" + occupancyType;
+                //parameter += "&gender=" + gender;
+                //parameter += "&bookingFrom=" + bookingFrom;
+                //parameter += "&bookingTo=" + bookingTo;
+                //parameter += "&checkInDate=" + checkInDate;
+                //parameter += "&checkOutDate=" + checkOutDate;
+
+                Do_GuestBookingSearchCretria obj = new Do_GuestBookingSearchCretria();
+                obj.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                obj.RoomTypeId = roomTypeId;
+                obj.RoomTypeNumber = roomNumber;
+                obj.BedNumber = bedNumber;
+                obj.OccupancyType = occupancyType;
+                obj.Gender = gender;
+                obj.BookingFromDate = bookingFrom;
+                obj.BookingToDate = bookingTo;
+                obj.CheckInDate = checkInDate;
+                obj.CheckOutDate = checkOutDate;
+
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.PostAsJsonAsync <List<DO_GuestBooking>>("GuestBooking/GetGuestBookingBySearchCreteria",obj);
+
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetGuestBookingBySearchCreteria:For roomTypeId {0} ", roomTypeId);
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+    }
+}

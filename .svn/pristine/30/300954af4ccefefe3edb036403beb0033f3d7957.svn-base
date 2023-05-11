@@ -1,0 +1,508 @@
+﻿
+    <div class="row mb-3">
+        <div class="col-lg-4 col-md-4 col-sm-4 form-group" id="PaymentMode">
+            <label class="">Payment Mode</label>
+            <select id="cboPDPaymentMode" name="cboPDPaymentMode" class="form-control" style="width:100%;max-height:100% !important" onchange="fnPaymentModeChanged(this);">
+                <option value="CASH">Cash</option>
+                <option value="DC">Debit/Credit Card</option>
+                <option value="DD">Direct Deposit</option>
+                <option value="CQ">Cheque / DD</option>
+                <option value="WA">Wallet</option>
+                <option value="EF">Electronic Fund Transfer</option>
+            </select>
+        </div>
+        <div class="col-lg-4  col-md-4 col-sm-4 form-group">
+            <label class="text-right">Amount To Collect</label>
+            @Html.TextBox("txtPDAmountToCollect", "", new { id = "txtPDAmountToCollect", name = "txtPDAmountToCollect", @class = "form-control currencyFormat", @onkeypress = "return OnlyNumeric(event);", @style = "text-align:right;width:100%" })
+        </div>
+    </div>
+
+    <!--Cheque details starts-->
+    <div id="PaymentDetailsForCheque" name="dvPaymentDetailsForCheque" style="display:none">
+       
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                    <p class="m-0 subheading">Cheque Details</p>
+                    <hr class="left" />
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-6 form-group">
+                    <label>Cheque Number</label>
+                    @Html.TextBox("txtPDChequeNumber", "", new { id = "txtPDChequeNumber", name = "txtPDChequeNumber", Placeholder = "", @class = "form-control ", @onkeypress = "return OnlyNumeric(event);", onblur = "fnFocusout(this)" })
+                </div>
+                <div class="col-lg-4  col-md-4 col-sm-6 form-group">
+                    <label>Cheque Date</label>
+                    <input type="text" size="8" class="form-control DatePicker" id="txtPDChequeDate" name="txtPDChequeDate" onblur="fnFocusout(this)" />
+                </div>
+                <div class="col-lg-4  col-md-4 col-sm-6 form-group">
+                    <label>Drawee Bank</label>
+                    @Html.TextBox("txtPDChequeDraweeBank", "", new { id = "txtPDChequeDraweeBank", name = "txtPDChequeDraweeBank", Placeholder = "", @class = "form-control ", onblur = "fnFocusout(this)" })
+                </div>
+                <div class="col-lg-4  col-md-4 col-sm-6 form-group " style="display:none">
+                    <label>Branch Name</label>
+                    @Html.TextBox("txtPDChequeBranchName", "", new { id = "txtPDChequeBranchName", name = "txtPDChequeBranchName", Placeholder = "", @class = "form-control " })
+                </div>
+            </div>
+      
+    </div>
+    <!--cheque details ends-->
+    <!--credit card/ debit card starts-->
+    <div id="PaymentDetailsForCreditDebitCard" name="dvPaymentDetailsForCreditDebitCard" style="display:none">
+        
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                    <p class="m-0 subheading">Card Details</p>
+                    <hr class="left" />
+                </div>
+                <div class="col-lg-4  col-md-4 col-sm-6 form-group ">
+                    <label>Card Type</label>
+                    <select id="cboPDCardType" name="cboPDCardType" title="Select Card Type" class="form-control" style="width:100% !important;" onblur="fnFocusout(this)">
+                        <option value="1">MASTER</option>
+                        <option value="2">VISA</option>
+                    </select>
+                </div>
+
+                <div class="col-lg-4  col-md-4 col-sm-6 form-group">
+                    <label>Card Number</label>
+                    @Html.TextBox("txtPDCardNo", "", new { id = "txtPDCardNo", name = "txtPDCardNo", @PlaceHolder = "XXXX-XXXX-XXXX-XXXX", @class = "form-control ", onblur = "fnFocusout(this)", maxlength = 24 })
+                </div>
+                <div class="col-lg-4  col-md-4 col-sm-6 form-group">
+                    <label>Expiry Date & Year</label>
+                    <div class="row m-0">
+                        <div class="col-md-7 col-lg-7 col-sm-7 pl-0  padright0">
+                            <select id="cboPDCardExpiryMonth" name="cboPDCardExpiryMonth" class="form-control" title="Month" data-width="fit" style="margin-right:3px;width:100% !important;" onblur="fnFocusout(this)">
+                                @{
+                                    string[] month = { "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC" };
+                                }
+                                @for (var i = 01; i <= 12; i++)
+                                {
+                                    <option value=@i.ToString("00")>@i.ToString("00") (@month[@i - 1])</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-5 col-lg-5 col-sm-5  padright0">
+
+                            <select id="cboPDCardExpiryYear" name="cboPDCardExpiryYear" class="form-control" data-width="fit" title="Year" style="margin-right:3px;width:100% !important;" onblur="fnFocusout(this)">
+                                @for (var i = 0; i < 50; i++)
+                                {
+                                    var year = (int)@DateTime.Now.Year + @i;
+                                    <option value=@year>@year</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-4 col-sm-6 form-group">
+                    <label>Card Holder Name</label>
+                    @Html.TextBox("txtPDCardHolderName", "", new { id = "txtPDCardHolderName", name = "txtPDCardHolderName", Placeholder = "", @class = "form-control ", onblur = "fnFocusout(this)" })
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-6 form-group ">
+                    <label>Card Terminal</label>
+                    <select id="cboPDCardTerminal" name="cboPDCardTerminal" title="Select Card Terminal" class="form-control" style="width:100% !important;" onblur="fnFocusout(this)"></select>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-6 form-group">
+                    <label>Approval No</label>
+                    @Html.TextBox("txtPDCardApprovalNo", "", new { id = "txtPDCardApprovalNo", name = "txtPDCardApprovalNo", Placeholder = "", @class = "form-control ", @onkeypress = "return OnlyNumeric(event);", onblur = "fnFocusout(this)" })
+
+                </div>
+                <div class="padbot8" style="display:none">
+                    <div class="col-md-4 col-sm-4 ">
+                        <label>Reference No</label>
+                        @Html.TextBox("txtPDCardReferenceNo", "", new { id = "txtPDCardReferenceNo", name = "txtPDCardReferenceNo", Placeholder = "", @class = "form-control ", @onkeypress = "return OnlyNumeric(event);" })
+                    </div>
+                    <div class="col-md-4 col-sm-4">
+                        <label>Batch No</label>
+                        @Html.TextBox("txtPDCardBatchNo", "", new { id = "txtPDCardBatchNo", name = "txtPDCardBatchNo", Placeholder = "", @class = "form-control ", @onkeypress = "return OnlyNumeric(event);" })
+                    </div>
+                    <div class="col-md-4 col-sm-4 ">
+                        <label>Service Charge</label>
+                        @Html.TextBox("txtPDCardServiceCharge", "", new { id = "txtPDCardServiceCharge", name = "txtPDCardServiceCharge", Placeholder = "0.00", @class = "form-control currencyFormat", @onkeypress = "return OnlyNumeric(event);", @style = "text-align:right" })
+                    </div>
+
+                </div>
+            </div>
+         
+    </div>
+
+    <!--credit card/ debit card ends-->
+    <!--direct deposit starts-->
+    <div id="PaymentDetailsForDirectDeposit" name="dvPaymentDetailsForDirectDeposit" style="display:none">
+            <div class="row padbot8">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                    <p class="m-0 subheading">Direct Deposit</p>
+                    <hr class="left" />
+                </div>
+             
+                <div class="col-lg-4  col-md-4 col-sm-6 form-group">
+                    <label>Transfer Number</label>
+                    @Html.TextBox("txtPDDITransferNumber", "", new { id = "txtPDDITransferNumber", name = "txtPDDITransferNumber", Placeholder = "", @class = "form-control ", @onkeypress = "return OnlyNumeric(event);", onblur = "fnFocusout(this)" })
+                </div>
+                <div class="col-lg-4  col-md-4 col-sm-6 form-group">
+                    <label>Transfer Date</label>
+                    <input type="text" class="form-control DatePicker" id="txtPDDITransferDate" name="txtPDDITransferDate" onblur="fnFocusout(this)" />
+                </div>
+
+                <div class="col-lg-4  col-md-4 col-sm-6 form-group">
+                    <label>Transfer To Bank</label>
+                    <select id="cboPDDITransferToBank" name="cboPDDITransferToBank" class="form-control" style="width:100% !important;" data-width="fit" title="Select Bank" onblur="fnFocusout(this)"></select>
+                </div>
+            </div>
+    </div>
+
+    <!--direct deposit ends-->
+    <!--M-pesa starts-->
+    <div id="PaymentDetailsForMPesa" name="dvPaymentDetailsForMPesa" style="display:none">
+            <div class="row mb-3">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                    <p class="m-0 subheading">Reference Details</p>
+                    <hr class="left" />
+                </div>
+                <div class="col-lg-4  col-md-3 col-sm-6 form-group">
+                    <label>Reference Number</label>
+                    @Html.TextBox("txtPDMPesaReferenceNo", "", new { id = "txtPDMPesaReferenceNo", name = "txtPDMPesaReferenceNo", Placeholder = "", @class = "form-control ", @onkeypress = "return OnlyNumeric(event);", onblur = "fnFocusout(this)" })
+                </div>
+
+                <div class="col-lg-4  col-md-3 col-sm-6 form-group">
+                    <label>Reference Date</label>
+                    <input type="text" class="form-control  DatePicker" id="txtPDMpesaReferenceDate" name="txtPDMpesaReferenceDate" onblur="fnFocusout(this)" />
+                </div>
+            </div>
+       </div>
+
+    <!--M-pesa ends-->
+    <!--EFT starts-->
+    <div id="PaymentDetailsForEFTransfer" name="dvPaymentDetailsForEFTransfer" style="display:none">
+             <div class="row content ">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                    <p class="m-0 subheading">Electronic Fund Transfer</p>
+                    <hr class="left" />
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-6 form-group">
+                    <label>Transfer Number</label>
+                    @Html.TextBox("txtPDEFTransferNo", "", new { id = "txtPDEFTransferNo", name = "txtPDEFTransferNo", Placeholder = "", @class = "form-control ", @onkeypress = "return OnlyNumeric(event);", onblur = "fnFocusout(this)" })
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-6 form-group">
+                    <label>Transfer Date</label>
+                    <input type="text" class="form-control  DatePicker" id="txtPDEFTransferDate" name="txtPDEFTransferDate" onblur="fnFocusout(this)" />
+                </div>
+                <div class=" col-lg-4 col-md-4 col-sm-6 form-group">
+                    <label>Amount</label>
+                    @Html.TextBox("txtPDEFTransferAmount", "", new { id = "txtPDEFTransferAmount", name = "txtPDEFTransferAmount", PlaceHolder = "0.00", @class = "form-control currencyFormat", @onkeypress = "return OnlyNumeric(event);", onblur = "fnFocusout(this)", @style = "text-align:right" })
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-6 form-group">
+                    <label>Transfer From Bank</label>
+                    @Html.TextBox("txtPDEFTransferFromBank", "", new { id = "txtPDEFTransferFromBank", name = "txtPDEFTransferFromBank", PlaceHolder = "", @class = "form-control ", onblur = "fnFocusout(this)" })
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-6 form-group">
+                    <label>Transfer To bank</label>
+                    <select id="cboPDEFTransferToBank" name="cboPDEFTransferToBank" class="form-control" style="width:100% !important;" data-width="fit" title="Select Bank" onblur="fnFocusout(this)"></select>
+                </div>
+
+            </div>
+    </div>
+
+
+
+
+<script>
+
+
+    $(document).ready(function () {
+        $.get(getBaseURL() + '/CommonMaster/GetPaymentMode',
+            function (data) {
+                var s = '<option value="-1">select</option>';
+                for (var i = 0; i < data.length; i++) {
+                    s += '<option value="' + data[i].ApplicationCode + '" data-type="' + data[i].ShortCode + '">' + data[i].CodeDesc + '</option>';
+                }
+                $("#cboPDPaymentMode").html(s);
+                $("#cboPDPaymentMode").selectpicker('refresh');
+            });
+    });
+
+    function fnPaymentModeChanged(event) {
+
+        var PaymentModeCode = $(':selected', $('#cboPDPaymentMode')).data('type');
+        if (PaymentModeCode == "CA") { // CASH
+            $("[name=dvPaymentDetailsForCreditDebitCard]").hide();
+            $("[name=dvPaymentDetailsForCheque]").hide();
+            $("[name=dvPaymentDetailsForDirectDeposit]").hide();
+            $("[name=dvPaymentDetailsForMPesa]").hide();
+            $("[name=dvPaymentDetailsForEFTransfer]").hide();
+        }
+
+        if (PaymentModeCode == "DC" || PaymentModeCode == "CC") { // DC or CC
+            $("[name=dvPaymentDetailsForCreditDebitCard]").show();
+            $("[name=dvPaymentDetailsForCheque]").hide();
+            $("[name=dvPaymentDetailsForDirectDeposit]").hide();
+            $("[name=dvPaymentDetailsForMPesa]").hide();
+            $("[name=dvPaymentDetailsForEFTransfer]").hide();
+        }
+        else if (PaymentModeCode == "DD") {
+            $("[name=dvPaymentDetailsForDirectDeposit]").show();
+            $("[name=dvPaymentDetailsForCheque]").hide();
+            $("[name=dvPaymentDetailsForCreditDebitCard]").hide();
+            $("[name=dvPaymentDetailsForMPesa]").hide();
+            $("[name=dvPaymentDetailsForEFTransfer]").hide();
+        }
+        else if (PaymentModeCode == "CQ") {
+            $("[name=dvPaymentDetailsForCheque]").show();
+            $("[name=dvPaymentDetailsForCreditDebitCard]").hide();
+            $("[name=dvPaymentDetailsForDirectDeposit]").hide();
+            $("[name=dvPaymentDetailsForMPesa]").hide();
+            $("[name=dvPaymentDetailsForEFTransfer]").hide();
+        }
+        else if (PaymentModeCode == "EF" || PaymentModeCode == "UP" || PaymentModeCode == "AP") {
+            $("[name=dvPaymentDetailsForMPesa]").show();
+            $("[name=dvPaymentDetailsForCheque]").hide();
+            $("[name=dvPaymentDetailsForCreditDebitCard]").hide();
+            $("[name=dvPaymentDetailsForDirectDeposit]").hide();
+            $("[name=dvPaymentDetailsForEFTransfer]").hide();
+        }
+        else {
+            $("[name=dvPaymentDetailsForEFTransfer]").hide();
+            $("[name=dvPaymentDetailsForMPesa]").hide();
+            $("[name=dvPaymentDetailsForCheque]").hide();
+            $("[name=dvPaymentDetailsForCreditDebitCard]").hide();
+            $("[name=dvPaymentDetailsForDirectDeposit]").hide();
+        }
+
+    }
+
+    var cboPDPaymentMode = $("#cboPDPaymentMode");
+    var txtPDAmountToCollect = $("#txtPDAmountToCollect");
+
+    var cboPDCardType = $("#cboPDCardType");
+    var txtPDCardNo = $("#txtPDCardNo");
+    var cboPDCardExpiryMonth = $("#cboPDCardExpiryMonth");
+    var cboPDCardExpiryYear = $("#cboPDCardExpiryYear");
+    var cboPDCardTerminal = $("#cboPDCardTerminal");
+    var txtPDCardApprovalNo = $("#txtPDCardApprovalNo");
+    var txtPDCardBatchNo = $("#txtPDCardBatchNo");
+    var txtPDCardReferenceNo = $("#txtPDCardReferenceNo");
+    var txtPDCardServiceCharge = $("#txtPDCardServiceCharge");
+    var txtPDCardHolderName = $("#txtPDCardHolderName");
+
+    var txtPDChequeNumber = $("#txtPDChequeNumber");
+    var txtPDChequeDate = $("#txtPDChequeDate");
+    var txtPDChequeAmount = $("#txtPDChequeAmount");
+    var txtPDChequeDraweeBank = $("#txtPDChequeDraweeBank");
+
+    var txtPDDITransferNumber = $("#txtPDDITransferNumber");
+    var txtPDDITransferDate = $("#txtPDDITransferDate");
+    var cboPDDITransferToBank = $("#cboPDDITransferToBank");
+
+    var txtPDMPesaReferenceNo = $("#txtPDMPesaReferenceNo");
+    var txtPDMpesaReferenceDate = $("#txtPDMpesaReferenceDate");
+
+    var txtPDEFTransferNo = $("#txtPDEFTransferNo");
+    var txtPDEFTransferDate = $("#txtPDEFTransferDate");
+    var txtPDEFTransferFromBank = $("#txtPDEFTransferFromBank");
+    var cboPDEFTransferToBank = $("#cboPDEFTransferToBank");
+
+
+    function fnPaymentValidation() {
+        var flag = true;
+      
+        if (txtPDAmountToCollect.val() > 0) {
+            var PaymentModeCode = $(':selected', $('#cboPDPaymentMode')).data('type');
+            //Card Validation
+            if (PaymentModeCode == "DC") {
+                if (cboPDCardType.val() == "") {
+                    toastr.warning("Card Type Required");
+                    flag = false;
+                    return false;
+                }
+                if (txtPDCardNo.val() == "") {
+                    toastr.warning("Card Number Required");
+                    flag = false;
+                    return false;
+                }
+                if ($.isEmptyObject(cboPDCardExpiryMonth.val())) {
+                    cboPDCardExpiryMonth.addClass('error-Class')
+                }
+                if ($.isEmptyObject(cboPDCardExpiryYear.val())) {
+                    cboPDCardExpiryYear.addClass('error-Class');
+                    flag = false;
+                }
+            }
+
+            // Cheque
+            else if (PaymentModeCode == "CQ") {
+                if (txtPDChequeNumber.val() == "") {
+                    toastr.warning("Check Number Required");
+                    flag = false;
+                    return false;
+                }
+                if ($.isEmptyObject(txtPDChequeDate.val())) {
+                    txtPDChequeDate.addClass('error-Class')
+                    flag = false;
+                }
+                if ($.isEmptyObject(txtPDChequeDraweeBank.val())) {
+                    txtPDChequeDraweeBank.addClass('error-Class')
+                    flag = false;
+                }
+                if (txtPDChequeAmount.val() == "" || txtPDChequeAmount.val() <= 0) {
+                    toastr.warning("Please Enter Valid Check Amount");
+
+                    flag = false;
+                    return false;
+                }
+            }
+
+            // Mpesa
+            else if (PaymentModeCode == "AP" || PaymentModeCode == "UP") {
+                if ($.isEmptyObject(txtPDMPesaReferenceNo.val())) {
+                    txtPDMPesaReferenceNo.addClass('error-Class')
+                    flag = false;
+                }
+            }
+
+            // EF
+            else if (PaymentModeCode == "EF") {
+                if (txtPDEFTransferNo.val() == "") {
+                    toastr.warning("Transfer Number Required")
+                    flag = false;
+                    return false;
+                }
+                if ($.isEmptyObject(txtPDEFTransferFromBank.val())) {
+                    txtPDEFTransferFromBank.addClass('error-Class')
+                    flag = false;
+                }
+                if (cboPDEFTransferToBank.val() == "" || cboPDEFTransferToBank.val() == null) {
+                    toastr.warning("Transfer To Bank Required")
+                    flag = false;
+                    return false;
+                }
+            }
+
+            // Direct Deposit
+            else if (PaymentModeCode == "DD") {
+                if ($.isEmptyObject(txtPDDITransferNumber.val())) {
+                    txtPDDITransferNumber.addClass('error-Class')
+                    flag = false;
+                }
+                if ($.isEmptyObject(cboPDDITransferToBank.val())) {
+                    cboPDDITransferToBank.addClass('error-Class')
+                    flag = false;
+                }
+            }
+
+        }
+
+        return flag;
+    }
+
+    function fnFocusout(event) {
+        if ($.isEmptyObject($(event).val()))
+            $(event).addClass('error-Class');
+        else
+            $(event).removeClass('error-Class');
+    }
+
+
+
+    /****Payment Save****/
+    function fnSavePaymentRefund() {
+        if ($("#txtPDAmountToCollect").val() == "") {
+            toastr.warning('Please Enter Amount To Be Collected');
+            return false;
+        }
+        else if ($("#txtPDAmountToCollect").val() <= 0) {
+            toastr.warning('Please Check  Amount Entered');
+            return false;
+        }
+        if (!fnPaymentValidation()) {
+            toastr.warning('Please enter the all details');
+            return;
+        }
+
+        $("#btnSavePaymentRefund").prop('disabled', true);
+       
+        var obj = {};
+        obj.BillKeyReference = $('#hdBookingKey').val();
+        obj.BillDocumentKey = $('#hdBookingKey').val();
+        obj.PaymentMode = cboPDPaymentMode.val();
+        obj.VoucherAmount = $('#txtPDAmountToCollect').val();
+        obj.PaidorCollectedBy = "s";
+        obj.VoucherType = "R";
+        obj.CollectedAmount = $('#txtPDAmountToCollect').val();
+
+        var PaymentModeCode = $(':selected', $('#cboPDPaymentMode')).data('type');
+        if (PaymentModeCode == "CQ") {
+            obj.ChequeNumber = txtPDChequeNumber.val();
+            obj.ChequeAmount = txtPDChequeAmount.val();
+            obj.ChequeDate = txtPDChequeDate.val();
+            obj.DraweeBank = txtPDChequeDraweeBank.val();
+        }
+        if (PaymentModeCode == "DC" || PaymentModeCode == "CC") {
+            obj.CardType = cboPDCardType.val();
+            obj.CardNumber = txtPDCardNo.val();
+            obj.CardExpiryDate = cboPDCardExpiryMonth.val() + '' + cboPDCardExpiryYear.val();
+            obj.CardTerminal = cboPDCardTerminal.val();
+            obj.CardHolderName = cboPDCardTerminal.val();
+            obj.ApprovalNo = txtPDCardApprovalNo.val();
+            obj.BatchNo = 0;
+            obj.ReferenceNo = 0;
+            obj.ServiceCharge = 0;
+        }
+        if (PaymentModeCode == "EF") {
+            obj.TransferNumber = item.txtPDEFTransferNo;
+            obj.TransferDate = item.txtPDEFTransferDate;
+            obj.TransferAmount = item.txtPDEFTransferAmount;
+            obj.TransferFromBank = item.txtPDEFTransferFromBank;
+            obj.TransferToBank = item.cboPDEFTransferToBank;
+        }
+        else {
+            obj.TransferAmount = 0;
+        }
+        if (PaymentModeCode == "AP" || PaymentModeCode == "UP") {
+            obj.MPReferenceNumber = item.txtPDMPesaReferenceNo;
+            obj.MPReferenceDate = item.txtPDMpesaReferenceDate;
+        }
+
+        var URL = getBaseURL() + '/CheckInGuest/InsertPatientReceipt';
+        $.ajax({
+            url: URL,
+            type: 'POST',
+            datatype: 'json',
+            contenttype: 'application/json; charset=utf-8',
+            data: obj,
+            async: true,
+            success: function (response) {
+                try {
+                    if (response.Status) {
+                        toastr.success("Payment collected Successfull");
+                        $("#popupAddPayment").modal('hide');
+                        $("select#cboPDPaymentType").prop('selectedIndex', 0);
+                        $('#txtPDAmountToCollect').val(0);
+                        $("#btnSavePaymentRefund").prop('disabled', false);
+                        fnLoadPaymentDetails();
+                    }
+                    else {
+                        toastr.error(response.Message);
+                        $("#btnSavePaymentRefund").prop('disabled', false);
+                    }
+                }
+                catch (err) {
+
+                    $("#btnSavePaymentRefund").prop('disabled', false);
+                }
+            },
+            error: function (response) {
+
+                bootbox.alert({
+                    title: "Error",
+                    message: response.errors,
+                    backdrop: true,
+                });
+
+                $("#btnSavePaymentRefund").prop('disabled', false);
+            }
+
+        });
+    }
+
+
+    /****End****/
+
+</script>

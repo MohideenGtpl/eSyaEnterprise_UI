@@ -1,0 +1,65 @@
+﻿
+
+$(document).ready(function () {
+
+})
+function fnLoadAddDoctorLeaveGrid() {
+
+    $("#jqgDoctorLeave").GridUnload();
+
+    $("#jqgDoctorLeave").jqGrid({
+
+        // url: getBaseURL() + '',
+        // mtype: 'POST',
+        datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        serializeGridData: function (postdata) {
+            postdata.doctorId = $('#txtDoctorId').val();
+            return JSON.stringify(postdata.doctorId);
+        },
+        colNames: ["", "Leave From", "Leave Till", "Number Of Days", "Active Status", ""],
+        colModel: [
+            { name: "DoctorId", width: 70, editable: true, align: 'left', hidden: true },
+            {
+                name: "OnLeaveFrom", editable: true, width: 160, align: 'left', formatter: 'date', formatoptions: { srcformat: 'Y/m/d H:i:s', newformat: 'm/d/yy' }
+
+            },
+            {
+                name: "OnLeaveTill", editable: true, width: 160, align: 'left', formatter: 'date', formatoptions: { srcformat: 'Y/m/d H:i:s', newformat: 'm/d/yy' }
+
+            },
+            { name: "NoofDays", width: 150, editable: true, align: 'left' },
+            { name: "ActiveStatus", editable: true, width: 30, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: InActive" } },
+            {
+                name: 'edit', search: false, align: 'center', width: 50, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all" style="padding: 2px 4px; background: #0b76bc!important; color: #fff!important; margin: 3px; " title="Edit" onclick="return Fn_EditOnLeaveFromDoctor(event)"><i class="fa fa-edit"></i> Edit </button>'
+
+                }
+            },
+
+        ],
+        rowList: [10, 20, 30, 50, 100],
+        rowNum: 10,
+        loadonce: true,
+        pager: "#jqpDoctorLeave",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0,
+
+
+    }).jqGrid('navGrid', '#jqpDoctorLeave', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpDoctorLeave', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: toRefresh
+    });
+
+}
+
+function toRefresh() {
+    $("#jqgDoctorLeave").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}

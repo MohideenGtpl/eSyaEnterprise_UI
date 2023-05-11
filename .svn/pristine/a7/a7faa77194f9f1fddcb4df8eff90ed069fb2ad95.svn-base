@@ -1,0 +1,19 @@
+﻿function IsStringNullorEmpty(value) {
+    return typeof value == 'string' && !value.trim() || typeof value == 'undefined' || value === null;
+}
+
+function IsValidateEmail(email) {
+    var regex = /^([\w-\.]+\u0040([\w-]+\.)+[\w-]{2,4})?$/;
+    if (!regex.test(email)) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+$('input[name="int"]').keyup(function (e) {
+    if (/\D/g.test(this.value)) {
+        // Filter non-digits from input value.
+        this.value = this.value.replace(/\D/g, '');
+    }
+});

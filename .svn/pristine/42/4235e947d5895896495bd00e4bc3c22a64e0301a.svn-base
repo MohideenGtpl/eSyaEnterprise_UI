@@ -1,0 +1,83 @@
+﻿
+@{
+    ViewData["Title"] = "V_73_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/js/Config/UnitofMeasure.js"></script>
+
+
+<div class="row padbot10">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <table id="jqgUnitofMeasure"></table>
+        <div id="jqpUnitofMeasure"></div>
+    </div>
+</div>
+
+<div class="modal fade" id="PopupUnitofMeasure">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close" data-dismiss="modal" onclick="fnClearFields()"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Unit of Measure</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row padbot4">
+                    <div class="col-sm-12">
+                        <input type="text" class="form-control" id="txtUnitofMeasure" style="display:none">
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-12">
+                        <div class="form-group">
+                            <label> Unit of Purchase</label>
+                            <input id="txtUOMPurchase" class="form-control" type="text" autocomplete="off" maxlength="4" />
+                        </div>
+                    </div>
+                    <div class="col-lg-9 col-md-9 col-sm-12">
+                        <div class="form-group">
+                            <label> Description</label>
+                            <input id="txtUOMPurchaseDesc" class="form-control" type="text" autocomplete="off" maxlength="50" />
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-12">
+                        <div class="form-group">
+                            <label> UOM Stock</label>
+                            <input id="txtUOMStack" class="form-control" type="text" autocomplete="off" maxlength="4" />
+                        </div>
+                    </div>
+                    <div class="col-lg-9 col-md-9 col-sm-12">
+                        <div class="form-group">
+                            <label> Description</label>
+                            <input id="txtUOMStackDesc" class="form-control" type="text" autocomplete="off" maxlength="50" />
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-12">
+                        <div class="form-group">
+                            <label> Conversion Factor</label>
+                            <input id="txtConversionFactor" class="form-control" type="text" autocomplete="off" maxlength="10" data-inputmask="'mask': '9', 'repeat': 10, 'greedy' : false"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            <label class="lable-color"> Status</label>
+                            <select class="selectpicker" data-live-search="false" id="cboActiveStatus" title="">
+                                <option value="true">Active</option>
+                                <option value="false">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveUnitofMeasure" onclick="fnSaveUnitofMeasure()">
+                            Save
+                        </button>
+                        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button" data-dismiss="modal" onclick="fnClearFields()"> Cancel</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

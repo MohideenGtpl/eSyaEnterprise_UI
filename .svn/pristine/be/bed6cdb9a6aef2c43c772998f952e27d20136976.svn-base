@@ -1,0 +1,224 @@
+﻿
+@{
+    ViewData["Title"] = "V_4532_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@*@section scripts{
+    <script src="~/js/eSyaPayrollExpat/ReleaseSalary.js"></script>
+        }*@
+
+<div class="row">
+    <div class="col-lg-5 col-md-5 col-sm-12 form-group">
+        <label>Business Key</label>
+        @await Component.InvokeAsync("UserBusinessLocation")
+    </div>
+</div>
+<div class="row form-group">
+    <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+        <label>Bank Name</label>
+        <select class="selectpicker" id="cboBanks" onchange="fnBank_onChange()"></select>
+        @*<select class="selectpicker" id="cboBanks" name="cboBanks"
+                    asp-items="@ViewBag.l_Banks" onchange="fnBank_onChange()">
+                <option selected>Select</option>
+                <option value="C">Cash</option>
+            </select>*@
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-6 form-group">
+        <label>Salary Currency</label>
+        <select class="selectpicker" id="cboBankCurrency" onchange="fnBankCurrency_onChange()"></select>
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-12 form-group">
+        <label>Bank Date</label>
+        <input type="text" name="name" id="dtBankDate" value="" class="form-control datepicker" />
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 form-group text-right ">
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveSalaryPayment" onclick="fnSaveSalaryPayment()">
+           Process Salary Payment
+        </button>
+    </div>
+</div>
+
+<div class="row form-group">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <table id="jqgSalary"></table>
+        <div id="jqpSalary"></div>
+    </div>
+</div>
+
+<script>
+
+
+    function fnBusinessLocation_onChange() {
+
+        var s = '<option selected>Select</option>';
+        s += '<option value="C">Cash</option>';
+
+        $.get(getBaseURL() + '/SalaryPayment/GetBankName', { businessKey: $('#cboBusinessLocation').val() },
+            function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    s += '<option value=' + data[i].BankCode + '>' +
+                        data[i].BankName + '</option>';
+                }
+                $("#cboBanks").html(s);
+                $("#cboBanks").selectpicker('refresh');
+            });
+
+        fnBankCurrency_onChange();
+    }
+
+    function fnBank_onChange() {
+
+        if ($('#cboBanks').val() == "C") {
+            _bankRemittance = "C";
+            $("#cboBankCurrency").html('<option selected value="KES">KES</option>');
+            $("#cboBankCurrency").selectpicker('refresh');
+            $("#jqgSalary").jqGrid("setGridParam", { datatype: "json" })
+                .trigger("reloadGrid", [{ current: true }]);
+        }
+        else {
+            $.get(getBaseURL() + '/SalaryPayment/GetBankCurrency', { businessKey: $('#cboBusinessLocation').val(), bankCode: $('#cboBanks').val() },
+                function (data) {
+                    var s = '<option>select</option>';
+                    for (var i = 0; i < data.length; i++) {
+                        s += '<option value=' + data[i].CurrencyCode + '>' +
+                            data[i].CurrencyCode + '</option>';
+                    }
+                    $("#cboBankCurrency").html(s);
+                    $("#cboBankCurrency").selectpicker('refresh');
+                });
+            _bankRemittance = "B";
+            $("#jqgSalary").jqGrid("setGridParam", { datatype: "json" })
+                .trigger("reloadGrid", [{ current: true }]);
+        }
+
+        fnLoadSalaryGrid();
+    }
+
+    var _bankRemittance = "C";
+    function fnBankCurrency_onChange() {
+        $("#jqgSalary").jqGrid("setGridParam", { datatype: "json" })
+            .trigger("reloadGrid", [{ current: true }]);
+    }
+
+    function fnLoadSalaryGrid() {
+        $("#jqgSalary").jqGrid({
+            url: getBaseURL() + '/SalaryPayment/GetSalaryDetailForPayment',
+            datatype: "json",
+            contenttype: "application/json; charset-utf-8",
+            mtype: 'GET',
+            postData: {
+                businessKey: function () { return $("#cboBusinessLocation").val(); },
+                bankCode: function () { return $("#cboBanks").val(); },
+                currency: function () { return $("#cboBankCurrency").val(); },
+                bankRemittance: function () { return _bankRemittance; },
+            },
+            jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+            colNames: ["EmployeeNumber", "Employee Name", 'PayPeriod', 'SerialNumber', 'Amount In local Currency ', 'Bank Charges', 'Account Holder Name', 'Account Number', 'IFSC Code'],
+            colModel: [
+                { name: "EmployeeNumber", width: '100', align: 'left', editable: false, hidden: true },
+                { name: "EmployeeName", index: 'EmployeeName', width: '200', align: 'left', editable: false, sortable: true, },
+                { name: "PayPeriod", index: 'PayPeriod', width: '50', align: 'left', editable: false, sortable: true, },
+                { name: "SerialNumber", index: 'SerialNumber', hidden: true },
+                { name: 'LocalCurrencyAmount', index: 'LocalCurrencyAmount', width: 80, align: "right", sorttype: "float", formatter: "number" },
+                { name: 'BankCharges', index: 'BankCharges', width: 80, align: "right", sorttype: "float", formatter: "number" },
+                { name: 'AccountHolderName', index: 'AccountHolderName', width: 120 },
+                { name: 'AccountNumber', index: 'AccountNumber', width: 120 },
+                { name: 'IFSCCode', index: 'IFSCCode', width: 120 },
+            ],
+            rowNum: 100000,
+            loadonce: true,
+            height: 'auto',
+            scroll: false,
+            width: '150',
+            autowidth: false,
+            shrinkToFit: false,
+            forceFit: false,
+            cellEdit: true,
+            editurl: 'url',
+            cellsubmit: 'clientArray',
+            multiselect: true,
+            loadComplete: function () {
+            },
+        });
+    }
+
+    function fnSaveSalaryPayment() {
+
+        if (!IsValid())
+            return;
+
+        try {
+            $("#btnSaveSalaryPayment").attr('disabled', true);
+
+            var l_pr = [];
+            // var ids = jQuery("#jqgSalaryProcess").jqGrid('getDataIDs');
+            var ids = jQuery("#jqgSalary").jqGrid('getGridParam', 'selarrrow');
+            for (var i = 0; i < ids.length; i++) {
+                var rowId = ids[i];
+                var rowData = jQuery('#jqgSalary').jqGrid('getRowData', rowId);
+                l_pr.push({
+                    BusinessKey: $("#cboBusinessLocation").val(),
+                    PayPeriod: rowData.PayPeriod,
+                    EmployeeNumber: rowData.EmployeeNumber,
+                    SerialNumber: rowData.SerialNumber,
+                    OrgBankCode: $("#cboBanks").val(),
+                    OrgBankDate: $("#dtBankDate").val()
+                });
+            }
+
+            var URL = getBaseURL() + '/SalaryPayment/UpdateSalaryPaymentBank';
+
+            $.ajax({
+                url: URL,
+                type: 'POST',
+                datatype: 'json',
+                data: { obj: l_pr },
+                async: false,
+                success: function (response) {
+                    if (response.Status) {
+                        $("#btnSaveSalaryPayment").attr('disabled', false);
+                        toastr.success("Submitted Successfully");
+                        $("#jqgSalary").jqGrid("setGridParam", { datatype: "json" })
+                            .trigger("reloadGrid", [{ current: true }]);
+                    }
+                    else {
+                        toastr.error(response.Message);
+                    }
+
+                    $("#btnSaveSalaryPayment").attr('disabled', false);
+                },
+                error: function (error) {
+                    toastr.error(error.statusText);
+                    $("#btnSaveSalaryPayment").attr('disabled', false);
+                }
+            });
+        }
+        catch
+        {
+            toastr.error("error");
+            $("#btnSaveSalaryPayment").attr('disabled', false);
+        }
+    }
+
+    function IsValid() {
+        if (IsStringNullorEmpty($("#cboBusinessLocation").val())) {
+            toastr.warning("Please select the Business location");
+            return false;
+        }
+        if (IsStringNullorEmpty($("#cboBanks").val())) {
+            toastr.warning("Please select the Bank");
+            return false;
+        }
+        if (IsStringNullorEmpty($("#cboBankCurrency").val())) {
+            toastr.warning("Please select the Bank Currency");
+            return false;
+        }
+        if (IsStringNullorEmpty($("#dtBankDate").val())) {
+            toastr.warning("Please enter the Bank Date");
+            return false;
+        }
+
+        return true;
+    }
+
+</script>

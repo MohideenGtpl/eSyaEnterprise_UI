@@ -1,0 +1,159 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
+using eSyaEnterprise_UI.Areas.Config.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+namespace eSyaEnterprise_UI.Areas.Config.Controllers
+{
+    public class LocalizationController : Controller
+    {
+        ESyaWebAPI _eSyaWebAPI = new ESyaWebAPI();
+        #region Localization Table Mapping
+        /// <summary>
+        /// Localization Master
+        /// </summary>
+        /// <returns></returns>
+        /// [Area("Config")]
+        public IActionResult V_23_00()
+        {
+            return View();
+        }
+       
+        /// <summary>
+        /// Getting Localization Master Table List for Grid
+        /// </summary>
+
+        [HttpPost]
+        public JsonResult GetLocalizationMasterTablesList()
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("Localization/GetLocalizationMasterTablesList").Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<List<DO_LocalizationMaster>>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Insert or Update Localization Master
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertOrUpdateLocalizationMaster([FromBody] DO_LocalizationMaster loc_master)
+        {
+
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                loc_master.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                loc_master.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                if (loc_master.Isadd == 1)
+                {
+                   
+                    HttpResponseMessage Insertresponse = client.PostAsJsonAsync<DO_LocalizationMaster>("Localization/InsertLocalizationMaster", loc_master).Result;
+                    string resp = Insertresponse.Content.ReadAsStringAsync().Result;
+                    var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(resp);
+                    return Json(result);
+                }
+
+                else
+                {
+                    HttpResponseMessage Updateresponse = client.PostAsJsonAsync<DO_LocalizationMaster>("Localization/UpdateLocalizationMaster", loc_master).Result;
+                    string resp = Updateresponse.Content.ReadAsStringAsync().Result;
+                    var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(resp);
+                    return Json(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        #endregion
+
+
+        /// <summary>
+        /// Localization Language Mapping
+        /// </summary>
+        
+        [Area("Config")]
+        public IActionResult V_24_00()
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("Localization/GetCboLocalizationMaster").Result;
+                string data = response.Content.ReadAsStringAsync().Result;
+                List<DO_LocalizationMaster> locMaster = JsonConvert.DeserializeObject<List<DO_LocalizationMaster>>(data);
+                ViewBag.locMasterlist = locMaster;
+
+                HttpResponseMessage resp = client.GetAsync("Forms/GetFormDetails").Result;
+                string respdata = resp.Content.ReadAsStringAsync().Result;
+                List<DO_Forms> formMaster = JsonConvert.DeserializeObject<List<DO_Forms>>(respdata);
+                ViewBag.formMasterlist = formMaster;
+                return View();
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+        /// <summary>
+        /// Insert or Update Localization Language Mapping
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertOrUpdateLocalizationLanguageMapping([FromBody] DO_LocalizationLanguageMapping postData)
+        {
+
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                postData.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                postData.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                postData.TablePrimaryKeyId = postData.FormID;
+                HttpResponseMessage Insertresponse = client.PostAsJsonAsync<DO_LocalizationLanguageMapping>("Localization/InsertOrUpdateLocalizationLanguageMapping", postData).Result;
+                string response = Insertresponse.Content.ReadAsStringAsync().Result;
+                var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(response);
+                return Json(result);    
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+        /// <summary>
+        /// Get Localization Language Mapping Grid
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetLocalizationLanguageMapping()
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("Localization/GetLocalizationLanguageMapping").Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<List<DO_LocalizationLanguageMapping>>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+        
+    }
+}

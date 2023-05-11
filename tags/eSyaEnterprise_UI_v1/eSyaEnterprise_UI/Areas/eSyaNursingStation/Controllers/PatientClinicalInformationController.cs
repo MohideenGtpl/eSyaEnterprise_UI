@@ -1,0 +1,378 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.Areas.eSyaNursingStation.Data;
+using eSyaEnterprise_UI.Areas.eSyaNursingStation.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+
+namespace eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers
+{
+    public class PatientClinicalInformationController : Controller
+    {
+
+        private readonly IeSyaNursingStationAPIServices _eSyaNursingStationAPIServices;
+        private readonly ILogger<PatientClinicalInformationController> _logger;
+
+        private readonly IHostingEnvironment _hostingEnvironment;
+
+        public PatientClinicalInformationController(IeSyaNursingStationAPIServices eSyaNursingStationAPIServices, ILogger<PatientClinicalInformationController> logger, IHostingEnvironment hostingEnvironment)
+        {
+            _eSyaNursingStationAPIServices = eSyaNursingStationAPIServices;
+            _logger = logger;
+            _hostingEnvironment = hostingEnvironment;
+        }
+
+
+        [Area("eSyaNursingStation")]
+        public IActionResult V_6003_00(int UHID, int ipNumber)
+        {
+            ViewBag.UHID = UHID;
+            ViewBag.IpNumber = ipNumber;
+            return View();
+        }
+
+
+        public async Task<JsonResult> GetClinicalInformationValueForPatient(int UHID, int ipNumber, string clType)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&UHID=" + UHID.ToString();
+                parameter += "&ipNumber=" + ipNumber.ToString();
+                parameter += "&clType=" + clType.ToString();
+
+                var serviceResponse = await _eSyaNursingStationAPIServices.HttpClientServices.GetAsync<List<DO_PatientClinicalInformation>>("PatientClinicalInformation/GetClinicalInformationValueForPatient" + parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), string.Format("UD:GetClinicalInformationValueForPatient:params: businessKey:{0},UHID:{1},ipnumber:{2}",
+                        AppSessionVariables.GetSessionBusinessKey(HttpContext).ToString(), UHID, ipNumber));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, string.Format("UD:GetClinicalInformationValueForPatient:params: businessKey:{0},UHID:{1},ipnumber:{2}",
+                        AppSessionVariables.GetSessionBusinessKey(HttpContext).ToString(), UHID, ipNumber));
+                throw ex;
+            }
+        }
+
+        public async Task<JsonResult> GetClinicalInformationValueView(int UHID, int ipNumber, string clType)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&UHID=" + UHID.ToString();
+                parameter += "&ipNumber=" + ipNumber.ToString();
+                parameter += "&clType=" + clType.ToString();
+
+                var serviceResponse = await _eSyaNursingStationAPIServices.HttpClientServices.GetAsync<List<DO_PatientClinicalInformation>>("PatientClinicalInformation/GetClinicalInformationValueView" + parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), string.Format("UD:GetClinicalInformationValueView:params: businessKey:{0},UHID:{1},ipnumber:{2}",
+                        AppSessionVariables.GetSessionBusinessKey(HttpContext).ToString(), UHID, ipNumber));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, string.Format("UD:GetClinicalInformationValueView:params: businessKey:{0},UHID:{1},ipnumber:{2}",
+                        AppSessionVariables.GetSessionBusinessKey(HttpContext).ToString(), UHID, ipNumber));
+                throw ex;
+            }
+        }
+
+        public async Task<JsonResult> GetClinicalInformationValueByTransaction(int UHID, int ipNumber, int transactionID)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&UHID=" + UHID.ToString();
+                parameter += "&ipnumber=" + ipNumber.ToString();
+                parameter += "&transactionID=" + transactionID.ToString();
+
+                var serviceResponse = await _eSyaNursingStationAPIServices.HttpClientServices.GetAsync<List<DO_PatientClinicalInformation>>("PatientClinicalInformation/GetClinicalInformationValueByTransaction" + parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), string.Format("UD:GetClinicalInformationValueByTransaction:params: businessKey:{0},UHID:{1},ipnumber:{2},transactionID:{3}",
+                        AppSessionVariables.GetSessionBusinessKey(HttpContext).ToString(), UHID, ipNumber, transactionID));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, string.Format("UD:GetClinicalInformationValueByTransaction:params: businessKey:{0},UHID:{1},ipnumber:{2},transactionID:{3}",
+                        AppSessionVariables.GetSessionBusinessKey(HttpContext).ToString(), UHID, ipNumber, transactionID));
+                throw ex;
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> InsertIntoPatientClinicalInformation(DO_PatientClinicalInformation obj)
+        {
+            try
+            {
+                obj.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                obj.ActiveStatus = true;
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+
+                obj.TransactionDate = obj.TransactionDate.Date.Add(obj.TransactionTime);
+
+                var serviceResponse = await _eSyaNursingStationAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("PatientClinicalInformation/InsertIntoPatientClinicalInformation", obj);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data.Status)
+                        return Json(new { Status = true, serviceResponse.Data.Message });
+                    else
+                        return Json(new { Status = false, serviceResponse.Data.Message });
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:InsertIntoPatientClinicalInformation:params:" + JsonConvert.SerializeObject(obj));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertIntoPatientClinicalInformation:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Warning = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> UpdatePatientClinicalInformation(DO_PatientClinicalInformation obj)
+        {
+            try
+            {
+                obj.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                obj.ActiveStatus = true;
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+
+                var serviceResponse = await _eSyaNursingStationAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("PatientClinicalInformation/UpdatePatientClinicalInformation", obj);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data.Status)
+                        return Json(new { Status = true, serviceResponse.Data.Message });
+                    else
+                        return Json(new { Status = false, serviceResponse.Data.Message });
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:UpdatePatientClinicalInformation:params:" + JsonConvert.SerializeObject(obj));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:UpdatePatientClinicalInformation:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Warning = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+
+        public async Task<JsonResult> GetDrugList(string term)
+        {
+            try
+            {
+                var parameter = "?searchtext=" + term;
+
+                var serviceResponse = await _eSyaNursingStationAPIServices.HttpClientServices.GetAsync<List<DO_DrugCodes>>("InPatientInfo/GetDrugList" + parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), string.Format("UD:GetDrugList:params: searchtext:{0}", term));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, string.Format("UD:GetDrugList:params: searchtext:{0}", term));
+                throw ex;
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> InsertIntoPatientMedicationDrug(DO_PatientMedicationDrug obj)
+        {
+            try
+            {
+                obj.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                obj.ActiveStatus = true;
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+
+                obj.TransactionDate = System.DateTime.Now;
+
+                var serviceResponse = await _eSyaNursingStationAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("PatientClinicalInformation/InsertIntoPatientMedicationDrug", obj);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data.Status)
+                        return Json(new { Status = true, serviceResponse.Data.Message });
+                    else
+                        return Json(new { Status = false, serviceResponse.Data.Message });
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:InsertIntoPatientMedicationDrug:params:" + JsonConvert.SerializeObject(obj));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertIntoPatientMedicationDrug:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Warning = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> InsertIntoPatientMedicationGiven(DO_PatientMedicationGiven obj)
+        {
+            try
+            {
+                obj.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                obj.ActiveStatus = true;
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+
+                obj.MedicationGivenOn = obj.MedicationGivenOn.Date.Add(obj.MedicationTime);
+
+                var serviceResponse = await _eSyaNursingStationAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("PatientClinicalInformation/InsertIntoPatientMedicationGiven", obj);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data.Status)
+                        return Json(new { Status = true, serviceResponse.Data.Message });
+                    else
+                        return Json(new { Status = false, serviceResponse.Data.Message });
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:InsertIntoPatientMedicationGiven:params:" + JsonConvert.SerializeObject(obj));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertIntoPatientMedicationGiven:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Warning = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        public async Task<JsonResult> GetPatientMedicationDrug(int UHID, int ipNumber)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&UHID=" + UHID.ToString();
+                parameter += "&ipnumber=" + ipNumber.ToString();
+
+                var serviceResponse = await _eSyaNursingStationAPIServices.HttpClientServices.GetAsync<List<DO_PatientMedicationDrug>>("PatientClinicalInformation/GetPatientMedicationDrug" + parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), string.Format("UD:GetPatientMedicationDrug:params: businessKey:{0},UHID:{1},ipnumber:{2}",
+                        AppSessionVariables.GetSessionBusinessKey(HttpContext).ToString(), UHID, ipNumber));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, string.Format("UD:GetPatientMedicationDrug:params: businessKey:{0},UHID:{1},ipnumber:{2}",
+                        AppSessionVariables.GetSessionBusinessKey(HttpContext).ToString(), UHID, ipNumber));
+                throw ex;
+            }
+        }
+
+        public async Task<JsonResult> GetPatientMedicationDetailByDrugCode(int UHID, int ipNumber, int drugCode)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&UHID=" + UHID.ToString();
+                parameter += "&ipnumber=" + ipNumber.ToString();
+                parameter += "&drugCode=" + drugCode.ToString();
+
+                var serviceResponse = await _eSyaNursingStationAPIServices.HttpClientServices.GetAsync<DO_PatientMedicationDrug>("PatientClinicalInformation/GetPatientMedicationDetailByDrugCode" + parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), string.Format("UD:GetPatientMedicationDetailByDrugCode:params: businessKey:{0},UHID:{1},ipnumber:{2}",
+                        AppSessionVariables.GetSessionBusinessKey(HttpContext).ToString(), UHID, ipNumber));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, string.Format("UD:GetPatientMedicationDetailByDrugCode:params: businessKey:{0},UHID:{1},ipnumber:{2}",
+                        AppSessionVariables.GetSessionBusinessKey(HttpContext).ToString(), UHID, ipNumber));
+                throw ex;
+            }
+        }
+
+
+        public async Task<JsonResult> GetPatientMedicationDrugGivenTiming(int UHID, int ipNumber, int drugCode)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&UHID=" + UHID.ToString();
+                parameter += "&ipnumber=" + ipNumber.ToString();
+                parameter += "&drugCode=" + drugCode.ToString();
+
+                var serviceResponse = await _eSyaNursingStationAPIServices.HttpClientServices.GetAsync<List<DO_PatientMedicationGiven>>("PatientClinicalInformation/GetPatientMedicationDrugGivenTiming" + parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), string.Format("UD:GetPatientMedicationDrugGivenTiming:params: businessKey:{0},UHID:{1},ipnumber:{2}",
+                        AppSessionVariables.GetSessionBusinessKey(HttpContext).ToString(), UHID, ipNumber));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, string.Format("UD:GetPatientMedicationDrugGivenTiming:params: businessKey:{0},UHID:{1},ipnumber:{2}",
+                        AppSessionVariables.GetSessionBusinessKey(HttpContext).ToString(), UHID, ipNumber));
+                throw ex;
+            }
+        }
+
+    }
+}

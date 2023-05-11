@@ -1,0 +1,133 @@
+﻿$(function () {
+    fnLoadCareCardRates();
+    $.contextMenu({
+        selector: "#btnCareCardRates",
+        trigger: 'left',
+        items: {
+            jqgEdit: { name: localization.Edit, icon: "edit", callback: function (key, opt) { fnEditCareCardRates(event, 'edit') } },
+            jqgView: { name: localization.View, icon: "view", callback: function (key, opt) { fnEditCareCardRates(event, 'view') } },
+            jqgDelete: { name: localization.Delete, icon: "delete", callback: function (key, opt) { fnEditCareCardRates(event, 'delete') } },
+        }
+    });
+    $(".context-menu-icon-edit").html("<span class='icon-contextMenu'><i class='fa fa-pen'></i>" + localization.Edit + " </span>");
+    $(".context-menu-icon-view").html("<span class='icon-contextMenu'><i class='fa fa-eye'></i>" + localization.View + " </span>");
+    $(".context-menu-icon-delete").html("<span class='icon-contextMenu'><i class='fa fa-trash'></i>" + localization.Delete + " </span>");
+})
+
+
+
+function CheckDigits(e) {
+
+    if (e.which == 46) {
+        if ($(this).val().indexOf('.') != -1) {
+            return false;
+        }
+    }
+
+    if (e.which != 8 && e.which != 0 && e.which != 46 && (e.which < 48 || e.which > 57)) {
+        return false;
+    }
+
+}
+
+var Currencylist = [];
+
+$(document).ready(function () {
+
+    Currencylist.push(0 + ': Select');
+    $.each(Currencies, function (i, data) { Currencylist.push(data.CurrencyCode + ':' + data.CurrencyName); })
+    Currencylist = Currencylist.join(';')
+
+    fnLoadCareCardRates();
+
+});
+
+function fnBusinessLocation_onChange() {
+    fnLoadCareCardRates();
+}
+
+function fnLoadCareCardRates() {
+    $("#jqgCareCardRates").jqGrid('GridUnload');
+    $("#jqgCareCardRates").jqGrid({
+        url: getBaseURL() + '/PatientTypes/GetPatientTypeCategoryCareCardRates?businesskey=' + $("#cboBusinessLocation").val(),
+        datatype: 'json',
+        mtype: 'POST',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: [localization.BusinessKey, "", "", localization.PatientType, localization.PatientCategory, localization.Currency, localization.Rate, localization.ValidForNoOfDays, localization.EffectiveFrom, localization.EffectiveTill, localization.Select],
+        colModel: [
+            { name: "BusinessKey", width: 70, editable: false, editoptions: { disabled: true }, align: 'left', hidden: true },
+            { name: "PatientTypeId", width: 70, editable: false, editoptions: { disabled: true }, align: 'left', hidden: true },
+            { name: "PatientCategoryId", width: 70, editable: false, editoptions: { disabled: true }, align: 'left', hidden: true },
+            { name: "PatientTypeDesc", width: 250, editable: false, editoptions: { disabled: true }, align: 'left' ,hidden:true},
+            { name: "PatientCategoryDesc", width: 250, editable: false, editoptions: { disabled: true }, align: 'left' ,hidden:true},
+            { name: "CurrencyCode", editable: true, width: 150, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: Currencylist } },
+            {
+                name: 'Rate', index: 'Rate', editable: true, edittype: "text", width: 150,
+                editoptions: { maxlength: 7, onkeypress: 'return CheckDigits(event)' }
+            },
+            {
+                name: 'ValidforNoOfDays', index: 'ValidforNoOfDays', editable: true, edittype: "text", width: 150,
+                editoptions: { maxlength: 7, onkeypress: 'return CheckDigits(event)' }
+            },
+            {
+                name: 'EffectiveFrom', index: 'EffectiveFrom', width: 150, sorttype: "date", formatter: "date", formatoptions:
+                    { newformat: _cnfjqgDateFormat },
+                editable: true, editoptions: {
+                    size: 20,
+                    dataInit: function (el) {
+                        $(el).datepicker({ dateFormat: _cnfDateFormat });
+                    }
+                }
+            },
+            {
+                name: 'EffectiveTill', index: 'EffectiveTill', width: 150, sorttype: "date", formatter: "date", hidden: false, formatoptions:
+                    { newformat: _cnfjqgDateFormat },
+                editable: true, editoptions: {
+                    size: 20,
+                    dataInit: function (el) {
+                        $(el).datepicker({ dateFormat: _cnfDateFormat });
+                    }
+                }
+            },
+            {
+                name: "ActiveStatus", width: 200, editable: true, align: 'center', hidden: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true }
+            },
+        ],
+        rowNum: 10,
+        rowList: [10, 20, 30, 50],
+        emptyrecords: "No records to Veiw",
+        pager: "#jqpCareCardRates",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: false,
+        height: 'auto',
+        width: 'auto',
+        scroll: false,
+        autowidth: true,
+        shrinkToFit: true,
+        forceFit: true,
+        loadonce: true,
+        cellEdit: false,
+        //editurl: 'url',
+        //cellsubmit: 'clientArray',
+        loadComplete: function (data) {
+            $("#jqgCareCardRates").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+        }
+    }).jqGrid('navGrid', '#jqpCareCardRates', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpCareCardRates', {
+        caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshCareCardRates
+        }).jqGrid('navButtonAdd', '#jqpCareCardRates', {
+            caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddCareCardRates
+    });
+    
+    fnAddGridSerialNoHeading();
+}
+function fnAddCareCardRates() {
+    $("#PopupCareCardRates").modal('show');
+}
+function fnEditCareCardRates(e,actiontype) {
+    $("#PopupCareCardRates").modal('show');
+}
+function fnGridRefreshCareCardRates() {
+
+}

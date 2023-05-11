@@ -1,0 +1,87 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Areas\eSyaConfig\Resources\**" />
+    <Compile Remove="Areas\eSyaCustomer\Views\CustomerCodes\**" />
+    <Compile Remove="Extension\**" />
+    <Content Remove="Areas\eSyaConfig\Resources\**" />
+    <Content Remove="Areas\eSyaCustomer\Views\CustomerCodes\**" />
+    <Content Remove="Extension\**" />
+    <EmbeddedResource Remove="Areas\eSyaConfig\Resources\**" />
+    <EmbeddedResource Remove="Areas\eSyaCustomer\Views\CustomerCodes\**" />
+    <EmbeddedResource Remove="Extension\**" />
+    <None Remove="Areas\eSyaConfig\Resources\**" />
+    <None Remove="Areas\eSyaCustomer\Views\CustomerCodes\**" />
+    <None Remove="Extension\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Areas\eSyaCustomer\Controllers\CustomerCodesController.cs" />
+    <Compile Remove="Areas\eSyaUserManagement\Data\ESyaUserMgmt_WebAPI.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Areas\eSyaCustomer\Views\Customer\Create.cshtml" />
+    <Content Remove="Areas\eSyaCustomer\Views\Customer\V_274_00.cshtml" />
+    <Content Remove="wwwroot\js\Config\DepreciationMethod.js" />
+    <Content Remove="wwwroot\js\Config\ItemMaster.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="Resources\eSyaConfigResource.en-IN.resx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Extension\DateTimeExtensions.cs" />
+    <Compile Include="Extension\ExceptionMiddlewareExtensions.cs" />
+    <Compile Include="Extension\ExceptionVariable.cs" />
+    <Compile Include="Extension\JsonStream.cs" />
+    <Compile Include="Extension\SessionExtensions.cs" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="CoreCompat.System.Drawing" Version="1.0.0-beta006" />
+    <PackageReference Include="eSyaEssentials.UI" Version="1.0.1" />
+    <PackageReference Include="jQuery.InputMask" Version="5.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.2.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="4.9.3" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="Areas\eSyaOutPatient\Data\" />
+    <Folder Include="Areas\eSyaOutPatient\Models\" />
+    <Folder Include="Areas\eSyaPharma\Models\" />
+    <Folder Include="Areas\eSyaRevCycleOP\Controllers\" />
+    <Folder Include="Areas\eSyaRevCycleOP\Data\" />
+    <Folder Include="Areas\eSyaRevCycleOP\Models\" />
+    <Folder Include="Areas\eSyaRevCycleOP\Views\" />
+    <Folder Include="Areas\eSyaVendor\Models\" />
+    <Folder Include="wwwroot\js\eSyaUserManagement\" />
+    <Folder Include="wwwroot\Uploads\CountryFlagICons\" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <None Include="Views\Home\Index.cshtml" />
+    <None Include="Views\Home\Privacy.cshtml" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Content Update="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>

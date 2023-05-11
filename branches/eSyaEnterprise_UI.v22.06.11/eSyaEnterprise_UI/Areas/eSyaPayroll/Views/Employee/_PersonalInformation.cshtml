@@ -1,0 +1,167 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+<div class="row">
+    <div class="col-lg-12 form-group">
+        <p class="subheading">@Localizer["PersonalInformation"] </p>
+        <hr class="left" />
+    </div>
+    <div class="col-lg-3 col-md-6 form-group">
+        <label>@Localizer["Dateofbirth"] </label>
+        <input type="text" class="form-control datepicker" id="txtpersonalinfodateofbirth" />
+    </div>
+    <div class="col-lg-3 col-md-6 form-group">
+        <label>@Localizer["BloodGroup"] </label>
+        <select class="form-control selectpicker" id="cboBloodgroup">
+            <option value="0">@Localizer["Select"] </option>
+            @if (ViewBag.BloodGroup != null)
+            {
+                @foreach (var uniqueId in ViewBag.BloodGroup)
+                {
+                    <option value="@uniqueId.ApplicationCode">@uniqueId.CodeDesc</option>
+                }
+            }
+            </select>
+    </div>
+    <div class="col-lg-3 col-md-6 form-group">
+        <label>@Localizer["MotherTongue"] </label>
+        <select class="form-control selectpicker" id="cboMothertongue">
+            <option value="0">@Localizer["Select"] </option>
+            @if (ViewBag.MotherTongue != null)
+            {
+                @foreach (var tongue in ViewBag.MotherTongue)
+                {
+                    <option value="@tongue.ApplicationCode">@tongue.CodeDesc</option>
+                }
+            }
+        </select>
+    </div>
+    <div class="col-lg-3 col-md-6 form-group">
+        <label>@Localizer["Religion"] </label>
+        <select class="form-control selectpicker" id="cboReligion">
+            <option value="0">@Localizer["Select"] </option>
+            @if (ViewBag.Religion != null)
+            {
+                @foreach (var reglion in ViewBag.Religion)
+                {
+                    <option value="@reglion.ApplicationCode">@reglion.CodeDesc</option>
+                }
+            }
+        </select>
+    </div>
+    <div class="col-lg-3 col-md-6 form-group">
+        <label>@Localizer["Caste"] </label>
+        <select class="form-control selectpicker" id="cboCaste">
+            <option value="0">@Localizer["Select"] </option>
+            @if (ViewBag.Caste != null) { 
+                @foreach (var caste in ViewBag.Caste)
+                {
+                    <option value="@caste.ApplicationCode">@caste.CodeDesc</option>
+                }
+            }
+
+        </select>
+    </div>
+    <div class="col-lg-3 col-md-6 form-group">
+        <label>@Localizer["UniqueID"] </label>
+        <select class="form-control selectpicker" id="cboUniqueId" title="" data-size="8">
+            <option value="0">@Localizer["Select"] </option>
+            @if (ViewBag.EmployeeUniqueID != null)
+            {
+                @foreach (var uniqueId in ViewBag.EmployeeUniqueID)
+                {
+                    <option value="@uniqueId.ApplicationCode">@uniqueId.CodeDesc</option>
+                }
+            }
+            </select>
+    </div>
+    <div class="col-lg-3 col-md-6 form-group">
+        <label>@Localizer["UniqueIDInfo"]</label>
+        <input type="text" class="form-control" maxlength="15" id="txtUniqueIdInfo" />
+    </div>
+</div>
+
+<div class="row form-group">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <table id="jqgLanguagesKnown"></table>
+        <div id="jqpLanguagesKnown"></div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 form-group">
+        <p class="subheading">@Localizer["ContactInformation"] </p>
+        <hr class="left" />
+    </div>
+
+    <div class="col-lg-3 col-md-6 form-group">
+        <label>@Localizer["PermanentOrCurrent"] </label>
+        <select class="form-control selectpicker" id="cboPermanentOrCurrent">
+            <option value="0">@Localizer["Select"] </option>
+            <option value="P">@Localizer["Permanent"] </option>
+            <option value="C">@Localizer["Current"] </option>
+
+        </select>
+    </div>
+    <div class="col-lg-3 col-md-6 form-group">
+        <label>@Localizer["Country"] </label>
+        <select class="form-control selectpicker" id="cboCountry">
+            <option value="0">@Localizer["Select"] </option>
+            @if (ViewBag.Countries != null)
+            {
+                @foreach (var country in ViewBag.Countries)
+                {
+                    <option value="@country.Isdcode">@country.CountryName</option>
+                }
+            }
+        </select>
+    </div>
+    <div class="col-lg-3 col-md-6 form-group">
+        <label>@Localizer["State"] </label>
+        <select class="form-control selectpicker" id="cboState">
+            <option value="0">@Localizer["Select"] </option>
+
+        </select>
+    </div>
+    <div class="col-lg-3 col-md-6 form-group">
+        <label>@Localizer["City"] </label>
+        <select class="form-control selectpicker" id="cboCity">
+            <option value="0">@Localizer["Select"] </option>
+
+        </select>
+    </div>
+
+    <div class="col-lg-12 col-md-12 col-sm-12 form-group">
+        <label> @Localizer["Address"] </label>
+        <input type="text" class="form-control" id="txtPermanentaddress" maxlength="150" />
+    </div>
+
+    <div class="col-lg-3 col-md-6 form-group">
+        <label>@Localizer["LandLineNumber"] </label>
+        <input type="text" class="form-control" id="txtLandlinenumber" maxlength="15" />
+    </div>
+    <div class="col-lg-3 col-md-6 form-group">
+        <label>@Localizer["PinCode"] </label>
+        <input type="text" class="form-control" maxlength="6" id="txtPincode" />
+    </div>
+    <div class="col-lg-3 col-md-6 form-group">
+        <div class="default-checkbox">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkPersonalinfoActiveStatus">
+                <input type="checkbox" id="chkPersonalinfoActiveStatus" class="mdl-checkbox__input">
+                <span class="mdl-checkbox__label"> @Localizer["Active"] </span>
+            </label>
+        </div>
+    </div>
+
+    <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+        <hr />
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button mr-10" id="btnSaveEmployeePersonalInfo" onclick="fnSaveEmployeePersonalInfo()">
+            <i class="fa fa-save"></i>  @Localizer["Save"] 
+        </button>
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button" id="btnCancel" onclick="fnCloseEmployeeDetails()"><i class="fa fa-redo"></i>@Localizer["Cancel"] </button>
+
+    </div>
+
+</div>
+

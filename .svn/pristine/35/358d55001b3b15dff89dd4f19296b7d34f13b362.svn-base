@@ -1,0 +1,22 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace eSyaEnterprise_UI.Areas.eSyaFA.Models
+{
+    public class DO_AssetGroup
+    {
+        public int AssetGroupID { get; set; }
+        public string AssetGroup { get; set; }
+        public int AssetSubGroupID { get; set; }
+        public string AssetSubGroup { get; set; }
+        public string FixedAssetsAccountCode { get; set; }
+        public string DepreciationAccountCode { get; set; }
+        public string AccuDepreciationAccountCode { get; set; }
+        public string FormID { get; set; }
+        public bool ActiveStatus { get; set; }
+        public int UserID { get; set; }
+        public string TerminalID { get; set; }
+    }
+}

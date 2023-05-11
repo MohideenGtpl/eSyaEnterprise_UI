@@ -1,0 +1,194 @@
+﻿$(document).ready(function () {
+
+    fnLoadUnitofMeasureGrid();   
+});
+
+function fnLoadUnitofMeasureGrid() {
+
+    $("#jqgUnitofMeasure").GridUnload();
+
+    $("#jqgUnitofMeasure").jqGrid({
+        url: getBaseURL() + '/Inventory/GetUnitofMeasurements',
+        datatype: 'json',
+        mtype: 'POST',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Unit of Measure", "Unit of Purchase", "Description", "UOM Stock", "Description", "Conv. Factor", "Status", ""],
+
+        colModel: [
+
+            { name: "UnitOfMeasure", width: 100, editable: true, align: 'left', hidden: true },
+            { name: "Uompurchase", width: 100, editable: true, align: 'left', hidden: false },
+            { name: "Uompdesc", width: 100, editable: true, align: 'left', hidden: false },
+            { name: "Uomstock", width: 100, editable: true, align: 'left', hidden: false },
+            { name: "Uomsdesc", width: 100, editable: true, align: 'left', hidden: false },
+            { name: "ConversionFactor", width: 100, editable: true, align: 'left', hidden: false },
+            { name: "ActiveStatus", editable: true, width: 120, edittype: "select", align: 'left', formatter: 'select', editoptions: { value: "true:Active;false:Inactive" } },
+
+            {
+                name: 'Edit', search: false, align: 'center', width: 50, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all" style="padding: 2px 4px; background: #0b76bc!important; color: #fff!important; margin: 3px; " title="Edit" onclick="return fnEditUnitofMeasure(event)"><i class="fa fa-edit"></i> Edit </button>'
+
+                }
+            },
+
+        ],    
+        rowNum: 10,
+        loadonce: false,
+        pager: "#jqpUnitofMeasure",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0
+
+    }).jqGrid('navGrid', '#jqpUnitofMeasure', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpUnitofMeasure', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshUnitofMeasure
+    }).jqGrid('navButtonAdd', '#jqpUnitofMeasure', {
+        caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Add', buttonicon: 'none', id: 'custAdd', position: 'first', onClickButton: fnGridAddUnitofMeasure
+    });
+}
+
+function fnGridRefreshUnitofMeasure() {
+
+    $("#jqgUnitofMeasure").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+function fnGridAddUnitofMeasure() {
+    fnClearFields();
+    $("#PopupUnitofMeasure").modal('show');
+    $(".modal-title").text("Add Unit of Measure");
+    $("#btnSaveUnitofMeasure").text("Save");
+}
+
+function fnEditUnitofMeasure(e) {
+    fnClearFields();
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgUnitofMeasure').jqGrid('getRowData', rowid);
+    $("#txtUnitofMeasure").val(rowData.UnitOfMeasure);
+    $("#txtUOMPurchase").val(rowData.Uompurchase);
+    $("#txtUOMPurchaseDesc").val(rowData.Uompdesc);
+    $("#txtUOMStack").val(rowData.Uomstock);
+    $("#txtUOMStackDesc").val(rowData.Uomsdesc);
+    $("#txtConversionFactor").val(rowData.ConversionFactor);
+    if (rowData.ActiveStatus == "true")
+        $("#cboActiveStatus").val('true').selectpicker('refresh');
+    else
+        $("#cboActiveStatus").val('false').selectpicker('refresh');
+    $("#PopupUnitofMeasure").modal('show');
+    $(".modal-title").text("Edit Unit of Measure");
+    $("#btnSaveUnitofMeasure").text("Update");
+
+}
+
+function fnClearFields() {
+    $("#txtUnitofMeasure").val('');
+    $("#txtUOMPurchase").val('');
+    $("#txtUOMPurchaseDesc").val('');
+    $("#txtUOMStack").val('');
+    $("#txtUOMStackDesc").val('');
+    $("#txtConversionFactor").val('');
+    $("#cboActiveStatus").val('true');
+    $("#cboActiveStatus").selectpicker('refresh');
+}
+
+function fnSaveUnitofMeasure() {
+    debugger;
+    if (validationUnitofMeasure() === false) {
+        return;
+    }
+
+   
+    var UOMeasureId = $("#txtUnitofMeasure").val();
+   
+    if (UOMeasureId === null || UOMeasureId === undefined || UOMeasureId === "") {
+        var uoms = {
+            UnitOfMeasure: 0,
+            Uompurchase: $("#txtUOMPurchase").val(),
+            Uompdesc: $("#txtUOMPurchaseDesc").val(),
+            Uomstock: $("#txtUOMStack").val(),
+            Uomsdesc: $("#txtUOMStackDesc").val(),
+            ConversionFactor: $("#txtConversionFactor").val(),
+            ActiveStatus: $("#cboActiveStatus").val()
+
+        };
+
+    }
+    else {
+        uoms = {
+            UnitOfMeasure: $("#txtUnitofMeasure").val(),
+            Uompurchase: $("#txtUOMPurchase").val(),
+            Uompdesc: $("#txtUOMPurchaseDesc").val(),
+            Uomstock: $("#txtUOMStack").val(),
+            Uomsdesc: $("#txtUOMStackDesc").val(),
+            ConversionFactor: $("#txtConversionFactor").val(),
+            ActiveStatus: $("#cboActiveStatus").val()
+        };
+
+    }
+    $.ajax({
+        url: getBaseURL() + '/Inventory/InsertOrUpdateUnitofMeasurement',
+        type: "post",
+        data: JSON.stringify(uoms),
+        contentType: "application/json",
+        success: function (response) {
+
+            if (response.Status === false) {
+                toastr.error(response.Message);
+                return false;
+            }
+
+            if (response.Status === true) {
+                toastr.success(response.Message);
+                $("#PopupUnitofMeasure").modal('hide');
+                fnClearFields();
+                fnLoadUnitofMeasureGrid();
+                return true;
+            }
+
+
+        }
+    });
+
+
+
+}
+
+function validationUnitofMeasure() {
+   
+    if ($("#txtUOMPurchase").val() === '' || $("#txtUOMPurchase").val() === null) {
+        toastr.warning("Please Enter Unit of Purchase");
+        return false;
+    }
+
+    if ($("#txtUOMPurchaseDesc").val() === '' || $("#txtUOMPurchaseDesc").val() === null) {
+        toastr.warning("Please Enter Unit of Purchase Description");
+        return false;
+    }
+    if ($("#txtUOMStack").val() === '' || $("#txtUOMStack").val() === null) {
+        toastr.warning("Please Enter Unit of Stack");
+        return false;
+    }
+    if ($("#txtUOMStackDesc").val() === '' || $("#txtUOMStackDesc").val() === null) {
+        toastr.warning("Please Enter Unit of Stack Description");
+        return false;
+    }
+    if ($("#txtConversionFactor").val() === '' || $("#txtConversionFactor").val() === null) {
+        toastr.warning("Please Enter Conversion Factor");
+        return false;
+    }
+}
+
+function AllowOnlyNumbers(e) {
+    e = (e) ? e : window.event;
+    var clipboardData = e.clipboardData ? e.clipboardData : window.clipboardData;
+    var key = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
+    var str = (e.type && e.type == "paste") ? clipboardData.getData('Text') : String.fromCharCode(key);
+    return (/^\d+$/.test(str));
+}

@@ -1,0 +1,27 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+
+namespace eSyaEnterprise_UI.Areas.eSyaFA.Controllers
+{
+    [Area("eSyaFA")]
+    public class FixedAssetsController : Controller
+    {
+        #region Asset Group
+        public IActionResult V_100_00()
+        {
+            return View();
+        }
+        #endregion Asset Group
+
+        #region Depreciation Method
+        public IActionResult V_101_00()
+        {
+            return View();
+        }
+        #endregion Depreciation Method
+    }
+
+}

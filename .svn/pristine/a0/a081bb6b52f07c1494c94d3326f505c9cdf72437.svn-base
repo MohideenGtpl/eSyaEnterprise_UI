@@ -1,0 +1,85 @@
+﻿
+@{
+    ViewData["Title"] = "EPM_11_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+        <table id="jqgPatientRegisteredList"></table>
+        <div id="jqpPatientRegisteredList"></div>
+    </div>
+</div>
+
+<script>
+    $(function (){
+     
+        fnGridLoadPatientRegisteredList()
+        });
+
+    function fnGridLoadPatientRegisteredList() {
+
+        var codeType = $("#cboCodeType").val();
+        $("#jqgPatientRegisteredList").jqGrid('GridUnload');
+        $("#jqgPatientRegisteredList").jqGrid({
+            //url: getBaseURL() + '/ApplicationCodes/GetApplicationCodesByCodeType?codeType=' + codeType,
+            //mtype: 'Post',
+            datatype: 'json',
+            ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+            jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+            colNames: [localization.UHID, localization.VisitDate, localization.PatientName, localization.Gender, localization.Age, localization.PatientTypeDesc, localization.PatientCategoryDesc, localization.RatePlanDesc, localization.SpecialtyId, localization.SpecialtyDesc, localization.DoctorId, localization.DoctorName, localization.Active, localization.Actions],
+            colModel: [
+                { name: "UHID", width: 50, editable: true, align: 'left', hidden: false },
+                { name: "VisitDate", width: 70, editable: false, hidden: true, align: 'left', resizable: true },
+                { name: "PatientName", width: 120, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+                { name: "Gender", width: 120, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+                { name: "Age", width: 120, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+                { name: "PatientTypeDesc", width: 120, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+                { name: "PatientCategoryDesc", width: 120, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+                { name: "RatePlanDesc", width: 120, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+                { name: "SpecialtyId", width: 120, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+                { name: "SpecialtyDesc", width: 50, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 15 } },
+                { name: "DoctorId", width: 50, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 15 } },
+                { name: "DoctorName", width: 50, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 15 } },
+                { name: "DefaultStatus", width: 45, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+                { name: "ActiveStatus", width: 35, editable: false, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+                {
+                    name: 'edit', search: false, align: 'left', width: 78, sortable: false, resizable: false,
+                    formatter: function (cellValue, options, rowdata, action) {
+                        return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditApplicationCodes(event,\'edit\')"><i class="fas fa-pen"></i></button>' +
+                            '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" id="jqgView" onclick="return fnEditApplicationCodes(event,\'view\')"><i class="far fa-eye"></i></button>' +
+                            '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title = "Delete" id="jqgDelete" onclick = "return fnEditApplicationCodes(event,\'delete\')" > <i class="fas fa-trash"></i></button>'
+
+                    }
+                }
+            ],
+            pager: "#jqpPatientRegisteredList",
+            rowNum: 10000,
+            rownumWidth: '55',
+            pgtext: null,
+            pgbuttons: null,
+            loadonce: true,
+            viewrecords: true,
+            gridview: true,
+            rownumbers: true,
+            height: 'auto',
+            align: "left",
+            width: 'auto',
+            autowidth: true,
+            shrinkToFit: true,
+            forceFit: true,
+            scrollOffset: 0,
+            loadComplete: function (data) {
+                SetGridControlByAction();
+                fnJqgridSmallScreen("jqgPatientRegisteredList");
+            },
+        }).jqGrid('navGrid', '#jqgPatientRegisteredList', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jpgApplicationCodes', {
+            caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshApplicationCodes
+            }).jqGrid('navButtonAdd', '#jqgPatientRegisteredList', {
+            caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddApplicationCodes
+        });
+        fnAddGridSerialNoHeading();
+    }
+</script>
+
+

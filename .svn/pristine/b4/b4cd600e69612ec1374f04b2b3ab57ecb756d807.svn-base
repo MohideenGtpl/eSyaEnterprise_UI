@@ -1,0 +1,68 @@
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
+using eSyaEnterprise_UI.Areas.eSyaUserManagement.Data;
+using eSyaEnterprise_UI.Areas.eSyaUserManagement.Models;
+using eSyaEnterprise_UI.Models;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
+
+namespace eSyaEnterprise_UI.Areas.eSyaUserManagement.Controllers
+{
+    public class UserController : Controller
+    {
+        ESyaUserMgmt_WebAPI _eSyaUMWebAPI = new ESyaUserMgmt_WebAPI();
+        private IHostingEnvironment _env;
+
+        public UserController(IHostingEnvironment env)
+        {
+            _env = env;
+        }
+
+
+        [Area("eSyaUserManagement")]
+        public IActionResult V_51_00()
+        {
+            ViewBag.formName = "User Group";
+            return View();
+        }
+
+        [Area("eSyaUserManagement")]
+        public IActionResult V_52_00()
+        {
+            ViewBag.formName = "User Management";
+            return View();
+        }
+
+        [Area("eSyaUserManagement")]
+        public IActionResult _UserCreation()
+        {
+            ViewBag.formName = "User Creation";
+            return View();
+        }
+
+        /// <summary>
+        ///Get User Master for Grid
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetUserMasterforGridDisplay()
+        {
+            try
+            {
+                var client = _eSyaUMWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("UserCreation/GetUserMasterforGridDisplay").Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<List<DO_UserMaster>>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+    }
+}

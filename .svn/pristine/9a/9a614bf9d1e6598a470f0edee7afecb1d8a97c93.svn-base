@@ -1,0 +1,81 @@
+﻿$(document).ready(function () {
+    fnGridLoadCalendarDefinition();
+});
+
+function fnGridLoadCalendarDefinition() {
+  
+      $("#jqgCalendarDefinition").jqGrid('GridUnload');
+    $("#jqgCalendarDefinition").jqGrid({
+        url: URL,
+        mtype: 'Post',
+        datatype: 'json',
+        data: [{ CodeDesc: '1000', DefaultStatus: 'True', ActiveStatus: 'True' }],
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Financial Year","From Date", "Till Date","Status", "Actions"],
+        colModel: [
+            { name: "Financial", width: 70, editable: true, align: 'left', hidden: false },
+            { name: "FromDate", width: 70, editable: true, align: 'left', hidden: false },
+            { name: "TillDate", width: 70, editable: false, hidden: false, align: 'left', resizable: true },
+           { name: "ActiveStatus", editable: true, width: 28, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: Inactive" } },
+            {
+                name: 'edit', search: false, align: 'left', width: 54, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" onclick="return fnEditCalendarDefinition(event)"><i class="fa fa-edit"></i> Edit </button><button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnViewCalendarDefinition(event)"><i class="fa fa-file"></i> View </button>'
+
+                }
+            },
+        ],
+        rowNum: 10,
+        loadonce: false,
+        pager: "#jqpCalendarDefinition",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0
+    }).jqGrid('navGrid', '#jqpCalendarDefinition', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpCalendarDefinition', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshCalendarDefinition
+    }).jqGrid('navButtonAdd', '#jqpCalendarDefinition', {
+        caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Add', buttonicon: 'none', id: 'custAdd', position: 'first', onClickButton: fnGridAddCalendarDefinition
+    });
+}
+
+function fnGridAddCalendarDefinition() {
+    fnClearFields();
+   
+        $('#PopupCalendarDefinition').modal('show');
+        $('#PopupCalendarDefinition').modal({ backdrop: 'static', keyboard: false });
+    $('#PopupCalendarDefinition').find('.modal-title').text("Add Calendar Definition");
+        fnClearFields();
+        $("#btnSaveApplicationCode").html(' Save');
+
+    
+}
+
+function fnClearFields() {
+   
+}
+
+function fnGridRefreshCalendarDefinition() {
+    $("#jqgCalendarDefinition").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+function fnEditCalendarDefinition(e) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgCalendarDefinition').jqGrid('getRowData', rowid);
+     $('#PopupCalendarDefinition').modal('show');
+    $('#PopupCalendarDefinition').find('.modal-title').text("Update Calendar Definition");
+    
+}
+function fnViewCalendarDefinition(e) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgCalendarDefinition').jqGrid('getRowData', rowid);
+     $('#PopupCalendarDefinition').modal('show');
+    $('#PopupCalendarDefinition').find('.modal-title').text("View Calendar Definition");
+
+}

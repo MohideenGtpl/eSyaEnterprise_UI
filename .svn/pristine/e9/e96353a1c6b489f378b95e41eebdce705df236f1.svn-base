@@ -1,0 +1,170 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
+using eSyaEnterprise_UI.Areas.Config.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+namespace eSyaEnterprise_UI.Areas.Config.Controllers
+{
+    public class ApplicationCodesController : Controller
+    {
+        ESyaWebAPI _eSyaWebAPI = new ESyaWebAPI();
+        #region Code Type
+        /// <summary>
+        /// Code Type
+        /// </summary>
+        /// <returns></returns>
+       
+        [Area("Config")]
+        public IActionResult V_19_00()
+        {
+            return View();
+        }
+        /// <summary>
+        ///Get Code Types for Grid
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetCodeTypes()
+        {
+
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("CodeTypes/GetCodeTypes").Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<List<DO_CodeTypes>>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+
+        }
+
+        /// <summary>
+        /// Insert or Update Code Types
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertOrUpdateCodeTypes([FromBody] DO_CodeTypes ct_type)
+        {
+
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                ct_type.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                ct_type.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                if (ct_type.CodeType == 0)
+                {
+
+                    HttpResponseMessage Insertresponse = client.PostAsJsonAsync<DO_CodeTypes>("CodeTypes/InsertIntoCodeType", ct_type).Result;
+                    string resp = Insertresponse.Content.ReadAsStringAsync().Result;
+                    var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(resp);
+                    return Json(result);
+                }
+
+                else
+                {
+                    HttpResponseMessage Updateresponse = client.PostAsJsonAsync<DO_CodeTypes>("CodeTypes/UpdateCodeType", ct_type).Result;
+                    string resp = Updateresponse.Content.ReadAsStringAsync().Result;
+                    var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(resp);
+                    return Json(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+        #endregion
+
+        #region Application Codes
+        /// <summary>
+        /// Application Codes
+        /// </summary>
+        /// <returns></returns>
+         
+        [Area("Config")]
+        public IActionResult V_20_00()
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("CodeTypes/GetActiveCodeTypes").Result;
+                string data = response.Content.ReadAsStringAsync().Result;
+                List<DO_CodeTypes> codetypes = JsonConvert.DeserializeObject<List<DO_CodeTypes>>(data);
+                ViewBag.ct_list = codetypes;
+                return View();
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+
+        /// <summary>
+        ///Get Application Codes by code Type for Grid
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetApplicationCodesByCodeType(int codeType)
+        {
+
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("ApplicationCodes/GetApplicationCodesByCodeType?codeType=" + codeType).Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<List<DO_ApplicationCodes>>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+
+        }
+        /// <summary>
+        /// Insert or Update Application Codes 
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertOrAudateApplicationCodes([FromBody] DO_ApplicationCodes app_codes)
+        {
+
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                app_codes.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                app_codes.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                if (app_codes.ApplicationCode == 0)
+                {
+
+                    HttpResponseMessage Insertresponse = client.PostAsJsonAsync<DO_ApplicationCodes>("ApplicationCodes/InsertIntoApplicationCodes", app_codes).Result;
+                    string resp = Insertresponse.Content.ReadAsStringAsync().Result;
+                    var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(resp);
+                    return Json(result);
+                }
+
+                else
+                {
+                    HttpResponseMessage Updateresponse = client.PostAsJsonAsync<DO_ApplicationCodes>("ApplicationCodes/UpdateApplicationCodes", app_codes).Result;
+                    string resp = Updateresponse.Content.ReadAsStringAsync().Result;
+                    var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(resp);
+                    return Json(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+        #endregion
+    }
+}

@@ -1,0 +1,266 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model LoginViewModel
+@{
+    Layout = null;
+}
+
+@using System.Globalization
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="google" content="notranslate">
+    <meta name="description" content="eSya Enterprise" />
+    <title>Login</title>
+
+    <environment>
+        <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" media="all" />
+
+        <link href="~/css/animate.css" rel="stylesheet" media="all" />
+        <link href="~/css/material.min.css" rel="stylesheet" />
+        <link href="~/css/login.css" rel="stylesheet" media="all" />
+        <link href="~/css/all.min.css" rel="stylesheet" />
+        @if (CultureInfo.CurrentCulture.TextInfo.IsRightToLeft)
+        {
+            <link rel="stylesheet" type="text/css" href="~/css/rtl.css">
+        }
+    </environment>
+</head>
+<body>
+    <div class="languageDiv form-group">
+        <i class="fa fa-globe"></i>
+        @await Html.PartialAsync("_SelectLanguage")
+    </div>
+    <div class="loginContainer">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 d-sm-none d-md-block padright0 animated fadeIn">
+                <img src="~/images/esya-products-yellow.JPG" class="leftImage" alt="eSya Products" />
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-auto col-sm-12 col-xs-12 login-form pad0">
+
+                <div class="text-center">
+                    <img src="~/images/logo/esya-logo-black.png" class="smallDeviceLogo" alt="eSya Logo" />
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12 pad0" style="margin-bottom:10px">
+                    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-tabs">
+                        <header class="mdl-layout__header">
+                            <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
+                                <a href="#scroll-tab-1" class="mdl-layout__tab is-active" onclick="fnHideMobileDiv()">
+                                    <i class="fas fa-key f-18"></i> @Localizer["LoginWithUserID"]
+                                </a>
+                                <a href="#scroll-tab-2" class="mdl-layout__tab" id="LoginWithMobile" onclick="fnShowMobileDiv()">
+                                    <i class="fas fa-mobile-alt f-18"></i> @Localizer["LoginwithMobileNumber"]
+                                </a>
+                            </div>
+                        </header>
+
+                        <main class="mdl-layout__content">
+                            <section class="mdl-layout__tab-panel is-active" id="scroll-tab-1">
+                                <div class="page-content">
+                                    <!-- Your content goes here -->
+                                    <form id="Loginform" method="post" asp-controller="Account" asp-action="Login"
+                                          style="padding:0px 15px 15px;">
+                                        <div asp-validation-summary="All" class="text-danger"></div>
+                                        <div class="form-group animated fadeIn">
+                                            <label class="lable-color">@Localizer["UserID"]</label>
+                                            <input class="form-control" type="text" asp-for="@Model.UserName" maxlength="40" tabindex="1">
+                                        </div>
+                                        <div class="animated fadeIn padbot20">
+                                            <a href="@Url.Action("GetUserId","Login")" class="getUserId" tabindex="7">@Localizer["ForgotUserID"]</a>
+                                        </div>
+                                        <div class="form-group animated fadeIn padtop20">
+                                            <label>@Localizer["Password"]</label>
+                                            <input class="form-control" type="password" asp-for="@Model.Password" maxlength="50" tabindex="2">
+                                        </div>
+                                        <div class=" animated fadeIn form-group padbot20">
+                                            <a href="@Url.Action("GetPassword","Login")" class="getUserId" tabindex="8">@Localizer["ForgotPassword"]</a>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-4 col-sm-6 animated fadeIn">
+                                                <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored loginButton  fullwidth" tabindex="3">
+                                                    @Localizer["Signin"]  <i class="fas fa-chevron-right"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </section>
+                            <section class="mdl-layout__tab-panel" id="scroll-tab-2">
+                                <div class="page-content">
+                                    <!-- Your content goes here -->
+                                    <form id="LoginformForMobile" method="post" asp-controller="Account" asp-action="MobileLogin"
+                                          style="padding:0px 15px 15px;">
+                                        <div class="form-group animated fadeIn hide" id="divMobileNumber">
+                                            <div id="dvOTPError" asp-validation-summary="All" class="text-danger"></div>
+                                            <label class="lable-color">@Localizer["MobileNumber"]</label>
+                                            <select class="form-control one-fourth" title="ISD">
+                                                <option selected>91</option>
+                                            </select>
+                                            <input class="form-control three-fourth" type="text" id="txtMobileNumber" asp-for="@Model.PhoneNumber" maxlength="15" tabindex="1"
+                                                   oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                            <p class="OTPStatement">@Localizer["lblOTPStatement"]</p>
+                                            <div class="row">
+                                                <div class="col-lg-6 col-sm-8 animated fadeIn">
+                                                    <button type="button" id="btnSendOTP" onclick="fnSendOTP()"
+                                                            class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored loginButton  fullwidth" tabindex="3">
+                                                        @Localizer["Authenticate"]  <i class="fas fa-chevron-right"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group animated fadeIn" id="divOTP" style="display:none">
+                                            <div class="form-group">
+                                                <p class="OTPStatement">@Localizer["OTPGeneratedStatement"]</p>
+                                            </div>
+                                            <label class="lable-color" style="">@Localizer["OTP"]</label>
+                                            <div id="divOuter">
+                                                <div id="divInner">
+                                                    <input id="txtOTP" type="text" asp-for="@Model.OTP" maxlength="6" />
+                                                </div>
+                                            </div>
+                                            <span id="timer" class="text-left"></span>
+                                            <a href="#" class="resendotp text-right" onclick="fnSendOTP()">@Localizer["ResendOTP"]</a>
+                                            <div class="row">
+                                                <div class="col-lg-8 col-sm-8 animated fadeIn">
+                                                    <button type="submit" id="btnAuthenticateOTP" onclick="fnSwitchDiv()" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored loginButton  fullwidth" tabindex="3">
+                                                        @Localizer["SignIn"]  <i class="fas fa-chevron-right"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </section>
+                        </main>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6">
+
+            </div>
+        </div>
+    </div>
+
+    <environment>
+        <script src="~/lib/bootstrap/dist/js/jquery-3.2.1.min.js" defer></script>
+        <script src="~/js/material.min.js"></script>
+        <script src="~/js/all.min.js"></script>
+    </environment>
+    <script>
+
+        function getBaseURL()
+        {
+            var url = window.location.href.split('/');
+
+            var baseUrl = url[0] + '//' + url[2] + '@Url.Content("~")';
+            return baseUrl;
+        }
+
+        function fnRedirect() {
+            location.href = getBaseURL() + "/Login/LoginConfirmation"
+        }
+
+        function fnSwitchDiv() {
+            $("#divMobileNumber").hide(500);
+            $("#divOTP").show(500);
+            var waitMinutes = 60 * 5;
+            startTimer(waitMinutes, timerElem);
+            //timeLeft = 60;
+            //countdown()
+        }
+
+        var timeLeft = 60;
+        var timerElem = document.getElementById('timer');
+        var myTimer;
+        function startTimer(duration, display) {
+
+            if (myTimer !== null)
+                clearInterval(myTimer);
+
+            var start = Date.now(),
+                diff,
+                minutes,
+                seconds;
+            function timer() {
+                // get the number of seconds that have elapsed since
+                // startTimer() was called
+                diff = duration - (((Date.now() - start) / 1000) | 0);
+
+                // does the same job as parseInt truncates the float
+                minutes = (diff / 60) | 0;
+                seconds = (diff % 60) | 0;
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = minutes + ":" + seconds;
+
+                if (diff <= 0) {
+                    // add one second so that the count down starts at the full duration
+                    // example 03:00 not 02:59 Restart
+                    //start = Date.now() + 1000;
+                    clearInterval(myTimer);
+                    $('#btnAuthenticateOTP').prop('disabled', true);
+                    return;
+                }
+            };
+            // we don't want to wait a full second before the timer starts
+            timer();
+            myTimer = setInterval(timer, 1000);
+        }
+
+
+        function fnSendOTP() {
+            $.ajax({
+                url: getBaseURL()+'/Account/SendOTP?mobileNumber='+$("#txtMobileNumber").val(),
+                type: 'POST',
+                datatype: 'json',
+                contentType: 'application/json; charset=utf-8',
+                success: function (result) {
+
+                    if (result.Status) {
+                            $("#divMobileNumber").hide(500);
+                        $("#divOTP").show(500);
+                        $('#txtOTP').val("");
+                        $('#btnAuthenticateOTP').prop('disabled', false);
+                        var waitMinutes = 60 * 5;
+                        startTimer(waitMinutes, timerElem);
+                    }
+                    else {
+                        if (result.StatusCode === "404") {
+                            $("#dvOTPError").html("Mobile does not exists");
+                        }
+                        if (result.StatusCode === "500") {
+                            $("#dvOTPError").html("Internal Error");
+                        }
+                    }
+                },
+                error: function (error) {
+                    toastr.error(error.statusText);
+                }
+            });
+
+        }
+
+        function fnShowMobileDiv() {
+
+            $("#divMobileNumber").removeClass('hide');
+            $("#btnDiv").removeClass('hide');
+        }
+
+        function fnHideMobileDiv() {
+            $("#divMobileNumber").addClass('hide');
+            $("#btnDiv").addClass('hide');
+        }
+
+        
+    </script>
+</body>
+</html>

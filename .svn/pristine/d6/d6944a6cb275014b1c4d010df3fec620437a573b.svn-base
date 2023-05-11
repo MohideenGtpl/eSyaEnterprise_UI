@@ -1,0 +1,20 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace eSyaEnterprise_UI.Areas.Config.Models
+{
+    public class DO_BusinessEntity
+    {
+        public int BusinessId { get; set; }
+        public string BusinessDesc { get; set; }
+        public bool IsMultiSegmentApplicable { get; set; }
+        public bool UsageStatus { get; set; }
+        public bool ActiveStatus { get; set; }
+        public string FormID { get; set; }
+        public int UserID { get; set; }
+        public string TerminalID { get; set; }
+        public int Isadd { get; set; }
+    }
+}

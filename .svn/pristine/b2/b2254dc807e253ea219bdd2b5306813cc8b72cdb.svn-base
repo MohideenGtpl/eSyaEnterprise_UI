@@ -1,0 +1,811 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.ActionFilter;
+using eSyaEnterprise_UI.Areas.DoctorScheduler.Data;
+using eSyaEnterprise_UI.Areas.DoctorScheduler.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+
+namespace eSyaEnterprise_UI.Areas.DoctorScheduler.Controllers
+{
+    [SessionTimeout]
+    public class AppointmentController : Controller
+    {
+        private readonly IDoctorAppointmentAPIServices _doctorAppointmentAPIServices;
+        private readonly ILogger<AppointmentController> _logger;
+
+        public AppointmentController(IDoctorAppointmentAPIServices doctorAppointmentAPIServices, ILogger<AppointmentController> logger)
+        {
+            _doctorAppointmentAPIServices = doctorAppointmentAPIServices;
+            _logger = logger;
+        }
+
+        [Area("DoctorScheduler")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public IActionResult EDA_01_00()
+        {
+            return View();
+        }
+
+        [Area("DoctorScheduler")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public IActionResult EDA_02_00()
+        {
+            return View();
+        }
+
+        public int GetWeekNumber(string dayofWeek)
+        {
+            if (dayofWeek.ToUpper() == "MONDAY")
+                return 1;
+            else if (dayofWeek.ToUpper() == "TUESDAY")
+                return 2;
+            else if (dayofWeek.ToUpper() == "WEDNESDAY")
+                return 3;
+            else if (dayofWeek.ToUpper() == "THURSDAY")
+                return 4;
+            else if (dayofWeek.ToUpper() == "FRIDAY")
+                return 5;
+            else if (dayofWeek.ToUpper() == "SATURDAY")
+                return 6;
+            else if (dayofWeek.ToUpper() == "SUNDAY")
+                return 0;
+            else
+                return 0;
+        }
+
+        public async Task<JsonResult> GetEpisodeType()
+        {
+            try
+            {
+                var serviceResponse = await _doctorAppointmentAPIServices.HttpClientServices.GetAsync<List<DO_EpisodeType>>("OpClinicDetails/GetEpisodeType");
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetEpisodeType");
+                    return Json(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetEpisodeType");
+                throw ex;
+            }
+        }
+
+
+        public async Task<JsonResult> GetReferredBy()
+        {
+            try
+            {
+                var serviceResponse = await _doctorAppointmentAPIServices.HttpClientServices.GetAsync<List<DO_ApplicationCodes>>("Master/GetReferredBy");
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetReferredBy");
+                    return Json(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetReferredBy");
+                throw ex;
+            }
+        }
+
+        public async Task<JsonResult> GetClinicConsultationTypeByBKey()
+        {
+            try
+            {
+                var serviceResponse = await _doctorAppointmentAPIServices.HttpClientServices.GetAsync<List<DO_ClinicType>>("OpClinicDetails/GetClinicTypes?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext));
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetClinicTypes:params:businessKey:{0}" + AppSessionVariables.GetSessionBusinessKey(HttpContext));
+                    return Json(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetClinicTypes:params:businessKey:{0}" + AppSessionVariables.GetSessionBusinessKey(HttpContext));
+                throw ex;
+            }
+        }
+
+        public async Task<JsonResult> GetSpecialtyList()
+        {
+            try
+            {
+                var serviceResponse = await _doctorAppointmentAPIServices.HttpClientServices.GetAsync<List<DO_Specialty>>("OpClinicDetails/GetSpecialty?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext));
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetSpecialtyList:params:businessKey:{0}" + AppSessionVariables.GetSessionBusinessKey(HttpContext));
+                    return Json(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetSpecialtyList:params:businessKey:{0}" + AppSessionVariables.GetSessionBusinessKey(HttpContext));
+                throw ex;
+            }
+        }
+
+        public async Task<JsonResult> GetDoctorScheduleListByClinicTypeSpecialtyDate(int clinicType, int consultationType,
+            int specialtyId, DateTime scheduleDate)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&clinicType=" + clinicType.ToString();
+                parameter += "&consultationType=" + consultationType.ToString();
+                parameter += "&specialtyId=" + specialtyId.ToString();
+                parameter += "&scheduleDate=" + scheduleDate.ToString("dd-MMM-yyyy");
+
+                var serviceResponse = await _doctorAppointmentAPIServices.HttpClientServices.GetAsync<List<DO_DoctorClinicSchedule>>("OpClinicDetails/GetDoctorScheduleListByClinicTypeSpecialtyDate" + parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), string.Format("UD:GetDoctorScheduleListByClinicTypeSpecialtyDate:params: businessKey:{0},clinicType:{1},consultationType:{2},specialtyId:{3},scheduleDate:{4}",
+                        AppSessionVariables.GetSessionBusinessKey(HttpContext).ToString(), clinicType, consultationType, specialtyId, scheduleDate.ToString()));
+                    return Json(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, string.Format("UD:GetDoctorScheduleListByClinicTypeSpecialtyDate:params: businessKey:{0},clinicType:{1},consultationType:{2},specialtyId:{3},scheduleDate:{4}",
+                        AppSessionVariables.GetSessionBusinessKey(HttpContext).ToString(), clinicType, consultationType, specialtyId, scheduleDate.ToString()));
+                throw ex;
+            }
+        }
+
+        //public async Task<JsonResult> GetDoctorScheduleListByClinicType(int clinicType, int consultationType,
+        //  int specialtyId)
+        //{
+        //    try
+        //    {
+        //        var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+        //        parameter += "&clinicType=" + clinicType.ToString();
+        //        parameter += "&consultationType=" + consultationType.ToString();
+        //        parameter += "&specialtyId=" + specialtyId.ToString();
+
+        //        var serviceResponse = await _doctorAppointmentAPIServices.HttpClientServices.GetAsync<List<DO_DoctorClinicSchedule>>("OpClinicDetails/GetDoctorScheduleListByClinicType" + parameter);
+        //        if (serviceResponse.Status)
+        //        {
+        //            return Json(serviceResponse.Data);
+        //        }
+        //        else
+        //        {
+        //            _logger.LogError(new Exception(serviceResponse.Message), string.Format("UD:GetDoctorScheduleListByClinicType:params: businessKey:{0},clinicType:{1},consultationType:{2},specialtyId:{3}",
+        //                AppSessionVariables.GetSessionBusinessKey(HttpContext).ToString(), clinicType, consultationType, specialtyId));
+        //            return Json(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(ex, string.Format("UD:GetDoctorScheduleListByClinicType:params: businessKey:{0},clinicType:{1},consultationType:{2},specialtyId:{3}",
+        //                AppSessionVariables.GetSessionBusinessKey(HttpContext).ToString(), clinicType, consultationType, specialtyId));
+        //        throw ex;
+        //    }
+        //}
+
+        public async Task<JsonResult> GetDoctorListByClinicType(int clinicType, int consultationType,
+          int specialtyId)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&clinicType=" + clinicType.ToString();
+                parameter += "&consultationType=" + consultationType.ToString();
+                parameter += "&specialtyId=" + specialtyId.ToString();
+
+                var serviceResponse = await _doctorAppointmentAPIServices.HttpClientServices.GetAsync<List<DO_DoctorClinicSchedule>>("OpClinicDetails/GetDoctorListByClinicType" + parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), string.Format("UD:GetDoctorListByClinicType:params: businessKey:{0},clinicType:{1},consultationType:{2},specialtyId:{3}",
+                        AppSessionVariables.GetSessionBusinessKey(HttpContext).ToString(), clinicType, consultationType, specialtyId));
+                    return Json(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, string.Format("UD:GetDoctorListByClinicType:params: businessKey:{0},clinicType:{1},consultationType:{2},specialtyId:{3}",
+                        AppSessionVariables.GetSessionBusinessKey(HttpContext).ToString(), clinicType, consultationType, specialtyId));
+                throw ex;
+            }
+        }
+
+        public async Task<JsonResult> GetDoctorListWeeklyScheduleTime(int clinicType, int consultationType,
+        int specialtyId, int doctorId)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&clinicType=" + clinicType.ToString();
+                parameter += "&consultationType=" + consultationType.ToString();
+                parameter += "&specialtyId=" + specialtyId.ToString();
+                parameter += "&doctorId=" + doctorId.ToString();
+
+                var serviceResponse = await _doctorAppointmentAPIServices.HttpClientServices.GetAsync<List<DO_DoctorClinicSchedule>>("OpClinicDetails/GetDoctorListWeeklyScheduleTime" + parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), string.Format("UD:GetDoctorListWeeklyScheduleTime:params: businessKey:{0},clinicType:{1},consultationType:{2},specialtyId:{3}",
+                        AppSessionVariables.GetSessionBusinessKey(HttpContext).ToString(), clinicType, consultationType, specialtyId));
+                    return Json(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, string.Format("UD:GetDoctorListWeeklyScheduleTime:params: businessKey:{0},clinicType:{1},consultationType:{2},specialtyId:{3}",
+                        AppSessionVariables.GetSessionBusinessKey(HttpContext).ToString(), clinicType, consultationType, specialtyId));
+                throw ex;
+            }
+        }
+
+        public async Task<JsonResult> GetDoctorAvailableTimeSlotGivenDate(int clinicType, int consultationType, int specialtyId, int doctorId, DateTime appointmentDate)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&clinicType=" + clinicType.ToString();
+                parameter += "&consultationType=" + consultationType.ToString();
+                parameter += "&specialtyId=" + specialtyId.ToString();
+                parameter += "&doctorId=" + doctorId.ToString();
+                parameter += "&fromDate=" + appointmentDate.ToString("dd-MMM-yyyy");
+                parameter += "&toDate=" + appointmentDate.ToString("dd-MMM-yyyy");
+                var serviceResponse_schedule = await _doctorAppointmentAPIServices.HttpClientServices.GetAsync<List<DO_DoctorClinicSchedule>>("OpClinicDetails/GetDoctorScheduleListForDoctorDateRange" + parameter);
+
+                var serviceResponse_Appointment = await _doctorAppointmentAPIServices.HttpClientServices.GetAsync<List<DO_PatientAppointmentDetail>>("Appointment/GetPatientAppointmentByDoctorDate" + parameter);
+
+                List<TimeSpan> l_timeSlot = new List<TimeSpan>();
+                foreach (var t in serviceResponse_schedule.Data)
+                {
+                    TimeSpan startTime = (TimeSpan)t.FromTime;
+                    while (startTime < t.ToTime)
+                    {
+                        TimeSpan duration = TimeSpan.FromMinutes(t.TimeSlotInMintues);
+                        TimeSpan endTime = startTime.Add(duration);
+
+                        var app_exists = serviceResponse_Appointment.Data.Where(w =>
+                                 (w.AppointmentFromTime <= startTime
+                                     && w.AppointmentFromTime.Add(TimeSpan.FromMinutes(w.Duration)) > startTime)
+                                 || (startTime <= w.AppointmentFromTime
+                                     && endTime > w.AppointmentFromTime)
+                                 ).Count();
+
+                        if (app_exists <= 0)
+                            l_timeSlot.Add(startTime);
+
+                        startTime = endTime;
+                    }
+                }
+
+
+                return Json(l_timeSlot);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+
+        }
+
+
+        public async Task<JsonResult> GetDoctorScheduleHours(int clinicType, int consultationType, int specialtyId, string doctorId, DateTime scheduleDate)
+        {
+            try
+            {
+
+                List<Resources> l_rs = new List<Resources>();
+                TimeSpan sTime = new TimeSpan();
+                TimeSpan eTime = new TimeSpan();
+
+                TimeSpan timeSlotInMintues = new TimeSpan();
+
+                foreach (string d in doctorId.Split(','))
+                {
+            
+                    if (d != null)
+                    {
+                        var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                        parameter += "&clinicType=" + clinicType.ToString();
+                        parameter += "&consultationType=" + consultationType.ToString();
+                        parameter += "&specialtyId=" + specialtyId.ToString();
+                        parameter += "&doctorId=" + doctorId.ToString();
+                        parameter += "&fromDate=" + scheduleDate.ToString("dd-MMM-yyyy");
+                        parameter += "&toDate=" + scheduleDate.AddDays(4).ToString("dd-MMM-yyyy");
+
+                        var serviceResponse = await _doctorAppointmentAPIServices.HttpClientServices.GetAsync<List<DO_DoctorClinicSchedule>>
+                            ("OpClinicDetails/GetDoctorScheduleListForDoctorDateRange" + parameter);
+                        if (serviceResponse.Status)
+                        {
+                            List<BusinessHours> l_bh = new List<BusinessHours>();
+
+                            Resources rs = new Resources();
+
+                            foreach (var s in serviceResponse.Data)
+                            {
+                                rs.id = s.DoctorId.ToString();
+                                rs.title = "Dr." + s.DoctorName;
+
+                                if (sTime.Hours <= 0 || s.FromTime < sTime)
+                                    sTime = (TimeSpan)s.FromTime;
+                                if (eTime.Hours <= 0 || s.ToTime > eTime)
+                                    eTime = (TimeSpan)s.ToTime;
+
+                                BusinessHours bh = new BusinessHours();
+                                string dayOfWeek = s.ScheduleDate.DayOfWeek.ToString();
+                                List<int> wk = new List<int>();
+                                wk.Add(GetWeekNumber(dayOfWeek));
+                                bh.daysOfWeek = wk;
+                                bh.startTime = ((TimeSpan)s.FromTime).ToString("hh':'mm");
+                                bh.endTime = ((TimeSpan)s.ToTime).ToString("hh':'mm");
+                                l_bh.Add(bh);
+
+
+                                timeSlotInMintues = new TimeSpan(0, s.TimeSlotInMintues, 0);
+                            }
+
+                            rs.businessHours = l_bh;
+
+                            l_rs.Add(rs);
+                        }
+                    }
+
+                    if (l_rs.Count() > 0)
+                    {
+                        var minDate = sTime;
+                        var maxDate = eTime;
+
+                        //if (sTime >= new TimeSpan(8, 00, 00))
+                        //    minDate = sTime.Subtract(TimeSpan.FromMinutes(30));
+
+                        //if (eTime < new TimeSpan(23, 00, 00))
+                        //    maxDate = eTime.Add(TimeSpan.FromMinutes(30));
+
+                        //  return Json(new { Duration = "00:05", minDate, maxDate, businessHours = l_rs });
+                        return Json(new { Duration = timeSlotInMintues.ToString(), minDate, maxDate, businessHours = l_rs });
+                    }
+                    else
+                        // return Json(new { Duration = "00:05", minDate = "00:00:00", maxDate = "00:00:00", businessHours = l_rs });
+                        return Json(new { Duration = timeSlotInMintues.ToString(), minDate = "00:00:00", maxDate = "00:00:00", businessHours = l_rs });
+                }
+
+                //return Json(new { Duration = "00:05", minDate = "00:00:00", maxDate = "00:00:00", businessHours = l_rs });
+                return Json(new { Duration = timeSlotInMintues.ToString(), minDate = "00:00:00", maxDate = "00:00:00", businessHours = l_rs });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> InsertIntoDoctorSlotBooking(DO_PatientAppointmentDetail obj)
+        {
+            try
+            {
+                obj.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                obj.ActiveStatus = true;
+                obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                var serviceResponse = await _doctorAppointmentAPIServices.HttpClientServices.PostAsJsonAsync<DO_ResponseParameter>("Appointment/InsertIntoDoctorSlotBooking", obj);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data.Status)
+                        return Json(new { Status = true, serviceResponse.Data.Warning, serviceResponse.Data.WarningMessage });
+                    else
+                        return Json(new { Status = false, serviceResponse.Data.Warning, serviceResponse.Data.WarningMessage, serviceResponse.Data.Message });
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:InsertIntoDoctorSlotBooking:params:" + JsonConvert.SerializeObject(obj));
+                    return Json(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertIntoDoctorSlotBooking:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Warning = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> InsertIntoPatientAppointmentDetail(DO_PatientAppointmentDetail obj)
+        {
+            try
+            {
+                obj.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                obj.ActiveStatus = true;
+                obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                var serviceResponse = await _doctorAppointmentAPIServices.HttpClientServices.PostAsJsonAsync<DO_ResponseParameter>("Appointment/InsertIntoPatientAppointmentDetail", obj);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data.Status)
+                        return Json(new { Status = true, QTokenKey = serviceResponse.Data.strKey });
+                    else
+                        return Json(new { Status = false, serviceResponse.Data.Message });
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:InsertIntoPatientAppointmentDetail:params:" + JsonConvert.SerializeObject(obj));
+                    return Json(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertIntoPatientAppointmentDetail:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Warning = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> UpdatePatientAppointmentDetail(DO_PatientAppointmentDetail obj)
+        {
+            try
+            {
+                obj.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                obj.ActiveStatus = true;
+                obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                var serviceResponse = await _doctorAppointmentAPIServices.HttpClientServices.PostAsJsonAsync<DO_ResponseParameter>("Appointment/UpdatePatientAppointmentDetail", obj);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data.Status)
+                        return Json(new { Status = true });
+                    else
+                        return Json(new { Status = false, serviceResponse.Data.Message });
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:UpdatePatientAppointmentDetail:params:" + JsonConvert.SerializeObject(obj));
+                    return Json(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:UpdatePatientAppointmentDetail:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Warning = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<JsonResult> UpdatePatientAppointmentCancellation(DO_PatientAppointmentDetail obj)
+        {
+            try
+            {
+                obj.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                obj.ActiveStatus = true;
+                obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                var serviceResponse = await _doctorAppointmentAPIServices.HttpClientServices.PostAsJsonAsync<DO_ResponseParameter>("Appointment/UpdatePatientAppointmentCancellation", obj);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data.Status)
+                        return Json(new { Status = true });
+                    else
+                        return Json(new { Status = false, serviceResponse.Data.Message });
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:UpdatePatientAppointmentCancellation:params:" + JsonConvert.SerializeObject(obj));
+                    return Json(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:UpdatePatientAppointmentCancellation:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Warning = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> UpdatePatientAppointmentReschedule(DO_PatientAppointmentDetail obj)
+        {
+            try
+            {
+                obj.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                obj.ActiveStatus = true;
+                obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                var serviceResponse = await _doctorAppointmentAPIServices.HttpClientServices.PostAsJsonAsync<DO_ResponseParameter>("Appointment/UpdatePatientAppointmentReschedule", obj);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data.Status)
+                        return Json(new { Status = true, QTokenKey = serviceResponse.Data.strKey });
+                    else
+                        return Json(new { Status = false, serviceResponse.Data.Message });
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:UpdatePatientAppointmentReschedule:params:" + JsonConvert.SerializeObject(obj));
+                    return Json(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:UpdatePatientAppointmentReschedule:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Warning = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> UpdatePatientAppointmentToUnScheduleWorkOrder(DO_PatientAppointmentDetail obj)
+        {
+            try
+            {
+                obj.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                obj.ActiveStatus = true;
+                obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                var serviceResponse = await _doctorAppointmentAPIServices.HttpClientServices.PostAsJsonAsync<DO_ResponseParameter>("Appointment/UpdatePatientAppointmentToUnScheduleWorkOrder", obj);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data.Status)
+                        return Json(new { Status = true });
+                    else
+                        return Json(new { Status = false, serviceResponse.Data.Message });
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:UpdatePatientAppointmentToUnScheduleWorkOrder:params:" + JsonConvert.SerializeObject(obj));
+                    return Json(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:UpdatePatientAppointmentToUnScheduleWorkOrder:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Warning = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> UpdateDoctorAppointmentToUnScheduleWorkOrder(DO_PatientAppointmentDetail obj)
+        {
+            try
+            {
+                obj.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                obj.ActiveStatus = true;
+                obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                var serviceResponse = await _doctorAppointmentAPIServices.HttpClientServices.PostAsJsonAsync<DO_ResponseParameter>("Appointment/UpdateDoctorAppointmentToUnScheduleWorkOrder", obj);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data.Status)
+                        return Json(new { Status = true });
+                    else
+                        return Json(new { Status = false, serviceResponse.Data.Message });
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:UpdateDoctorAppointmentToUnScheduleWorkOrder:params:" + JsonConvert.SerializeObject(obj));
+                    return Json(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:UpdateDoctorAppointmentToUnScheduleWorkOrder:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Warning = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+
+        [HttpGet]
+        public async Task<JsonResult> GetDoctorUnScheduleWorkOrder(int specialtyId, int doctorId)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&specialtyId=" + specialtyId.ToString();
+                parameter += "&doctorId=" + doctorId.ToString();
+
+                var serviceResponse = await _doctorAppointmentAPIServices.HttpClientServices.GetAsync<List<DO_PatientAppointmentDetail>>("Appointment/GetDoctorUnScheduleWorkOrder" + parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), string.Format("UD:GetDoctorUnScheduleWorkOrder:params:specialtyId:{0}:doctorId:{1}", specialtyId, doctorId));
+                    return Json(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, string.Format("UD:GetDoctorUnScheduleWorkOrder:params:specialtyId:{0}:doctorId:{1}", specialtyId, doctorId));
+                return Json(new { Status = false, Warning = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+
+        public async Task<JsonResult> GetPatientAppointmentByDoctorDate(int specialtyId,
+            string doctorId, DateTime start, DateTime end)
+        {
+            try
+            {
+                List<FullCalendar> l_fc = new List<FullCalendar>();
+
+                foreach (string d in doctorId.Split(','))
+                {
+                    if (d != null)
+                    {
+                        var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                        parameter += "&specialtyId=" + specialtyId.ToString();
+                        parameter += "&doctorId=" + d.ToString();
+                        parameter += "&fromDate=" + start.ToString("yyyy-MM-ddTHH:mm:ss");
+                        parameter += "&toDate=" + end.ToString("yyyy-MM-ddTHH:mm:ss");
+
+                        var serviceResponse = await _doctorAppointmentAPIServices.HttpClientServices.GetAsync<List<DO_PatientAppointmentDetail>>("Appointment/GetPatientAppointmentByDoctorDate" + parameter);
+                        if (serviceResponse.Status)
+                        {
+
+                            foreach (var s in serviceResponse.Data)
+                            {
+                                FullCalendar fc = new FullCalendar();
+                                fc.id = s.AppointmentKey.ToString();
+                                fc.resourceId = d.ToString();
+                                fc.title = s.AppointmentKey.ToString() + " - " + s.PatientFirstName.ToString() + " " + s.PatientLastName;
+                                fc.start = s.StartDate;
+                                fc.end = s.EndDate;
+                                if (s.AppointmentStatus == "AP")
+                                    fc.color = "#bfbfbf";
+                                if (s.AppointmentStatus == "RG")
+                                    fc.color = "#ffff80";
+                                if (s.AppointmentStatus == "CM")
+                                    fc.color = "#66ff66";
+
+                                fc.status = s.AppointmentStatus;
+                                l_fc.Add(fc);
+                            }
+                        }
+                        else
+                        {
+                            _logger.LogError(new Exception(serviceResponse.Message), string.Format("UD:GetPatientAppointmentByDoctorDate:params:businessKey:{0}:specialtyId:{1}:doctorId{2}:start:{3}:end:{4}",
+                                AppSessionVariables.GetSessionBusinessKey(HttpContext), specialtyId, doctorId, start, end));
+                            return Json(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                        }
+                    }
+                }
+
+                return Json(l_fc);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, string.Format("UD:GetPatientAppointmentByDoctorDate:params:businessKey:{0}:specialtyId:{1}:doctorId{2}:start:{3}:end:{4}",
+                               AppSessionVariables.GetSessionBusinessKey(HttpContext), specialtyId, doctorId, start, end));
+                return Json(new { Status = false, Warning = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+
+        }
+
+
+        public async Task<JsonResult> GetPatientAppointmentDetailByAppkey(decimal appointmentKey)
+        {
+            try
+            {
+
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext).ToString();
+                parameter += "&appointmentKey=" + appointmentKey.ToString();
+
+                var serviceResponse = await _doctorAppointmentAPIServices.HttpClientServices.GetAsync<DO_PatientAppointmentDetail>("Appointment/GetPatientAppointmentDetailByAppkey" + parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), string.Format("UD:GetPatientAppointmentDetailByAppkey:params:businessKey:{0}:appointmentKey:{1}", AppSessionVariables.GetSessionBusinessKey(HttpContext), appointmentKey));
+                    return Json(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, string.Format("UD:GetPatientAppointmentDetailByAppkey:params:businessKey:{0}:appointmentKey:{1}", AppSessionVariables.GetSessionBusinessKey(HttpContext), appointmentKey));
+                return Json(new { Status = false, Warning = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+
+        }
+
+
+        public async Task<JsonResult> GetPatientSearch(string searchText)
+        {
+            try
+            {
+                string term = HttpContext.Request.Query["term"].ToString();
+                var parameter = "?searchText=" + term;
+
+                var serviceResponse = await _doctorAppointmentAPIServices.HttpClientServices.GetAsync<List<DO_PatientProfile>>("PatientInfo/GetPatientSearch" + parameter);
+                if (serviceResponse.Status)
+                {
+                    var d = serviceResponse.Data;
+                    d.ForEach(w => { w.value = w.UHID.ToString(); w.label = w.FirstName + " " + w.LastName + " ( ph: " + w.MobileNumber + " )"; });
+                    return Json(d);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), string.Format("UD:GetPatientSearch:params:searchText:{0}", searchText));
+                    return Json(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, string.Format("UD:GetPatientSearch:params:searchText:{0}", searchText));
+                return Json(new { Status = false, Warning = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+
+        }
+
+    }
+
+    public class FullCalendar
+    {
+        public string id { get; set; }
+        public string resourceId { get; set; }
+        public string title { get; set; }
+        public DateTime start { get; set; }
+        public DateTime end { get; set; }
+
+        public string color { get; set; }
+        public string status { get; set; }
+    }
+
+    public class Resources
+    {
+        public string id { get; set; }
+        public string title { get; set; }
+        public List<BusinessHours> businessHours { get; set; }
+    }
+
+    public class BusinessHours
+    {
+        public List<int> daysOfWeek { get; set; }
+        public string startTime { get; set; }
+        public string endTime { get; set; }
+    }
+
+}

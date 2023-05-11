@@ -1,0 +1,237 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Net.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using eSyaEnterprise_UI.Utility;
+using eSyaEnterprise_UI.Areas.Config.Models;
+using eSyaEnterprise_UI.Areas.eSyaFA.Models;
+using eSyaEnterprise_UI.Models;
+
+namespace eSyaEnterprise_UI.Areas.eSyaFA.Controllers
+{
+    
+    public class FixedAssetsController : Controller
+    {
+        ESyaWebAPI _eSyaWebAPI = new ESyaWebAPI();
+        ESyaFA_WebAPI _eSyaFAWebAPI = new ESyaFA_WebAPI();
+
+        #region Asset Group
+        [Area("eSyaFA")]
+        public IActionResult V_100_00()
+        {
+            var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+            HttpResponseMessage ag_response = client.GetAsync("ConfigMasterData/GetApplicationCodesByCodeType?codeType=" + CodeTypeValues.AssetGroup).Result;
+            string agdata = ag_response.Content.ReadAsStringAsync().Result;
+            List<DO_ApplicationCodes> agapp_codes = JsonConvert.DeserializeObject<List<DO_ApplicationCodes>>(agdata);
+            ViewBag.AGappcodes = agapp_codes;
+
+            HttpResponseMessage asg_response = client.GetAsync("ConfigMasterData/GetApplicationCodesByCodeType?codeType=" + CodeTypeValues.AssetSubGroup).Result;
+            string asgdata = asg_response.Content.ReadAsStringAsync().Result;
+            List<DO_ApplicationCodes> asgapp_codes = JsonConvert.DeserializeObject<List<DO_ApplicationCodes>>(asgdata);
+            ViewBag.ASGappcodes = asgapp_codes;
+
+            ViewBag.formName = "Asset Group";
+            return View();
+        }
+
+        /// <summary>
+        /// Insert Asset Group Master
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertAssetGroup(DO_AssetGroup a_grp)
+        {
+
+            try
+            {
+                var client = _eSyaFAWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                a_grp.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                a_grp.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                a_grp.ActiveStatus = true;
+
+
+                HttpResponseMessage Insertresponse = client.PostAsJsonAsync<DO_AssetGroup>("AssetGroup/InsertIntoAssetGroup", a_grp).Result;
+                string resp = Insertresponse.Content.ReadAsStringAsync().Result;
+                var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(resp);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        /// <summary>
+        ///Get Asset Group and Sub Group for Tree View
+        /// </summary>
+        [Produces("application/json")]
+        public IActionResult GetAssetGroupAndSubGroupTree()
+        {
+
+            try
+            {
+                var client = _eSyaFAWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("AssetGroup/GetAssetGroupAndSubGroup").Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                List<DO_AssetGroup> data = JsonConvert.DeserializeObject<List<DO_AssetGroup>>(stringData);
+
+                List<jsTreeObject> AssetGroupTree = new List<jsTreeObject>();
+
+                jsTreeObject obj;
+                obj = new jsTreeObject();
+
+                obj.id = "H0";
+                obj.parent = "#";
+                obj.text = "Fixed Assets";
+                obj.state = new stateObject { opened = true, selected = false };
+
+                AssetGroupTree.Add(obj);
+
+                List<DO_AssetGroup> aGroup = data.Select(x => new DO_AssetGroup { AssetGroup = x.AssetGroup, AssetGroupID = x.AssetGroupID }).GroupBy(y => y.AssetGroupID, (key, grp) => grp.FirstOrDefault()).ToList();
+
+                foreach (DO_AssetGroup lst in aGroup)
+                {
+                    obj = new jsTreeObject();
+
+                    obj.id = lst.AssetGroupID.ToString();
+                    obj.parent = "H0";
+                    obj.text = lst.AssetGroup;
+                    obj.state = new stateObject { opened = false, selected = false };
+
+                    AssetGroupTree.Add(obj);
+                }
+
+                foreach (DO_AssetGroup lst in data)
+                {
+                    obj = new jsTreeObject();
+
+                    obj.id = "S_" + lst.AssetGroupID.ToString() + "_" + lst.AssetSubGroupID.ToString();
+                    obj.parent = lst.AssetGroupID.ToString();
+                    obj.text = lst.AssetSubGroup;
+                    //obj.icon = "/images/jsTree/fileIcon.png";
+                    obj.state = new stateObject { opened = false, selected = false };
+
+                    AssetGroupTree.Add(obj);
+                }
+
+                return Json(AssetGroupTree);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+
+        }
+
+        /// <summary>
+        /// Update Asset Group Master
+        /// </summary>
+        [HttpPost]
+        public JsonResult UpdateAssetGroup(DO_AssetGroup data)
+        {
+
+            try
+            {
+                var client = _eSyaFAWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                data.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                data.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                
+                HttpResponseMessage Insertresponse = client.PostAsJsonAsync<DO_AssetGroup>("AssetGroup/UpdateAssetGroup", data).Result;
+                string resp = Insertresponse.Content.ReadAsStringAsync().Result;
+                var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(resp);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+        #endregion Asset Group
+
+        #region Depreciation Method
+        [Area("eSyaFA")]
+        public IActionResult V_101_00()
+        {
+            ViewBag.formName = "Depreciation Methods";
+            return View();
+        }
+
+        /// <summary>
+        ///Get Asset Group and Asset Sub Group
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetAssetGroupAndSubGroup()
+        {
+
+            try
+            {
+                var client = _eSyaFAWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("AssetGroup/GetAssetGroupAndSubGroup").Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                List<DO_AssetGroup> data = JsonConvert.DeserializeObject<List<DO_AssetGroup>>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+
+        }
+
+        /// <summary>
+        ///Get Depreciation Method by Asset group and Asset Sub Group for Grid
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetDepreciationMethods(int assetGroup, int assetSubGroup)
+        {
+            try
+            {
+                var client = _eSyaFAWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("AssetDepreciationMethod/GetActiveDepreciationMethods?assetGroup=" + assetGroup + "&assetSubGroup="+ assetSubGroup).Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<List<DO_AssetDepreciationMethod>>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+
+        }
+
+        /// <summary>
+        /// Insert Depreciation Methods
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertDepreciationMethod(List<DO_AssetDepreciationMethod> obj)
+        {
+
+            try
+            {
+                obj.All(c =>
+                {
+                    c.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                    c.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                    return true;
+                });
+
+                var client = _eSyaFAWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+
+                HttpResponseMessage Insertresponse = client.PostAsJsonAsync<List<DO_AssetDepreciationMethod>>("AssetDepreciationMethod/InsertDepreciationMethod", obj).Result;
+                string resp = Insertresponse.Content.ReadAsStringAsync().Result;
+                var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(resp);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+        #endregion Depreciation Method
+    }
+
+}

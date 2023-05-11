@@ -1,0 +1,333 @@
+﻿var customerNamePrefix ;
+
+$(function () {
+    fnGridDrugBrands();
+
+     //Single Character alphabet Selection
+    $(".filter-char").click(function () {
+        $('.filter-div').empty();
+        $('.filter-char').removeClass('active');
+        customerNamePrefix = $(this).text();
+        $("#lblSelectedAlphabets").text(customerNamePrefix);
+        $("#divAlphabets").hide(100);
+        $(this).addClass('active');
+        $("#divSearch").show(500);
+
+        var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");        
+        var numbers = "0123456789".split("");
+        // From Single char to double char 
+        if (customerNamePrefix == "0-9") {
+            $.each(numbers, function (letter) {
+                $('.filter-div').addClass("animated fadeIn").append($('<span class="filter-chars">'  + numbers[letter] + '</span>'));
+            });
+        }
+        else if (customerNamePrefix == "All") {
+            $.each(alphabet, function (letter) {
+                $('.filter-div').addClass("animated fadeIn").append($('<span class="filter-chars">' + alphabet[letter]+ '</span>'));
+            });
+        }
+        else {
+            $.each(alphabet, function (letter) {
+                $('.filter-div').addClass("animated fadeIn").append($('<span class="filter-chars">' + customerNamePrefix + alphabet[letter].toLowerCase() + '</span>'));
+            });
+        }
+
+        //Two Character alphabets Selection
+        $(".filter-chars").click(function () {
+            $(".filter-chars").removeClass('active');
+            $(this).addClass('active');
+           // console.log($(this).text()); Active two character alphabets.
+        })
+       
+    });
+    //Going Back to the A to Z Selection
+    $("#lblBackToAlphabets").click(function () {
+        $("#divSearch").hide(500);
+        $('.filter-div').empty();
+        $("#divAlphabets").show(500);
+        $('.filter-char').removeClass('active');
+        $("#divDrugBrandsForm").css("display", "none");
+        $("#divGrid").show();
+    })
+})
+
+function fnDrugCategoryChanges() {
+    $("#cboFormulation").empty().selectpicker('refresh');
+    $('#txtDosage').val('');
+    $('#txtDrugForm').val('');
+
+    $.ajax({
+        url: getBaseURL() + '/Drug/GetDrugFormulationList?DrugGenerics=' + $('#cboGenerics').val(),
+        datatype: 'json',
+        type: 'POST',
+        async: false,
+        contentType: 'application/json; charset=utf-8',
+        success: function (result) {
+            //$('#cboFormulation').empty();
+            $("#cboFormulation").append($("<option value='0'>Select</option>"));
+            if (result != null) {
+                for (var i = 0; i < result.length; i++) {
+
+                    $("#cboFormulation").append($("<option></option>").val(result[i]["DrugFormulaID"]).html(result[i]["DrugFormulation"]));
+                }
+            }
+            $('#cboFormulation').val($("#cboFormulation option:first").val());
+            $('#cboFormulation').selectpicker('refresh');
+
+        }
+    });
+}
+
+function fnDrugFormulationChanges() {
+    $.ajax({
+        url: getBaseURL() + '/Drug/GetDrugFormulationDetails?DrugFormulation=' + $('#cboFormulation').val(),
+        datatype: 'json',
+        type: 'POST',
+        async: false,
+        contentType: 'application/json; charset=utf-8',
+        success: function (result) {
+            if (result != null) {
+                $('#txtDosage').val(result.DosageDesc);
+                $('#txtDrugForm').val(result.DrugFormDesc);
+            }
+        }
+    });
+}
+
+function fnGridDrugBrands(customerNamePrefix) {
+    $("#jqgDrugBrands").jqGrid('GridUnload');
+    $("#jqgDrugBrands").jqGrid({
+        // url: getBaseURL() + '' + customerNamePrefix,
+        datatype: 'json',
+        // mtype: 'Post',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Drug Brand","Manufacturer","Bar Code","Dosage", "Pack Size","Packing","Volume","Ref MRP","Status","Actions"],
+        colModel: [
+            { name: "DrugBrand", width: 135, editable: true, align: 'left', hidden: false },
+            { name: "Manufacturer", width: 135, editable: true, align: 'left', hidden: false },
+            { name: "BarCode", width: 50, editable: true, align: 'left', hidden: true },
+            { name: "Dosage", width: 50, editable: true, align: 'left', hidden: true },
+            { name: "PackSize", width: 40, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "Packing", width: 40, editable: true, align: 'left', hidden: false },
+            { name: "Volume", width: 50, editable: true, align: 'left', hidden: false },
+            { name: "RefMRP", width: 50, editable: true, align: 'left', hidden: false },
+            { name: "ActiveStatus", editable: true, width: 38, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: Inactive" } },
+            {
+                name: 'Action', search: false, align: 'left', width: 74, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditDrugBrands(event,\'edit\')"><i class="fa fa-edit"></i> Edit </button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnEditDrugBrands(event,\'view\')"><i class="far fa-eye"></i> View </button>'
+
+                }
+            },
+        ],
+        pager: "#jqpDrugBrands",
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0,
+        loadComplete: function (data) {
+            SetGridControlByAction();
+        },
+    }).jqGrid('navGrid', '#jqpDrugBrands', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpDrugBrands', {
+        caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshDrugBrands
+    }).jqGrid('navButtonAdd', '#jqpDrugBrands', {
+        caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnGridAddDrugBrands
+    });
+}
+
+
+function fnDrugParameters() {
+    $("#jqgDrugParameters").jqGrid({
+        data: [{ DrugParameter: 'Is Banned', ActiveStatus: true }, { DrugParameter: 'Is Narcotic', ActiveStatus: false }],
+        datatype: 'local',
+        colNames: ["Drug Parameter", "Active"],
+        colModel: [
+            { name: "DrugParameter", width: 140, editable: true, align: 'left', hidden: false },
+            { name: "ActiveStatus", editable: true, width: 45, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: false } },
+        ],
+        rowNum: 100000,
+        pgtext: null,
+        pgbuttons: false,
+        loadonce: true,
+        rownumWidth: 25,
+        viewrecords: false,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+         
+    }).jqGrid('navGrid', '#jqpDrugParameters', { add: false, edit: false, search: false, del: false, refresh: false });
+}
+
+function fnGridAddDrugBrands() {
+
+    fnClearFields();
+
+    if ($("#cboISDCode").val() === "0" || $("#cboISDCode").val() === "") {
+        toastr.warning("Please Select ISD Code");
+        $('#cboISDCode').focus();
+        return;
+    }
+    if ($("#cboGenerics").val() === "0" || $("#cboGenerics").val() === "") {
+        toastr.warning("Please Select Generics");
+        $('#cboGenerics').focus();
+        return;
+    }
+    if ($("#cboFormulation").val() === "0" || $("#cboFormulation").val() === "") {
+        toastr.warning("Please Select Formulation");
+        $('#cboFormulation').focus();
+        return;
+    }
+
+    $("#divGrid").hide();
+    $("#divDrugBrandsForm").css("display", "block");
+    $("#divAlphabets,#divSearch").hide(500);
+
+    //eSyaParams.ClearValue();
+    //eSyaParams.SetJSONValue(result.l_FormParameter);
+
+    fnDrugParameters()
+}
+
+function fnEditDrugBrands(e, actiontype) {
+}
+
+function fnSaveDrugBrand() {
+
+    if (validatiOnSave() === false) {
+        return;
+    }
+    $("#btnAddDrugBrand").attr('disabled', true);
+    var DrugCode = $("#txtDrugCode").val();
+
+    var DrugBrand;
+    if (DrugCode == null || DrugCode == "") {
+        DrugBrand = {
+            BusinessId: $("#txtBusinessEntityId").val(),
+            SegmentId: $("#txtBusinessSegmentId").val(),
+            LocationId: 0,
+            LocationCode: $("#txtLocationcode").val(),
+            LocationDescription: $("#txtLocationDescription").val(),
+            BusinessName: $("#txtBusinessName").val(),
+            TaxIdentification: $("#cboTaxIdentification").val(),
+            LicenseType: $("#cboLicenseType").val(),
+            UserLicenses: $("#txtUserLicenses").val(),
+            ToLocalCurrency: $("#chkToLocalCurrency").parent().hasClass("is-checked"),
+            ToCurrCurrency: $("#chkToCurrCurrency").parent().hasClass("is-checked"),
+            ToRealCurrency: $("#chkToRealCurrency").parent().hasClass("is-checked"),
+            ActiveStatus: $("#chkActiveStatus").parent().hasClass("is-checked")
+        };
+
+    }
+    else {
+        DrugBrand = {
+            BusinessId: $("#txtBusinessEntityId").val(),
+            SegmentId: $("#txtBusinessSegmentId").val(),
+            LocationId: $("#txtDrugCode").val(),
+            LocationCode: $("#txtLocationcode").val(),
+            LocationDescription: $("#txtLocationDescription").val(),
+            BusinessName: $("#txtBusinessName").val(),
+            TaxIdentification: $("#cboTaxIdentification").val(),
+            LicenseType: $("#cboLicenseType").val(),
+            UserLicenses: $("#txtUserLicenses").val(),
+            ToLocalCurrency: $("#chkToLocalCurrency").parent().hasClass("is-checked"),
+            ToCurrCurrency: $("#chkToCurrCurrency").parent().hasClass("is-checked"),
+            ToRealCurrency: $("#chkToRealCurrency").parent().hasClass("is-checked"),
+            ActiveStatus: $("#chkActiveStatus").parent().hasClass("is-checked")
+        };
+    }
+
+
+    //var fmParams = eSyaParams.GetJSONValue();
+    //BusinessLocation.l_FormParameter = fmParams;
+
+    $.ajax({
+        url: getBaseURL() + '/BusinessStructure/InsertOrUpdateBusinessLocation',
+        type: 'POST',
+        datatype: 'json',
+        data: { DrugBrand },
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                location.reload();
+                return true;
+            }
+            else {
+                toastr.error(response.Message);
+                $("#btnAddBusinessLocation").attr('disabled', false);
+                return false;
+            }
+        },
+        error: function (error) {
+            $("#btnAddBusinessLocation").attr('disabled', false);
+            toastr.error(error.statusText);
+        }
+    });
+}
+
+function validatiOnSave() {
+    if (IsStringNullorEmpty($("#txtDrugBrand").val())) {
+        toastr.warning("Please Enter Drug Brand");
+        return false;
+    }
+    if ($("#cboManufacturer").val() === "0" || $("#cboManufacturer").val() === "") {
+        toastr.warning("Please Select Manufacturer");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtPackSize").val()) || $("#txtPackSize").val() === "0") {
+        toastr.warning("Please Enter Pack Size");
+        return false;
+    }
+    if ($("#cboPacking").val() === "0" || $("#cboPacking").val() === "") {
+        toastr.warning("Please Select Packing");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtDrugVolume").val())) {
+        toastr.warning("Please Enter Drug Volume");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtPrintDesc").val())) {
+        toastr.warning("Please Enter Print Description");
+        return false;
+    }
+}
+
+function fnClearFields() {
+    $("#txtDrugCode").val('');
+    $("#txtDrugBrand").val('');
+    $("#cboManufacturer").val('0');
+    $("#cboManufacturer").selectpicker('refresh');
+    $("#txtPackSize").val('');
+    $("#cboPacking").val('0');
+    $("#cboPacking").selectpicker('refresh');
+    $("#txtDrugVolume").val('');
+    $("#txtPrintDesc").val('');
+    $("#txtBarCodeID").val('');
+    $("#chkActiveStatus").parent().addClass("is-checked");
+}
+
+function fnGridRefreshDrugBrands() {
+    $("#jqgDrugBrands").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid')
+}
+
+function fnBackToGrid() {
+    $("#divGrid").show();
+    $("#divDrugBrandsForm").css("display", "none");
+    $("#divSearch").hide(500);
+    $('.filter-div').empty();
+    $("#divAlphabets").show(500);
+    $('.filter-char').removeClass('active');
+}

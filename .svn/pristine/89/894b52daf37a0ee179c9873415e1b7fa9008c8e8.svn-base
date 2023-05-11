@@ -1,0 +1,325 @@
+﻿
+@{
+    ViewData["Title"] = "V_5010_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*@section scripts{
+        <script src="~/js/eSyaPayrollExpat/SalaryProcess.js"></script>
+    }*@
+<div class="row">
+    <div class="col-lg-5 col-md-5 col-sm-6">
+        <div class="row">
+            <div class="col-lg-7 col-md-7 col-sm-12 form-group">
+                <label>Business Key</label>
+                @await Component.InvokeAsync("UserBusinessLocation")
+            </div>
+            <div class="col-lg-5 col-md-5 col-sm-12 form-group">
+                <label>Pay Period</label>
+                <input type="text" name="name" id="dtPayPeriod" value="" class="form-control" onchange="fnPayPeriod_onChange()" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4 col-4 form-group" style="background: #fff; border:medium;border-color: #d5cbcb;border-style: solid;border-width: thin; vertical-align: middle !important; display: inline !important;  padding: 10px;margin-left: 15px;">
+                <div class="radio" style="margin:0px;height:20px">
+                    <label style="font-size:14px !important;color:#797172 !important"><input type="radio" name="rdoStatus" value="A" checked onchange="fnRefreshGrid()" /> All </label>
+                </div>
+            </div>
+            <div class="col-sm-4 col-4 form-group" style="background: #ffcccc; vertical-align: middle !important; display: inline !important;  padding: 10px;">
+                <div class="radio" style="margin:0px;height:20px">
+                    <label style="font-size:14px !important;color:#797172 !important"><input type="radio" name="rdoStatus" value="U" checked onchange="fnRefreshGrid()" /> Un-Processed </label>
+                </div>
+            </div>
+            <div class="col-sm-4 col-4 form-group" style="background: #ccffd9; vertical-align: middle !important; display: inline !important;  padding: 10px;margin-left: -15px;">
+                <div class="radio" style="margin:0px;"><label style="font-size:14px !important;color:#797172 !important"><input type="radio" name="rdoStatus" value="P" onchange="fnRefreshGrid()" /> Processed </label></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-12 form-group text-center">
+        <table id="jqgExchangeRate"></table>
+        <div id="jqpExchangeRate"></div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 form-group text-right padtop20">
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSavePayrollProcess" onclick="fnSavePayrollProcess()">
+            Salary Process
+        </button>
+    </div>
+
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <hr />
+        <table id="jqgSalaryProcess"></table>
+        <div id="jqpSalaryProcess"></div>
+    </div>
+</div>
+
+
+<style>
+    .ui-datepicker-calendar {
+        display: none;
+    }
+</style>
+
+<script type="text/javascript">
+
+    var _payPeriod = null;
+
+    $(function () {
+
+        _payPeriod = null;
+
+        $('#dtPayPeriod').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            showButtonPanel: true,
+            dateFormat: 'MM yy',
+            onClose: function (dateText, inst) {
+                var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                $(this).val($.datepicker.formatDate('MM yy', new Date(year, month, 1)));
+                _payPeriod = year + "" + padDigits(parseInt(month) + 1, 2);
+                $("#jqgSalaryProcess").jqGrid("setGridParam", { datatype: "json" })
+                    .trigger("reloadGrid", [{ current: true }]);
+            },
+        });
+
+        fnLoadExchangeRate();
+
+    });
+
+
+    function fnLoadExchangeRate() {
+
+        $("#jqgExchangeRate").jqGrid({
+            url: getBaseURL() + '/SalaryProcess/GetCurrencyExchangeRate',
+            datatype: "json",
+            contenttype: "application/json; charset-utf-8",
+            mtype: 'GET',
+            jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+            colNames: ["Currency", "Exchange Rate"],
+            colModel: [
+                { name: "CurrencyCode", width: '100', align: 'left', editable: false, },
+                { name: "ExchangeRate", editable: true, width: '100', align: 'right', sortable: true, },
+            ],
+            rowNum: 20,
+            loadonce: false,
+            height: 'auto',
+            scroll: false,
+            width: '150',
+            autowidth: false,
+            shrinkToFit: false,
+            forceFit: false,
+            cellEdit: true,
+            editurl: 'url',
+            cellsubmit: 'clientArray',
+            onSelectRow: function (id) {
+                if (id) { $('#jqgExchangeRate').jqGrid('editRow', id, true); }
+            },
+            afterSaveCell: function (rowid, cellname, value, iRow, iCol) {
+                fnCalculatePayrollProcess();
+            }
+        });
+    }
+
+    $(document).on('focusout', '[role="gridcell"] *', function () {
+        $("#jqgExchangeRate").jqGrid('editCell', 0, 0, false);
+    });
+
+    function fnBusinessLocation_onChange() {
+
+        fnLoadEmployeeForProcess();
+    }
+
+    function fnRefreshGrid()
+    {
+        if ($("input[type='radio'][name='rdoStatus']:checked").val() == "U")
+            $("#btnSavePayrollProcess").show();
+        else
+            $("#btnSavePayrollProcess").hide();
+
+        $("#jqgSalaryProcess").jqGrid("setGridParam", { datatype: "json" })
+            .trigger("reloadGrid", [{ current: true }]);
+    }
+
+    function fnLoadEmployeeForProcess() {
+
+        $("#jqgSalaryProcess").jqGrid({
+            url: getBaseURL() + '/SalaryProcess/GetEmployeeForPayrollProcess',
+            datatype: "json",
+            contenttype: "application/json; charset-utf-8",
+            mtype: 'GET',
+            postData: {
+                businessKey: function () { return $("#cboBusinessLocation").val(); },
+                payPeriod: function () { return _payPeriod; },
+                payrollProcessStatus: function () { return $("input[type='radio'][name='rdoStatus']:checked").val(); },
+            },
+            jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+            colNames: ["EmployeeNumber", "Employee Name", 'Salary Curr.', 'Salary Amount', 'Att. Factor', 'Vacation Pay','Processed Amount', 'Ex. Rate', 'Amount (Local Currency)', 'Add Incentive Amount', 'Less Advance Amount', 'Net Salary Amount', 'NHIF Amount', 'NSSF Amount','Status'],
+            colModel: [
+                { name: "EmployeeNumber", width: '100', align: 'left', editable: false, hidden: true },
+                { name: "EmployeeName", index: 'EmployeeName', width: '200', align: 'left', editable: false, sortable: true, },
+                { name: "SalaryCurrency", index: 'SalaryCurrency', width: '50', align: 'left', editable: false, sortable: true, },
+                { name: 'SalaryAmount', index: 'SalaryAmount', width: 80, align: "right", sorttype: "float", formatter: "number" },
+                { name: 'AttendanceFactor', index: 'AttendanceFactor', width: 40, align: "right", sorttype: "float", formatter: "number" },
+                { name: 'IsVacationPay', index: 'IsVacationPay', width: 50, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+                { name: 'ProcessedAmount', index: 'ProcessedAmount', width: 80, align: "right", sorttype: "float", formatter: "number" },
+                { name: 'ExchangeRate', index: 'ExchangeRate', width: 50, align: "right", },
+                { name: 'AmountInLocalCurrency', index: 'AmountInLocalCurrency', width: 80, align: "right", sorttype: "float", formatter: "number" },
+                { name: 'VariableIncentiveAmount', index: 'VariableIncentiveAmount', width: 70, align: "right", sorttype: "float", formatter: "number" },
+                { name: 'AdvanceAmount', index: 'AdvanceAmount', width: 70, align: "right", sorttype: "float", formatter: "number" },
+                { name: 'NetSalaryAmount', index: 'NetSalaryAmount', width: 80, align: "right", sorttype: "float", formatter: "number" },
+                { name: 'NHIFAmount', index: 'NHIFAmount', width: 80, align: "right", sorttype: "float", formatter: "number", hidden: true },
+                { name: 'NSSFAmount', index: 'NSSFAmount', width: 80, align: "right", sorttype: "float", formatter: "number", hidden: true },
+                { name: 'PayrollStatus', index: 'PayrollStatus', width: 80, hidden: true },
+            ],
+            rowNum: 100000,
+            loadonce: true,
+            height: 'auto',
+            scroll: false,
+            width: '150',
+            autowidth: false,
+            shrinkToFit: false,
+            forceFit: false,
+            cellEdit: true,
+            editurl: 'url',
+            cellsubmit: 'clientArray',
+            multiselect: true,
+            onSelectRow: function (id) {
+                if (id) { $('#jqgSalaryProcess').jqGrid('editRow', id, true); }
+            },
+            afterSaveCell: function (rowid, cellname, value, iRow, iCol) {
+
+                var rowData = $('#jqtService').jqGrid('getRowData', rowid);
+            },
+            loadComplete: function () {
+                fnCalculatePayrollProcess();
+
+                var grid = $("#jqgSalaryProcess");
+                var rowIds = grid.jqGrid('getDataIDs');
+
+                for (i = 0; i < rowIds.length; i++) {
+                    var rowId = rowIds[i];
+                    rowData = $('#jqgSalaryProcess').jqGrid('getRowData', rowIds[i]);
+                    
+                    if (rowData['PayrollStatus'] == 'S') {
+                        $("#jqgSalaryProcess " + "#" + rowIds[i]).find("td").css("background-color", "#ffcccc");
+                    }
+                    else if (rowData['PayrollStatus'] == 'P') {
+                        $("#jqgSalaryProcess " + "#" + rowIds[i]).find("td").css("background-color", "#ccffd9");
+                    }
+                }
+            },
+        });
+    }
+
+    function fnCalculatePayrollProcess() {
+        var rowIds = $("#jqgSalaryProcess").getDataIDs();
+        for (var i = 0; i < rowIds.length; i++) {
+            var currency = $("#jqgSalaryProcess").jqGrid('getCell', rowIds[i], 'SalaryCurrency');
+            var exchangeRate = getCurrencyExchangeRate(currency);
+            var salaryAmount = parseFloat($("#jqgSalaryProcess").jqGrid('getCell', rowIds[i], 'SalaryAmount'));
+            var attendanceFactor = parseFloat($("#jqgSalaryProcess").jqGrid('getCell', rowIds[i], 'AttendanceFactor'));
+            var processedAmount = salaryAmount * attendanceFactor;
+            if ($("#jqgSalaryProcess").jqGrid('getCell', rowIds[i], 'IsVacationPay') === "true")
+                processedAmount = salaryAmount / 2;
+            var amountInLocalCurrency = Math.round(processedAmount * exchangeRate);
+            var variableIncentiveAmount = parseFloat($("#jqgSalaryProcess").jqGrid('getCell', rowIds[i], 'VariableIncentiveAmount'));
+            var advanceAmount = parseFloat($("#jqgSalaryProcess").jqGrid('getCell', rowIds[i], 'AdvanceAmount'));
+            var netSalaryAmount = amountInLocalCurrency + variableIncentiveAmount - advanceAmount;
+
+            $("#jqgSalaryProcess").jqGrid('setCell', rowIds[i], 'ProcessedAmount', processedAmount);
+            $("#jqgSalaryProcess").jqGrid('setCell', rowIds[i], 'ExchangeRate', exchangeRate);
+            $("#jqgSalaryProcess").jqGrid('setCell', rowIds[i], 'AmountInLocalCurrency', amountInLocalCurrency);
+            $("#jqgSalaryProcess").jqGrid('setCell', rowIds[i], 'NetSalaryAmount', netSalaryAmount);
+        }
+    }
+
+    function getCurrencyExchangeRate(currency) {
+        var rowIds = $("#jqgExchangeRate").getDataIDs();
+        for (var i = 0; i < rowIds.length; i++) {
+            if ($("#jqgExchangeRate").jqGrid('getCell', rowIds[i], 'CurrencyCode') === currency)
+                return $("#jqgExchangeRate").jqGrid('getCell', rowIds[i], 'ExchangeRate');
+        }
+        return 1;
+    }
+
+    function fnSavePayrollProcess() {
+
+        if (!IsValid())
+            return;
+
+        try {
+            $("#btnSavePayrollProcess").attr('disabled', true);
+
+            var l_pr = [];
+           // var ids = jQuery("#jqgSalaryProcess").jqGrid('getDataIDs');
+            var ids = jQuery("#jqgSalaryProcess").jqGrid('getGridParam', 'selarrrow');
+            for (var i = 0; i < ids.length; i++) {
+                var rowId = ids[i];
+                var rowData = jQuery('#jqgSalaryProcess').jqGrid('getRowData', rowId);
+                l_pr.push({
+                    BusinessKey: $("#cboBusinessLocation").val(),
+                    PayPeriod: _payPeriod,
+                    EmployeeNumber: rowData.EmployeeNumber,
+                    EmployeeName: rowData.EmployeeName,
+                    SalaryCurrency: rowData.SalaryCurrency,
+                    SalaryAmount: rowData.SalaryAmount,
+                    AttendanceFactor: rowData.AttendanceFactor,
+                    ProcessedAmount: rowData.ProcessedAmount,
+                    ExchangeRate: rowData.ExchangeRate,
+                    AmountInLocalCurrency: rowData.AmountInLocalCurrency,
+                    VariableIncentiveAmount: rowData.VariableIncentiveAmount,
+                    AdvanceAmount: rowData.AdvanceAmount,
+                    NetSalaryAmount: rowData.NetSalaryAmount,
+                    NHIFAmount: rowData.NHIFAmount,
+                    NSSFAmount: rowData.NSSFAmount
+                });
+            }
+
+            var URL = getBaseURL() + '/SalaryProcess/InsertIntoPayrollProcess';
+
+            $.ajax({
+                url: URL,
+                type: 'POST',
+                datatype: 'json',
+                data: { obj: l_pr },
+                async: false,
+                success: function (response) {
+                    if (response.Status) {
+                        $("#btnSavePayrollProcess").attr('disabled', false);
+                        toastr.success("Payroll Processed Successfully");
+                        $("#jqgSalaryProcess").jqGrid("setGridParam", { datatype: "json" })
+                            .trigger("reloadGrid", [{ current: true }]);
+                    }
+                    else {
+                        toastr.error(response.Message);
+                    }
+
+                    $("#btnSavePayrollProcess").attr('disabled', false);
+                },
+                error: function (error) {
+                    toastr.error(error.statusText);
+                    $("#btnSavePayrollProcess").attr('disabled', false);
+                }
+            });
+        }
+        catch
+        {
+            toastr.error("error");
+            $("#btnSavePayrollProcess").attr('disabled', false);
+        }
+    }
+
+    function IsValid() {
+        if (IsStringNullorEmpty($("#cboBusinessLocation").val())) {
+            toastr.warning("Please select the Business location");
+            return false;
+        }
+        if (IsStringNullorEmpty(_payPeriod)) {
+            toastr.warning("Please select the Payperiod");
+            return false;
+        }
+
+        return true;
+    }
+
+</script>

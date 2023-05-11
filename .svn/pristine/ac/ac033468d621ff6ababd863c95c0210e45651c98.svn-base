@@ -1,0 +1,56 @@
+﻿$(document).ready(function () {
+    fnLoadGridItemCustodian();
+    fnLoadCustodianTree();
+    $("#pnlAddItemCustodian").hide();
+})
+
+
+ 
+
+function fnLoadGridItemCustodian() {
+    $("#jqgCustodianStore").jqGrid({
+        data: [{ SupplyGroup: 'Pharmacy', ActiveStatus: true }, { SupplyGroup: 'Laboratory', ActiveStatus: false }],
+        datatype: 'local',
+        colNames: ["Custodian Store", "Is Active"],
+        colModel: [
+            { name: "CustodianStore", width: 170, editable: true, align: 'left', hidden: false },
+            { name: "ActiveStatus", editable: true, width: 45, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: false } },
+        ],
+        rowNum: 100000,
+        pgtext: null,
+        pgbuttons: false,
+        loadonce: true,
+        rownumWidth: 25,
+        viewrecords: false,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+
+    }).jqGrid('navGrid', '#jqgCustodianStore', { add: false, edit: false, search: false, del: false, refresh: false });
+
+}
+
+function fnLoadCustodianTree() {
+    $('#ItemCustodianTree').jstree({
+        'core': {
+            'data': [
+                
+                {
+                    'text': 'Item',
+                    'state': {
+                        'opened': true,
+                        'selected': true
+                    },
+                    'children': [
+                        { 'text': 'Item 1' },
+                        'Item 2'
+                    ]
+                }
+            ]
+        }
+    });
+}

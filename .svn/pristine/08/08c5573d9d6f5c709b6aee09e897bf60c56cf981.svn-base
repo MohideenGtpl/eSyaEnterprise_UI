@@ -1,0 +1,40 @@
+﻿using eSyaEnterprise_UI.Models;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace eSyaEnterprise_UI.DataServices
+{
+    public class UserAccountServices : IUserAccountServices
+    {
+        private readonly IeSyaGatewayServices _eSyaGatewayServices;
+        public UserAccountServices(IeSyaGatewayServices eSyaGatewayServices)
+        {
+            _eSyaGatewayServices = eSyaGatewayServices;
+        }
+
+        public DO_UserFormRole GetFormActionByUser(int businessKey, int userID, ControllerActionDescriptor controllerAction)
+        {
+            try
+            {
+                var area = controllerAction.RouteValues["area"];
+                var controllerName = controllerAction.ControllerName;
+                var actionName = controllerAction.ActionName;
+                var navigationURL = area + "/" + controllerName + "/" + actionName;
+
+                var param = "?businessKey=" + businessKey;
+                param += "&userID=" + userID;
+                param += "&navigationURL=" + navigationURL;
+                var serviceResponse = _eSyaGatewayServices.HttpClientServices.GetAsync<DO_UserFormRole>("UserAccount/GetFormActionByUser" + param).Result;
+                return serviceResponse.Data;
+            }
+            catch (Exception ex)
+            {
+                return new DO_UserFormRole();
+            }
+
+        }
+    }
+}

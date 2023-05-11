@@ -1,0 +1,83 @@
+﻿
+@{
+    ViewData["Title"] = "V_4523_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts{
+    <script src="~/js/eSyaPayrollExpat/VariableIncentive.js"></script>
+}
+
+
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-6 form-group">
+        <label>Business Key</label>
+        @await Component.InvokeAsync("UserBusinessLocation")
+    </div>
+
+    <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+        <label>Pay Period</label>
+        <select class="selectpicker" id="cboPayperiod" data-size="8" onchange=" fnGridLoadIncentiveAmount()"></select>
+
+    </div>
+
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <table id="jqgIncentiveAmount"></table>
+        <div id="jqpIncentiveAmount"></div>
+    </div>
+
+</div>
+<hr />
+<div class="mdl-card__actions text-center pad0 itemblur">
+    <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect marbot15" id="btnSave" onclick="fnSaveIncentiveAmount()"><i class="fa fa-save"></i> Save </button>
+</div>
+@*<div class="modal fade in" id="PopupIncentiveAmount" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+            <div class="modal-content">
+                <div class="modal-header popupHeader">
+                    <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                    <h4 class="modal-title">Add Incentive Amount</h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-9 form-group">
+                            <label class="lable-color">Employee  </label>
+                            <select class="selectpicker" id="cboEmployeenumber" data-size="8"></select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-lg-6 col-md-6 col-sm-9 form-group">
+                            <label>Variable Incentive Amount</label>
+                            <input type="text" value="" id="txtIncentiveAmount" class="form-control integerFormat" maxlength="20" />
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+                            <div class="default-checkbox checkbox-group">
+                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActiveStatus">
+                                    <input type="checkbox" id="chkActiveStatus" class="mdl-checkbox__input">
+                                    <span class="mdl-checkbox__label">Active </span>
+                                </label>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="modal-footer">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveIncentiveAmount" onclick="fnSaveIncentiveAmount()">
+                                    Save
+                                </button>
+                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="btnCancelIncentiveAmount" onclick="fnClearIncentiveAmountFields()"> Cancel </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>*@

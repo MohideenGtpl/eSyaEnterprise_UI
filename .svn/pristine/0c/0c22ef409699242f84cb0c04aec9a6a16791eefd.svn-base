@@ -1,0 +1,222 @@
+﻿
+var actiontype = "";
+function fnGridFixedDeduction() {
+    $("#jqgFixedDeduction").GridUnload();
+
+    $("#jqgFixedDeduction").jqGrid({
+        url: getBaseURL() + '/Employee/GetEmployeeFixedDeductionInfobyEmpNumber?EmpNumber=' + $("#txtEmployeenumber").val(),
+        datatype: 'json',
+        mtype: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        colNames: ["ER Code", "Amount", "No of Installments", "Paid Amount", "Reference Detail","Status","Skip Payroll",""],
+        colModel: [
+            { name: "Ercode", width: 50, align: 'left', editable: true, editoptions: { maxlength: 15 }, resizable: false, hidden: true },
+            { name: "Amount", width: 50, align: 'left', editable: true, editoptions: { maxlength: 50 }, resizable: false, hidden: false },
+            { name: "NoOfinstallment", width: 50, align: 'left', editable: true, editoptions: { maxlength: 50 }, resizable: false },
+            { name: "PaidAmount", width: 55, align: 'left', editable: true, editoptions: { maxlength: 50 }, resizable: false },
+            { name: "ReferenceDetail", width: 95, align: 'left', editable: true, editoptions: { maxlength: 50 }, resizable: false },
+            { name: "Status", editable: true, width: 60, edittype: "select", align: 'left', formatter: 'select', hidden: true, editoptions: { value: "A:Active;C:Closed" } },
+            { name: "SkipinPayroll", width: 35, editable: false, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+           {
+                name: 'edit', search: false, align: 'left', width: 88, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditFixedDeductions(event,\'edit\');"><i class="fa fa-edit"></i>' +'Edit' + '</button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnEditFixedDeductions(event,\'view\');"><i class="far fa-eye"></i>' + 'View' + '</button>'
+                }
+            },
+        ],
+        pager: "#jqpFixedDeduction",
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        scroll: false,
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        forceFit: false,
+        loadComplete: function (data) {
+            //SetGridControlByAction();
+        },
+    }).jqGrid('navGrid', '#jqpFixedDeduction', { add: false, edit: false, search: false, del: false, refresh: false, refreshtext: 'Reload' }).jqGrid('navButtonAdd', '#jqpFixedDeduction', {
+        caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshFixedDeduction
+    }).jqGrid('navButtonAdd', '#jqpFixedDeduction', {
+        caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddFixedDeduction
+    });
+
+    $(window).on("resize", function () {
+        var $grid = $("#jqgFixedDeduction"),
+            newWidth = $grid.closest(".FixedDeductioncontainer").parent().width();
+        $grid.jqGrid("setGridWidth", newWidth, true);
+    });
+    fnAddGridSerialNoHeading();
+}
+
+function fnAddFixedDeduction() {
+    $("#divForm").css("display", "block");
+    $("#divGrid").hide();
+    fnClearFixedDeductionFields();
+    $('#PopupFixedDeduction').find('.modal-title').text("Add Fixed Deduction Details");
+    $('#PopupFixedDeduction').modal('show');
+    $("#btnSaveFixedDeduction").attr("disabled", false);
+    $("#btnSaveFixedDeduction").html('Save');
+    $("#btnSaveFixedDeduction").show();
+    $("#btnCancelFixedDeduction").show();
+    $("#chkSkipPayroll").prop('disabled', false);
+    $("#chkSkipPayroll").parent().addClass("is-checked");
+    $("input,textarea").attr('readonly', false);
+    $("select").next().attr('disabled', false);
+}
+
+function fnEditFixedDeductions(e, actiontype) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgFixedDeduction').jqGrid('getRowData', rowid);
+
+    $("#cboFixeddeductionErcode").val(rowData.Ercode).selectpicker('refresh');
+    $('#cboFixeddeductionErcode').prop('disabled', true).selectpicker('refresh');
+    $("#txtFixeddeductionamount").val(rowData.Amount);
+    $("#txtNoofInstallments").val(rowData.NoOfinstallment);
+    $("#txtFixeddeductionPaidamount").val(rowData.PaidAmount);
+    $("#txtReferencedetail").val(rowData.ReferenceDetail);
+    $("#cboFixeddeductionStatus").val(rowData.Status).selectpicker('refresh');
+    if (rowData.SkipinPayroll == 'true') {
+        $("#chkSkipPayroll").parent().addClass("is-checked");
+    }
+    else {
+        $("#chkSkipPayroll").parent().removeClass("is-checked");
+    }
+    $("#btnSaveFixedDeduction").attr("disabled", false);
+    $('#PopupFixedDeduction').modal('show');
+
+
+    if (actiontype.trim() == "edit") {
+        $('#PopupFixedDeduction').find('.modal-title').text("Update Fixed Deduction Details");
+        $("#btnSaveFixedDeduction").show();
+        $("#btnCancelFixedDeduction").show();
+        $("#btnSaveFixedDeduction").html('Update');
+        $("#chkSkipPayroll").prop('disabled', false);
+        $("input,textarea").attr('readonly', false);
+        $("select").next().attr('disabled', false);
+
+    }
+
+    if (actiontype.trim() == "view") {
+        $('#PopupFixedDeduction').find('.modal-title').text("View Fixed Deduction Details");
+        $("#btnSaveFixedDeduction").attr("disabled", true);
+        $("#btnSaveFixedDeduction").hide();
+        $("#btnCancelFixedDeduction").hide();
+        $("input,textarea").attr('readonly', true);
+        $("select").next().attr('disabled', true);
+        $("#chkSkipPayroll").prop('disabled', true);
+
+    }
+}
+
+
+function fnSaveFixedDeduction() {
+    if (IsValidFixedDeduction() === false) {
+        return;
+    }
+    var objFixed = {
+        BusinessKey: $("#txtBusinesskey").val(),
+        EmployeeNumber: $("#txtEmployeenumber").val(),
+        Ercode: $("#cboFixeddeductionErcode").val(),
+        Amount: $("#txtFixeddeductionamount").val(),
+        NoOfinstallment: $("#txtNoofInstallments").val(),
+        PaidAmount: $("#txtFixeddeductionPaidamount").val(),
+        ReferenceDetail: $("#txtReferencedetail").val(),
+        Status: $("#cboFixeddeductionStatus").val(),
+        SkipinPayroll: $("#chkSkipPayroll").parent().hasClass("is-checked")
+
+    };
+    $("#btnSaveFixedDeduction").attr('disabled', true);
+    $.ajax({
+        url: getBaseURL() + '/Employee/InsertOrUpdateEmployeeFixedDeductionInfo',
+        type: 'POST',
+        datatype: 'json',
+        data: { obj: objFixed },
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                $('#PopupFixedDeduction').modal('hide');
+                fnGridRefreshFixedDeduction();
+                $("#btnSaveFixedDeduction").attr('disabled', false);
+                fnClearFixedDeductionFields();
+                return true;
+            }
+            else {
+                toastr.error(response.Message);
+                $("#btnSaveFixedDeduction").attr('disabled', false);
+                return false;
+            }
+
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnSaveFixedDeduction").attr('disabled', false);
+        }
+    });
+
+}
+
+function IsValidFixedDeduction() {
+    if (IsStringNullorEmpty($("#txtEmployeenumber").val())) {
+        toastr.warning("Please Create Employee details Details");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtBusinesskey").val())) {
+        toastr.warning("Please Create Employee details Details");
+        return false;
+    }
+    if ($("#cboFixeddeductionErcode").val() == 0 || $("#cboFixeddeductionErcode").val() == "0") {
+        toastr.warning("Please select ER Code");
+        return false;
+    }
+
+    if (IsStringNullorEmpty($("#txtFixeddeductionamount").val())) {
+        toastr.warning("Please Enter Amount");
+        return false;
+    }
+
+    if (IsStringNullorEmpty($("#txtNoofInstallments").val())) {
+        toastr.warning("Please Enter No of Installments");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtFixeddeductionPaidamount").val())) {
+        toastr.warning("Please Enter Paid Amount");
+        return false;
+    }
+    if ($("#cboFixeddeductionStatus").val() == 0 || $("#cboFixeddeductionStatus").val() == "0") {
+        toastr.warning("Please select Status");
+        return false;
+    }
+}
+
+
+function fnGridRefreshFixedDeduction() {
+    $("#jqgFixedDeduction").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+function fnClearFixedDeductionFields() {
+    $("#cboFixeddeductionErcode").val('0').selectpicker('refresh');
+    $('#cboFixeddeductionErcode').prop('disabled', false).selectpicker('refresh');
+    $("#cboFixeddeductionStatus").val('0').selectpicker('refresh');
+    $("#txtFixeddeductionamount").val('');
+    $("#txtNoofInstallments").val('');
+    $("#txtFixeddeductionPaidamount").val('');
+    $("#txtReferencedetail").val('');
+    $("#chkSkipPayroll").parent().addClass("is-checked");
+    $("#btnSaveFixedDeduction").attr("disabled", false);
+    $("#btnSaveFixedDeduction").html("Save");
+}
+
+
+$("#btnCancelFixedDeduction").click(function () {
+    $("#jqgFixedDeduction").jqGrid('resetSelection');
+    $('#PopupFixedDeduction').modal('hide');
+    fnClearFixedDeductionFields();
+});

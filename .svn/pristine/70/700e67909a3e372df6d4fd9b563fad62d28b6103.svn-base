@@ -1,0 +1,76 @@
+﻿$(function () {
+    fnLoadDocumentSubmission();
+    $.contextMenu({
+        selector: "#btnDocumentSubmission",
+        trigger: 'left',
+        items: {
+            jqgEdit: { name: localization.Edit, icon: "edit", callback: function (key, opt) { fnEditDocumentSubmission(event, 'edit') } },
+            jqgView: { name: localization.View, icon: "view", callback: function (key, opt) { fnEditDocumentSubmission(event, 'view') } },
+            jqgDelete: { name: localization.Delete, icon: "delete", callback: function (key, opt) { fnEditDocumentSubmission(event, 'delete') } },
+        }
+    });
+    $(".context-menu-icon-edit").html("<span class='icon-contextMenu'><i class='fa fa-pen'></i>" + localization.Edit + " </span>");
+    $(".context-menu-icon-view").html("<span class='icon-contextMenu'><i class='fa fa-eye'></i>" + localization.View + " </span>");
+    $(".context-menu-icon-delete").html("<span class='icon-contextMenu'><i class='fa fa-trash'></i>" + localization.Delete + " </span>");
+})
+function fnLoadDocumentSubmission() {
+    $("#jqgDocumentSubmission").jqGrid('GridUnload');
+    $("#jqgDocumentSubmission").jqGrid({
+      //  url: getBaseURL() + '',
+        datatype: 'json',
+        mtype: 'GET',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: [localization.DocumentID, localization.DocumentDesc, localization.ActiveStatus, localization.Actions],
+
+        colModel: [
+
+            { name: "DocumentID", width: 250, editable: false, align: 'left', hidden: false },
+            { name: "DocumentDesc", width: 250, editable: false, align: 'left' },
+            {
+                name: "Status", width: 200, editable: true, align: 'center', hidden: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true }
+            },
+            {
+                name: 'edit', search: false, align: 'center', width: 35, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="mr-1 btn btn-outline" id="btnDocumentSubmission"><i class="fa fa-ellipsis-v"></i></button>'
+                }
+            },
+        ],
+        rowNum: 10,
+        rowList: [10, 20, 30, 50],
+        emptyrecords: "No records to Veiw",
+        pager: "#jqpDocumentSubmission",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: false,
+        height: 'auto',
+        width: 'auto',
+        scroll: false,
+        autowidth: true,
+        shrinkToFit: true,
+        forceFit: true,
+        loadonce: true,
+        cellEdit: true,
+        
+        loadComplete: function (data) {
+            $("#jqgDocumentSubmission").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+        }
+    }).jqGrid('navGrid', '#jqpDocumentSubmission', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpDocumentSubmission', {
+        caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshDocumentSubmission
+        }).jqGrid('navButtonAdd', '#jqpDocumentSubmission', {
+            caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddjqpDocumentSubmission
+    });
+    
+    fnAddGridSerialNoHeading();
+}
+
+function fnAddjqpDocumentSubmission() {
+    $("#PopupDocumentSubmission").modal('show');
+}
+function fnEditDocumentSubmission(e, actiontype) {
+
+}
+function fnGridRefreshDocumentSubmission() {
+    $("#jqgDocumentSubmission").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}

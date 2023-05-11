@@ -1,0 +1,121 @@
+﻿
+@{
+    ViewData["Title"] = "V_116_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts{
+    <script src="~/js/Config/SMSToWhom.js"></script>
+}
+<div class="row padbot10">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <table id="jqgSMSToWhom"></table>
+        <div id="jqpSMSToWhom"></div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <p class="subheading">eSya Parameters</p>
+        <hr class="left" />
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 padbot10">
+        <div class="SpecialtyParameterContainer">
+            <table id="jqgSpecialtyParameter"></table>
+            <div id="jqpSpecialtyParameter"></div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<div class="modal fullscreen fade in" id="PopupSMSToWhom">
+    <div class="modal-dialog modal-lg  " role="document" style="box-shadow:none;">
+        <div class="modal-content ">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Add SMS To Whom</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <input type="text" class="form-control" id="" style="display:none">
+                    </div>
+                </div>
+                <div class="row padbot4">
+                    <div class="col-lg-9">
+                        <div class="form-group">
+                            <label>SMS Description</label>
+                            <select class="selectpicker form-control">
+                                <option value="0">Choose SMS Description</option>
+                            </select>
+
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12 col-md-12 col-sm-12 form-group">
+                        <table id="jqgSMSRecipient"></table>
+                        <div id="jqpSMSRecipient"></div>
+                    </div>
+
+                </div>
+                        <section class="bg-white">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <div class="form-group">
+                                        <label for="txtRecipientName">Recipient Name</label>
+                                        <input id="txtRecipientName" class="form-control" maxlength="50" type="text" />
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6 col-sm-6">
+                                    <div class="form-group">
+                                        <label for="txtMobileNumber">Mobile Number</label>
+                                        <select class="selectpicker one-fourth">
+                                            <option value="value">Choose ISD Code</option>
+                                        </select>
+                                        <input id="txtMobileNumber" class="form-control three-fourth" maxlength="50" type="text" />
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <div class="form-group">
+                                        <label for="txtRemarks">Remarks</label>
+                                        <input id="txtRemarks" class="form-control" maxlength="50" type="text" />
+                                    </div>
+                                </div>
+                                <div class="col-lg-2  col-md-3 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <label class="lable-color">Active Status</label>
+                                        <div>
+                                            <select class="selectpicker" data-live-search="false" id="cboActiveStatus" title="">
+                                                <option value="true">Active</option>
+                                                <option value="false">Inactive</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    
+                    
+
+                  
+               
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveSMSToWhom" onclick="fnSaveSMSToWhom();">
+                            Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="btnCancelSMSToWhom"> Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

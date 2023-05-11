@@ -1,0 +1,199 @@
+﻿var ServiceClassID = "0"
+var ServiceGroupID = "0"
+var ServiceTypeID = "0"
+var ServiceID = "0"
+
+$(document).ready(function () {
+    fnLoadServiceCodeTree()
+    $("#txtServiceCost").val('0');
+    $('#chkActiveStatus').parent().addClass("is-checked");
+    $("#btnSMAdd").attr("disabled", _userFormRole.IsInsert === false);
+});
+function fnLoadServiceCodeTree() {
+    $.ajax({
+        url: getBaseURL() + '/ServiceManagement/GetServiceCodes',
+        type: 'GET',
+        datatype: 'json',
+        contentType: 'application/json; charset=utf-8',
+        async: false,
+        success: function (result) {
+            $("#ServiceCodeTree").jstree({ core: { data: result, multiple: false } });
+        },
+        error: function (error) {
+            alert(error.statusText)
+        }
+    });
+    $('#ServiceCodeTree').on("changed.jstree", function (e, data) {
+        
+        if (data.node != undefined) {
+            var parentNode = $("#ServiceCodeTree").jstree(true).get_parent(data.node.id);
+            
+            if (parentNode == "#" || parentNode.startsWith('T'))
+            {
+                //$("#dvServiceCode").hide();
+            }
+            else if (parentNode.startsWith('G') || parentNode.startsWith('C'))
+            {
+                if (data.node.id.startsWith('C')) {
+                    $("#pnlAddServiceClass .mdl-card__title-text").text("Add Service Code");
+                    $("#txtServiceDesc").val('');
+                    $("#txtServiceShortDesc").val('');
+                    $("#txtServiceCost").val('0');
+                    $("#cboGender").val('B');
+                    $('#cboGender').selectpicker('refresh');
+                    $('#chkBillable').parent().removeClass("is-checked");
+                    $('#chkActiveStatus').parent().addClass("is-checked");
+                    $("#btnSMAdd").html("<i class='fa fa-plus'></i> Save");
+                    $("#btnSMAdd").attr("disabled", _userFormRole.IsInsert === false);
+                    $("#dvServiceCode").show();
+                    ServiceClassID = data.node.id.substring(1);
+                    if (parentNode.startsWith('G')) {
+                        ServiceGroupID = parentNode.substring(1);
+                    }
+                    else {
+                        ServiceGroupID = $("#ServiceCodeTree").jstree(true).get_parent(parentNode);
+                        while (ServiceGroupID.startsWith('C')) {
+                            ServiceGroupID = $("#ServiceCodeTree").jstree(true).get_parent(ServiceGroupID);
+                        };
+                        ServiceGroupID = ServiceGroupID.substring(1);
+                    }
+                    ServiceTypeID = $("#ServiceCodeTree").jstree(true).get_parent("G" + ServiceGroupID).substring(1);
+                    ServiceID="0"
+                    eSyaParams.ClearValue();
+                }
+                else {
+                    $("#pnlAddServiceClass .mdl-card__title-text").text("Edit Service Code");
+                    $("#btnSMAdd").html("<i class='fa fa-sync'></i> Update");
+                    $("#btnSMAdd").attr("disabled", _userFormRole.IsEdit === false);
+                    $("#dvServiceCode").show();
+                    ServiceID = data.node.id;
+                    fnFillServiceDetail(ServiceID);
+                    
+                }
+            }
+         }
+    });
+}
+function fnFillServiceDetail(ServiceID) {
+    $.ajax({
+        url: getBaseURL() + '/ServiceManagement/GetServiceCodeByID',
+        data: {
+            ServiceID: ServiceID
+        },
+        success: function (result) {
+            $("#txtServiceDesc").val(result.ServiceDesc);
+            $("#txtServiceShortDesc").val(result.ServiceShortDesc);
+            $("#txtServiceCost").val(result.ServiceCost);
+            $("#cboGender").val(result.Gender);
+            $('#cboGender').selectpicker('refresh');
+            if (result.IsServiceBillable == true) {
+                $('#chkBillable').parent().addClass("is-checked");
+            }
+            else {
+                $('#chkBillable').parent().removeClass("is-checked");
+            };
+                
+            if (result.ActiveStatus == true) {
+                $('#chkActiveStatus').parent().addClass("is-checked");
+            }
+            else {
+                $('#chkActiveStatus').parent().removeClass("is-checked");
+            };
+                
+            eSyaParams.ClearValue();
+            eSyaParams.SetJSONValue(result.l_ServiceParameter);
+        }
+    });
+
+}
+function fnAddOrUpdateServiceCode() {
+    if (ServiceClassID == "0" && ServiceID == "0" ) {
+        toastr.error("Please select a Service Class");
+        return false;
+    };
+
+    var txtServiceDesc = $("#txtServiceDesc").val();
+    var txtServiceShortDesc = $("#txtServiceShortDesc").val();
+    var txtServiceCost = $("#txtServiceCost").val();
+    if (txtServiceDesc == "" || txtServiceDesc == null || txtServiceDesc == undefined) {
+        toastr.error("Please enter the Service Description");
+        return false;
+    }
+    else if (txtServiceShortDesc == "" || txtServiceShortDesc == null || txtServiceShortDesc == undefined) {
+        toastr.error("Please enter the Service Short Description");
+        return false;
+    }
+    else if (txtServiceCost == "" || txtServiceCost == null || txtServiceCost == undefined) {
+        toastr.error("Please enter the Service Cost");
+        return false;
+    }
+       
+
+    else {
+
+        $("#btnSMAdd").attr("disabled", true);
+        var sPar = eSyaParams.GetJSONValue();
+        var obj = {
+            ServiceTypeID: ServiceTypeID,
+            ServiceGroupID: ServiceGroupID,
+            ServiceClassID: ServiceClassID,
+            ServiceID: ServiceID,
+            ServiceDesc: $("#txtServiceDesc").val(),
+            ServiceShortDesc: $("#txtServiceShortDesc").val(),
+            ServiceCost: $("#txtServiceCost").val(),
+            Gender: $("#cboGender").val(),
+            IsServiceBillable: $("#chkBillable").parent().hasClass("is-checked"),
+            ActiveStatus: $("#chkActiveStatus").parent().hasClass("is-checked"),
+            l_ServiceParameter: sPar
+        }
+        $.ajax({
+            url: getBaseURL() + '/ServiceManagement/AddOrUpdateServiceCode',
+            type: 'POST',
+            datatype: 'json',
+            data: {
+                obj
+            },
+            async: false,
+            success: function (response) {
+                if (response.Status == true) {
+                    if (ServiceID == 0) {
+                        toastr.success("Service Code Added");
+                        $("#txtServiceDesc").val('');
+                        $("#txtServiceShortDesc").val('');
+                        $("#txtServiceCost").val('0');
+                        $("#cboGender").val('B');
+                        $('#cboGender').selectpicker('refresh');
+                        $('#chkBillable').parent().removeClass("is-checked");
+                        $('#chkActiveStatus').parent().addClass("is-checked");
+                        ServiceTypeID = "0";
+                        ServiceGroupID = "0";
+                        ServiceClassID = "0";
+                        ServiceID = "0";
+                        eSyaParams.ClearValue();
+                        
+                    }
+                    else {
+                        toastr.success("Service Code Updated");
+                    }
+                    $("#ServiceCodeTree").jstree("destroy");
+                    fnLoadServiceCodeTree();
+
+                }
+                else {
+                    toastr.error(response.Message);
+                }
+                $("#btnSMAdd").attr("disabled", false);
+            },
+            error: function (error) {
+                toastr.error(error.statusText);
+                $("#btnSMAdd").attr("disabled", false);
+            }
+        });
+    }
+}
+function fnExpandAll() {
+    $("#ServiceCodeTree").jstree('open_all');
+}
+function fnCollapseAll() {
+    $("#ServiceCodeTree").jstree('close_all');
+}

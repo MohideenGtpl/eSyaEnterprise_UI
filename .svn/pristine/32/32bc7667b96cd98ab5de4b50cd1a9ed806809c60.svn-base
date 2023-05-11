@@ -1,0 +1,368 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "V_2001_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/jsTree.css" rel="stylesheet" />
+@section scripts{
+    <script src="~/js/jsTree.js"></script>
+}
+@{
+    var userFormRole = (eSyaEnterprise_UI.Models.DO_UserFormRole)ViewBag.UserFormRole;
+}
+<script>
+    var _userFormRole = JSON.parse('@Html.Raw(Json.Serialize(userFormRole))');
+
+      var localization = {
+          AddAssetGroup: '@Localizer["AddAssetGroup"]',
+          AssetGroup: '@Localizer["AssetGroup"]',
+          EditAssetGroup: '@Localizer["EditAssetGroup"]',
+          ViewAssetGroup: '@Localizer["ViewAssetGroup"]',
+          Save: '@Localizer["Save"]',
+          Update: '@Localizer["Update"]',
+
+    };
+</script>
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-6" id="divJsFixedAsset">
+        <div id="jsFixedAsset"></div>
+    </div>
+
+    <div class="col-lg-6 col-md-6 col-sm-6">
+        <div class="mdl-shadow--2dp marbot15 fullwidth" id="pnlAddForms" style="width: 100%; display:none">
+            <div class="mdl-card__title mdl-card--expand padleft0 padtop0 h-60 d-block">
+                <h5 class="mdl-card__title-text"> Add Asset Group</h5>
+            </div>
+            <div class="p-x-15 fullwidth">
+                <div class="row ">
+                    <div class="col-sm-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label> @Localizer["AssetGroup"] </label>
+                            <select class="selectpicker" data-live-search="true" data-size="5" id="cboAssetGroup" title="Select" asp-items="@ViewBag.AssetGroupList">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label> @Localizer["SubGroup"] </label>
+                            <select class="selectpicker" data-live-search="true" data-size="5" id="cboAssetSubGroup" title="Select" asp-items="@ViewBag.AssetSubGroupList">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row ">
+                    <div class="col-sm-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActiveStatus">
+                                <input type="checkbox" id="chkActiveStatus" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">@Localizer["Active"]</span>
+                            </label>
+                        </div>
+                    </div>
+                    </div>
+                    <hr class="mar0" />
+                </div>
+
+            
+
+
+            <div class="mdl-card__actions text-center pad15">
+
+                <button type="button" class="btn btn-primary m-r-15" id="btnSaveAssetGroup" @(userFormRole.IsInsert ? "" : "disabled") onclick="fnSaveAssetGroup()">@Localizer["Save"] </button>
+                <button type="button" class="btn btn-danger" id="btnCancelAssetGroup" onclick="fnClearAssetGroup()">@Localizer["Cancel"] </button>
+
+            </div>
+        </div>
+
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+        <div>
+            <h5 class="martop0">@Localizer["Action"]</h5>
+        </div>
+        <div class="row">
+           
+            <div class="col-lg-12 padbot10">
+                <button class="mdl-button mdl-js-button mdl-button--raised primary-button btn-action" id="btnExpandAll">
+                    <i class="fas fa-expand m-r-5" style="color:#fff !important"></i> @Localizer["ExpandAll"] 
+                </button>
+            </div>
+            <div class="col-lg-12 padbot10">
+                <button class="mdl-button mdl-js-button mdl-button--raised primary-button btn-action" id="btnCollapseAll">
+                    <i class="fas fa-compress m-r-5" style="color:#fff !important"></i> @Localizer["CollapseAll"]  
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+
+</script>
+<script type="text/javascript">
+    var NodeID;
+    var SubNodeID;
+    var prevSelectedID;
+    var StatusID;
+    var _isadd;
+
+    $(function () {
+        $("#pnlAddForms").hide();
+       
+        LoadAssetGroupAndSubGroupTree();
+    });
+
+    function LoadAssetGroupAndSubGroupTree() {
+        $.ajax({
+            url: getBaseURL() + '/FixedAssets/GetAssetGroupAndSubGroupTree',
+            success: function (result) {
+                fnGetAssetGroupAndSubGroup_Success(result);
+               
+            },
+            error: function (error) {
+                toastr.error(error.status);
+            }
+        });
+    }
+
+    function fnGetAssetGroupAndSubGroup_Success(dataArray) {
+        $("#jsFixedAsset").jstree({
+            "state": { "checkbox_disabled": true },
+            "checkbox": {
+                "keep_selected_style": false
+            },
+            core: { 'data': dataArray, 'check_callback': true, 'multiple': true }
+
+        });
+
+        $("#jsFixedAsset").on('loaded.jstree', function () {
+            $("#jsFixedAsset").jstree('open_all');
+            $("#jsFixedAsset").jstree()._open_to(prevSelectedID);
+            $('#jsFixedAsset').jstree().select_node(prevSelectedID);
+
+        });
+
+        $('#jsFixedAsset').on("changed.jstree", function (e, data) {
+            if (data.node != undefined) {
+                if (prevSelectedID != data.node.id) {
+                    prevSelectedID = data.node.id;
+
+                    if (data.node.id == "0") {
+                        fnClearAssetGroup();
+                        $("#pnlAddForms").hide();
+                    }
+                    else {
+
+                        $('#View').remove();
+                        $('#Edit').remove();
+                        $('#Add').remove();
+
+                        $("#pnlAddForms").hide();
+
+                        if (data.node.parent == "#") {
+                            $('#' + data.node.id + "_anchor").html($('#' + data.node.id + "_anchor").html() + '<span id="Add" style="padding-left:10px;padding-right:10px">&nbsp;<i class="fa fa-plus" style="color:#337ab7"aria-hidden="true"></i></span>')
+
+                            $('#Add').on('click', function () {
+                                if (_userFormRole.IsInsert === false) {
+                                    $('#pnlAddForms').hide();
+                                    toastr.warning(errorMsgCS["E003"]);
+                                    return;
+                                }
+                                _isadd = 1;
+                                $("#pnlAddForms").show();
+                                $(".mdl-card__title-text").text(localization.AddAssetGroup);
+                                fnClearAssetGroup();
+                                $('#cboAssetGroup').prop('disabled', false).selectpicker('refresh');
+                                $('#cboAssetSubGroup').prop('disabled', false).selectpicker('refresh');
+                                $('#chkActiveStatus').prop("disabled", false);
+                                $("#btnSaveAssetGroup").show();
+                                $("input,textarea").attr('readonly', false);
+                                $("input[type=checkbox]").attr('disabled', false);
+                                $("#btnSaveAssetGroup").html('<i class="fa fa-save"></i> ' + localization.Save);
+                            });
+                        }
+                        else if (data.node.id.startsWith("S_")) {
+                            _isadd = 0;
+                            NodeID = 0;
+                            SubNodeID = 0;
+                            StatusID = 0;
+                            NodeID = data.node.id.substring(2).split("_")[0];
+                            SubNodeID = data.node.id.substring(2).split("_")[1];
+                            StatusID = data.node.id.substring(2).split("_")[2];
+                            $('#cboAssetGroup').val(NodeID).selectpicker('refresh');
+                            $('#cboAssetSubGroup').val(SubNodeID).selectpicker('refresh');
+                            $('#cboAssetGroup').prop('disabled', true).selectpicker('refresh');
+                            $('#cboAssetSubGroup').prop('disabled', true).selectpicker('refresh');
+
+                            if (StatusID == "True") {
+                                $("#chkActiveStatus").parent().addClass("is-checked");
+                            }
+                            else { $('#chkActiveStatus').parent().removeClass("is-checked"); }
+                            $('#chkActiveStatus').prop("disabled", false);
+
+                            $('#' + data.node.id + "_anchor").html($('#' + data.node.id + "_anchor").html() + '<span id="View" style="padding-left:10px">&nbsp;<i class="fa fa-eye" style="color:#337ab7"aria-hidden="true"></i></span>')
+                            $('#' + data.node.id + "_anchor").html($('#' + data.node.id + "_anchor").html() + '<span id="Edit" style="padding-left:10px">&nbsp;<i class="fa fa-pen" style="color:#337ab7"aria-hidden="true"></i></span>')
+                           
+                            
+
+
+                            $('#View').on('click', function () {
+
+                                if (_userFormRole.IsView === false) {
+                                    $('#pnlAddForms').hide();
+                                    toastr.warning(errorMsgCS["E001"]);
+                                    return;
+                                }
+
+                                $("#pnlAddForms").show();
+                                $(".mdl-card__title-text").text(localization.ViewAssetGroup);
+                                NodeID = 0;
+                                SubNodeID = 0;
+                                StatusID = 0;
+                                _isadd = 0;
+                                NodeID = data.node.id.substring(2).split("_")[0];
+                                SubNodeID = data.node.id.substring(2).split("_")[1];
+                                StatusID = data.node.id.substring(2).split("_")[2];
+                                $('#cboAssetGroup').val(NodeID).selectpicker('refresh');
+                                $('#cboAssetSubGroup').val(SubNodeID).selectpicker('refresh');
+                                $('#cboAssetGroup').prop('disabled', true).selectpicker('refresh');
+                                $('#cboAssetSubGroup').prop('disabled', true).selectpicker('refresh');
+                                if (StatusID == "True") {
+                                    $("#chkActiveStatus").parent().addClass("is-checked");
+                                }
+                                else { $('#chkActiveStatus').parent().removeClass("is-checked"); }
+                                $('#chkActiveStatus').prop("disabled", true);
+                                $("#btnSaveAssetGroup").hide();
+                                $("input,textarea").attr('readonly', true);
+                                $("input[type=checkbox]").attr('disabled', true);
+                            });
+
+                            $('#Edit').on('click', function () {
+                                if (_userFormRole.IsEdit === false) {
+                                    $('#pnlAddForms').hide();
+                                    toastr.warning(errorMsgCS["E002"]);
+                                    return;
+                                }
+
+                                $("#pnlAddForms").show();
+                                $(".mdl-card__title-text").text(localization.EditAssetGroup);
+                                NodeID = 0;
+                                SubNodeID = 0;
+                                StatusID = 0;
+                                _isadd = 0;
+                                NodeID = data.node.id.substring(2).split("_")[0];
+                                SubNodeID = data.node.id.substring(2).split("_")[1];
+                                StatusID = data.node.id.substring(2).split("_")[2];
+                                $('#cboAssetGroup').val(NodeID).selectpicker('refresh');
+                                $('#cboAssetSubGroup').val(SubNodeID).selectpicker('refresh');
+                                $('#cboAssetGroup').prop('disabled', true).selectpicker('refresh');
+                                $('#cboAssetSubGroup').prop('disabled', true).selectpicker('refresh');
+                                if (StatusID == "True") {
+                                    $("#chkActiveStatus").parent().addClass("is-checked");
+                                }
+                                else { $('#chkActiveStatus').parent().removeClass("is-checked"); }
+                                $('#chkActiveStatus').prop("disabled", false);
+                                $("#btnSaveAssetGroup").show();
+                                $("input,textarea").attr('readonly', false);
+                                $("input[type=checkbox]").attr('disabled', false);
+
+                                $("#btnSaveAssetGroup").html('<i class="fa fa-sync"></i> ' + localization.Update);
+                            });
+                        }
+                        else {
+                            fnClearAssetGroup();
+                            $("#pnlAddForms").hide();
+                        }
+                    }
+                }
+            }
+        });
+
+        $('#jsFixedAsset').on("close_node.jstree", function (node) {
+            var closingNode = node.handleObj.handler.arguments[1].node;
+            $('#jsFixedAsset').jstree().deselect_node(closingNode.children);
+        });
+        fnTreeSize('#divJsFixedAsset');
+    };
+     
+    function fnSaveAssetGroup() {
+
+        if (fnValidateBeforeSave() == false)
+            return;
+
+        $("#btnSaveAssetGroup").attr('disabled', true);
+
+        var a_grp =
+        {
+            AssetGroupID: $('#cboAssetGroup').val(),
+            AssetSubGroupID: $('#cboAssetSubGroup').val(),
+            ActiveStatus: $("#chkActiveStatus").parent().hasClass("is-checked")
+        };
+        $.ajax({
+            url: getBaseURL() + '/FixedAssets/InsertAssetGroup',
+            type: 'POST',
+            datatype: 'json',
+            //data: a_grp,
+            data: { isadd: _isadd, a_grp },
+            success: function (response) {
+                if (response.Status) {
+                    toastr.success(response.Message);
+                    $("#btnSaveAssetGroup").html('<i class="fa fa-spinner fa-spin"></i> wait');
+                    $("#btnSaveAssetGroup").attr('disabled', true);
+
+                    $('#jsFixedAsset').jstree("destroy");
+                    LoadAssetGroupAndSubGroupTree();
+                    fnClearAssetGroup();
+                }
+                else {
+                    toastr.error(response.Message);
+                    $("#btnSaveAssetGroup").attr('disabled', false);
+                }
+
+                $("#btnSaveAssetGroup").html('<i class="fa fa-plus"></i> Add');
+                $("#btnSaveAssetGroup").attr('disabled', false);
+            },
+            error: function (error) {
+                toastr.error(error.statusText);
+                $("#btnSaveAssetGroup").attr("disabled", false);
+                $("#btnSaveAssetGroup").html('<i class="fa fa-plus"></i> Add');
+            }
+        });
+    }
+
+    function fnClearAssetGroup() {
+        $('#cboAssetGroup').val('').selectpicker('refresh');
+        $('#cboAssetSubGroup').val('').selectpicker('refresh');
+        $("#chkActiveStatus").parent().addClass("is-checked");
+    }
+   
+    $('#btnExpandAll').click(function () {
+        $("#jsFixedAsset").jstree('open_all');
+    });
+
+    $('#btnCollapseAll').click(function () {
+        $("#jsFixedAsset").jstree('close_all');
+    });
+
+    function fnValidateBeforeSave() {
+
+        if ($('#cboAssetGroup').val() == "" || $('#cboAssetGroup').val() == null) {
+            toastr.warning("Please Select Asset Group");
+            return false;
+        }
+        if ($('#cboAssetSubGroup').val() == "" || $('#cboAssetSubGroup').val() == null) {
+            toastr.warning("Please Select Asset Sub Group");
+            return false;
+        }
+        return true;
+    }
+
+</script>
+

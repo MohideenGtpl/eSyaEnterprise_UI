@@ -1,0 +1,370 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewData["Title"] = @Localizer["Generics"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="~/css/jsTree.css" />
+<link href="~/css/jquery.contextMenu.min.css" rel="stylesheet" />
+@section scripts{
+    <script src="~/js/eSyaPharma/DrugGenerics.js"></script>
+    <script src="~/js/jsTree.js"></script>
+    <script src="~/js/jquery.contextMenu.min.js"></script>
+}
+<script>
+    @*//var _userFormRole = JSON.parse('@Html.Raw(Json.Serialize(userFormRole))');*@
+
+    var localization = {
+        GenericId: '@Localizer["GenericId"]',
+        Generics: '@Localizer["Generics"]',
+        IsCombinationDrugs: '@Localizer["IsCombinationDrugs"]',
+        PharmacyGroup: '@Localizer["PharmacyGroup"]',
+        PharmacyGroupDesc: '@Localizer["PharmacyGroupDesc"]',
+        UsedinTreatOf: '@Localizer["UsedinTreatOf"]',
+        UsedinTreatOfDesc: '@Localizer["UsedinTreatOfDesc"]',
+        TheraupaticClass: '@Localizer["TheraupaticClass"]',
+        TheraupaticClassDesc: '@Localizer["TheraupaticClassDesc"]',
+        Usagestatus: '@Localizer["Usagestatus"]',
+        Active: '@Localizer["Active"]',
+        Actions: '@Localizer["Actions"]',
+        Edit: '@Localizer["Edit"]',
+        View: '@Localizer["View"]',
+        Save: '@Localizer["Save"]',
+        Update: '@Localizer["Update"]',
+         AddGeneric: '@Localizer["AddGeneric"]',
+
+        ViewGeneric: '@Localizer["ViewGeneric"]',
+        EditGeneric: '@Localizer["EditGeneric"]',
+
+    };
+
+
+
+
+</script>
+
+<section id="divGridDrugCategories">
+
+    <div class="row form-group">
+        <div class="col-lg-3 col-md-4 col-sm-6">
+
+
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <label class="btn btn-outline-primary active" id="lblGridView">
+                    <input type="radio" name="options" id=" " autocomplete="off" checked><i class="fa fa-th"></i> Grid View
+                </label>
+                <label class="btn btn-outline-primary" id="lblTreeView">
+                    <input type="radio" name="options" id="rdTreeView" autocomplete="off"><i class="fa fa-tree"></i> Tree View
+                </label>
+
+            </div>
+        </div>
+    </div>
+
+</section>
+<section id="divGridSection">
+    <div class="row padbot10">
+
+        <div class="col-lg-12 col-xl-12 col-sm-12 form-group" id="divAlphabets">
+            <label>@Localizer["ChooseDrugGenericsbyalphabets"]</label>
+            <span class="dot">A</span>
+            <span class="dot">B</span>
+            <span class="dot">C</span>
+            <span class="dot">D</span>
+            <span class="dot">E</span>
+            <span class="dot">F</span>
+            <span class="dot">G</span>
+            <span class="dot">H</span>
+            <span class="dot">I</span>
+            <span class="dot">J</span>
+            <span class="dot">K</span>
+            <span class="dot">L</span>
+            <span class="dot">M</span>
+            <span class="dot">N</span>
+            <span class="dot">O</span>
+            <span class="dot">P</span>
+            <span class="dot">Q</span>
+            <span class="dot">R</span>
+            <span class="dot">S</span>
+            <span class="dot">T</span>
+            <span class="dot">U</span>
+            <span class="dot">V</span>
+            <span class="dot">W</span>
+            <span class="dot">X</span>
+            <span class="dot">Y</span>
+            <span class="dot">Z</span>
+            <span class="dot">0-9</span>
+            <span class="dot">All</span>
+        </div>
+        <div class="row form-group" style="display:none" id="divSearch">
+            <div class="col-lg-12 col-xl-12 col-sm-4 pad0">
+                <span id="lblBackToAlphabets">
+                    <i class="fa fa-chevron-left"></i> Drugs  A to Z
+                </span>
+                <p class="d-inline-b mar0">
+                    Drugs:<span id="lblSelectedAlphabets"></span> <i class="fas fa-long-arrow-alt-right"></i>
+                </p>
+                <div class="filter-div d-inline-b"></div>
+            </div>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <table id="jqgDrugCategories"></table>
+            <div id="jqpDrugCategories"></div>
+        </div>
+    </div>
+</section>
+<section id="divTreeSection" style="display:none">
+    <div class="row row-bottom-pad">
+        <div class="col-sm-4 col-md-4 col-lg-4">
+
+            <div id="jsTreeGeneric">
+
+            </div>
+        </div>
+        <div class="col-sm-1 col-md-1 col-lg-1"></div>
+        <div id="dvGeneric" class="col-lg-5 col-md-5 col-sm-5 f-right" style="display:none;">
+
+            <div class="demo-card-square mdl-card mdl-shadow--2dp marbot15 fullwidth" id="pnlAddGeneric">
+                <div class="mdl-card__title mdl-card--expand padleft0 padtop0 d-block">
+                    <h5 class="mdl-card__title-text">@Localizer["AddGeneric"] </h5>
+                </div>
+                <div class="mdl-card__supporting-text fullwidth padbot0">
+                    <div class="row">
+                        <div class="col-lg-12 collapse">
+                            <div class="form-group">
+                                <label for="txtGenericId-t"> @Localizer["GenericId"]</label>
+                                <input id="txtGenericId-t" class="form-control" maxlength="10" type="text" />
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                            <div class="form-group">
+                                <label for="txtGenerics-t"> @Localizer["Generics"]</label>
+                                <input id="txtGenerics-t" type="text" class="form-control" maxlength="100" />
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-md-3 col-sm-6">
+                            <div class="default-checkbox">
+                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsCombinationDrug-t">
+                                    <input type="checkbox" id="chkIsCombinationDrug-t" class="mdl-checkbox__input">
+                                    <span class="mdl-checkbox__label"> @Localizer["IsCombinationDrugs"]</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                            <div class="form-group">
+                                <label> @Localizer["PharmacyGroup"] </label>
+                                <select class="selectpicker" data-live-search="true" id="cboPharmacyGroup-t" title="Select" data-size="8">
+                                    <option value="0">Select</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                            <div class="form-group">
+                                <label> @Localizer["TheraupaticClass"] </label>
+                                <select class="selectpicker" data-live-search="true" id="cboTheraupaticClass-t" title="Select" data-size="8">
+                                    <option value="0">Select</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                            <div class="form-group">
+                                <label> @Localizer["UsedinTreatOf"] </label>
+                                <select class="selectpicker" data-live-search="true" id="cboUsedinTreatOf-t" title="Select" data-size="8">
+                                    <option value="0">Select</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                            <div class="default-checkbox padtop0">
+                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActiveStatus-t">
+                                    <input type="checkbox" id="chkActiveStatus-t" class="mdl-checkbox__input">
+                                    <span class="mdl-checkbox__label">@Localizer["Active"]</span>
+                                </label>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
+
+
+                </div>
+                <div class="mdl-card__actions text-center">
+                    <hr />
+                    <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" id="btnSaveDrugCategory-t" onclick="fnSaveDrugCategory('Tree')"><i class="fa fa-save"></i> @Localizer[" Save "]</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 hide-in-smallscreen divTreeActions" style="display:none;">
+            <div>
+                <h5>@Localizer["Action"]</h5>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 btn_pdnTop">
+                    <button class="mdl-button mdl-js-button mdl-button--raised cancel-button btn_wdth" id="btnDelete" onclick="fnDeleteNode()">
+                        <i class="fa fa-times"></i>     @Localizer["DeleteNode"]
+                    </button>
+                </div>
+                <div class="col-lg-12 btn_pdnTop">
+                    <button class="mdl-button mdl-js-button mdl-button--raised primary-button btn_wdth" id="btnMoveUp" onclick="fnMoveItemUpDown('U')">
+                        <i class="fas fa-arrow-up"></i>   @Localizer["MoveUp"]
+                    </button>
+                </div>
+                <div class="col-lg-12 btn_pdnTop">
+                    <button class="mdl-button mdl-js-button mdl-button--raised primary-button btn_wdth" id="btnMoveDown" onclick="fnMoveItemUpDown('D')">
+                        <i class="fas fa-arrow-down"></i>   @Localizer["MoveDown"]
+                    </button>
+                </div>
+                <div class="col-lg-12 btn_pdnTop collapse">
+                    <button class="mdl-button mdl-js-button mdl-button--raised primary-button btn_wdth" id="btnExpandAll" onclick="fnExpandAll()">
+                        <i class="fas fa-expand"></i>   @Localizer["ExpandAll"]
+                    </button>
+                </div>
+                <div class="col-lg-12 btn_pdnTop collapse">
+                    <button class="mdl-button mdl-js-button mdl-button--raised primary-button btn_wdth" id="btnCollapseAll" onclick="fnCollapseAll()">
+                        <i class="fas fa-compress"></i>   @Localizer["CollapseAll"]
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+
+</section>
+<div class="modal fade in" id="PopupGeneric" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-md" role="document" style="box-shadow:none;">
+        <div class="modal-content ">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">@Localizer["Generic"] </h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12 collapse">
+                        <div class="form-group">
+                            <label for="txtGenericId"> @Localizer["GenericId"]</label>
+                            <input id="txtGenericId" class="form-control" maxlength="10" type="text" />
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group">
+                            <label for="txtGenerics"> @Localizer["Generics"]</label>
+                            <input id="txtGenerics" type="text" class="form-control" maxlength="100" />
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2 col-md-3 col-sm-6">
+                        <div class="default-checkbox">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsCombinationDrug">
+                                <input type="checkbox" id="chkIsCombinationDrug" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label"> @Localizer["IsCombinationDrugs"]</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label> @Localizer["PharmacyGroup"] </label>
+                            <select class="selectpicker" data-live-search="true" id="cboPharmacyGroup" title="Select" data-size="8">
+                                <option value="0">Select</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label> @Localizer["TheraupaticClass"] </label>
+                            <select class="selectpicker" data-live-search="true" id="cboTheraupaticClass" title="Select" data-size="8">
+                                <option value="0">Select</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label> @Localizer["UsedinTreatOf"] </label>
+                            <select class="selectpicker" data-live-search="true" id="cboUsedinTreatOf" title="Select" data-size="8">
+                                <option value="0">Select</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                        <div class="default-checkbox padtop0">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActiveStatus">
+                                <input type="checkbox" id="chkActiveStatus" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">@Localizer["Active"]</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    @*<div class="col-lg-12 col-md-12 col-sm-12 text-center">
+                            <hr />
+                            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button m-r-15" id="btnSaveDrugCategory" onclick="fnSaveDrugCategory()">
+                                @Localizer["Save"]
+                            </button>
+                            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button" id="" onclick="fnBackToGrid()"> @Localizer["Cancel"]</button>
+
+                        </div>*@
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveDrugCategory" onclick="fnSaveDrugCategory('Grid')">
+                            <i class="fa fa-save"></i> @Localizer["Save"]
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal"><i class="fa fa-times"></i> @Localizer["Cancel"]  </button>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section id="divDrugCategoriesForm" style="display:none">
+
+
+    @*<div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-6">
+            <div class="form-group">
+                <label for="txtDrugContains"> Drug Contains</label>
+                <input id="txtDrugContains" type="text" class="form-control" maxlength="75" />
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-6">
+            <div class="default-checkbox">
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsDrugFormulationActive">
+                    <input type="checkbox" id="chkIsDrugFormulationActive" class="mdl-checkbox__input">
+                    <span class="mdl-checkbox__label">Is Active ?</span>
+                </label>
+            </div>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 form-group text-center">
+            <hr />
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button m-r-15" id="">
+                Save
+            </button>
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button" id="" onclick="fnBackToGrid()"> Cancel</button>
+
+        </div>
+        </div>*@
+</section>
+
+
+<script>
+
+
+</script>

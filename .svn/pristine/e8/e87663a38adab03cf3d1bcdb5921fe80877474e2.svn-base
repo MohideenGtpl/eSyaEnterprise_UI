@@ -1,0 +1,581 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.Areas.Config.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+
+namespace eSyaEnterprise_UI.Areas.Config.Controllers
+{
+    public class FormsMenuController : Controller
+    {
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        ESyaWebAPI _eSyaWebAPI = new ESyaWebAPI();
+
+        #region Forms
+
+       
+        [Area("Config")]
+        public IActionResult V_1_00()
+        {
+            ViewBag.formName = "Forms";
+            return View();
+        }
+        public JsonResult GetFormList()
+        {
+            try
+            {
+                List<jsTreeObject> treeView = new List<jsTreeObject>();
+
+                jsTreeObject jsObj = new jsTreeObject
+                {
+                    id = "FM",
+                    parent = "#",
+                    text = "eSya Forms",
+                    icon = "/images/jsTree/foldergroupicon.png",
+                    state = new stateObject { opened = true, selected = false }
+                };
+                treeView.Add(jsObj);
+
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("Forms/GetFormDetails").Result;
+                string respData = response.Content.ReadAsStringAsync().Result;
+                var fm_list = JsonConvert.DeserializeObject<List<DO_Forms>>(respData);
+                foreach (var fm in fm_list)
+                {
+                    jsObj = new jsTreeObject
+                    {
+                        id = fm.FormID.ToString(),
+                        text = fm.FormID.ToString() + '.' + fm.FormName,
+                        icon = "/images/jsTree/openfolder.png",
+                        parent = "FM"
+                    };
+                    treeView.Add(jsObj);
+                }
+
+                client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                response = client.GetAsync("Forms/GetInternalFormDetails").Result;
+                respData = response.Content.ReadAsStringAsync().Result;
+                var fn_list = JsonConvert.DeserializeObject<List<DO_Forms>>(respData);
+
+                foreach (var fn in fn_list.Where(w => fn_list.Any(f => f.FormID == w.FormID)))
+                {
+                    jsObj = new jsTreeObject
+                    {
+                        id = fn.FormID.ToString() + "-" + fn.InternalFormNumber.ToString(),
+                        text = fn.InternalFormNumber + "-" + fn.FormName,
+                        icon = "/images/jsTree/fileIcon.png",
+                        parent = fn.FormID.ToString()
+                    };
+                    treeView.Add(jsObj);
+                }
+
+
+                return Json(treeView);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public JsonResult GetFormMasterByID(int formID)
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("Forms/GetFormDetailsByID?formID=" + formID).Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<DO_Forms>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        public JsonResult GetInternalFormByFormID(int formID)
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("Forms/GetInternalFormByFormID?formID=" + formID).Result;
+                string respData = response.Content.ReadAsStringAsync().Result;
+                var fn = JsonConvert.DeserializeObject<List<DO_Forms>>(respData);
+                return Json(fn);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpPost]
+        public JsonResult InsertUpdateIntoFormMaster(DO_Forms obj)
+        {
+            try
+            {
+                if (obj.FormID == null  || obj.FormID <= 0)
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Form Id cannot be blank" });
+                }
+
+                if (string.IsNullOrEmpty(obj.FormName))
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Form Name cannot be blank" });
+                }
+                if (string.IsNullOrEmpty(obj.ControllerName))
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Controller Name cannot be blank" });
+                }
+                else
+                {
+                    obj.ActiveStatus = true;
+                    obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                    obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                    var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                    HttpResponseMessage response = client.PostAsJsonAsync<DO_Forms>("Forms/InsertUpdateIntoFormMaster", obj).Result;
+                    string respData = response.Content.ReadAsStringAsync().Result;
+                    var rp_app = JsonConvert.DeserializeObject<DO_ReturnParameter>(respData);
+
+                    return Json(rp_app);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+
+
+        [HttpPost]
+        public JsonResult InsertIntoInternalForm(DO_Forms obj)
+        {
+            try
+            {
+                if (obj.FormID == 0)
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "First add the form" });
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(obj.InternalFormNumber))
+                    {
+                        return Json(new DO_ReturnParameter() { Status = false, Message = "Internal Form Number cannot be blank" });
+                    }
+                    else if (string.IsNullOrEmpty(obj.FormDescription))
+                    {
+                        return Json(new DO_ReturnParameter() { Status = false, Message = "Form Description cannot be blank" });
+                    }
+
+                    obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                    obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                    var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                    //string stringData = JsonConvert.SerializeObject(obj);
+                    //var contentData = new StringContent(stringData, System.Text.Encoding.UTF8, "application/json");
+                    HttpResponseMessage response = client.PostAsJsonAsync<DO_Forms>("Forms/InsertIntoInternalForm", obj).Result;
+                    var respData = response.Content.ReadAsStringAsync().Result;
+                    var rp_app = JsonConvert.DeserializeObject<DO_ReturnParameter>(respData);
+
+
+                    return Json(rp_app);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+
+        public JsonResult GetFormActionByID(int formID)
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("Forms/GetFormActionByID?formID=" + formID).Result;
+                string respData = response.Content.ReadAsStringAsync().Result;
+                var fn = JsonConvert.DeserializeObject<List<DO_FormAction>>(respData);
+                return Json(fn);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpPost]
+        public JsonResult InsertIntoFormAction(DO_Forms obj)
+        {
+            try
+            {
+                if (obj.FormID == 0)
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "First add the form" });
+                }
+                else
+                {
+                    obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                    obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                    var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                    HttpResponseMessage response = client.PostAsJsonAsync<DO_Forms>("Forms/InsertIntoFormAction", obj).Result;
+                    var respData = response.Content.ReadAsStringAsync().Result;
+                    var rp_app = JsonConvert.DeserializeObject<DO_ReturnParameter>(respData);
+
+                    return Json(rp_app);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        #endregion
+
+        #region Configure Menu
+
+
+        /// <summary>
+        /// Configure Menu
+        /// </summary>
+        /// <returns></returns>
+        /// 
+        [Area("Config")]
+        public IActionResult V_2_00()
+        {
+            ViewBag.formName = "Configure Menu";
+            var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+            HttpResponseMessage response = client.GetAsync("Forms/GetFormDetails").Result;
+            string data = response.Content.ReadAsStringAsync().Result;
+            List<DO_Forms> fm_list = JsonConvert.DeserializeObject<List<DO_Forms>>(data);
+
+            ViewBag.FormList = fm_list;
+            return View();
+        }
+        
+        [Produces("application/json")]
+        [HttpGet]
+        public IActionResult GetConfigureMenuTreeView()
+        {
+            try
+            {
+
+                List<jsTreeObject> jsTree = new List<jsTreeObject>();
+
+                jsTreeObject jsObj = new jsTreeObject
+                {
+                    id = "MM",
+                    parent = "#",
+                    text = "eSya Enterprise",
+                    icon = "/images/jsTree/foldergroupicon.png",
+                    state = new stateObject { opened = true, selected = false }
+                };
+                jsTree.Add(jsObj);
+
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage MainMenu_response = client.GetAsync("eSyaConfigureMenu/GetConfigureMenuMaster").Result;
+                string data = MainMenu_response.Content.ReadAsStringAsync().Result;
+                var configureMenu = JsonConvert.DeserializeObject<DO_ConfigureMenu>(data);
+
+                if (configureMenu != null)
+                {
+                    //Add Main Menu
+                    foreach (var m in configureMenu.l_MainMenu.OrderBy(o=>o.MenuIndex))
+                    {
+                        jsObj = new jsTreeObject
+                        {
+                            id = "MM" + m.MainMenuId.ToString(),
+                            text = m.MainMenu,
+                            icon = "/images/jsTree/openfolder.png",
+                            GroupIndex = m.MenuIndex.ToString(),
+                            parent = "MM",
+                        };
+                        jsTree.Add(jsObj);
+                    }
+
+                    //Add Sub Menu
+                    foreach (var s in configureMenu.l_SubMenu.OrderBy(o => o.MenuIndex))
+                    {
+                        jsObj = new jsTreeObject
+                        {
+                            id = "SM" + s.MenuItemId.ToString(),
+                            text = s.MenuItemName,
+                            icon = "/images/jsTree/openfolder.png",
+                            GroupIndex = s.MenuIndex.ToString(),
+                            parent = s.ParentID == 0 ? "MM" + s.MainMenuId.ToString() : "SM" + s.ParentID.ToString()
+                        };
+                        jsTree.Add(jsObj);
+                    }
+
+                    //Add Form
+                    foreach (var f in configureMenu.l_FormMenu.OrderBy(o => o.FormIndex))
+                    {
+                        jsObj = new jsTreeObject
+                        {
+                            id = "FM" + f.MenuItemId.ToString() +"."+ f.FormId.ToString(),
+                            text = f.FormNameClient,
+                            icon = "/images/jsTree/fileIcon.png",
+                            GroupIndex = f.FormIndex.ToString(),
+                            parent = f.MenuItemId == 0 ? "MM" + f.MainMenuId.ToString() : "SM" + f.MenuItemId.ToString()
+                        };
+                        jsTree.Add(jsObj);
+                    }
+                }
+
+                return Json(jsTree);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        #region MainMenu
+
+        public JsonResult GetMainMenuByID(int mainMenuId)
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("eSyaConfigureMenu/GetMainMenuById?mainMenuId=" + mainMenuId).Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<DO_MainMenu>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpPost]
+        public JsonResult InsertIntoMainMenu(DO_MainMenu obj)
+        {
+            try
+            {
+                obj.UserId = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalId = AppSessionVariables.GetIPAddress(HttpContext);
+
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.PostAsJsonAsync<DO_MainMenu>("eSyaConfigureMenu/InsertIntoMainMenu", obj).Result;
+                string respData = response.Content.ReadAsStringAsync().Result;
+                var rp_app = JsonConvert.DeserializeObject<DO_ReturnParameter>(respData);
+
+                return Json(rp_app);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public JsonResult UpdateMainMenuIndex(int mainMenuID, bool isMoveUp, bool isMoveDown)
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("eSyaConfigureMenu/UpdateMainMenuIndex?mainMenuId=" + mainMenuID + "&isMoveUp=" + isMoveUp + "&isMoveDown=" + isMoveDown).Result;
+                string respData = response.Content.ReadAsStringAsync().Result;
+                var rp_app = JsonConvert.DeserializeObject<DO_ReturnParameter>(respData);
+
+                return Json(rp_app);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public JsonResult DeleteMainMenuByID(int mainMenuID)
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("eSyaConfigureMenu/DeleteMainMenuByID?mainMenuId=" + mainMenuID).Result;
+                string respData = response.Content.ReadAsStringAsync().Result;
+                var rp_app = JsonConvert.DeserializeObject<DO_ReturnParameter>(respData);
+
+                return Json(rp_app);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        #endregion MainMenu
+
+
+        #region SubMenu
+        public JsonResult GetSubMenuById(int menuItemID)
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("eSyaConfigureMenu/GetSubMenuById?menuItemId=" + menuItemID).Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<DO_SubMenu>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public JsonResult InsertIntoSubMenu(DO_SubMenu obj)
+        {
+            try
+            {
+                obj.UserId = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalId = AppSessionVariables.GetIPAddress(HttpContext);
+
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.PostAsJsonAsync<DO_SubMenu>("eSyaConfigureMenu/InsertIntoSubMenu", obj).Result;
+                string respData = response.Content.ReadAsStringAsync().Result;
+                var rp_app = JsonConvert.DeserializeObject<DO_ReturnParameter>(respData);
+
+                return Json(rp_app);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public JsonResult UpdateSubMenusIndex(int menuItemID, bool isMoveUp, bool isMoveDown)
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("eSyaConfigureMenu/UpdateSubMenusIndex?menuItemId=" + menuItemID + "&isMoveUp=" + isMoveUp + "&isMoveDown=" + isMoveDown).Result;
+                string respData = response.Content.ReadAsStringAsync().Result;
+                var rp_app = JsonConvert.DeserializeObject<DO_ReturnParameter>(respData);
+
+                return Json(rp_app);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public JsonResult DeleteSubMenuByID(int menuItemID)
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("eSyaConfigureMenu/DeleteSubMenuByID?menuItemID=" + menuItemID).Result;
+                string respData = response.Content.ReadAsStringAsync().Result;
+                var rp_app = JsonConvert.DeserializeObject<DO_ReturnParameter>(respData);
+
+                return Json(rp_app);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        #endregion SubMenu
+
+        #region Forms
+        public JsonResult GetFormDetailsByID(int mainMenuID, int menuItemID, int formID)
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("eSyaConfigureMenu/GetFormDetailById?mainMenuID=" + mainMenuID + "&menuItemId=" + menuItemID + "&formId=" + formID).Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<DO_FormMenu>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public JsonResult InsertIntoFormMenu(DO_FormMenu obj)
+        {
+            try
+            {
+                obj.UserId = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalId = AppSessionVariables.GetIPAddress(HttpContext);
+
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.PostAsJsonAsync<DO_FormMenu>("eSyaConfigureMenu/InsertIntoFormMenu", obj).Result;
+                string respData = response.Content.ReadAsStringAsync().Result;
+                var rp_app = JsonConvert.DeserializeObject<DO_ReturnParameter>(respData);
+
+                return Json(rp_app);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public JsonResult UpdateFormsIndex(int mainMenuID, int menuItemID, int formID, bool isMoveUp, bool isMoveDown)
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("eSyaConfigureMenu/UpdateFormsIndex?mainMenuID=" + mainMenuID + "&menuItemId=" + menuItemID + "&formId=" + formID + "&isMoveUp=" + isMoveUp + "&isMoveDown=" + isMoveDown).Result;
+                string respData = response.Content.ReadAsStringAsync().Result;
+                var rp_app = JsonConvert.DeserializeObject<DO_ReturnParameter>(respData);
+
+                return Json(rp_app);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public JsonResult DeleteFormMenuByID(int mainMenuID, int menuItemID, int formID)
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("eSyaConfigureMenu/DeleteFormMenuByID?mainMenuID=" + mainMenuID + "&menuItemID=" + menuItemID + "&formID=" + formID).Result;
+                string respData = response.Content.ReadAsStringAsync().Result;
+                var rp_app = JsonConvert.DeserializeObject<DO_ReturnParameter>(respData);
+
+                return Json(rp_app);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        #endregion Forms
+
+        #endregion Configure Menu
+
+    }
+}

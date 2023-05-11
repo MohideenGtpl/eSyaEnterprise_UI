@@ -1,0 +1,198 @@
+﻿
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/js/context-menu.js"></script>
+<script src="~/js/jquery.contextMenu.min.js"></script>
+<script src="~/js/eSyaNatureCure/RoomAmenities.js"></script>
+<link href="~/css/jquery.contextMenu.min.css" rel="stylesheet" />
+@{
+    var userFormRole = (eSyaEnterprise_UI.Models.DO_UserFormRole)ViewBag.UserFormRole;
+}
+<script>
+    var _userFormRole = JSON.parse('@Html.Raw(Json.Serialize(userFormRole))');
+
+     var localization = {
+         RoomTypeId: '@Localizer["RoomTypeId"]',
+         RoomTypeDesc:'@Localizer["RoomTypeDescription"]',
+         SerialNumber: '@Localizer["SerialNumber"]',
+         OptionValues: '@Localizer["OptionValues"]',
+         OptionDesc: '@Localizer["OptionDescription"]',
+         Active: '@Localizer["Active"]',
+         AddRoomAmenities: '@Localizer["AddRoomAmenities"]',
+         UpdateRoomAmenities: '@Localizer["UpdateRoomAmenities"]',
+         ViewRoomAmenities: '@Localizer["ViewRoomAmenities"]',
+         Actions: '@Localizer["Actions"]',
+         Edit: '@Localizer["Edit"]',
+         View: '@Localizer["View"]',
+         Save: '@Localizer["Save"]',
+         Update: '@Localizer["Update"]',
+         Delete: '@Localizer["Delete"]',
+         Activate: '@Localizer["Activate"]',
+         DActivate: '@Localizer["DActivate"]',
+         OptionType: '@Localizer["OptionType"]',
+    };
+
+</script>
+ 
+
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color">@Localizer["RoomType"] </label>
+            <select class="selectpicker" data-live-search="true" id="cboRoomTypeId" title="" onchange="fnGridRoomAminities()" data-size="10">
+                <option value="0"> All</option>
+                @if (ViewBag.RoomTypes != null)
+                {
+                    foreach (var roomtype in ViewBag.RoomTypes)
+                    {
+                        <option value="@roomtype.RoomTypeId">@roomtype.RoomTypeDesc</option>
+                    }
+
+                }
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="row padbot10">
+    <div class="col-lg-12 col-md-12 col-sm-12 RoomAmenitiescontainer">
+        <table id="jqgRoomAmenities"></table>
+        <div id="jqpRoomAmenities"></div>
+    </div>
+</div>
+
+<div class="modal fade in" id="PopupRoomAmenities" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">@Localizer["RoomAmenities"] </h4>
+            </div>
+            <div class="modal-body">
+                <div class="row padbot4">
+
+
+
+                    @*<div class="col-lg-6  col-md-6 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="txtOptionType">@Localizer["OptionType"] </label>
+                                <input id="txtOptionType" class="form-control" type="text" autocomplete="off" maxlength="40" />
+                            </div>
+                        </div>*@
+                    <div class="col-lg-6  col-md-6 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <div>
+                                <label class="lable-color">@Localizer["OptionType"] </label>
+                                <select class="selectpicker" data-live-search="false" id="cboOptionType" title="" onchange="fnHideshowImageDiv(this);" data-container="body">
+                                    <option value="0">Select</option>
+                                    <option value="Amenities">Amenities</option>
+                                    <option value="IMG">IMG</option>
+                                    <option value="Inclusions">Inclusions</option>
+                                    <option value="Refundpolicy">Refund Policy</option>
+                                    <option value="CancellationPolicy">Cancellation Policy</option>
+                                    <option value="Desc">Description</option>
+                                    <option value="TXT">TXT</option>
+
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6  col-md-6 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label for="txtSerialNumber">@Localizer["SerialNumber"] </label>
+                            <input id="txtSerialNumber" class="form-control" maxlength="9" type="text" data-inputmask="'mask': '9', 'repeat': 10, 'greedy' : false" />
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12" id="divimage">
+                        <div class="form-group">
+                            <label> @Localizer["Photo"] <span class="lblInfo"> (Only Jpg & png format)</span></label>
+                            <div class="imagedig" style="border:thin; padding-bottom:5px;" id="imgPhoto">
+                                <img id="imgPhotoimageblah" src="">
+                                <input class="mdl-textfield__input fullwidth FileUpload" id="Photoimage" type="file" name="file" onchange="readPhotoimage(this);" accept='image/*' enctype="multipart/form-data" style="border-bottom:none !important" />
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-12" id="divOptionValue">
+                        <div class="form-group">
+                            <label for="txtOptionValue">@Localizer["OptionValue"] </label>
+                            <input id="txtOptionValue" class="form-control" type="text" autocomplete="off" maxlength="500" />
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label for="txtOptionDesc">@Localizer["OptionDescription"] </label>
+                            <input id="txtOptionDesc" class="form-control" type="text" autocomplete="off" maxlength="4000" />
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                        <div class="default-checkbox separate">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActiveStatus">
+                                <input type="checkbox" id="chkActiveStatus" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">@Localizer["Active"] </span>
+                            </label>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveRoomAmenities" onclick="fnSaveRoomAminities();">
+                            <i class="fa fa-save"></i> @Localizer["Save"]
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="btnCancelRoomAmenities"><i class="fa fa-times"></i> @Localizer["Cancel"] </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" id="btndeActiveRoomAmenities" onclick="fnDeleteRoomAminities();"><i class="fa fa-times"></i> @Localizer["DeActivate"] </button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var sizeLimit = 1024 * 2;
+
+    function readPhotoimage(input) {
+        if (input.files && input.files[0]) {
+
+            var sizeInMb = input.files[0].size / 1024;
+
+            if (!(input.files[0].type.match(/image.*/))) {
+                toastr.warning("Invalid format file uploaded");
+                input.value = null;
+                return;
+            }
+            if (sizeInMb > sizeLimit) {
+                toastr.warning("User Photo file size should be smaller than 2 MB");
+                input.value = null;
+                return;
+            }
+
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('imgPhotoimageblah').src = e.target.result;
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+</script>
+
+
+
+
+

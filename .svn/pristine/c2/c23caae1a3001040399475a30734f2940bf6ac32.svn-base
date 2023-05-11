@@ -1,0 +1,483 @@
+﻿var customerNamePrefix = "";
+var isUpdate = 0;
+
+$(document).ready(function () {
+    $(".dot").click(function () {
+        $('.dot').removeClass('active');
+        customerNamePrefix = $(this).text();
+        fnGridLoadCustomerCodes(customerNamePrefix);
+        $(this).addClass('active');
+    });
+    fnGridLoadCustomerCodes(customerNamePrefix);
+    //fnGridLoadCustomerContactDetail();
+});
+
+function fnGridLoadCustomerCodes(customerNamePrefix) {
+    $("#jqgCustomerCodes").jqGrid('GridUnload');
+    $("#jqgCustomerCodes").jqGrid({
+        url: getBaseURL() + '/Customer/GetCustomerCodeInformationByNamePrefix?customerNamePrefix=' + customerNamePrefix,
+        datatype: 'json',
+        mtype: 'Post',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Customer Name", "Customer ID", "Credit Period In Days", "Credit Limit", "Validate Limit", "On Hold", "Active", "Actions"],
+        colModel: [
+            { name: "CustomerName", width: 150, editable: true, align: 'left', hidden: false },
+            { name: "CustomerId", width: 25, editable: true, align: 'left', hidden: false },
+            { name: "CreditPeriod", width: 40, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "CreditLimit", width: 40, editable: true, align: 'left', hidden: false },
+            { name: "ValidateLimit", width: 40, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+            { name: "CustomerOnHold", width: 40, editable: true, align: 'left', hidden: false, edittype: "select", formatter: 'select', editoptions: { value: "A: All;I: IP;N: Not Applicable;O: OP" }},
+            { name: "ActiveStatus", width: 25, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+            {
+                name: 'Action', search: false, align: 'left', width: 85, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditCustomerCodes(event,\'edit\')"><i class="fa fa-edit"></i> Edit </button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnEditCustomerCodes(event,\'view\')"><i class="far fa-eye"></i> View </button>'
+
+                }
+            },
+        ],
+        pager: "#jqpCustomerCodes",
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0,
+        loadComplete: function (data) {
+            SetGridControlByAction();
+        },
+    }).jqGrid('navGrid', '#jqpCustomerCodes', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpCustomerCodes', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshCustomerCodes
+    }).jqGrid('navButtonAdd', '#jqpCustomerCodes', {
+        caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnGridAddCustomerCodes
+    });
+}
+
+function SetGridControlByAction() {
+    //$('#jqgAdd').removeClass('ui-state-disabled');
+    //var eleEnable = document.querySelectorAll('#jqgEdit');
+
+    //for (var i = 0; i < eleEnable.length; i++) {
+    //    eleEnable[i].disabled = false;
+    //}
+    if (_userFormRole.IsInsert === false) {
+        $('#jqgAdd').addClass('ui-state-disabled');
+    }
+    if (_userFormRole.IsEdit === false) {
+        var eleDisable = document.querySelectorAll('#jqgEdit');
+        for (var i = 0; i < eleDisable.length; i++) {
+            eleDisable[i].disabled = true;
+            eleDisable[i].className = "ui-state-disabled";
+        }
+    }
+}
+
+$('#v-pills-tab a').on('click', function (e) {
+    var activeTabName = "";
+    e.preventDefault()
+     $(".tab-pane").removeClass('show active');
+    activeTabName = $(this).attr("href");
+    $(activeTabName).addClass("show");
+    //if (activeTabName == "#statutorydetails") {
+    //    fnGridLoadCustomerLocation();
+    //}
+})
+
+function fnGridAddCustomerCodes() {
+    $("#PopupCustomerCodes").modal('show');
+    $("#divForm").css("display", "block");
+    $("#divGrid").hide();
+    $(".customerName").hide();
+    $('#chkActiveStatus').parent().addClass("is-checked");
+    $('#chkCDActiveStatus').parent().addClass("is-checked");
+    fnGridLoadCustomerLocation();
+    fnGridLoadBusinessLocation();
+    fnGridLoadCustomerContactDetail();
+    fnGridLoadCustomerStatutoryDetails(0, 0);
+    fnSetCustomerCodesControlbyAction(false);
+    fnSetCustomerContactControlbyAction(false);
+    fnSetCustomerBusinessLinkControlbyAction(false);
+    fnSetCustomerStatutoryControlbyAction(false);
+    isUpdate = 0;
+}
+
+function fnGridLoadCustomerContactDetail() {
+    $("#jqgCustomerContactDetails").jqGrid('GridUnload');
+    $("#jqgCustomerContactDetails").jqGrid({
+        url: getBaseURL() + '/Customer/GetCustomerContactInformationByCustomerId?customerId=' + $("#txtCustomerCode").val(),
+        datatype: 'json',
+        mtype: 'GET',
+        //postData: {
+        //    customerId: function () { return $('#txtCustomerCode').val(); }
+        //},
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        colNames: ["Address", "Contact Person", "Location ID", "Customer Location",  "ISD Code", "ISD Code", "Default","Active"],
+        colModel: [
+            { name: "Address", width: 160, editable: true, align: 'left', hidden: false },
+            { name: "ContactPerson", width: 100, editable: true, align: 'left', hidden: false },
+            { name: "CustomerLocationId", width: 35, editable: true, align: 'left', hidden: true },
+            { name: "CustomerLocation", width: 75, editable: true, align: 'left', hidden: false },
+            { name: "Isdcode", width: 50, editable: true, align: 'left', hidden: true },
+            { name: "IsdDescription", width: 70, editable: true, align: 'left', hidden: false },
+            { name: "IsLocationDefault", editable: true, width: 50, align: 'center !important', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            { name: "ActiveStatus", editable: true, width: 30, align: 'center !important', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+
+        ],
+        rowNum: 10,
+        rowList: [10, 20, 40],
+        loadonce: true,
+        pager: "#jqpCustomerContactDetails",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        //align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0,
+        onSelectRow: function (rowid) {
+            var locationId = $("#jqgCustomerContactDetails").jqGrid('getCell', rowid, 'CustomerLocationId');
+            fnFillCustomerContactDetails(locationId);
+        },
+
+    }).jqGrid('navGrid', '#jqpCustomerContactDetails', { add: false, edit: false, search: false, del: false, refresh: false });
+}
+
+function fnFillCustomerContactDetails(locationId) {
+    if (!IsStringNullorEmpty($("#txtCustomerCode").val())
+        && !IsStringNullorEmpty(locationId)) {
+        $.ajax({
+            url: getBaseURL() + '/Customer/GetCustomerContactInformationByCustomerIdLocId?customerId=' + $("#txtCustomerCode").val() + "&locationId=" + locationId,
+            type: 'POST',
+            datatype: 'json',
+            success: function (response) {
+                if (response != null) {
+                    var a = response.CustomerLocation;
+                    $('#txtCustomerLocation').val(response.CustomerLocationId);
+                    $('#txtCustomerLocationDescription').val(response.CustomerLocation);
+                    if (response.IsLocationDefault) {
+                        $("#chkIsLocationDefault").parent().addClass("is-checked");
+                    }
+                    else { $("#chkIsLocationDefault").parent().removeClass("is-checked"); }
+                    $('#cboCustomerMobile').val(response.Isdcode);
+                    $('#cboCustomerMobile').selectpicker('refresh');
+                    $('#txtContactPerson').val(response.ContactPerson);
+                    $('#txtAddress').val(response.Address);
+                    $('#txtCustomerMobile').val(response.RegisteredMobileNumber);
+                    $('#txtEmailId').val(response.EMailId);
+                    if (response.ActiveStatus) {
+                        $("#chkCDActiveStatus").parent().addClass("is-checked");
+                    }
+                    else { $("#chkCDActiveStatus").parent().removeClass("is-checked"); }
+                }
+                else {
+                    fnClearCustomerContactFields();
+                }
+            },
+            error: function (error) {
+                toastr.error(error.statusText);
+            }
+        });
+    }
+}
+
+function fnSaveCustomerDetails() {
+    if (IsStringNullorEmpty($("#txtCustomerName").val().trim())) {
+        toastr.warning("Please Enter Customer Name");
+        return false;
+    }
+    if ($("#chkValidateLimit").parent().hasClass("is-checked")) {
+        if (IsStringNullorEmpty($("#txtCreditLimit").val())) {
+            toastr.warning("Please Enter Credit Limit");
+            $('#txtCreditLimit').focus();
+            return false;
+        }
+        if (parseFloat($('#txtCreditLimit').val()) <=0) {
+            toastr.warning("Credit Limit should be more than 0");
+            $('#txtCreditLimit').focus();
+            return;
+        }
+    }
+    $("#btnSaveCustomerDetails").html('<i class="fa fa-spinner fa-spin"></i> wait');
+    $("#btnSaveCustomerDetails").attr('disabled', true);
+    var cs_cc = {
+        CustomerId: isUpdate ==0 ? 0 : $("#txtCustomerCode").val(),
+        CustomerName: $("#txtCustomerName").val(),
+        CreditPeriod: IsStringNullorEmpty($("#txtCreditPeriod").val()) ? 0 : $("#txtCreditPeriod").val(),
+        CreditLimit: IsStringNullorEmpty($("#txtCreditLimit").val()) ? 0 : $("#txtCreditLimit").val(),
+        ValidateLimit: $("#chkValidateLimit").parent().hasClass("is-checked"),
+        CustomerOnHold: "N",
+        IsLimitBreakupReqd:0,
+        ActiveStatus: $("#chkActiveStatus").parent().hasClass("is-checked")
+    }
+
+    var URL = getBaseURL() + '/Customer/InsertIntoCustomerCode';
+    if (isUpdate == 1)
+        URL = getBaseURL() + '/Customer/UpdateCustomerCode';
+
+    $.ajax({
+        url: URL,
+        type: 'POST',
+        datatype: 'json',
+        data: { cs_cc },
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                if (isUpdate == 0) {
+                    document.getElementById("hdCustomerName").innerHTML = $("#txtCustomerName").val();
+                    $('#txtCustomerCode').val(response.Key);
+                    $(".customerName").show();
+                    fnGridLoadCustomerLocation();
+                    fnGridLoadBusinessLocation();
+                    fnGridLoadCustomerContactDetail();
+                }
+                $("#btnSaveCustomerDetails").html("Save");
+                $("#btnSaveCustomerDetails").attr('disabled', false);
+                $('#v-pills-tab a.active').removeClass('active').next().addClass('active');
+                $('.tab-pane.show.active').removeClass('show active').next().addClass('show active');
+
+            }
+            else {
+                toastr.error(response.Message);
+                $("#btnSaveCustomerDetails").html("Save");
+                $("#btnSaveCustomerDetails").attr('disabled', false);
+            }
+
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnSaveCustomerDetails").html("Save");
+            $("#btnSaveCustomerDetails").attr("disabled", false);
+        }
+    });
+}
+
+function fnEditCustomerCodes(e, actiontype) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgCustomerCodes').jqGrid('getRowData', rowid);
+    isUpdate = 1;
+    if (rowData.CustomerId > 0) {
+        document.getElementById("hdCustomerName").innerHTML = rowData.CustomerName;
+        $('#txtCustomerCode').val(rowData.CustomerId);
+        $('#txtCustomerName').val(rowData.CustomerName);
+        $('#txtCreditPeriod').val(rowData.CreditPeriod);
+        $('#txtCreditLimit').val(rowData.CreditLimit);
+        if (rowData.ValidateLimit === "true") {
+            $("#chkValidateLimit").parent().addClass("is-checked");
+        }
+        else { $("#chkValidateLimit").parent().removeClass("is-checked"); }
+        if (rowData.ActiveStatus === "true") {
+            $("#chkActiveStatus").parent().addClass("is-checked");
+        }
+        else { $("#chkActiveStatus").parent().removeClass("is-checked"); }
+
+        $("#btnSaveCustomerDetails").attr('disabled', false);
+        $("#btnSaveCustomerContact").attr('disabled', false);
+        fnGridLoadCustomerLocation();
+        fnGridLoadBusinessLocation();
+        fnGridLoadCustomerContactDetail();
+        fnGridLoadCustomerStatutoryDetails(0, 0);
+        if (actiontype.trim() == "edit") {
+            $("#divForm").css("display", "block");
+            $("#divGrid").hide();
+            $(".customerName").show();
+            fnSetCustomerCodesControlbyAction(false);
+            fnSetCustomerContactControlbyAction(false);
+            fnSetCustomerBusinessLinkControlbyAction(false);
+            fnSetCustomerStatutoryControlbyAction(false);
+        }
+        if (actiontype.trim() == "view") {
+            $("#divForm").css("display", "block");
+            $("#divGrid").hide();
+            $(".customerName").show();
+            fnSetCustomerCodesControlbyAction(true);
+            fnSetCustomerContactControlbyAction(true);
+            fnSetCustomerBusinessLinkControlbyAction(true);
+            fnSetCustomerStatutoryControlbyAction(true);
+            $("#divCustomerBusinessLink :input").prop('disabled', true);
+           // $("#divCustomerBusinessLink").children().prop('disabled', true);
+            //$("#divCustomerBusinessLink").addClass("disabled");
+        }
+    }
+}
+
+function fnGridRefreshCustomerCodes() {
+    $("#jqgCustomerCodes").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid')
+}
+
+function fnClearCustomerCodesFields() {
+    $("#txtCustomerName").val("");
+    $("#txtCreditPeriod").val("");
+    $("#txtCreditLimit").val("");
+    $('#chkValidateLimit').parent().removeClass('is-checked');
+    $('#chkActiveStatus').parent().addClass("is-checked");
+}
+
+function fnSaveCustomerContact() {
+    if (IsStringNullorEmpty($("#txtCustomerName").val())) {
+        toastr.warning("Please Enter Customer Name");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtCustomerCode").val())) {
+        toastr.warning("Please Enter Customer Name");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtCustomerLocationDescription").val())) {
+        toastr.warning("Please Enter Customer Location");
+        return false;
+    }
+    if ($("#cboCustomerMobile").val() === '0') {
+        toastr.warning("Please Select ISD Code");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtContactPerson").val().trim())) {
+        toastr.warning("Please Enter Contact Person");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtAddress").val().trim())) {
+        toastr.warning("Please Enter Address");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtCustomerMobile").val())) {
+        toastr.warning("Please Enter Registered Mobile Number");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtEmailId").val())) {
+        toastr.warning("Please Enter Email Id");
+        return false;
+    }
+    if (!IsValidateEmail($("#txtEmailId").val())) {
+        toastr.warning("Please Enter Valid Email Id");
+        return false;
+    }
+    
+    $("#btnSaveCustomerContact").html('<i class="fa fa-spinner fa-spin"></i> wait');
+    $("#btnSaveCustomerContact").attr('disabled', true);
+    var cs_cc = {
+        CustomerId: $("#txtCustomerCode").val(),
+        CustomerLocationId: $("#txtCustomerLocation").val(),
+        CustomerLocation: $("#txtCustomerLocationDescription").val(),
+        IsLocationDefault: $("#chkIsLocationDefault").parent().hasClass("is-checked"),
+        Isdcode: $("#cboCustomerMobile").val(),
+        ContactPerson: $("#txtContactPerson").val(),
+        Address: $("#txtAddress").val(),
+        RegisteredMobileNumber: $("#txtCustomerMobile").val(),
+        EMailId: $("#txtEmailId").val(),
+        ActiveStatus: $("#chkCDActiveStatus").parent().hasClass("is-checked")
+    }
+
+    var URL = getBaseURL() + '/Customer/InsertIntoCustomerContact';
+    if (!IsStringNullorEmpty($("#txtCustomerLocation").val()))
+        URL = getBaseURL() + '/Customer/UpdateCustomerContact';
+
+    $.ajax({
+        url: URL,
+        type: 'POST',
+        datatype: 'json',
+        data: { cs_cc },
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                fnClearCustomerContactFields();
+                fnGridRefreshCustomerContact();
+                fnGridLoadCustomerLocation();
+                $("#btnSaveCustomerContact").html("Save");
+                $("#btnSaveCustomerContact").attr('disabled', false);
+                $('#v-pills-tab a.active').removeClass('active').next().addClass('active');
+                $('.tab-pane.show.active').removeClass('show active').next().addClass('show active');
+
+            }
+            else {
+                toastr.error(response.Message);
+                $("#btnSaveCustomerContact").html("Save");
+                $("#btnSaveCustomerContact").attr('disabled', false);
+            }
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnSaveCustomerContact").html("Save");
+            $("#btnSaveCustomerContact").attr("disabled", false);
+        }
+    });
+}
+
+function fnClearCustomerContactFields() {
+    $("#txtCustomerLocation").val("");
+    $("#txtCustomerLocationDescription").val("");
+    $('#chkIsLocationDefault').parent().removeClass('is-checked');
+    $('#cboCustomerMobile').val("0");
+    $('#cboCustomerMobile').selectpicker('refresh');
+    $("#txtContactPerson").val("");
+    $("#txtAddress").val("");
+    $("#txtCustomerMobile").val("");
+    $("#txtEmailId").val("");
+    $('#chkCDActiveStatus').parent().addClass("is-checked");
+}
+
+function fnCloseCustomerDetails() {
+    $("#divGrid").show();
+    $("#divForm").css("display", "none");
+    $(".tab-pane").removeClass('show active');
+    $("#v-pills-tab a").removeClass("active");
+    $("#customerdetails-tab").addClass("active");
+    $("#customerdetails").addClass("show active");
+    document.getElementById("hdCustomerName").innerHTML = "New Customer";
+    $('#txtCustomerCode').val("0");
+    fnClearCustomerCodesFields();
+    fnClearCustomerContactFields();
+    fnGridRefreshCustomerCodes();
+}
+
+function fnGridRefreshCustomerContact() {
+    $("#jqgCustomerContactDetails").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid')
+}
+
+function fnSetCustomerCodesControlbyAction(val) {
+    $("#txtCustomerName").attr('readonly', val);
+    $("#txtCreditPeriod").attr('readonly', val);
+    $("#txtCreditLimit").attr('readonly', val);
+    $("#chkValidateLimit").attr('disabled', val);
+    $("#chkActiveStatus").attr('disabled', val);
+    if (val)
+        $("#btnSaveCustomerDetails").hide();
+    else
+        $("#btnSaveCustomerDetails").show();
+}
+
+function fnSetCustomerContactControlbyAction(val) {
+    $("#txtCustomerLocationDescription").attr('readonly', val);
+    $("#chkIsLocationDefault").attr('disabled', val);
+    $("#txtContactPerson").attr('readonly', val);
+    $("#txtAddress").attr('readonly', val);
+    $("#cboCustomerMobile").attr('disabled', val);
+    $("#txtCustomerMobile").attr('readonly', val);
+    $("#txtEmailId").attr('readonly', val);
+    $("#chkCDActiveStatus").attr('disabled', val);
+    if (val)
+        $("#btnSaveCustomerContact").hide();
+    else
+        $("#btnSaveCustomerContact").show();
+}
+
+function fnSetCustomerBusinessLinkControlbyAction(val) {
+    if (val)
+        $("#btnSaveCustomerBusinessLocation").hide();
+    else
+        $("#btnSaveCustomerBusinessLocation").show();
+}
+
+function fnSetCustomerStatutoryControlbyAction(val) {
+    if (val)
+        $("#btnSaveStatutoryDetail").hide();
+    else
+        $("#btnSaveStatutoryDetail").show();
+}

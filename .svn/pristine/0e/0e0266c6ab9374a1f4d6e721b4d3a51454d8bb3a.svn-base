@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.1082
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eSyaEnterprise_UI", "eSyaEnterprise_UI\eSyaEnterprise_UI.csproj", "{3127F1A8-2E7E-4422-AC40-F81EDD18B7B9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eSyaEssentials_UI", "..\..\Project_Tool\eSyaNuGet_Packages\eSyaNuGet_UI\trunk\eSyaEssentials_UI\eSyaEssentials_UI\eSyaEssentials_UI.csproj", "{E187FF5F-DDA7-47C6-8F3E-9407AE43641F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3127F1A8-2E7E-4422-AC40-F81EDD18B7B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3127F1A8-2E7E-4422-AC40-F81EDD18B7B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3127F1A8-2E7E-4422-AC40-F81EDD18B7B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3127F1A8-2E7E-4422-AC40-F81EDD18B7B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E187FF5F-DDA7-47C6-8F3E-9407AE43641F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E187FF5F-DDA7-47C6-8F3E-9407AE43641F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E187FF5F-DDA7-47C6-8F3E-9407AE43641F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E187FF5F-DDA7-47C6-8F3E-9407AE43641F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {938E4DD6-1141-416F-9EA5-4F774E455C91}
+	EndGlobalSection
+EndGlobal

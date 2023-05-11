@@ -1,0 +1,133 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.ActionFilter;
+using eSyaEnterprise_UI.Areas.eSyaPayrollExpat.Data;
+using eSyaEnterprise_UI.Areas.eSyaPayrollExpat.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+
+namespace eSyaEnterprise_UI.Areas.eSyaPayrollExpat.Controllers
+{
+    [SessionTimeout]
+    public class PayPeriodController : Controller
+    {
+        private readonly IeSyaPayrollExpatAPIServices _eSyaPayrollExpatAPIServices;
+        private readonly ILogger<PayPeriodController> _logger;
+
+        public PayPeriodController(IeSyaPayrollExpatAPIServices eSyaPayrollExpatAPIServices, ILogger<PayPeriodController> logger)
+        {
+            _eSyaPayrollExpatAPIServices = eSyaPayrollExpatAPIServices;
+            _logger = logger;
+        }
+        [Area("eSyaPayrollExpat")]
+        public IActionResult V_4511_00()
+        {
+            return View();
+        }
+
+        /// <summary>
+        ///Get Pay Periods by Business Key for Grid
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetPayPeriodsbyBusinessKey(int Businesskey)
+        {
+            try
+            {
+                var parameter = "?Businesskey=" + Businesskey;
+                var serviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.GetAsync<List<DO_PayPeriod>>("PayPeriod/GetPayPeriodsbyBusinessKey" + parameter);
+                if (serviceResponse.Status)
+                {
+                    foreach (var obj in serviceResponse.Data)
+                    {
+
+                        if (obj.PayPeriod !=0)
+                        {
+                            string stryear = obj.PayPeriod.ToString().Substring(0, 4);
+                            string strmonth = obj.PayPeriod.ToString().Substring(obj.PayPeriod.ToString().Length - 2);
+                            int year = Convert.ToInt32(stryear);
+                            int month= Convert.ToInt32(strmonth);
+                            DateTime payperiod = new DateTime(year, month, 01);
+                            obj.PayPeriodDate= payperiod;
+                        }
+
+
+
+                    }
+
+
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetPayPeriodsbyBusinessKey");
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetPayPeriodsbyBusinessKey");
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Insert or Update PayPeriod
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> InsertOrUpdatePayPeriod(bool isInsert, DO_PayPeriod obj)
+        {
+            try
+            {
+                if (obj.PayPeriodDate != null)
+                {
+                    int day = obj.PayPeriodDate.Day;
+                    int month = obj.PayPeriodDate.Month;
+                    int year = obj.PayPeriodDate.Year;
+                    if (month >= 1 && month < 10)
+                    {
+                        string strmonth = "0" + month.ToString();
+                        obj.PayPeriod = Convert.ToInt32(year.ToString() + strmonth);
+                    }
+                    else
+                    {
+                        obj.PayPeriod = Convert.ToInt32(year.ToString() + month.ToString());
+                    }
+                       
+                }
+                
+
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                obj.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                if (isInsert)
+                {
+                    var serviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("PayPeriod/InsertPayPeriod", obj);
+                    if (serviceResponse.Status)
+                        return Json(serviceResponse.Data);
+                    else
+                        return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+                else
+                {
+                    var serviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("PayPeriod/UpdatePayPeriod", obj);
+                    if (serviceResponse.Status)
+                        return Json(serviceResponse.Data);
+                    else
+                        return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertOrUpdatePayPeriod:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+       
+    }
+}

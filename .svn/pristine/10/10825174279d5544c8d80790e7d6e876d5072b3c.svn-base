@@ -1,0 +1,114 @@
+﻿
+@{
+    ViewData["Title"] = "V_6003_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/emergency.css" rel="stylesheet" />
+@section scripts{
+    <script src="~/js/eSyaOutPatient/emergency.js"></script>
+}
+
+<div class="divFixedBar">
+    <div class="row mar0">
+        <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-xs-6 d-flex align-items-center">
+            <span class="mr-3"><i class="far fa-user-circle f-28 c-lightgrey"></i></span>
+            <div>
+                <p><span id="lblPatientName"></span></p>
+                <p><span id="lblGender"></span> | <span id="lblAge"></span></p>
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-xs-6 d-flex align-items-center">
+            <span class="mr-3"><i class="fas fa-user-md f-28 mr-2 c-lightgrey"></i></span>
+            <div>
+                <p><span class="labelname"> DOA</span> <span id="lblDOA"></span></p>
+                <p><span id="lblConsultantName"></span></p>
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-xs-6 d-flex align-items-center">
+            <span class="mr-3"><i class="fas fa-hotel f-28 mr-2 c-lightgrey"></i></span>
+            <div>
+                <p><span class="labelname"> Room Type</span> <span id="lblRoomType"></span></p>
+                <p><span class="labelname"> Room No</span> <span id="lblBedNumber"></span></p>
+            </div>
+        </div>
+
+        <div id="floatButtons" class="col-xl-3 col-lg-12 text-right">
+            <button class="mdl-button" id="btnBackNS" onclick="fnBackToNSGrid()"><i class="fas fa-chevron-left"></i> <span class="btntext">Back</span></button>
+            <button class="mdl-button" id="btnSaveDraft" onclick="fnSaveNurseAssessment('D')"><i class="far fa-save c-green"></i> <span class="btntext">Save Draft</span></button>
+            <button class="mdl-button" id="btnSave" onclick="fnSaveNurseAssessment('S')"><i class="far fa-check-circle c-brown"></i> <span class="btntext">Submit</span></button><button class="mdl-button d-none"><i class="fas fa-print c-blue"></i> <span class="btntext">Print</span></button>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-3 col-md-3 col-sm-3 sidebar" id="navbar-example2">
+        <div class="sidebar-sticky">
+          
+            <ul class="nav flex-column" id="nav_menu">
+                <li><a href="#" id="v-nursingcare-tab" data-bs-toggle="pill" data-bs-target="#v-nursing-care" class="nav-link active" role="tab" aria-controls="v-nursing-care" aria-selected="true">Nursing Care Plan</a></li>
+                <li><a href="#" id="v-vitalreport-tab" data-bs-toggle="pill" data-bs-target="#v-vitalreport" class="nav-link" aria-controls="v-vitalreport" aria-selected="true">Vital Report</a></li>
+                <li><a href="#" id="v-intakeouttake-tab" data-bs-toggle="pill" data-bs-target="#v-intakeouttake" class="nav-link" aria-controls="v-intakeouttake" aria-selected="true">Intake/ Outtake</a></li>
+                <li><a href="#" id="v-drugchart-tab" data-bs-toggle="pill" data-bs-target="#v-drugchart" class="nav-link" aria-controls="v-intakeouttake" aria-selected="true">Drug Chart</a></li>
+                <li><a href="#" id="v-criticalcareunit-tab" data-bs-toggle="pill" data-bs-target="#v-criticalcareunit" class="nav-link" aria-controls="v-criticalcareunit">Critical Care Unit</a></li>
+                <li><a href="#" id="v-ventilator-tab" data-bs-toggle="pill" data-bs-target="#v-ventilator" class="nav-link" aria-controls="v-ventilator">Ventilator / Lab values</a></li>
+            </ul>
+         </div>
+     </div>
+    <div class="" id="mainContent">
+        <div class="tab-content" id="v-pills-tabContent">
+            <div class="tab-pane fade show active" id="v-nursing-care" role="tabpanel" aria-labelledby="v-nursingcare-tab">
+                <div class="row">
+                    <div class="col-12">
+                        <h6>Nursing Care Plan</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="v-vitalreport" role="tabpanel" aria-labelledby="v-vitalreport-tab">
+                <div class="row">
+                    <div class="col-12">
+                        <h6>Vital Report</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="v-intakeouttake" role="tabpanel" aria-labelledby="v-intakeouttake-tab">
+                <div class="row">
+                    <div class="col-12">
+                        <h6>Intake Outtake</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="v-drugchart" role="tabpanel" aria-labelledby="v-drugchart-tab">
+                <div class="row">
+                    <div class="col-12">
+                        <h6>Drug Chart</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="v-criticalcareunit" role="tabpanel" aria-labelledby="v-criticalcareunit-tab">
+                <div class="row">
+                    <div class="col-12">
+                        <h6>Critical Care Unit</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="v-ventilator" role="tabpanel" aria-labelledby="v-ventilator-tab">
+                <div class="row">
+                    <div class="col-12">
+                        <h6>Ventilator / Lab values</h6>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(".nav li a").click(function () {
+        $(".nav li a").removeClass("active");
+        $(this).addClass("active");
+        $('.tab-pane').removeClass('show active');
+        var v = $(this).attr('data-bs-target'); console.log(v);
+        $(v).addClass('show active');
+    });
+</script>

@@ -1,0 +1,57 @@
+﻿
+@{
+    ViewData["Title"] = "MemberInfo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-lg-2 col-md-3 col-sm-12 form-group">
+        <label>Member Type</label>
+        <select class=" selectpicker w-100" name="membertype">
+            <option value="value">Select </option>
+        </select>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-12 form-group">
+        <label>Room Type</label>
+        <select class=" selectpicker w-100" name="roomtype">
+            <option value="value">Select </option>
+        </select>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-12 form-group">
+        <label>No of Persons</label>
+        <select class="selectpicker w-100" name="noofpersons">
+            <option value="value">Select </option>
+        </select>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-12 form-group">
+        <label>Membership Validity</label>
+        <input type="text" name="MembershipValidity" value="" class="form-control" />
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-12 form-group">
+        <label>Permitted Days/Year </label>
+        <input type="text" name="permitteddaysyear" value="" class="form-control" />
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-12 form-group">
+        <label>Maximum Carry Over Days</label>
+        <input type="text" name="maximumcarryoverdays" value="" class="form-control" />
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-12 form-group">
+        <label>Membership Donation</label>
+        <input type="text" name="membershipdonationActive" value="" class="form-control" />
+    </div>
+    <div class="col-lg-2  col-md-3 col-sm-12 col-xs-12 form-group">
+        <label>Active Status</label>
+        <select class="selectpicker w-100" name="noofpersons">
+            <option value="value">Select </option>
+            <option value="value">Active </option>
+            <option value="value">Onhold </option>
+            <option value="value">Inactive </option>
+        </select>
+    </div>
+    <div class="col-lg-12 col-md-12 col-12 text-center">
+        <hr />
+        <button type="button" class="btn btn-primary mr-2"><i class="fa fa-check"></i> Submit </button>
+        <button type="button" class="btn btn-primary"><i class="fa fa-times"></i> Cancel </button>
+    </div>
+</div>
+

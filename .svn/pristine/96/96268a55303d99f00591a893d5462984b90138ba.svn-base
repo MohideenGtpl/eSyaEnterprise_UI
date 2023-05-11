@@ -1,0 +1,192 @@
+﻿var Isadd = 0;
+
+
+
+$(document).ready(function () {
+
+    fnLoadLocalizationTableMappingGrid();
+
+});
+
+function fnLoadLocalizationTableMappingGrid() {
+
+    $("#jqgLocalizationTable").GridUnload();
+
+    $("#jqgLocalizationTable").jqGrid({
+        url: getBaseURL() + '/Localization/GetLocalizationMasterTablesList',
+        mtype: 'POST',
+        datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Table Code", "Table Name", "Table Description", "Status", ""],
+        colModel: [
+            { name: "TableCode", width: 70, editable: true, align: 'left', hidden: false },
+            { name: "SchemaName", editable: true, width: 95, align: 'left', resizable: false },
+            { name: "TableName", editable: true, width: 95, align: 'left', resizable: false },
+            { name: "ActiveStatus", editable: true, width: 70, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: Inactive" } },
+
+            {
+                name: 'Edit', search: false, align: 'center', width: 50, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all" style="padding: 2px 4px; background: #0b76bc!important; color: #fff!important; margin: 3px; " title="Edit" onclick="return fnEditLocalizationTable(event)"><i class="fa fa-edit"></i> Edit </button>'
+
+                }
+            },
+        ],
+        rowNum: 10,
+        loadonce: false,
+        pager: "#jqpLocalizationTable",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0
+    }).jqGrid('navGrid', '#jqpLocalizationTable', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpLocalizationTable', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnRefresh
+    }).jqGrid('navButtonAdd', '#jqpLocalizationTable', {
+        caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Add', buttonicon: 'none', id: 'custAdd', position: 'first', onClickButton: fnAddLocalizationTable
+    });
+}
+
+function fnAddLocalizationTable() {
+    fnClearFields();
+    Isadd = 1;
+    $("#PopupLocalizationTable").modal('show');
+    $("#txttablecode").attr('disabled', false);
+    $(".modal-title").text("Add Localization Table Mapping");
+    $("#btnLocalizationTable").html(' Save');
+}
+
+function fnRefresh() {
+    $("#jqgLocalizationTable").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+
+}
+
+function fnEditLocalizationTable(e) {
+
+    fnClearFields();
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgLocalizationTable').jqGrid('getRowData', rowid);
+
+    $("#txttablecode").val(rowData.TableCode);
+    $("#txtschemaName").val(rowData.SchemaName);
+    $("#txttableDesc").val(rowData.TableName);
+    if (rowData.ActiveStatus == "true")
+        $("#cboActiveStatus").val('true').selectpicker('refresh');
+    else
+        $("#cboActiveStatus").val('false').selectpicker('refresh');
+    Isadd = 0;
+    $("#PopupLocalizationTable").modal('show');
+    $("#txttablecode").attr('disabled', true);
+    $(".modal-title").text("Edit Localization Table Mapping");
+    $("#btnLocalizationTable").html(' Update');
+}
+
+function fnClearFields() {
+    $("#txttablecode").val('');
+    $("#txtschemaName").val('');
+    $("#txttableDesc").val('');
+    $("#cboActiveStatus").val('true');
+    $("#cboActiveStatus").selectpicker('refresh');
+}
+
+function fnSaveLocalizationTableMapping() {
+
+    if (validationTableMapping() === false) {
+        return;
+    }
+
+    if (Isadd === 0) {
+        var LocalizationtableMapping = {
+            TableCode: Number($('#txttablecode').val()),
+            SchemaName: $("#txtschemaName").val(),
+            TableName: $("#txttableDesc").val(),
+            ActiveStatus: $("#cboActiveStatus").val(),
+            Isadd: 0
+        };
+    }
+    if (Isadd === 1) {
+        LocalizationtableMapping = {
+            TableCode: Number($('#txttablecode').val()),
+            SchemaName: $("#txtschemaName").val(),
+            TableName: $("#txttableDesc").val(),
+            ActiveStatus: $("#cboActiveStatus").val(),
+            Isadd: 1
+        };
+
+    }
+
+    $.ajax({
+        url: getBaseURL() + '/Localization/InsertOrUpdateLocalizationMaster',
+        type: "post",
+        data: JSON.stringify(LocalizationtableMapping),
+        contentType: "application/json",
+        success: function (response) {
+
+            if (response.Status === false) {
+                toastr.error(response.Message);
+                return false;
+            }
+
+            if (response.Status === true) {
+                toastr.success(response.Message);
+                fnClosePopUp();
+                fnClearFields();
+                $("#jqgLocalizationTable").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+                return true;
+            }
+
+
+        }
+    });
+
+
+
+}
+
+function validationTableMapping() {
+
+    var tablecode = $("#txttablecode").val();
+    var schemaname = $("#txtschemaName").val();
+    var tabledesc = $("#txttableDesc").val();
+
+
+    if (tablecode === '' || tablecode === null) {
+        toastr.warning("Please Enter Table Code");
+        return false;
+    }
+
+    if (schemaname === '' || schemaname === null) {
+        toastr.warning("Please Enter Schema Name");
+        return false;
+    }
+    if (tabledesc === '' || tabledesc === null) {
+        toastr.warning("Please Enter Table Description");
+        return false;
+    }
+
+
+    if (isNaN(tablecode)) {
+        toastr.warning("Table Code Should be Numbers Only");
+        return false;
+    }
+
+}
+
+function AllowOnlyNumbers(e) {
+    e = (e) ? e : window.event;
+    var clipboardData = e.clipboardData ? e.clipboardData : window.clipboardData;
+    var key = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
+    var str = (e.type && e.type == "paste") ? clipboardData.getData('Text') : String.fromCharCode(key);
+    return (/^\d+$/.test(str));
+}
+
+function fnClosePopUp() {
+    fnClearFields();
+    $("#PopupLocalizationTable").modal('hide');
+}
+

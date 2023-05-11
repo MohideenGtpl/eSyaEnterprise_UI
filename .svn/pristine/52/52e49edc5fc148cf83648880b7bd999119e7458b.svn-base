@@ -1,0 +1,87 @@
+﻿$(document).ready(function () {
+    $(".dot").click(function () {
+        $('.dot').removeClass('active');
+        customerNamePrefix = $(this).text();
+        fnGridLoadManufacturers(customerNamePrefix);
+        $(this).addClass('active');
+    });
+    fnGridLoadManufacturers();
+    //fnGridLoadCustomerContactDetail();
+});
+
+
+function fnGridLoadManufacturers(customerNamePrefix) {
+    $("#jqgManufacturers").jqGrid('GridUnload');
+    $("#jqgManufacturers").jqGrid({
+       // url: getBaseURL() + '/Manufacturers/GetCustomerCodeInformationByNamePrefix?customerNamePrefix=' + customerNamePrefix,
+        datatype: 'json',
+       // mtype: 'Post',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Manufacturer", "Origin Code", "Marketed by","ISD Code", "Status","Actions"],
+        colModel: [
+            { name: "Manufacturer", width: 135, editable: true, align: 'left', hidden: false },
+             { name: "OriginCode", width:50, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "MarketedBy", width: 100, editable: true, align: 'left', hidden: false },
+            { name: "ISDCode", width: 65, editable: true, align: 'left', hidden: false },
+
+            { name: "ActiveStatus", editable: true, width: 28, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: Inactive" } },
+            {
+                name: 'Action', search: false, align: 'left', width: 84, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditManufacturers(event,\'edit\')"><i class="fa fa-edit"></i> Edit </button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnEditManufacturers(event,\'view\')"><i class="fa fa-file"></i> View </button>'
+
+                }
+            },
+        ],
+        pager: "#jqpManufacturers",
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0,
+        loadComplete: function (data) {
+            SetGridControlByAction();
+        },
+    }).jqGrid('navGrid', '#jqpManufacturers', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpManufacturers', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshManufacturers
+    }).jqGrid('navButtonAdd', '#jqpManufacturers', {
+        caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnGridAddManufacturers
+    });
+}
+
+function fnGridAddManufacturers() {
+    $("#divGridDrugManufacturers").hide();
+    $("#divManufacturersForm").css('display', 'block');
+}
+
+function fnEditManufacturers(e, actiontype) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgManufacturers').jqGrid('getRowData', rowid);
+
+
+    if (actiontype.trim() == "edit") {
+        $("#divGridDrugManufacturers").hide();
+        $("#divManufacturersForm").css('display', 'block');
+    }
+    if (actiontype.trim() == "edit") {
+        $("#divGridDrugManufacturers").hide();
+        $("#divManufacturersForm").css('display', 'block');
+    }
+}
+
+function fnGridRefreshManufacturers() {
+
+}
+function fnBackToGrid() {
+    $("#divGridDrugManufacturers").show();
+    $("#divManufacturersForm").css('display', 'none');
+}

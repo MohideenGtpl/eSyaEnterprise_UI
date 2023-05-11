@@ -1,0 +1,43 @@
+﻿
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-12">
+        <div class="form-group">
+            <label>Address</label>
+            <textarea id="txtAddress" rows="2" class="form-control"></textarea>
+        </div>
+    </div>
+    <div class="col-lg-8 col-md-8 col-sm-12">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-group">
+                    <label>State</label>
+                    <select class="form-control " data-container="body" id="cboState" data-live-search="true" onchange="populateCity();">
+                        <option value="value">Select</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-group">
+                    <label>City</label>
+                    <select class="form-control " data-container="body" id="cboCity" data-live-search="true" onchange="populateArea();">
+                        <option value="-1">Select</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-group d-flex flex-column">
+                    <label>Area</label>
+                    <select class="form-control " data-container="body" data-live-search="true" id="cboArea">
+                        <option value="-1">Select</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-group d-flex flex-column">
+                    <label>Pincode</label>
+                    <input class="form-control" id="txtPincode" onblur="populateArea()"/>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>

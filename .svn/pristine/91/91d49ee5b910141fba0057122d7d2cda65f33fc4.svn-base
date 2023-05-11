@@ -1,0 +1,35 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.ActionFilter;
+using eSyaEnterprise_UI.Areas.Config.Models;
+using eSyaEnterprise_UI.Areas.eSyaCustomer.Data;
+using eSyaEnterprise_UI.Areas.eSyaCustomer.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+
+namespace eSyaEnterprise_UI.Areas.eSyaCustomer.Controllers
+{
+    public class CustomerAttributesController : Controller
+    {
+        private readonly IeSyaCustomerAPIServices _eSyaCustomerAPIServices;
+        private readonly ILogger<CustomerController> _logger;
+        public CustomerAttributesController(IeSyaCustomerAPIServices eSyaCustomerAPIServices, ILogger<CustomerController> logger)
+        {
+            _eSyaCustomerAPIServices = eSyaCustomerAPIServices;
+            _logger = logger;
+        }
+        [Area("eSyaCustomer")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public IActionResult V_273_00()
+        {
+            return View();
+        }
+    }
+}

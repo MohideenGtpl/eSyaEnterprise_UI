@@ -1,0 +1,29 @@
+﻿@*Statutory Details*@
+
+<div class="row padtop15">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <p class="subheading">Customer Location</p>
+        <hr class="left" />
+        <table id="jqgLocationDetails"></table>
+        <div id="jqpLocationDetails"></div>
+
+    </div>
+</div>
+<div class="row padtop15">
+    <div class="col-lg-12">
+        <p class="subheading"> Location <span id="lbllocationId"></span> Statutory Details  </p>
+        <hr class="left" />
+    </div>
+
+    <div class="col-lg-12 padbot10">
+        <table id="jqgStatutoryDetails"></table>
+        <div id="jqpStatutoryDetails"></div>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button m-r-15" id="btnSaveStatutoryDetail" onclick="fnSaveStatutorydetails()">
+            Save
+        </button>
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button" id="btnCancelStatutoryDetail"> Cancel</button>
+
+    </div>
+</div>

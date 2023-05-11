@@ -1,0 +1,162 @@
+﻿
+var isEdit = 0;
+function fnLoadBankDetails() {
+
+    fnClearBankDetails();
+
+    $("#jqgVendorBankDetails").GridUnload();
+
+    $("#jqgVendorBankDetails").jqGrid({
+        url: getBaseURL() + '/Vendor/GetVendorBankdetailsByVendorcode?vendorcode=' + $("#txtVendorCode").val(),
+        mtype: 'POST',
+        datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        serializeGridData: function (postdata) {
+            postdata.Vendorcode = $("#txtVendorCode").val();
+            return JSON.stringify(postdata.Vendorcode);
+        },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["","Beneficiary Name", "Bank Name", "Bank A/c No", "Swift Code", "IFSC Code","Active", "Actions"],
+        colModel: [
+        { name: 'VendorCode', width: '40', resizable: false, hidden: true },
+        { name: 'BenificiaryName', width: '170', resizable: false },
+        { name: 'BenificiaryBankName', width: '100', resizable: false },
+        { name: 'BenificiaryBankAccountNo', width: '50', resizable: false },
+        { name: 'BankSwiftcode', width: '40', resizable: false },
+        { name: 'BankIfsccode', width: '40', resizable: false },
+        { name: "ActiveStatus", width: 35, editable: false, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+        {
+            name: '', width: '28', resizable: false, align: 'left',
+            formatter: function (cellValue, options, rowObject) {
+                var ret = '<button class="btn-xs ui-button ui- widget ui-corner-all btn-jqgrid" title="Edit" onclick="fnEditBankDetails(event)\"><i class="fa fa-edit"></i> Edit </button>'
+                return ret;
+            },
+            }
+        ],
+        rowNum: 10,
+        rowList: [10, 20, 40],
+        loadonce: true,
+        pager: "#jqpVendorBankDetails",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        scroll: false,
+        loadonce: true,
+        width: 'auto',
+        height: 'auto',
+        autowidth: 'auto',
+        shrinkToFit: false,
+        forceFit: false,
+     }).jqGrid('navGrid', '#jqpVendorBankDetails', { add: false, edit: false, search: false, del: false, refresh: false, refreshtext: 'Reload' }).jqGrid('navButtonAdd', '#jqpVendorBankDetails', {
+        caption: '<span class="fa fa-sync" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: 'none', id: 'custReload', position: 'first', onClickButton: fnRefreshBankGrid
+    });
+
+}
+ 
+function fnEditBankDetails(e) {
+    isEdit = 1;
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgVendorBankDetails').jqGrid('getRowData', rowid);
+    
+    $("#txtbeneficiaryname").val(rowData.BenificiaryName);
+    $("#txtbankname").val(rowData.BenificiaryBankName);
+    $("#txtbankacno").val(rowData.BenificiaryBankAccountNo);
+    $("#txtbankacno").attr('readonly', true);
+    $("#txtswiftcode").val(rowData.BankSwiftcode);
+    $("#txtifsccode").val(rowData.BankIfsccode);
+    if (rowData.ActiveStatus == 'true') {
+        $("#chkbanktatus").parent().addClass("is-checked");
+    }
+    else {
+        $("#chkbanktatus").parent().removeClass("is-checked");
+    }
+    $("#btnSaveBankDetails").html("Update");
+}
+
+function fnSaveBankDetails() {
+    if (IsValidBankDetails() == false) {
+        return;
+    }
+   
+    
+    var bankdetails = {
+        VendorCode: $("#txtVendorCode").val(),
+        BenificiaryBankAccountNo: $("#txtbankacno").val(),
+        BenificiaryName: $("#txtbeneficiaryname").val(),
+        BenificiaryBankName: $("#txtbankname").val(),
+        BankIfsccode: $("#txtifsccode").val(),
+        BankSwiftcode: $("#txtswiftcode").val(),
+        ActiveStatus: $("#chkbanktatus").parent().hasClass("is-checked"),
+        IsEdit: isEdit
+        };
+  
+   
+    $.ajax({
+
+        url: getBaseURL() + '/Vendor/InsertOrUpdateVendorBankdetails',
+        type: 'POST',
+        datatype: 'json',
+        data: { bankdetails },
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                fnRefreshBankGrid();
+                fnClearBankDetails();
+                return true;
+            }
+            else{
+                toastr.error(response.Message);
+                return false;
+
+            }
+            
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+        }
+    });
+}
+function IsValidBankDetails() {
+    if (IsStringNullorEmpty($("#txtVendorCode").val())) {
+        toastr.warning("Please Create Vendor Details");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtbeneficiaryname").val())) {
+        toastr.warning("Please Enter Beneficiary Name");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtbankname").val())) {
+        toastr.warning("Please Enter Bank Name");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtbankacno").val())) {
+        toastr.warning("Please Enter Account Number");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtswiftcode").val())) {
+        toastr.warning("Please Enter Swift Code");
+        return false;
+    }
+
+    if (IsStringNullorEmpty($("#txtifsccode").val())) {
+        toastr.warning("Please Enter IFSC Code");
+        return false;
+    }
+}
+
+function fnRefreshBankGrid() {
+    $("#jqgVendorBankDetails").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+function fnClearBankDetails() {
+    isEdit = 0;
+    $("#txtbeneficiaryname").val('');
+    $("#txtbankname").val('');
+    $("#txtbankacno").val('');
+    $("#txtbankacno").attr('readonly', false);
+    $("#txtswiftcode").val('');
+    $("#txtifsccode").val('');
+    $("#chkbanktatus").parent().addClass("is-checked");
+    $("#btnSaveBankDetails").html("Save");
+    
+}

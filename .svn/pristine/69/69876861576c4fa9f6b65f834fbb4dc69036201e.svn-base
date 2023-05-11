@@ -1,0 +1,52 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+   
+<div class="row padbot10 padtop15">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <p class="subheading">Vendor Location</p>
+        <hr class="left" />
+        <table id="jqgLocationDetails"></table>
+        <div id="jqpLocationDetails"></div>
+
+    </div>
+</div>
+<div class="row" id="divstatutorydetailsform" style="margin-bottom:30px;margin-top:30px ;display:none">
+
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <div class="form-group">
+            <label>Statutory Description</label>
+            <input id="txtstatdetailsDesc" class="form-control" type="text" autocomplete="off" maxlength="50" />
+
+        </div>
+    </div>
+
+    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+        <div class="form-group" style="margin-bottom: 0px !important;">
+
+            <label> Status</label>
+            <select class="selectpicker" id="cboStatutorystatus">
+                <option value="true">Active</option>
+                <option value="false">Inactive</option>
+            </select>
+        </div>
+    </div>
+</div>
+<div class="row martop10">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnsavestatutory" onclick="fnSaveStatutorydetails()" style="margin-right:10px;">  Save</button>
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button" onclick="fnCloseVendorDetails()"> Cancel</button>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <p class="subheading"> Location <span id="lbllocationId"></span> Statutory Details  </p>
+    </div>
+
+    <div class="col-lg-12">
+        <table id="jqgStatutoryDetails"></table>
+        <div id="jqpStatutoryDetails"></div>
+    </div>
+</div>

@@ -1,0 +1,65 @@
+﻿
+@{
+    ViewData["Title"] = "V_312_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/jsTree.css" rel="stylesheet" />
+@section scripts{
+    <script src="~/js/eSyaClinicalServices/ClinicDoctorLink.js"></script>
+    <script src="~/js/jsTree.js"></script>
+}
+
+
+<div class="row">
+    <div class="col-lg-3 col-md-4">
+        <div class="form-group">
+            <label class="lable-color">Business Location</label>
+            <select class="selectpicker" data-live-search="false" id="cboBusinessLocation" title="Select" data-size="8">
+                <option value="0">Select</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-4">
+        <div class="form-group">
+            <label class="lable-color">Specialty</label>
+            <select class="selectpicker" data-live-search="false" id="cboSpecialty" title="Select" data-size="8">
+                <option value="0">Select</option>
+            </select>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-6">
+        <div id="jstClinicDoctorLinktree"></div>
+    </div>
+    <div class="col-lg-6 col-md-6">
+        <div class="demo-card-square mdl-card mdl-shadow--2dp marbot15 fullwidth" id="pnlAddForms">
+            <div class="mdl-card__title mdl-card--expand padleft0 padtop0 d-block">
+                <h5 class="mdl-card__title-text">Clinic Consultation </h5>
+            </div>
+            <div class="mdl-card__supporting-text fullwidth">
+                <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-6">
+                    <div id="jstClinicConsultanttree"></div>
+                </div>
+                    </div>
+            </div>
+            <hr />
+            <div class="mdl-card__actions text-center pad0 form-group padtop9">
+                <button type="button" class="btn btn-primary" id="btnSave"><i class="fa fa-save"></i> Save </button>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-2">
+        <h5>Action</h5>
+       
+        <button class="mdl-button mdl-js-button mdl-button--raised primary-button btn_wdth" id="btnExpandAll">
+            <i class="fas fa-expand" style="color:#fff !important"></i>   Expand All
+        </button>
+        <button class="mdl-button mdl-js-button mdl-button--raised primary-button btn_wdth" id="btnCollapseAll">
+            <i class="fas fa-compress" style="color:#fff !important"></i>   Collapse All
+        </button>
+    </div>
+</div>
+

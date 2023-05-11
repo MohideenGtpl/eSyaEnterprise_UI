@@ -1,0 +1,88 @@
+﻿$(function () {
+    fnLoadRateTypes();
+})
+function fnLoadRateTypes() {
+    $("#jqgRateTypes").jqGrid('GridUnload');
+    $("#jqgRateTypes").jqGrid({
+        url: getBaseURL() + '',
+        datatype: 'json',
+        mtype: 'GET',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: [localization.ServiceTypeDesc, localization.RateType, localization.ActiveStatus],
+
+        colModel: [
+
+            { name: "ServiceTypeDesc", width: 250, editable: false, align: 'left', hidden: false },
+            { name: "RateType", width: 250, editable: false, align: 'left' },
+            {
+                name: "Status", width: 200, editable: true, align: 'center', hidden: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true }
+            },
+
+        ],
+        rowNum: 10,
+        rowList: [10, 20, 30, 50],
+        emptyrecords: "No records to Veiw",
+        pager: "#jqpRateTypes",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: false,
+        height: 'auto',
+        width: 'auto',
+        scroll: false,
+        autowidth: true,
+        shrinkToFit: true,
+        forceFit: true,
+        loadonce: true,
+        cellEdit: true,
+        editurl: 'url',
+        cellsubmit: 'clientArray',
+        loadComplete: function (data) {
+            $("#jqgRateTypes").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+        }
+    }).jqGrid('navGrid', '#jqpRateTypes', { add: false, edit: false, search: false, del: false, refresh: false });
+    $("#jqgRateTypes").jqGrid('inlineNav', '#jqpRateTypes',
+        {
+            edit: false,
+            editicon: " fa fa-pen",
+            edittext: "Edit",
+            add: false,
+            addicon: "fa fa-plus",
+            addtext: "Add",
+            save: false,
+            savetext: "Save",
+            saveicon: "fa fa-save",
+            cancel:false,
+            editParams: {
+                keys: false,
+                oneditfunc: function (formid) {
+
+                },
+                url: null,
+                extraparam: {
+                },
+                successfunc: function (result) {
+                },
+                aftersavefun: null,
+                errorfun: null,
+                afterrestorefun: null,
+                restoreAfterError: true,
+                mtype: "POST"
+            },
+            addParams: {
+                useDefValues: true,
+                position: "last",
+                addRowParams: {
+                    keys: true,
+                    url: null,
+                    extraparam: {
+                    },
+                    oneditfunc: function (rowid) {
+                    },
+                    successfunc: function (result) {
+                    },
+                },
+            }
+        });
+    fnAddGridSerialNoHeading();
+}

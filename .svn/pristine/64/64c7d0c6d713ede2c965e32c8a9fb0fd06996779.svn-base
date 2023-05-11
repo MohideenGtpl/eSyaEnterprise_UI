@@ -1,0 +1,162 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.Areas.eSyaNursingStation.Data;
+using eSyaEnterprise_UI.Areas.eSyaNursingStation.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+
+namespace eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers
+{
+    public class PatientClinicalInformationController : Controller
+    {
+
+        private readonly IeSyaNursingStationAPIServices _eSyaNursingStationAPIServices;
+        private readonly ILogger<PatientClinicalInformationController> _logger;
+
+        private readonly IHostingEnvironment _hostingEnvironment;
+
+        public PatientClinicalInformationController(IeSyaNursingStationAPIServices eSyaNursingStationAPIServices, ILogger<PatientClinicalInformationController> logger, IHostingEnvironment hostingEnvironment)
+        {
+            _eSyaNursingStationAPIServices = eSyaNursingStationAPIServices;
+            _logger = logger;
+            _hostingEnvironment = hostingEnvironment;
+        }
+
+
+        [Area("eSyaNursingStation")]
+        public IActionResult V_6003_00()
+        {
+            return View();
+        }
+
+
+        public async Task<JsonResult> GetClinicalInformationValueForPatient(int UHID, int ipnumber)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&UHID=" + UHID.ToString();
+                parameter += "&ipnumber=" + ipnumber.ToString();
+
+                var serviceResponse = await _eSyaNursingStationAPIServices.HttpClientServices.GetAsync<List<DO_NS_ControlValue>>("PatientClinicalInformation/GetClinicalInformationValueForPatient" + parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), string.Format("UD:GetClinicalInformationValueForPatient:params: businessKey:{0},UHID:{1},ipnumber:{2}",
+                        AppSessionVariables.GetSessionBusinessKey(HttpContext).ToString(), UHID, ipnumber));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, string.Format("UD:GetClinicalInformationValueForPatient:params: businessKey:{0},UHID:{1},ipnumber:{2}",
+                        AppSessionVariables.GetSessionBusinessKey(HttpContext).ToString(), UHID, ipnumber));
+                throw ex;
+            }
+        }
+
+        public async Task<JsonResult> GetClinicalInformationValueByTransaction(int UHID, int ipnumber, int transactionID)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&UHID=" + UHID.ToString();
+                parameter += "&ipnumber=" + ipnumber.ToString();
+                parameter += "&transactionID=" + transactionID.ToString();
+
+                var serviceResponse = await _eSyaNursingStationAPIServices.HttpClientServices.GetAsync<List<DO_NS_ControlValue>>("PatientClinicalInformation/GetClinicalInformationValueByTransaction" + parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), string.Format("UD:GetClinicalInformationValueByTransaction:params: businessKey:{0},UHID:{1},ipnumber:{2},transactionID:{3}",
+                        AppSessionVariables.GetSessionBusinessKey(HttpContext).ToString(), UHID, ipnumber, transactionID));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, string.Format("UD:GetClinicalInformationValueByTransaction:params: businessKey:{0},UHID:{1},ipnumber:{2},transactionID:{3}",
+                        AppSessionVariables.GetSessionBusinessKey(HttpContext).ToString(), UHID, ipnumber, transactionID));
+                throw ex;
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> InsertIntoPatientClinicalInformation(DO_PatientClinicalInformation obj)
+        {
+            try
+            {
+                obj.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                obj.ActiveStatus = true;
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+
+                var serviceResponse = await _eSyaNursingStationAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("PatientClinicalInformation/InsertIntoPatientClinicalInformation", obj);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data.Status)
+                        return Json(new { Status = true, serviceResponse.Data.Message });
+                    else
+                        return Json(new { Status = false, serviceResponse.Data.Message });
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:InsertIntoPatientClinicalInformation:params:" + JsonConvert.SerializeObject(obj));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertIntoPatientClinicalInformation:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Warning = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> UpdatePatientClinicalInformation(DO_PatientClinicalInformation obj)
+        {
+            try
+            {
+                obj.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                obj.ActiveStatus = true;
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+
+                var serviceResponse = await _eSyaNursingStationAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("PatientClinicalInformation/UpdatePatientClinicalInformation", obj);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data.Status)
+                        return Json(new { Status = true, serviceResponse.Data.Message });
+                    else
+                        return Json(new { Status = false, serviceResponse.Data.Message });
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:UpdatePatientClinicalInformation:params:" + JsonConvert.SerializeObject(obj));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:UpdatePatientClinicalInformation:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Warning = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+    }
+}

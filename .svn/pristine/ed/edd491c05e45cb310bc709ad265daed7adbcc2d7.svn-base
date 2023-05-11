@@ -1,0 +1,178 @@
+﻿
+$(document).ready(function () {
+    fnGridLoadUserCreation();
+    fnGridUserSegment();
+});
+
+function fnGridLoadUserCreation() {
+    
+    var URL = getBaseURL() + '/User/GetUserMasterforGridDisplay';
+    $("#jqgUserCreation").jqGrid('GridUnload');
+    $("#jqgUserCreation").jqGrid({
+        url: URL,
+        mtype: 'Post',
+        datatype: 'json',
+        data: [{ CodeDesc: '1000', DefaultStatus: 'True', ActiveStatus: 'True' }],
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Login ID", "Login Description", "Mobile Number", "Last Activity Date", "Is Active", ""],
+        colModel: [
+            { name: "LoginID", width: 70, editable: true, align: 'left', hidden: false },
+            { name: "LoginDesc", width: 170, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "MobileNumber", width: 370, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            { name: "LastActivityDate", editable: true, width: 105, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            { name: "ActiveStatus", editable: true, width: 95, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: Inactive" } },
+            {
+                name: 'Edit', search: false, align: 'center', width: 50, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" onclick="return fnEditUserCreation(event)"><i class="fa fa-edit"></i> Edit </button>'
+
+                }
+            },
+        ],
+        rowNum: 10,
+        loadonce: false,
+        pager: "#jqpUserCreation",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0
+    }).jqGrid('navGrid', '#jqpUserCreation', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpUserCreation', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshUserCreation
+        }).jqGrid('navButtonAdd', '#jqpUserCreation', {
+        caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Add', buttonicon: 'none', id: 'custAdd', position: 'first', onClickButton: fnGridAddUserCreation
+    });
+}
+
+function fnGridRefreshUserCreation() {
+    $("#jqgUserCreation").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+function fnGridAddUserCreation() {
+    location.href = getBaseURL() + "/eSyaUserManagement/User/_UserCreation";
+} 
+
+ 
+function fnSaveTaxStructure() {
+
+}
+
+function fnGridUserSegment() {
+    $("#jqgUserBusinessSegment").jqGrid('GridUnload');
+    $("#jqgUserBusinessSegment").jqGrid({
+        url: URL,
+        mtype: 'Post',
+        datatype: 'local',
+        data: [{ CodeDesc: '1000', DefaultStatus: 'True', ActiveStatus: 'True' }],
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Business Segment","User Group", "User Type", "Allow MFY","Active Status","Actions"],
+        colModel: [
+            { name: "SegmentDescription", width: 120, editable: true, align: 'left', hidden: false },
+             
+            { name: "UserGroup", width: 70, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            { name: "UserType", editable: true, width: 25, align: 'center', resizable: false },
+            { name: "AllowMFY", editable: true, width: 25, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }},
+            { name: "ActiveStatus", editable: true, width: 28, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: Inactive" } },
+            {
+                name: 'Actions', search: false, align: 'center', width: 50, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" onclick="return fnEditBusinessSegment(event)"><i class="fa fa-edit"></i> Edit </button><button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnViewBusinessSegment(event)"><i class="fa fa-file"></i> View </button>'
+
+                }
+            },
+        ],
+        rowNum: 10,
+        loadonce: false,
+        pager: "#jqpUserBusinessSegment",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        multiselect: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0
+    }).jqGrid('navGrid', '#jqpUserBusinessSegment', { add: false, edit: false, search: false, del: false, refresh: false });
+    $("#jqgUserBusinessSegment").jqGrid('inlineNav', '#jqpUserBusinessSegment',
+        {
+            edit: false,
+            editicon: " fa fa-pen",
+            edittext: "Edit",
+            add: false,
+            addicon: "fa fa-plus",
+            addtext: "Add",
+            save: true,
+            savetext: "Save",
+            saveicon: "fa fa-save",
+            cancelicon: "fa fa-ban",
+            canceltext: "Cancel",
+            editParams: {
+                keys: false,
+                oneditfunc: function (formid) {
+
+                    $("#" + formid + "_LanguageCode").prop('disabled', true);
+                    $("#" + formid + "_TableCode").prop('disabled', true);
+                },
+                url: null,
+
+                extraparam: {
+
+                },
+
+                successfunc: function (result) {
+                },
+                aftersavefunc: null,
+                errorfun: null,
+                afterrestorefun: null,
+                restoreAfterError: true,
+                mtype: "POST"
+            },
+            addParams: {
+                useDefValues: true,
+                position: "last",
+                addRowParams: {
+                    keys: true,
+                    url: null,
+                    extraparam: {
+
+                    },
+
+                    oneditfunc: function (rowid) {
+
+                    },
+                    successfunc: function (result) {
+                    }
+                }
+            }
+        });
+}
+ 
+$('#jstUserGroup').jstree({
+    'core': {
+        'data': [
+            'Simple root node',
+            {
+                'text': 'Root node 2',
+                'state': {
+                    'opened': true,
+                    'selected': true
+                },
+                'children': [
+                    { 'text': 'Child 1' },
+                    'Child 2'
+                ]
+            }
+        ]
+    }
+});
+
+
+function fnViewBusinessSegment(e) { }
+function fnEditBusinessSegment(e) {}

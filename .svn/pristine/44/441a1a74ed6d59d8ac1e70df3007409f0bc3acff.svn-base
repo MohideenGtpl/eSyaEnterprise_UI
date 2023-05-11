@@ -1,0 +1,382 @@
+﻿var Isadd = 0;
+var Postedimg;
+var postedImgName = 0;
+var imgName;
+var imgPath;
+var imgUrl;
+
+
+$(document).ready(function () {
+    fnGridLoadCountryCode();
+   
+});
+
+function fnGridLoadCountryCode() {
+
+
+    $("#jqgCountryCode").jqGrid('GridUnload');
+    $("#jqgCountryCode").jqGrid({
+        url: getBaseURL() + '/Country/GetAllCountryCodes',
+        mtype: 'Post',
+        datatype: 'json',
+
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["ISD Code", "Country Code", "Country Name","", "Currency Name", "", "Flag","","","","","","","","","Active Status", "Actions"],
+        colModel: [
+            { name: "Isdcode", width: 30, editable: true, align: 'left', hidden: false },
+            { name: "CountryCode", width: 30, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "CountryName", width: 70, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "CurrencyCode", width: 70, editable: false, hidden: true, align: 'left', resizable: true },
+            { name: "CurrencyName", width: 70, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "ShowCountryFlag", width: 70, editable: true, edittype: 'image', formatter: getImage, hidden: true, editrules: { edithidden: true }, sortable: false },
+            {
+                name: 'CountryFlag',
+                index: 'Isdcode',
+                sortable: false,
+                editable: true,
+                edittype: 'file',
+                hidden: false,
+                editoptions: {
+                    enctype: "multipart/form-data",
+
+                    dataEvents: [{
+                        type: 'change',
+                        fn: function (e) {
+                            var Filename = $('#ShowCountryFlag').attr('src').split('/').pop();
+                            imgName = Filename;
+                            var input = document.getElementById("CountryFlag");
+                            var fReader = new FileReader();
+                            fReader.readAsDataURL(input.files[0]);
+                            fReader.onloadend = function (event) {
+                                var img = document.getElementById("ShowCountryFlag");
+                                img.src = event.target.result;
+                            }
+                        }
+                    }]
+                },
+                width: 25,
+                align: 'center',
+                formatter: jgImageFormatter,
+                search: false
+            },
+
+            { name: "MobileNumberPattern", width: 70, editable: false, hidden: true, align: 'left', resizable: true },
+            { name: "Uidlabel", width: 70, editable: false, hidden: true, align: 'left', resizable: true },
+            { name: "Uidpattern", width: 70, editable: false, hidden: true, align: 'left', resizable: true },
+            { name: "Nationality", width: 70, editable: false, hidden: true, align: 'left', resizable: true },
+            { name: "IsPoboxApplicable", editable: true, hidden: true, width: 45, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            { name: "PoboxPattern", width: 70, editable: false, hidden: true, align: 'left', resizable: true },
+            { name: "IsPinapplicable", editable: true, hidden: true, width: 45, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            { name: "PincodePattern", width: 70, editable: false, hidden: true, align: 'left', resizable: true },
+            { name: "ActiveStatus", editable: true, width: 35, hidden: false, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: Inactive" } },
+             {
+                name: 'edit', search: false, align: 'left', width: 54, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" onclick="return fnEditCountryCode(event)"><i class="fas fa-pencil-alt"></i> Edit </button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnViewCountryCode(event)"><i class="far fa-file-alt"></i> View </button>'
+
+                }
+            },
+        ],
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        pager: "#jqpCountryCode",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0,
+    }).jqGrid('navGrid', '#jqpCountryCode', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpCountryCode', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshCountryCode
+    }).jqGrid('navButtonAdd', '#jqpCountryCode', {
+        caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Add', buttonicon: 'none', id: 'custAdd', position: 'first', onClickButton: fnGridAddCountryCode
+    });
+}
+
+function jgImageFormatter(cellValue, options, rowObject) {
+    var imageHtml = "<img id='countryflagimg' src='" + cellValue + "' originalValue='" + cellValue + "' />"
+    return imageHtml;
+}
+
+
+function getImage(cellValue, options, rowObject) {
+    var imageHtml = "<img id='img" + options.rowId + "' src='" + rowObject.CountryFlag + "' originalValue='" + rowObject.CountryFlag + "'  />"
+    return imageHtml;
+}
+
+function fnGridAddCountryCode() {
+    $('#divstatutorycode').hide();
+    fnClearFields();
+    Isadd = 1;
+    $('#PopupCountryCode').modal('show');
+    $('#PopupCountryCode').modal({ backdrop: 'static', keyboard: false });
+    $('#PopupCountryCode').find('.modal-title').text("Add Country");
+    $("#btnSaveCountryCode").html(' Save');
+}
+
+function fnGridRefreshCountryCode() {
+   $("#jqgCountryCode").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+function fnEditCountryCode(e) {
+   
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgCountryCode').jqGrid('getRowData', rowid);
+    Isadd = 0;
+    $('#txtIsdcode').val(rowData.Isdcode);
+    $("#txtIsdcode").attr('disabled', true);
+    $('#txtCountrycode').val(rowData.CountryCode);
+    imgUrl = $('#img' + rowid).attr('src');
+    var IMGurl = imgUrl;
+    var IMGname = IMGurl.split('/').pop().split('?')[0].split('#')[0];
+   
+    
+    $('#cboflagImage').val(IMGname).trigger('change');
+    $('#cboflagImage').selectpicker('refresh');
+    $('#txtCountryName').val(rowData.CountryName);
+    $('#cboCurrencycode').val(rowData.CurrencyCode);
+    $('#cboCurrencycode').selectpicker('refresh');  
+    $('#txtMobileNumberPattern').val(rowData.MobileNumberPattern);
+    $('#txtUIDlabel').val(rowData.Uidlabel);
+    $('#txtUIDPattern').val(rowData.Uidpattern);
+    $('#txtNationality').val(rowData.Nationality);
+    $('#cboActiveStatus').val(rowData.ActiveStatus);
+    $('#cboActiveStatus').selectpicker('refresh');
+    if (rowData.IsPoboxApplicable == 'true') {
+        $("#chkIsPOBoxAppllicable").parent().addClass("is-checked");
+    }
+    else {
+        $("#chkIsPOBoxAppllicable").parent().removeClass("is-checked");
+    }
+     
+    $('#txtPOBoxPattern').val(rowData.PoboxPattern);
+    if (rowData.IsPinapplicable == 'true') {
+        $("#chkIsPinApplicable").parent().addClass("is-checked");
+    }
+    else {
+        $("#chkIsPinApplicable").parent().removeClass("is-checked");
+    }
+    $('#txtPincodePattern').val(rowData.PincodePattern);
+    $('#PopupCountryCode').modal('show');
+    $('#PopupCountryCode').find('.modal-title').text("Update Country");
+    $("#btnSaveCountryCode").html(' Update');
+    $('#divstatutorycode').show();
+  
+}
+function fnViewCountryCode(e) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgCountryCode').jqGrid('getRowData', rowid);
+    Isadd = 0;
+    $('#txtIsdcode').val(rowData.Isdcode);
+    $("#txtIsdcode").attr('disabled', true);
+    $('#txtCountrycode').val(rowData.CountryCode);
+    imgUrl = $('#img' + rowid).attr('src');
+    var IMGurl = imgUrl;
+    var IMGname = IMGurl.split('/').pop().split('?')[0].split('#')[0];
+
+
+    $('#cboflagImage').val(IMGname).trigger('change');
+    $('#cboflagImage').selectpicker('refresh');
+    $('#txtCountryName').val(rowData.CountryName);
+    $('#cboCurrencycode').val(rowData.CurrencyCode);
+    $('#cboCurrencycode').selectpicker('refresh');
+    $('#txtMobileNumberPattern').val(rowData.MobileNumberPattern);
+    $('#txtUIDlabel').val(rowData.Uidlabel);
+    $('#txtUIDPattern').val(rowData.Uidpattern);
+    $('#txtNationality').val(rowData.Nationality);
+    $('#cboActiveStatus').val(rowData.ActiveStatus);
+    $('#cboActiveStatus').selectpicker('refresh');
+    if (rowData.IsPoboxApplicable == 'true') {
+        $("#chkIsPOBoxAppllicable").parent().addClass("is-checked");
+    }
+    else {
+        $("#chkIsPOBoxAppllicable").parent().removeClass("is-checked");
+    }
+
+    $('#txtPOBoxPattern').val(rowData.PoboxPattern);
+    if (rowData.IsPinapplicable == 'true') {
+        $("#chkIsPinApplicable").parent().addClass("is-checked");
+    }
+    else {
+        $("#chkIsPinApplicable").parent().removeClass("is-checked");
+    }
+    $('#txtPincodePattern').val(rowData.PincodePattern);
+    $('#PopupCountryCode').modal('show');
+    $('#PopupCountryCode').find('.modal-title').text("View Country");
+    $("#btnSaveCountryCode").html(' Update');
+    $('#divstatutorycode').show();
+    $("input,textarea").attr('readonly', true);
+    $("select").next().attr('disabled', true);
+    $("input[type=checkbox]").attr('disabled', true);
+    $("#btnSaveCountryCode").hide();
+    $("#PopupCountryCode").on('hidden.bs.modal', function () {
+        $("#btnSaveCountryCode").show();
+        $("input,textarea").attr('readonly', false);
+        $("select").next().attr('disabled', false);
+        $("input[type=checkbox]").attr('disabled', false);
+    })
+}
+function fnClearFields() {
+   
+    $("#txtIsdcode").val('');
+    $("#txtIsdcode").attr('disabled', false);
+    $("#txtCountrycode").val('');
+    //$('#imgPreview').attr('src', '');
+    //$("#imgFlag").val('');
+    $("#cboflagImage").val('0').trigger('change');
+    $('#cboflagImage').selectpicker('refresh');
+    $("#txtCountryName").val('');
+    $("#cboCurrencycode").val('0');
+    $("#cboCurrencycode").selectpicker('refresh');
+    $("#txtMobileNumberPattern").val('');
+    $("#txtUIDlabel").val('');
+    $("#txtUIDPattern").val('');
+    $("#txtNationality").val('');
+    $("#cboActiveStatus").val('true');
+    $("#cboActiveStatus").selectpicker('refresh');
+    $("#chkIsPOBoxAppllicable").parent().removeClass("is-checked");
+    $("#txtPOBoxPattern").val('');
+    $("#chkIsPinApplicable").parent().removeClass("is-checked");
+    $("#txtPincodePattern").val('');
+
+}
+
+function fnSaveCountryCode() {
+   
+    if (validateCountryCode() === false) {
+        return;
+    }
+
+    var PoboxApplicable;
+    var chkPoboxApplicable = $("#chkIsPinApplicable").parent().hasClass("is-checked");
+    if (chkPoboxApplicable) {
+        PoboxApplicable = true;
+    }
+    else {
+        PoboxApplicable = false;
+    }
+
+    var Pinapplicable;
+    var chkPinapplicable = $("#chkIsPOBoxAppllicable").parent().hasClass("is-checked");
+    if (chkPinapplicable) {
+        Pinapplicable = true;
+    }
+    else {
+        Pinapplicable = false;
+    }
+
+    if (Isadd === 1) {
+        
+        var countrycode = {
+            Isdcode: $('#txtIsdcode').val(),
+            CountryCode: $("#txtCountrycode").val(),
+            CountryName: $("#txtCountryName").val(),
+            //CountryFlag: 'img',
+            imgName: $("#cboflagImage").val(),
+            CurrencyCode: $("#cboCurrencycode").val(),
+            MobileNumberPattern: $("#txtMobileNumberPattern").val().trim(),
+            Uidlabel: $("#txtUIDlabel").val(),
+            Uidpattern: $("#txtUIDPattern").val(),
+            Nationality: $("#txtNationality").val(),
+            IsPoboxApplicable: PoboxApplicable,
+            PoboxPattern: $("#txtPOBoxPattern").val(),
+            IsPinapplicable: Pinapplicable,
+            PincodePattern: $("#txtPincodePattern").val(),
+            ActiveStatus: $("#cboActiveStatus").val(),
+            Isadd: 1
+        };
+
+
+    }
+    
+    if (Isadd === 0) {
+
+        var countrycode = {
+            Isdcode: $('#txtIsdcode').val(),
+            CountryCode: $("#txtCountrycode").val(),
+            CountryName: $("#txtCountryName").val(),
+            //CountryFlag: 'img',
+            imgName: $("#cboflagImage").val(),
+            CurrencyCode: $("#cboCurrencycode").val(),
+            MobileNumberPattern: $("#txtMobileNumberPattern").val().trim(),
+            Uidlabel: $("#txtUIDlabel").val(),
+            Uidpattern: $("#txtUIDPattern").val(),
+            Nationality: $("#txtNationality").val(),
+            IsPoboxApplicable: PoboxApplicable,
+            PoboxPattern: $("#txtPOBoxPattern").val(),
+            IsPinapplicable: Pinapplicable,
+            PincodePattern: $("#txtPincodePattern").val(),
+            ActiveStatus: $("#cboActiveStatus").val(),
+            Isadd: 0
+        };
+    }
+
+
+    $.ajax({
+        url: getBaseURL() + '/Country/InsertOrUpdateCountryCodes',
+        type: "post",
+        data: JSON.stringify(countrycode),
+        contentType: "application/json",
+        success: function (response) {
+
+            if (response.Status === false) {
+                toastr.error(response.Message);
+                return false;
+            }
+
+            if (response.Status === true) {
+                toastr.success(response.Message);
+                fnClearFields();
+                $('#PopupCountryCode').modal('hide');
+                fnGridLoadCountryCode();
+                return true;
+            }
+
+
+        }
+    });
+}
+
+function validateCountryCode() {
+  
+    if ($("#txtIsdcode").val() === '' || $("#txtIsdcode").val() === null) {
+        toastr.warning("Please Enter ISD Code");
+        return false;
+    }
+    if ($("#txtCountrycode").val() === '' || $("#txtCountrycode").val() === null) {
+        toastr.warning("Please Enter Country Code");
+        return false;
+    }
+    
+    if ($("#cboflagImage").val() === '0' || $("#cboflagImage").val() === null) {
+        toastr.warning("Please Select Country Flag");
+        return false;
+    }
+   
+    if ($("#txtCountryName").val() === '' || $("#txtCountryName").val() === null) {
+        toastr.warning("Please Enter Country Name");
+        return false;
+    }
+    if ($("#cboCurrencycode").val() === "0" || $("#cboCurrencycode").val() === '0') {
+        toastr.warning("Please Select Currency");
+        return false;
+    }
+
+}
+
+function AllowOnlyNumbers(e) {
+    e = (e) ? e : window.event;
+    var clipboardData = e.clipboardData ? e.clipboardData : window.clipboardData;
+    var key = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
+    var str = (e.type && e.type == "paste") ? clipboardData.getData('Text') : String.fromCharCode(key);
+    return (/^\d+$/.test(str));
+}
+
+
+

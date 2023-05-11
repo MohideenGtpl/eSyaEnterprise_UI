@@ -1,0 +1,91 @@
+﻿$(document).ready(function () {
+    $(".dot").click(function () {
+        $('.dot').removeClass('active');
+        customerNamePrefix = $(this).text();
+        fnGridLoadCategories(customerNamePrefix);
+        $(this).addClass('active');
+        var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+        $("#divSearch").show();
+        var numbers = "0123456789".split("");
+        if (customerNamePrefix == "0-9") {
+            $.each(numbers, function (letter) {
+                $('.filter-div').addClass("animated fadeIn").append($('<span class="filter-chars">' + numbers[letter] + '</span>'));
+            });
+        }
+
+        else {
+            $.each(alphabet, function (letter) {
+                $('.filter-div').addClass("animated fadeIn").append($('<span class="filter-chars">' + customerNamePrefix + alphabet[letter] + '</span>'));
+            });
+        }
+    });
+    fnGridLoadCategories();
+    //fnGridLoadCustomerContactDetail();
+});
+
+
+function fnGridLoadCategories(customerNamePrefix) {
+    $("#jqgDrugCategories").jqGrid('GridUnload');
+    $("#jqgDrugCategories").jqGrid({
+        // url: getBaseURL() + '/Categories/GetCustomerCodeInformationByNamePrefix?customerNamePrefix=' + customerNamePrefix,
+        datatype: 'json',
+        // mtype: 'Post',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Generics", "Is Combination Drug","Drug Class","Usage status","Status", "Actions"],
+        colModel: [
+            { name: "Generics", width: 135, editable: true, align: 'left', hidden: false },
+            { name: "IsCombinationsDrug", width: 50, editable: true, align: 'center', hidden: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+            { name: "DrugClass", width: 55, editable: true, align: 'left', hidden: false },
+            { name: "UsageStatus", editable: true, width: 38, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+            { name: "ActiveStatus", editable: true, width: 28, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+            {
+                name: 'Action', search: false, align: 'left', width: 54, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditCategories(event,\'edit\')"><i class="fa fa-edit"></i> Edit </button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnEditCategories(event,\'view\')"><i class="far fa-eye"></i> View </button>'
+
+                }
+            },
+        ],
+        pager: "#jqpDrugCategories",
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0,
+        loadComplete: function (data) {
+            SetGridControlByAction();
+        },
+    }).jqGrid('navGrid', '#jqpDrugCategories', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpDrugCategories', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshCategories
+    }).jqGrid('navButtonAdd', '#jqpDrugCategories', {
+        caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnGridAddCategories
+    });
+}
+
+function fnGridAddCategories() {
+    $("#divGridDrugCategories").hide();
+    $("#divDrugCategoriesForm").css('display', 'block');
+  
+}
+
+
+function fnGridRefreshCategories() {
+
+}
+  
+
+function fnBackToGrid() {
+    debugger;
+    $("#divGridDrugCategories").show();
+    $("#divDrugCategoriesForm").css('display', 'none');
+
+}

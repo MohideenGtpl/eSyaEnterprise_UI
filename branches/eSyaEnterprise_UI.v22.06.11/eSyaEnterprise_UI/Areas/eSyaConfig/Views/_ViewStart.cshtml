@@ -1,0 +1,19 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script>
+    $(function () {
+
+        var cultureInfo = '@System.Globalization.CultureInfo.CurrentCulture.Name';
+
+        $.getJSON(getBaseURL() + "/json/esyaconfig/localization-" + cultureInfo + ".json", function (data) {
+            errorMsg = data;
+        }).fail(function () {
+            $.getJSON(getBaseURL() + "/json/esyaconfig/localization.json", function (data) {
+                errorMsg = data;
+            })
+        });
+
+    });
+</script>

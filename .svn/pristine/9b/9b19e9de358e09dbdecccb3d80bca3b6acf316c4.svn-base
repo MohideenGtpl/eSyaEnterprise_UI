@@ -1,0 +1,85 @@
+﻿
+@{
+    ViewData["Title"] = "V_72_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/js/Config/InventoryRules.js"></script>
+
+
+<div class="row padbot10">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <table id="jqgInventoryRules"></table>
+        <div id="jqpInventoryRules"></div>
+    </div>
+</div>
+
+<div class="modal fade" id="PopupInventoryRules">
+    <div class="modal-dialog modal-md" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close" data-dismiss="modal" onclick="fnClearFields()"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Inventory Rules</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row padbot4">
+                    <div class="col-sm-12">
+                        <input type="text" class="form-control" id="txtInventoryRules" style="display:none">
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-12">
+                        <div class="form-group">
+                            <label> Inventory Rule</label>
+                            <select class="selectpicker" id="cboInventoryRule">
+                                <option value="0">Select Rule</option>
+                                <option value="F">F</option>
+                                <option value="S">S</option>
+                                <option value="N">N</option>
+                                <option value="E">E</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-9 col-md-9 col-sm-12">
+                        <div class="form-group">
+                            <label> Description</label>
+                            <input id="txtRuleDescription" class="form-control" type="text" autocomplete="off" maxlength="25" />
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-12">
+                        <div class="form-group">
+                            <label> Rule in Days</label>
+                            <input id="txtRuleInDays" class="form-control" type="text" autocomplete="off" maxlength="8" data-inputmask="'mask': '9', 'repeat': 10, 'greedy' : false"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12" style="padding-top: 3%;">
+                        <div class="default-checkbox">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkApplyToSRN">
+                                <input type="checkbox" id="chkApplyToSRN" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">Apply to SRN</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label class="lable-color"> Status</label>
+                            <select class="selectpicker" data-live-search="false" id="cboActiveStatus" title="">
+                                <option value="true">Active</option>
+                                <option value="false">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveInventoryRules" onclick="fnSaveInventoryRules()">
+                            Save
+                        </button>
+                        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button" data-dismiss="modal" onclick="fnClearFields()"> Cancel</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

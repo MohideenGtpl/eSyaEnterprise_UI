@@ -1,0 +1,89 @@
+﻿:root {
+    --banner-bg: #EFDF8D;
+    --primary-color: #555555; /*black*/
+    --entry-color: #787887;
+    --secondary-color: #f0e08e; /*yellow*/
+    --button-forecolor: #fcd727; /*gold*/
+    --light-orange: #FEFBEB; /*light orange*/
+    --light-yellow:#fffff3; /*Light Yellow*/
+}
+.header nav, #navbarSupportedContent{
+    background-color: var(--primary-color);
+}
+.banner{
+    color:var(--primary-color);
+    background-color: var(--banner-bg);
+}
+.jquery-accordion-menu ul li a {
+    background-color: var(--primary-color);
+}
+.jquery-accordion-menu ul ul.submenu > li > ul.submenu > li > a {
+    background: var(--light-yellow) !important;
+}
+.primary-button, .cancel-button, .ui-button, .loginButton,.btn-primary, .btn-primary:not(:disabled):not(.disabled).active, .btn-primary:not(:disabled):not(.disabled):active, .show > .btn-primary.dropdown-toggle {
+    background-color: var(--primary-color) !important;
+    color: var(--button-forecolor) !important;
+    border-color:var(--primary-color) !important;
+}
+
+#btn-menuBar {
+    background: var(--secondary-color) !important;
+}
+.navbar-brand-container,.navbar-brand {
+    background: var(--secondary-color) !important;
+}
+.jquery-accordion-menu .jquery-accordion-menu-header, #eSyaMenuName {
+    background: var(--secondary-color) !important;
+    font-weight: 300 !important;
+    color: #555;
+}
+.jquery-accordion-menu > ul > li.active > a, .jquery-accordion-menu > ul > li:hover > a{
+    color:var(--primary-color);
+}
+.jquery-accordion-menu ul ul.submenu > li > ul.submenu > li > a:hover {
+    background: #ffe !important;
+}
+#divSignOutBox a:hover {
+    background: var(--secondary-color) !important;
+}
+.jquery-accordion-menu ul ul.submenu li:hover > a{
+    border-left-color:var(--secondary-color);
+}
+label {
+    color: var(--primary-color) !important;
+}
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default, .ui-button, html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:active {
+    background: var(--primary-color) !important;
+    color: var(--banner-bg) !important;
+}
+.ui-jqgrid-hdiv, .ui-state-default, .ui-widget-content .ui-state-default {
+    background: var(--primary-color) !important;
+    color: var(--entry-color) !important;
+}
+.loading.ui-state-default.ui-state-active{
+    color:var(--button-forecolor) !important;
+    background:var(--primary-color) !important;
+}
+
+.ui-state-default .ui-th-column .ui-th-ltr .ui-state-hover{
+    background:transparent !important;
+}
+.ui-state-hover:not(th) {
+    background: var(--secondary-color) !important;
+}
+.ui-widget-header, .mdl-card__title-text {
+    background: var(--primary-color);
+}
+.modal-title {
+    color: var(--primary-color);
+}
+#header_navbar {
+    background-color:var(--primary-color);
+}
+/*Jqgrid record selection*/
+.ui-state-hover:not(th) {
+    background: var(--secondary-color);
+}
+.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight {
+    background: var(--secondary-color);
+}

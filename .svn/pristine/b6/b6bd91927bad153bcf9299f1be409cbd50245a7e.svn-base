@@ -1,0 +1,92 @@
+﻿
+@{
+    ViewData["Title"] = "V_21_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<script src="~/js/Config/ProcessRule.js"></script>
+<style>
+    #jqgh_jqvProcessmaster_SystemControl {
+        text-align: center;
+    }
+</style>
+
+<div class="row">
+    <div class="col-lg-12" style="min-width:100% !important; overflow-y:auto;">
+        <table id="jqgProcessMaster"></table>
+        <div id="jqpProcessRule"></div>
+    </div>
+</div>
+
+<div class="modal fade in" id="PopupProcessmaster" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-md  " role="document" style="box-shadow:none;">
+        <div class="modal-content ">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Add Process Rule</h4>
+            </div>
+
+            <div class="modal-body">
+
+
+                <div class="row padbot4">
+                    <div class="col-sm-12">
+                        <div class="form-group is-dirty">
+                            <label for="txtProcessId">Process Id</label>
+                            <input type="text" class="form-control" id="txtProcessId" maxlength="10" onkeypress="return AllowOnlyNumbers(event);" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label for="txtProcessDescription">Process Description</label>
+                            <textarea class="form-control" type="text" rows="3" maxlength="500" id="txtProcessDescription"></textarea>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                        <div class="default-checkbox" style="padding-top: 15px;">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkSystemControl">
+                                <input type="checkbox" id="chkSystemControl" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">System Control</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <div>
+                                <label class="lable-color">Process Control</label>
+                                <select class="selectpicker" data-live-search="false" id="cboProcessControl" title="">
+                                    <option value="A">All</option>
+                                    <option value="S">Specific</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label class="lable-color"> Status</label>
+                            <div>
+                                <select class="selectpicker" data-live-search="false" id="cboActiveStatus" title="">
+                                    <option value="true">Active</option>
+                                    <option value="false">Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveProcessMaster" onclick="fnSaveProcessMaster()"> Save </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="#"> Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+ 
+

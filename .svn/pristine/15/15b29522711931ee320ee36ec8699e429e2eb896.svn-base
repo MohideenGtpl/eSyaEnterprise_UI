@@ -1,0 +1,65 @@
+﻿$(function () {
+    fnLoadCareCardRates();
+})
+function fnLoadCareCardRates() {
+    $("#jqgCareCardRates").jqGrid('GridUnload');
+    $("#jqgCareCardRates").jqGrid({
+        url: getBaseURL() + '',
+        datatype: 'json',
+        mtype: 'GET',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: [localization.Currency,localization.Rate,localization.ValidForNoOfDays,localization.EffectiveFrom,localization.EffectiveTill,localization.ActiveStatus],
+        colModel: [
+            { name: "Currency", width: 300, editable: false, align: 'left', hidden: false },
+            { name: "Rate", width: 300, editable: false, align: 'left', hidden: false },
+            { name: "ValidForNoOfDays", width: 300, editable: false, align: 'left', hidden: false },
+            {
+                name: 'EffectiveDate', index: 'EffectiveDate', width: 150, sorttype: "date", formatter: "date", formatoptions:
+                    { newformat: _cnfjqgDateFormat },
+                editable: true, editoptions: {
+                    size: 20,
+                    dataInit: function (el) {
+                        $(el).datepicker({ dateFormat: _cnfDateFormat });
+                    }
+                }
+            },
+            {
+                name: 'EffectiveTill', index: 'EffectiveTill', width: 150, sorttype: "date", formatter: "date", hidden: true, formatoptions:
+                    { newformat: _cnfjqgDateFormat },
+                editable: true, editoptions: {
+                    size: 20,
+                    dataInit: function (el) {
+                        $(el).datepicker({ dateFormat: _cnfDateFormat });
+                    }
+                }
+            },
+            {
+                name: "Status", width: 200, editable: true, align: 'center', hidden: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true }
+            },
+
+        ],
+        rowNum: 10,
+        rowList: [10, 20, 30, 50],
+        emptyrecords: "No records to Veiw",
+        pager: "#jqpCareCardRates",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: false,
+        height: 'auto',
+        width: 'auto',
+        scroll: false,
+        autowidth: true,
+        shrinkToFit: true,
+        forceFit: true,
+        loadonce: true,
+        cellEdit: true,
+        editurl: 'url',
+        cellsubmit: 'clientArray',
+        loadComplete: function (data) {
+            $("#jqgCareCardRates").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+        }
+    }).jqGrid('navGrid', '#jqpCareCardRates', { add: false, edit: false, search: false, del: false, refresh: false });
+    
+    fnAddGridSerialNoHeading();
+}

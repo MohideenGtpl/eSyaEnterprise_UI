@@ -1,0 +1,212 @@
+﻿var formID;
+var prevSelectedID;
+
+$(document).ready(function () {
+    $("#pnlMainMenu").hide();
+    fnTreeSize();
+   
+});
+
+function LoadSpecialtyLink() {
+    $("#pnlMainMenu").hide();
+    $('#jstSpecialtyClinicLink').jstree('destroy');
+    if ($('#cboBusinessKey').val() == '')
+        return;
+
+    $.ajax({
+        url: getBaseURL() + '/Specialty/GetSpecialtyLinkTree?businessKey=' + $('#cboBusinessKey').val(),
+        success: function (result) {
+
+            $('#jstSpecialtyClinicLink').jstree({
+                core: { 'data': result, 'check_callback': true, 'multiple': true }
+                
+            });
+
+        }
+    });
+
+    $("#jstSpecialtyClinicLink").on('loaded.jstree', function () {
+        $("#jstSpecialtyClinicLink").jstree('open_all');
+    });
+
+    $('#jstSpecialtyClinicLink').on("changed.jstree", function (e, data) {
+        if (data.node != undefined) {
+
+            if (data.node.parent == "#") {
+
+                $("#pnlMainMenu").show();
+                if (data.node.id.startsWith("N")) {
+                    $(".mdl-card__title-text").text("Add Specialty Link");
+                    $("#btnSaveSpecialty").html('<i class="fa fa-plus"></i> Add');
+                    $("#btnSaveSpecialty").attr("disabled", _userFormRole.IsInsert === false);
+                }
+                else {
+                    $(".mdl-card__title-text").text("Edit Specialty Link");
+                    $("#btnSaveSpecialty").html('<i class="fa fa-sync"></i> Update');
+                    $("#btnSaveSpecialty").attr("disabled", _userFormRole.IsEdit === false);
+                }
+                fnSpecialtyParameter(data.node.id.substring(1, 10));
+                fnClearFields();
+                
+            }
+            else {
+                fnClearFields();
+                $("#pnlMainMenu").hide();
+            }
+
+        }
+    });
+    
+}
+
+function fnTreeSize() {
+    $("#jstSpecialtyClinicLink").css({
+        'height': $(window).innerHeight() - 136,
+        'overflow': 'auto'
+    });
+}
+
+function fnSpecialtyParameter(specialtyId) {
+
+    fnFillSpecialtyDetail(specialtyId);
+
+    $.ajax({
+        url: getBaseURL() + '/Specialty/GetSpecialtyParameter?businessKey=' + $('#cboBusinessKey').val() + '&specialtyId=' + specialtyId,
+        type: 'POST',
+        datatype: 'json',
+        success: function (response) {
+            if (response != null) {
+                if(response.length >0)
+                    eSyaParams.SetValue(response);
+                else
+                    eSyaParams.ClearValue();
+            }
+            else {
+                eSyaParams.ClearValue();
+            }
+
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+
+        }
+    });
+
+    $("#jqgSpecialtyClinic").jqGrid('GridUnload');
+    $("#jqgSpecialtyClinic").jqGrid({
+        url: getBaseURL() + '/Specialty/GetSpecialtyClinicLink?businessKey=' + $('#cboBusinessKey').val() + '&specialtyId=' + specialtyId,
+        mtype: 'Post',
+        datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        async: false,
+        //jsonReader: { repeatDoctors: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Clinic ID", "Clinic", "Status"],
+        colModel: [
+            { name: 'ClinicID', key: true, index: 'ActionId', width: 0, sortable: false, hidden: true },
+            { name: 'ClinicDesc', index: 'ActionDesc', width: 150, sortable: false, editable: false },
+            { name: 'ActiveStatus', index: 'ActiveStatus', width: 75, align: 'center', sortable: false, formatter: 'checkbox', editable: true, edittype: "checkbox", editoptions: { value: "true:false" }, formatoptions: { disabled: false } }
+        ],
+        caption: "",
+        height: 'auto',
+        width: '200',
+        rowNum: 15,
+        rownumbers: true,
+        viewrecords: true,
+        gridview: true,
+        autowidth: false,
+        shrinkToFit: false,
+        forceFit: false,
+        cellEdit: true,
+
+    });
+ }
+
+function fnFillSpecialtyDetail(specialtyId) {
+
+    $.ajax({
+        url: getBaseURL() + '/Specialty/GetSpecialtyCode?specialtyId=' + specialtyId,
+        type: 'POST',
+        datatype: 'json',
+        success: function (response) {
+
+            if (response != null) {
+                $('#txtSpecialtyId').val(response.SpecialtyID);
+                $('#txtSpecialtyDesc').val(response.SpecialtyDesc);
+                $('#cboGender').val(response.Gender);
+                $('#cboGender').selectpicker('refresh');
+                $('#cboSpecialtyType').val(response.SpecialtyType);
+                $('#cboSpecialtyType').selectpicker('refresh');
+                $('#cboAliedServices').val(response.AlliedServices);
+                $('#cboAliedServices').selectpicker('refresh');
+                $('#cboActiveStatus').val(response.ActiveStatus.toString());
+                $('#cboActiveStatus').selectpicker('refresh');
+            }
+            else {
+                fnClearFields();
+
+            }
+
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+
+        }
+    });
+}
+
+function fnSaveSpecialtyClinicLink() {
+
+    var obj = [];
+    var rowData = $('#jqgSpecialtyClinic').jqGrid('getRowData');
+
+    for (var i = 0; i < rowData.length; i++) {
+        var sp =
+        {
+            BusinessKey: $('#cboBusinessKey').val(),
+            SpecialtyID: $('#txtSpecialtyId').val(),
+            ClinicID: rowData[i]['ClinicID'],
+            ActiveStatus: rowData[i]['ActiveStatus']
+        };
+        obj.push(sp);
+    }
+
+    var objPar = [];
+    objPar = eSyaParams.GetValue();
+
+    var specialtyId = $('#txtSpecialtyId').val();
+    var businessKey = $('#cboBusinessKey').val();
+
+    var URL;
+    URL = getBaseURL() + '/Specialty/InsertSpecialtyClinicLinkList';
+    $.ajax({
+        url: URL,
+        type: 'POST',
+        datatype: 'json',
+        data: { obj, objPar, specialtyId, businessKey },
+        //contentType: 'application/json; charset=utf-8',
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                $("#btnSaveSpecialty").html('<i class="fa fa-spinner fa-spin"></i> wait');
+                $("#btnSaveSpecialty").attr('disabled', true);
+
+            }
+            else {
+                toastr.error(response.Message);
+                $("#btnSaveSpecialty").attr('disabled', false);
+            }
+
+            $("#btnSaveSpecialty").html('<i class="fa fa-plus"></i> Add');
+            $("#btnSaveSpecialty").attr('disabled', false);
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnSaveSpecialty").attr("disabled", false);
+            $("#btnSaveSpecialty").html('<i class="fa fa-plus"></i> Add');
+        }
+    });
+}
+
+function fnClearFields() {
+    $('#rdoAddBusinessSpecialtyUnit').prop('checked', false);
+}

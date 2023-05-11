@@ -1,0 +1,66 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.ActionFilter;
+using eSyaEnterprise_UI.Areas.eSyaClinicalServices.Models;
+using eSyaEnterprise_UI.Areas.eSyaClinicalServices.Data;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using eSyaEnterprise_UI.Utility;
+using Newtonsoft.Json;
+
+namespace eSyaEnterprise_UI.Areas.eSyaClinicalServices.Controllers
+{
+    public class ClinicDoctorLinkController : Controller
+    {
+        private readonly IeSyaClinicalAPIServices _eSyaClinicalAPIServices;
+        private readonly ILogger<ClinicsController> _logger;
+
+        public ClinicDoctorLinkController(IeSyaClinicalAPIServices eSyaClinicalAPIServices, ILogger<ClinicsController> logger)
+        {
+            _eSyaClinicalAPIServices = eSyaClinicalAPIServices;
+            _logger = logger;
+        }
+
+        [Area("eSyaClinicalServices")]
+        public IActionResult V_312_00()
+        {
+            try
+            {
+                //ViewBag.UserFormRoles = new DO_UserFormRole { IsInsert = true, IsEdit = true, IsDelete = true };
+                var serviceResponse = _eSyaClinicalAPIServices.HttpClientServices.GetAsync<List<DO_BusinessLocation>>("CommonData/GetBusinessKey").Result;
+                ViewBag.BusinessLocation = serviceResponse.Data.Select(a => new SelectListItem
+                {
+                    Text = a.LocationDescription,
+                    Value = a.BusinessKey.ToString()
+                });
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetBusinessLocation");
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Get Specialty List From Specialty Business Link
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetSpecialtyListForBusinessKey(int businessKey)
+        {
+            try
+            {
+                var response = _eSyaClinicalAPIServices.HttpClientServices.GetAsync<List<DO_SpecialtyClinicLink>>("Specialty/GetSpecialtyListForBusinessKey?businessKey=" + businessKey).Result;
+                return Json(response.Data);
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+    }
+}

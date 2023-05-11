@@ -1,0 +1,665 @@
+﻿
+@{
+    ViewData["Title"] = "V_3020_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/eSyaOutPatient/patientRegistration.css" rel="stylesheet" />
+<script src="~/js/jquery.repeater.js"></script>
+
+<section class="filters">
+    <div class="row">
+        <div class="col-lg-12">
+            <p class="subheading">Visit Details</p>
+            <hr class="left" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-3 col-md-2 col-sm-4">
+            <div class="form-group">
+                <label for="txtNationalityID">Services</label>
+                <select class="selectpicker" id="cboServices" data-container="body">
+                    <option value="value">Select</option>
+                    <option value="value" selected>Outpatient Consultation</option>
+                    <option value="value">Preventive Health</option>
+                    <option value="value">Other Services</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-2 col-sm-4">
+            <label>Visit Class</label>
+            <label class="d-inline mr-10"> <input type="radio" name="typeofvisit" value="Walk-in" checked /> Walk-in</label>
+            <label class="d-inline mr-10"> <input type="radio" name="typeofvisit" value="Booked" /> Booked</label>
+        </div>
+
+        <div class="col-lg-3 col-md-2 col-sm-4">
+            <div class="form-group">
+                <label for="">Mobile Number</label>
+                <input id="txtMobileNumber" type="text" class="form-control" autofocus maxlength="10" />
+                <span class="spinner-border" role="status"></span>
+            </div>
+        </div>
+    </div>
+    <div id="divListItems" class="row" style="display:none">
+
+        <div class="col-lg-3"></div>
+        <div class="col-lg-3">
+            <div class="list-card">
+                <div class="card-header">
+                    Appointment Booking
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="tokenno" id="chkTokenno1" value="CW08195">
+                            <label class="form-check-label patientname" for="chkTokenno1">Arun Kumar</label>
+                            <label class="form-check-label tokennumber" for="chkTokenno1">CW08195</label>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="tokenno" id="chkTokenno2" value="CW08195">
+                            <label class="form-check-label patientname" for="chkTokenno2">Bala Kumar</label>
+                            <label class="form-check-label tokennumber" for="chkTokenno2">CW08100</label>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="tokenno" id="chkTokenno3" value="CW08195">
+                            <label class="form-check-label patientname" for="chkTokenno3">Ruturaj</label>
+                            <label class="form-check-label tokennumber" for="chkTokenno3">CW08120</label>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="tokenno" id="chkTokenno4" value="CW08195">
+                            <label class="form-check-label patientname" for="chkTokenno4">Moen Ali</label>
+                            <label class="form-check-label tokennumber" for="chkTokenno4">CW08100</label>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-lg-3 col-3">
+            <div class="list-card">
+                <div class="card-header">
+                    Registered Patient
+                </div>
+
+
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="patientName" id="chkNewMember" value="newmember" onchange="fnPatientName() ">
+                            <label class="form-check-label" for="chkNewMember">
+                                New Member
+                            </label>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="patientName" id="chkPatient1" value="chkPatient1" onchange="fnPatientName() ">
+                            <label class="form-check-label" for="chkPatient1">
+                                H0121-Mr.Arun Kumar
+                            </label>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="patientName" id="chkPatient2" value="chkPatient2" onchange="fnPatientName() ">
+                            <label class="form-check-label" for="chkPatient2">
+                                H0121-Mr.Ashok Kumar
+                            </label>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="patientName" id="chkPatient3" value="chkPatient3" onchange="fnPatientName() ">
+                            <label class="form-check-label" for="chkPatient3">
+                                H0121-Mr.Bala Kumar
+                            </label>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="section-clinicInfo" style="display:none">
+    <div class="row">
+        <div class="col-lg-12">
+            <p class="subheading">Clinic Info</p>
+            <hr class="left" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-3 col-md-3 col-sm-6">
+            <div class="form-group">
+                <label>Clinic</label>
+                <select class="form-control selectpicker" data-container="body" id="cboClinicType" onchange="fnLoadSpecialty()">
+                    <option value="0">Select</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-6">
+            <div class="form-group">
+                <label>Specialty</label>
+                <select class="form-control selectpicker" data-container="body" id="cboSpecialty" onchange="fnLoadDoctorSchedule()">
+                    <option value="0">Select</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-6">
+            <div class="form-group">
+                <label>Doctor</label>
+                <select class="form-control selectpicker" data-container="body" id="cboDoctor">
+                    <option value="0">Select</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-6">
+            <div class="form-group">
+                <label>TimeSlot</label>
+                <input type="time" class="form-control" name="name" value="" />
+            </div>
+        </div>
+
+
+    </div>
+</section>
+
+<section class="section-passporttDetails" style="display:none">
+    
+    <div class="row">
+        <div class="col-lg-3 col-md-2 col-sm-4">
+            <div class="form-group">
+                <label for="txtNationalityID">Nationality</label>
+                <select class="form-control selectpicker" data-container="body">
+                    <option value="0">select</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-1 col-md-1 col-sm-4">
+            <button type="button" class="mdl-button d-inline-block h-50" id="btnPassportDetails" data-target="#PopupPassportDetails" data-toggle="modal"><i class="fa fa-search"></i></button>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-4">
+            <div class="form-group">
+                <label for="txtNationalityID">Nationality ID</label>
+                <input id="txtNationalityID" type="text" class="form-control d-inline-block" />
+            </div>
+        </div>
+
+
+        <div class="col-lg-3 col-md-2 col-sm-4 form-group">
+            <div class="default-checkbox">
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsPPScanned">
+                    <input type="checkbox" id="chkIsPPScanned" class="mdl-checkbox__input">
+                    <span class="mdl-checkbox__label">Is VIP</span>
+                </label>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<section class="section-patientInfo" style="display:none">
+    <div class="row">
+        <div class="col-lg-12">
+            <p class="subheading">Patient Info</p>
+            <hr class="left" />
+        </div>
+    </div>
+    <div class="row">
+
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="form-group">
+                <label for="txtFirstName">First Name</label>
+                <input id="txtFirstName" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="form-group">
+                <label for="txtMiddleName">Middle Name</label>
+                <input id="txtMiddleName" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="form-group">
+                <label for="txtLastName">Last Name</label>
+                <input id="txtLastName" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="row">
+                <div class="col-lg-5 col-md-5 col-sm-6 pr-0">
+                    <div class="form-group">
+                        <label for="txtDateOfBirth">DOB <span class="lblInfo">DD/MM/YYYY</span></label>
+                        <input id="txtDateOfBirth" type="text" class="form-control datepicker" />
+                    </div>
+                </div>
+                <div class="col-lg-1 padtop20 pl-0 pr-0">
+                    <label>(or)</label>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6 pl-0">
+                    <div class="form-group">
+                        <label>Age <span class="lblInfo">(YY MM DD)</span></label>
+                        <input id="txtDateOfBirth" type="text" class="form-control d-inline-block  w-25" placeholder="YY" />
+                        <input id="txtDateOfBirth" type="text" class="form-control d-inline-block w-25" placeholder="MM" />
+                        <input id="txtDateOfBirth" type="text" class="form-control d-inline-block w-25" placeholder="DD" />
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-6">
+            <div class="form-group">
+                <label for="">Gender</label>
+                <select class="form-control selectpicker" data-container="body">
+                    <option value="value">Select</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-2 col-sm-4">
+            <div class="form-group">
+                <label for="">Email ID</label>
+                <input id="" type="text" class="form-control" />
+            </div>
+        </div>
+        
+    </div>
+</section>
+
+
+<section class="section-address" style="display:none">
+    <div class="row">
+        <div class="col-lg-12">
+            <p class="subheading">Address Info</p>
+            <hr class="left" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-3 col-md-2 col-sm-4">
+            <div class="form-group">
+                <label for="">Address Line 1    </label>
+                <input id="" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-2 col-sm-4">
+            <div class="form-group">
+                <label for="">Address Line 2</label>
+                <input id="" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-2 col-sm-4">
+            <div class="form-group">
+                <label for="">Address Line 3</label>
+                <input id="" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-2 col-sm-4">
+            <div class="form-group">
+                <label for="">Country </label>
+                <input id="" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-2 col-sm-4">
+            <div class="form-group">
+                <label for="">State</label>
+                <input id="" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-2 col-sm-4">
+            <div class="form-group">
+                <label for="">City</label>
+                <input id="" type="text" class="form-control" />
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-patientCategory" style="display:none">
+    <div class="row">
+        <div class="col-lg-12">
+            <p class="subheading">Patient Category</p>
+            <hr class="left" />
+        </div>
+    </div>
+    <div class="row">
+
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="form-group">
+                <label for="">Patient Type</label>
+                <select class="form-control selectpicker" id="cboPatientType" onchange="fnPatientTypeForPayment()" data-container="body">
+                    <option value="0">Select</option>
+                    <option value="g">General</option>
+                    <option value="c">Corporate</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="form-group">
+                <label for="">Patient Category</label>
+                <select class="form-control selectpicker" data-container="body">
+                    <option value="value">Select</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="form-group">
+                <label for="">Rate Plan</label>
+                <select class="form-control selectpicker" data-container="body">
+                    <option value="value">Select</option>
+                </select>
+            </div>
+        </div>
+
+        
+        
+    </div>
+</section>
+
+<section class="section-payer" style="display:none">
+    <div class="row">
+        <div class="col-lg-12">
+            <p class="subheading">Payer Info</p>
+            <hr class="left" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 form-group">
+            <div class="repeater">
+                <div data-repeater-list="outer-list">
+                    <div class="row" data-repeater-item>
+                        <div class="col-lg-11 col-md-11 col-sm-11">
+                            <div class="row">
+                                <div class="col-lg-3 col-md-3 col-sm-6">
+                                    <div class="form-group">
+                                        <label for="">Payer</label>
+                                        <select class="form-control">
+                                            <option value="value">Select</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-6">
+                                    <div class="form-group">
+                                        <label for="">Rate Plan</label>
+                                        <input type="text" name="name" value="" class="form-control" />
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-6">
+                                    <div class="form-group">
+                                        <label for="">Scheme Plan</label>
+                                        <select class="form-control">
+                                            <option value="value">Select</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-1 col-md-1 col-sm-6">
+                                    <div class="form-group">
+                                        <label for="">Co Pay %</label>
+                                        <input type="text" name="name" value="" class="form-control" />
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1 col-md-1">
+                            <button data-repeater-delete type="button" class="mdl-button mw-30"><i class="fa fa-times"></i></button>
+                        </div>
+
+
+                    </div>
+
+                </div>
+                <button data-repeater-create type="button" value="Add" class="mdl-button mw-30"><i class="fa fa-plus"></i></button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-buttons" style="display:none">
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-12 text-center py-3">
+            <button class="mdl-button mr-10" data-toggle="modal" data-target="#PopupPayment"><i class="fa fa-chevron-right" ></i> Continue</button>
+        </div>
+    </div>
+</section>
+
+
+<div class="modal fade in" id="PopupPassportDetails" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-lg  " role="document" style="box-shadow:none;">
+            <div class="modal-content ">
+                <div class="modal-header popupHeader">
+                    <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                    <h4 class="modal-title">AddPassportDetails</h4>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row">
+
+                        <div class="col-lg-4 col-md-4 col-sm-6">
+                            <div class="form-group">
+                                <label for="txtPassportNumber">Passport Number</label>
+                                <input id="txtPassportNumber" type="text" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6">
+                            <div class="form-group">
+                                <label for="txtSurName">Sur Name</label>
+                                <input id="txtSurName" type="text" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6">
+                            <div class="form-group">
+                                <label for="txtGivenName">Given Name</label>
+                                <input id="txtGivenName" type="text" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6">
+                            <div class="form-group">
+                                <label for="txtDOBPP">Date of birth</label>
+                                <input id="txtDOBPP" type="text" class="form-control datepicker" />
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-4 col-sm-6">
+                            <div class="form-group">
+                                <label for="txtDateOfIssue">Date of Issue</label>
+                                <input id="txtDateOfIssue" type="text" class="form-control datepicker" />
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-4 col-md-4 col-sm-6">
+                            <div class="form-group">
+                                <label for="txtPlaceOfIssue">Place of Issue</label>
+                                <input id="txtPlaceOfIssue" type="text" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6">
+                            <div class="form-group">
+                                <label for="">Visa Type</label>
+                                <select class="form-control">
+                                    <option value="value">Select</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6">
+                            <div class="form-group">
+                                <label for="txtVisaIssueDate">Visa Issue Date</label>
+                                <input id="txtVisaIssueDate" type="text" class="form-control datepicker" />
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6">
+                            <div class="form-group">
+                                <label for="txtVisaExpiryDate">Visa Expiry Date</label>
+                                <input id="txtVisaExpiryDate" type="text" class="form-control datepicker" />
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <label for="txtAddressAsPerPP">Address As per Passport</label>
+                                <input id="txtAddressAsPerPP" type="text" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSavePassportDetails">
+                                <i class="fa fa-save"></i> Save
+                            </button>
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="btnCancelPassportDetails"><i class="fa fa-times"></i> Cancel </button>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div class="modal fullscreen fade in" id="PopupPayment" data-keyboard="false" data-backdrop="static" style="top:0px;">
+    <div class="modal-dialog modal-lg  " role="document" style="box-shadow:none;">
+        <div class="modal-content ">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Payment</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row bg-white shadowLite m-0 py-2 mb-3">
+                    <div class="col-lg-3">
+                        <label>Patient Name</label>
+                        <label></label>
+                    </div>
+                    <div class="col-lg-3">
+                        <label>Gender</label>
+                        <label></label>
+                    </div>
+                    <div class="col-lg-3">
+                        <label>Mobile number</label>
+                        <label></label>
+                    </div>
+                </div>
+
+                <div class="row bg-white m-0 py-2 mt-2">
+                    <div class="col-12 col-lg-12 col-md-12 col-sm-12">
+                        <table id="jqgPaymentDetails"></table>
+                        <div id="jqpPaymentDetails"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSavePayment">
+                            <i class="fa fa-save"></i> Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="btnCancelPayment"><i class="fa fa-times"></i> Cancel </button>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script>
+        $(document).ready(function () {
+            $("section[class^='section']").css('display', 'none').removeClass('animated fadeIn');;
+            $('.section-repeater').css('display', 'none');
+            $('.repeater').repeater({
+                repeaters: [{
+                    selector: '.inner-repeater'
+                }]
+            });
+            $('#PopupPayment').on('shown.bs.modal', function () {
+                $('#PopupPayment').css('top', '0px');
+            });
+            fnPaymentDetailsGrid();
+        });
+         $("input[id='txtMobileNumber']").on("keypress keyup", function (e) {
+                var myval = $("input[id='txtMobileNumber']").val();
+             $('.spinner-border').css('visibility', 'visible');
+             if (myval.length == 10) {
+                 $("#divListItems").css('display', 'flex').addClass('animated fadeIn');
+                 $('.spinner-border').css('visibility', 'hidden');
+             }
+
+                if ((myval.length < 10) || (myval.length == 0)) {
+                    $("#divListItems").css('display', 'none').slideUp('500');
+                    $('.spinner-border').css('visibility', 'hidden');
+                    $("section[class^='section']").css('display', 'none').removeClass('animated fadeIn');
+                    $("input[name='patientName']").removeAttr('checked');
+                }
+        });
+
+
+        function fnPatientName() {
+            if ($("input[name='patientName']:checked")) {
+                var valOFradioBtn = $("input[name='patientName']:checked").val()
+                $("#divListItems").css('display', 'none').slideUp('500');
+                $("section[class^='section']").css('display', 'block').addClass('animated fadeIn');
+                $(".section-payer").css('display', 'none');
+            }
+        }
+
+
+        function fnPatientTypeForPayment() {
+            var patientType = $("#cboPatientType option:selected").text();
+            if (patientType == 'General') { $('.section-payer').css('display', 'none'); }
+            else if (patientType == 'Corporate') { $('.section-payer').css('display', 'block'); }
+            else { $('.section-repeater').css('display', 'none');}
+        }
+
+
+        function fnPaymentDetailsGrid() {
+            $("#jqgPaymentDetails").jqGrid({
+                url: '',
+                mtype: 'Post',
+                datatype: 'json',
+                ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+                jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+                colNames: ["Services","Amount","Discount","Net Amount","Doctor Name","Specialty"],
+                colModel: [
+                    { name: "Services", width: 150, editable: true, align: 'left', hidden: false },
+                    { name: "Amount", width: 170, editable: false, hidden: false, align: 'right', resizable: true },
+                    { name: "Discount", width: 120, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'right', maxlength: 50 } },
+                    { name: "Net Amount", width: 150, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'right', maxlength: 15 } },
+                    { name: "DoctorName", width: 150, editable: true, align: 'left', hidden: false },
+                    { name: "Specialty", width: 150, editable: true, align: 'left', hidden: false },
+                ],
+                pager: "#jqpPaymentDetails",
+                rowNum: 10000,
+                rownumWidth: '55',
+                pgtext: null,
+                pgbuttons: null,
+                loadonce: true,
+                viewrecords: true,
+                gridview: true,
+                rownumbers: true,
+                height: 'auto',
+                align: "left",
+                width: 'auto',
+                autowidth: true,
+                shrinkToFit: true,
+                forceFit: true,
+                scrollOffset: 0,
+                loadComplete: function (data) {
+                    SetGridControlByAction();
+                 },
+            }).jqGrid('navGrid', '#jqpPaymentDetails', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpPaymentDetails', {
+                caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshApplicationCodes
+                }).jqGrid('navButtonAdd', '#jqpPaymentDetails', {
+                caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddApplicationCodes
+            });
+        }
+    </script>

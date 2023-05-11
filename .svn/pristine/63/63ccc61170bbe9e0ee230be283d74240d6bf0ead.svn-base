@@ -1,0 +1,179 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Net.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
+
+using eSyaEnterprise_UI.Areas.eSyaClinicalServices.Data;
+using eSyaEnterprise_UI.Areas.eSyaClinicalServices.Models;
+using eSyaEnterprise_UI.Utility;
+//using eSyaEnterprise_UI.Models;
+
+namespace eSyaEnterprise_UI.Areas.eSyaClinicalServices.Controllers
+{
+    public class DoctorController : Controller
+    {
+        private readonly IeSyaClinicalAPIServices _eSyaClinicalAPIServices;
+        public DoctorController(IeSyaClinicalAPIServices eSyaClinicalAPIServices)
+        {
+            _eSyaClinicalAPIServices = eSyaClinicalAPIServices;
+        }
+
+        [Area("eSyaClinicalServices")]
+        public IActionResult V_1551_00()
+        {
+            List<int> l_ac = new List<int>();
+            l_ac.Add(Areas.eSyaClinicalServices.Data.CodeTypeValues.DoctorClass);
+            l_ac.Add(Areas.eSyaClinicalServices.Data.CodeTypeValues.DoctorCategory);
+            var response = _eSyaClinicalAPIServices.HttpClientServices.PostAsJsonAsync<List<DO_ApplicationCodes>>("CommonData/GetApplicationCodesByCodeTypeList", l_ac).Result;
+            if(response.Status)
+            {
+                List<DO_ApplicationCodes> ac = response.Data.Where(x => x.CodeType == Areas.eSyaClinicalServices.Data.CodeTypeValues.DoctorClass).ToList();
+                //ViewBag.doctorClassList = ac;
+                ViewBag.doctorClassList = ac.Select(a => new SelectListItem
+                {
+                    Text = a.CodeDesc,
+                    Value = a.ApplicationCode.ToString()
+                });
+
+                ac = response.Data.Where(x => x.CodeType == Areas.eSyaClinicalServices.Data.CodeTypeValues.DoctorCategory).ToList();
+                //ViewBag.doctorCategoryList = ac;
+                ViewBag.doctorCategoryList = ac.Select(a => new SelectListItem
+                {
+                    Text = a.CodeDesc,
+                    Value = a.ApplicationCode.ToString()
+                });
+            }
+            else
+            {
+                ViewBag.doctorClass = null;
+                ViewBag.doctorCategory = null;
+            }
+
+            var responseISDCodes = _eSyaClinicalAPIServices.HttpClientServices.GetAsync<List<DO_CountryCodes>>("CommonData/GetISDCodes").Result;
+            if (responseISDCodes.Status)
+                ViewBag.ISDCodesList = responseISDCodes.Data.Select(x => new SelectListItem
+                {
+                    Text = x.Isdcode.ToString() + "-" + x.CountryName,
+                    Value = x.Isdcode.ToString()
+                });
+            else
+                ViewBag.ISDCodesList = null;
+
+            ViewBag.formName = "Doctor Master";
+            return View();
+        }
+
+        /// <summary>
+        /// Insert Doctor Master
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertDoctorMaster(DO_DoctorMaster obj)
+        {
+            try
+            {
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                obj.FormID = "V_00";
+
+                var Insertresponse = _eSyaClinicalAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("DoctorMaster/InsertIntoDoctorMaster", obj).Result;
+                return Json(Insertresponse.Data);
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Update Doctor Master
+        /// </summary>
+        [HttpPost]
+        public JsonResult UpdateDoctorMaster(DO_DoctorMaster obj)
+        {
+            try
+            {
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                var response = _eSyaClinicalAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("DoctorMaster/UpdateDoctorMaster", obj).Result;
+                return Json(response.Data);
+                
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Get Doctor Master List
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetDoctorMasterList(string doctorNamePrefix)
+        {
+            try
+            {
+                var response = _eSyaClinicalAPIServices.HttpClientServices.GetAsync<List<DO_DoctorMaster>>("DoctorMaster/GetDoctorMasterListForPrefix?doctorNamePrefix="+doctorNamePrefix).Result;
+                if (response.Status)
+                {
+                    return Json(response.Data);
+                }
+                else
+                {
+                    return Json(new DO_ReturnParameter()
+                    {
+                        Status = false,
+                        StatusCode = response.StatusCode.ToString()
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Get Doctor Master List
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetDoctorMaster(int doctorId)
+        {
+            try
+            {
+                var response = _eSyaClinicalAPIServices.HttpClientServices.GetAsync<DO_DoctorMaster>("DoctorMaster/GetDoctorMaster?doctorId=" + doctorId).Result;
+                if (response.Status)
+                {
+                    return Json(response.Data);
+                }
+                else
+                {
+                    return Json(new DO_ReturnParameter()
+                    {
+                        Status = false,
+                        StatusCode = response.StatusCode.ToString()
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+
+        /// <summary>
+        /// Doctor Codes Partial View
+        /// </summary>
+            [Area("eSyaClinicalServices")]
+            public IActionResult _DoctorCodes()
+            {
+                return View();
+            }
+        }
+}

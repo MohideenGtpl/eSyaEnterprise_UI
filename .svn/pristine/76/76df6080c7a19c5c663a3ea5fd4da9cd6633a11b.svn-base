@@ -1,0 +1,249 @@
+﻿
+$(document).ready(function () {
+    fnLoadReportHeaderGrid();
+});
+
+function fnLoadReportHeaderGrid() {
+    var Bskey = $('#cboBusinesskey').val();
+    $("#jqgGeneralReport").GridUnload();
+
+    $("#jqgGeneralReport").jqGrid({
+        url: getBaseURL() + '/ReportHeader/GetReportHeaderList?Businesskey=' + Bskey,
+        mtype: 'POST',
+        datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["", "", "", "", "", "Report Header", "Status", "Actions"],
+        colModel: [
+            { name: "BusinessKey", width: 70, editable: true, align: 'left', hidden: true },
+            { name: "ReportHeader", width: 70, editable: true, align: 'left', hidden: true },
+            { name: "ReportHeaderTemplate", width: 70, editable: true, align: 'left', hidden: true },
+            { name: "HeaderHeight", width: 70, editable: true, align: 'left', hidden: true },
+            { name: "IsHeaderInvisible", editable: true, width: 50, align: 'center !important', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, hidden: true },
+            
+            { name: "ReportHeaderDesc", width: 100, editable: true, align: 'left', hidden: false },
+            { name: "ActiveStatus", editable: true, width: 70, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: Inactive" } },
+            {
+                name: 'edit', search: false, align: 'left', width: 50, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" onclick="return fnEditGeneralReport(event)"><i class="fa fa-edit"></i> Edit </button><button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnViewGeneralReport(event)"><i class="fa fa-file"></i> View </button>'
+
+                }
+            },
+        ],
+        rowNum: 10,
+        loadonce: false,
+        pager: "#jqpGeneralReport",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0
+    }).jqGrid('navGrid', '#jqpGeneralReport', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpGeneralReport', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnRefresh
+    }).jqGrid('navButtonAdd', '#jqpGeneralReport', {
+        caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Add', buttonicon: 'none', id: 'custAdd', position: 'first', onClickButton: fnAddGeneralReport
+    });
+}
+
+
+function fnRefresh() {
+    $("#jqgGeneralReport").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+function fnAddGeneralReport() {
+    if ($("#cboBusinesskey").val() == "0") {
+
+        toastr.warning("Please Select Location");
+    }
+    else
+    {
+        fnClearFields();
+        $("#PopupGeneralReport").modal('show');
+        $(".modal-title").text("Add General Report Header");
+        $("#btnSaveGeneralReport").text("Save");
+    }
+   
+
+}
+
+
+function fnEditGeneralReport(e) {
+    fnClearFields();
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgGeneralReport').jqGrid('getRowData', rowid);
+    $("#txtReportHeaderId").val(rowData.ReportHeader);
+    $("#txtBusinessKey").val(rowData.BusinessKey);
+    //$("#txtReportHeaderDesc").val(rowData.ReportHeaderDesc);
+    tinyMCE.activeEditor.setContent(rowData.ReportHeaderDesc);
+    $("#txtReportHeaderTemplate").val(rowData.ReportHeaderTemplate);
+    $("#txtHeaderHeight").val(rowData.HeaderHeight);
+    if (rowData.IsHeaderInvisible == "true")
+        $("#chkIsHeaderInvisible").parent().addClass('is-checked'); 
+    else
+        $("#chkIsHeaderInvisible").parent().removeClass('is-checked');
+    if (rowData.ActiveStatus == "true")
+        $("#cboActiveStatus").val('true').selectpicker('refresh');
+    else
+        $("#cboActiveStatus").val('false').selectpicker('refresh');
+    $("#PopupGeneralReport").modal('show');
+    $(".modal-title").text("Edit General Report Header");
+    $("#btnSaveGeneralReport").text("Update");
+
+}
+function fnViewGeneralReport(e) {
+    fnClearFields();
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgGeneralReport').jqGrid('getRowData', rowid);
+    $("#txtReportHeaderId").val(rowData.ReportHeader);
+    $("#txtBusinessKey").val(rowData.BusinessKey);
+    $("#txtReportHeaderDesc").val(rowData.ReportHeaderDesc);
+    $("#txtReportHeaderTemplate").val(rowData.ReportHeaderTemplate);
+    $("#txtHeaderHeight").val(rowData.HeaderHeight);
+    if (rowData.IsHeaderInvisible == "true")
+        $("#chkIsHeaderInvisible").parent().addClass('is-checked');
+    else
+        $("#chkIsHeaderInvisible").parent().removeClass('is-checked');
+    if (rowData.ActiveStatus == "true")
+        $("#cboActiveStatus").val('true').selectpicker('refresh');
+    else
+        $("#cboActiveStatus").val('false').selectpicker('refresh');
+    $("#PopupGeneralReport").modal('show');
+    $(".modal-title").text("View General Report Header");
+    $("#btnSaveGeneralReport").text("Update");
+    $("input,textarea").attr('readonly', true);
+    $("select").next().attr('disabled', true);
+    $("input[type=checkbox]").attr('disabled', true);
+    $("#btnSaveGeneralReport").hide();
+    $("#PopupGeneralReport").on('hidden.bs.modal', function () {
+        $("#btnSaveGeneralReport").show();
+        $("input,textarea").attr('readonly', false);
+        $("select").next().attr('disabled', false);
+        $("input[type=checkbox]").attr('disabled', false);
+    })
+}
+
+function fnClearFields() {
+    $("#txtReportHeaderId").val('');
+    $("#txtBusinessKey").val('');
+    $("#txtReportHeaderDesc").val('');
+    $("#txtReportHeaderTemplate").val('');
+    $("#txtHeaderHeight").val('');
+    $("#chkIsHeaderInvisible").parent().removeClass('is-checked');
+    $("#cboActiveStatus").val('true');
+    $("#cboActiveStatus").selectpicker('refresh');
+}
+
+
+function fnSaveGeneralReport() {
+   
+    if (validationGeneralReport() === false) {
+        return;
+    }
+
+    var chkHeaderInVisible = $("#chkIsHeaderInvisible").val();
+    var reportheader = $("#txtReportHeaderId").val();
+    if ($("#chkIsHeaderInvisible").parent().hasClass('is-checked'))
+        chkHeaderInVisible = true;
+    else
+        chkHeaderInVisible = false;
+
+
+    if (reportheader === null || reportheader === undefined || reportheader === "") {
+        var rpHeader = {
+            ReportHeader: 0,
+            BusinessKey: $("#cboBusinesskey").val(),
+            ReportHeaderDesc: $("#txtReportHeaderDesc").val(),
+            ReportHeaderTemplate: $("#txtReportHeaderTemplate").val(),
+            HeaderHeight: $("#txtHeaderHeight").val(),
+            IsHeaderInvisible: chkHeaderInVisible,
+            ActiveStatus: $("#cboActiveStatus").val()
+            
+        };
+
+    }
+    else {
+        rpHeader = {
+            ReportHeader: $("#txtReportHeaderId").val(),
+            BusinessKey: $("#cboBusinesskey").val(),
+            ReportHeaderDesc: $("#txtReportHeaderDesc").getContent(),
+            ReportHeaderTemplate: $("#txtReportHeaderTemplate").val(),
+            HeaderHeight: $("#txtHeaderHeight").val(),
+            IsHeaderInvisible: chkHeaderInVisible,
+            ActiveStatus: $("#cboActiveStatus").val()
+        };
+
+    }
+    $.ajax({
+        url: getBaseURL() + '/ReportHeader/InsertOrUpdateReportHeader',
+        type: "post",
+        data: JSON.stringify(rpHeader),
+        contentType: "application/json",
+        success: function (response) {
+
+            if (response.Status === false) {
+                toastr.error(response.Message);
+                return false;
+            }
+
+            if (response.Status === true) {
+                toastr.success(response.Message);
+                fnClosePopUp();
+                fnClearFields();
+                $("#jqgGeneralReport").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+                return true;
+            }
+
+
+        }
+    });
+
+
+
+}
+
+function validationGeneralReport() {
+   
+    var reportheader = $("#txtReportHeaderDesc").val();
+    var reportheaderTemplate = $("#txtReportHeaderTemplate").val();
+    var headerheight = $("#txtHeaderHeight").val();
+
+
+    if (reportheader === '' || reportheader === null) {
+        toastr.warning("Please Enter Report Header Description");
+        return false;
+    }
+
+    if (reportheaderTemplate === '' || reportheaderTemplate === null) {
+        toastr.warning("Please Enter Report Header Template ");
+        return false;
+    }
+    if (headerheight === '' || headerheight === null) {
+        toastr.warning("Please Enter Header Height ");
+        return false;
+    }
+
+
+    if (isNaN(headerheight)) {
+        toastr.warning("Header Height Should be Numbers Only");
+        return false;
+    }
+
+}
+
+function AllowOnlyNumbers(e) {
+    e = (e) ? e : window.event;
+    var clipboardData = e.clipboardData ? e.clipboardData : window.clipboardData;
+    var key = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
+    var str = (e.type && e.type == "paste") ? clipboardData.getData('Text') : String.fromCharCode(key);
+    return (/^\d+$/.test(str));
+}
+function fnClosePopUp() {
+    fnClearFields();
+    $("#PopupGeneralReport").modal('hide');
+}

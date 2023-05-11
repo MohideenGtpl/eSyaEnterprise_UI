@@ -1,0 +1,16 @@
+﻿using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
+
+namespace eSyaEnterprise_UI.Areas.Config.Data
+{
+    public interface IeSyaConfigAPIServices
+    {
+        HttpClient GetHttpClient();
+
+        HttpClient GetConfigCSHttpClient(IConfiguration iConfig);
+    }
+}

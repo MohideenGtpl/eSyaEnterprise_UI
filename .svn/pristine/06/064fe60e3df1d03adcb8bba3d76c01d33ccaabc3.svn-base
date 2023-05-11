@@ -1,0 +1,69 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
+using eSyaEnterprise_UI.Areas.eSyaVendor.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+namespace eSyaEnterprise_UI.Areas.eSyaVendor.Controllers
+{
+    public class VendorController : Controller
+    {
+        ESyaWebAPI _eSyaWebAPI = new ESyaWebAPI();
+        #region Vendor Registration
+        [Area("eSyaVendor")]
+        public IActionResult Create()
+        {
+            return View();
+        } /// <summary>
+          ///Get Vendor for Grid
+          /// </summary>
+        [HttpPost]
+        public JsonResult GetVendors(string Alphabet)
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("Vendor/GetVendors?Alphabet="+Alphabet).Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<List<DO_VendorRegistration>>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+
+        }
+
+        /// <summary>
+        /// Insert or Update Vendor.
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertOrUpdateVendor([FromBody] DO_VendorRegistration vendor)
+        {
+
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                vendor.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                vendor.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                vendor.FormId = AppSessionVariables.GetSessionFormID(HttpContext).ToString();
+                HttpResponseMessage response = client.PostAsJsonAsync<DO_VendorRegistration>("Vendor/InsertOrUpdateVendor", vendor).Result;
+                string stringdata = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<DO_ReturnParameter>(stringdata);
+                return Json(data);
+                
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+        #endregion Vendor Registration
+    }
+}

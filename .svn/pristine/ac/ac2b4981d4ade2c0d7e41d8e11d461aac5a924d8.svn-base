@@ -1,0 +1,117 @@
+﻿$(document).ready(function () {
+   
+});
+function fnLoadGrid() {
+    if ($('#cboBusinessKey').val() === '' || $('#cboRateType').val() === '') {
+        $("#jqgServiceBaseRate").hide();
+    }
+    else {
+        fnLoadServiceBaseRate1();
+    }
+
+}
+function fnLoadServiceBaseRate1() {
+    $("#jqgServiceBaseRate").jqGrid('GridUnload');
+    $("#jqgServiceBaseRate").jqGrid({
+        url: getBaseURL() + '/ServiceManagement/GetServiceGetServiceBaseRateByBKeyRateType?businessKey=' + $('#cboBusinessKey').val() + '&ratetype=' + $('#cboRateType').val(),
+        datatype: 'json',
+        mtype: 'GET',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Service ID", localization.ServiceDescription, localization.EffectiveDate, localization.OPBaseRate, localization.IPBaseRate, localization.Active],
+
+        colModel: [
+
+            { name: "ServiceId", width: 10, editable: false, align: 'left', hidden: true },
+            { name: "ServiceDesc",  width: 100,editable: false, align: 'left' },
+            { name: "EffectiveDate", width: 100, editable: true, align: 'left', edittype: 'date', formatter: 'date', formatoptions: { srcformat: 'Y/m/d H:i:s', newformat: 'd/m/Y ' } },
+            { name: "OpbaseRate", width: 50, editable: true, align: 'left', edittype: 'text' },
+            { name: "IpbaseRate", width: 50, editable: true, align: 'left', edittype: 'text' },
+            { name: "ActiveStatus", editable: true, width: 30, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: Inactive" }  },
+
+        ],
+        rowNum: 10,
+        rowList: [10, 20, 30, 50],
+        emptyrecords: "No records to Veiw",
+        pager: "#jqpServiceBaseRate",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: false,
+        height: 'auto',
+        width: 'auto',
+        scroll: false,
+        autowidth: false,
+        shrinkToFit: false,
+        forceFit: false,
+        loadonce: true,
+        cellEdit: true,
+        editurl: 'url',
+
+        cellsubmit: 'clientArray',
+        ondblClickRow: function (rowid) {
+            $('#jqgServiceBaseRate').jqGrid('editRow', rowid, true); 
+        },
+        loadComplete: function (data) {
+            $(this).find(">tbody>tr.jqgrow:odd").addClass("myAltRowClassEven");
+            $(this).find(">tbody>tr.jqgrow:even").addClass("myAltRowClassOdd");
+            $("#jqgServiceBaseRate").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+            SetGridControlByAction();
+        }
+    }).jqGrid('navGrid', '#jqpCulturekeys', { add: false, edit: false, search: false, del: false, refresh: false });   
+    $("#btnSave").show();
+}
+
+function SetGridControlByAction() {
+    $("#btnSave").attr("disabled", false);
+    //if (_userFormRole.IsEdit === false) {
+    //    $("#btnSave").attr("disabled", true);
+    //}
+}
+
+function fnSaveServiceBusinessLink() {
+
+    if (IsStringNullorEmpty($("#cboBusinessKey").val())) {
+        toastr.warning("Please select Business Location");
+        return;
+    }
+
+    var BL_Services = [];
+    var id_list = jQuery("#jqgServiceBaseRate").jqGrid('getDataIDs');
+    for (var i = 0; i < id_list.length; i++) {
+        var rowId = id_list[i];
+        var rowData = jQuery('#jqgServiceBaseRate').jqGrid('getRowData', rowId);
+
+        if (!IsStringNullorEmpty(rowData.InternalServiceCode) || !IsStringNullorEmpty(rowData.ServiceCost)) {
+            BL_Services.push({
+                BusinessKey: $("#cboBusinessKey").val(),
+                ServiceId: rowData.ServiceId,
+                InternalServiceCode: rowData.InternalServiceCode,
+                ServiceCost: rowData.ServiceCost,
+                ActiveStatus: rowData.ActiveStatus
+            });
+        }
+    }
+
+    $("#btnSave").attr("disabled", true);
+    $.ajax({
+        url: getBaseURL() + '/ServiceManagement/AddOrUpdateBusinessLocationServices',
+        type: 'POST',
+        datatype: 'json',
+        data: { obj: BL_Services },
+        success: function (response) {
+            if (response.Status === true) {
+                toastr.success("Data Saved");
+                $("#jqgServiceBaseRate").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+            }
+            else {
+                toastr.error(response.Message);
+            }
+            $("#btnSave").attr("disabled", false);
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnSave").attr("disabled", false);
+        }
+    });
+
+}

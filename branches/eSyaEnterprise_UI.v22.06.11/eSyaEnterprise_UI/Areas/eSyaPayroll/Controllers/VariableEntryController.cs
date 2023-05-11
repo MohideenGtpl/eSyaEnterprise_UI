@@ -1,0 +1,137 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.ActionFilter;
+using eSyaEnterprise_UI.Areas.eSyaPayroll.Data;
+using eSyaEnterprise_UI.Areas.eSyaPayroll.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+
+namespace eSyaEnterprise_UI.Areas.eSyaPayroll.Controllers
+{
+    [SessionTimeout]
+    public class VariableEntryController : Controller
+    {
+        private readonly IeSyaPayrollAPIServices _eSyaPayrollAPIServices;
+        private readonly ILogger<VariableEntryController> _logger;
+
+        public VariableEntryController(IeSyaPayrollAPIServices eSyaPayrollAPIServices, ILogger<VariableEntryController> logger)
+        {
+            _eSyaPayrollAPIServices = eSyaPayrollAPIServices;
+            _logger = logger;
+        }
+
+        [Area("eSyaPayroll")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public async Task<IActionResult> V_4030_00()
+        {
+            try
+            {
+                var parameter = "?Businesskey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                var Ercode_serviceResponse = await _eSyaPayrollAPIServices.HttpClientServices.GetAsync<List<DO_ERCode>>("VariableEntry/GetActiveERCodes");
+                var Payperiod_serviceResponse = await _eSyaPayrollAPIServices.HttpClientServices.GetAsync<List<DO_PayPeriod>>("VariableEntry/GetActivePayPeriodsbyBusinesskey" + parameter);
+
+                if (Ercode_serviceResponse.Status)
+                {
+                    ViewBag.ERcodes = Ercode_serviceResponse.Data.Select(b => new SelectListItem
+                    {
+                        Value = b.Ercode.ToString(),
+                        Text = b.Erdesc,
+                    }).ToList();
+                }
+                else
+                {
+                    _logger.LogError(new Exception(Ercode_serviceResponse.Message), "UD:GetActiveERCodes");
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+                if (Payperiod_serviceResponse.Status)
+                {
+                    ViewBag.Payperiods = Payperiod_serviceResponse.Data.Select(b => new SelectListItem
+                    {
+                        Value = b.PayPeriod.ToString(),
+                        Text = b.PayPeriod.ToString(),
+                    }).ToList();
+                }
+                else
+                {
+                    _logger.LogError(new Exception(Payperiod_serviceResponse.Message), "UD:GetActivePayPeriodsbyBusinesskey:For BusinessKey {0}", parameter);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+                 return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetActiveERCodes,GetActivePayPeriodsbyBusinesskey");
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        ///Get Variable Incenties by Business Key, Pay Period and Er Code for Grid
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetIncentiesbyBusinessKeyPayPeriodAndErCode(int Payperiod, int Ercode)
+        {
+            try
+            {
+                int Businesskey =AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                var parameter = "?Businesskey=" + Businesskey + "&Payperiod=" + Payperiod + "&Ercode=" + Ercode;
+
+                var serviceResponse = await _eSyaPayrollAPIServices.HttpClientServices.GetAsync<List<DO_VariableEntry>>("VariableEntry/GetIncentiesbyBusinessKeyPayPeriodAndErCode" + parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetIncentiesbyBusinessKeyPayPeriodAndErCode:params:" + JsonConvert.SerializeObject(new { Businesskey, Payperiod, Ercode }));
+
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetIncentiesbyBusinessKeyPayPeriodAndErCode:params:" + JsonConvert.SerializeObject(new { Payperiod, Ercode }));
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Insert or Update Variable Incentive
+        /// </summary>
+
+        [HttpPost]
+        public async Task<JsonResult> InsertOrUpdateVariableIncentiveEntry(List<DO_VariableEntry> obj)
+        {
+            try
+            {
+                obj.All(c =>
+                {
+                    c.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                    c.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                    c.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                    c.BusinessKey= AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                    return true;
+                });
+
+                var serviceResponse = await _eSyaPayrollAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("VariableEntry/InsertOrUpdateVariableIncentive", obj);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertOrUpdateVariableIncentiveEntry:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+    }
+}

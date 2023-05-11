@@ -1,0 +1,146 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+<style>
+    #lblAppointmentDate, #lblAppointmentTime {
+        color: #414146 !important;
+        font-weight: 600 !important;
+        font-size: 14px !important;
+        letter-spacing: 0.5px;
+    }
+
+    .v-bottom {
+        vertical-align: text-bottom
+    }
+
+    .ui-autocomplete-loading {
+        background: white url("/images/ui-anim_basic_16x16.gif") right center no-repeat;
+    }
+
+    .ui-autocomplete {
+        z-index: 1059;
+        height: 300px;
+        overflow-y: scroll;
+        overflow-x: hidden;
+    }
+</style>
+
+<div class="row blur">
+
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <section class="AppointmentSectionBox">
+            <div class="row rowBox padtop10">
+                <div class="col-lg-1 col-md-2">
+                    <span id="DoctorIcon"><i class="fas fa-user-md"></i></span>
+
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <label class="c-black doctorname" id="lblDoctorName">Dr.</label>
+                    <label class="c-grey specialty" id="lblSpecialty"></label>
+                    <label class="c-grey specialty" id="lblDoctorQualification"></label>
+                </div>
+                <div class="col-lg-5 col-md-4 col-sm-7">
+                    <span class="d-block"><i class="far fa-calendar-alt"></i> On <label id="lblAppointmentDate" class="d-inline-block padbot10"></label></span>
+                    <span class="d-block"><i class="far fa-clock"></i> At <label id="lblAppointmentTime" class="d-inline-block"></label> </span>
+                </div>
+            </div>
+            <hr />
+           
+        </section>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <section class="AppointmentSectionBox">
+            <div class="row rowBox padtop10">
+                <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                    <label>Visit Type</label>
+                    <select class="form-control" id="cboVisitType">
+                        <option value="0">Choose Visit Type</option>
+                        <option value="N" selected>First Visit</option>
+                        <option value="R">FollowUp</option>
+                        <option value="I">In-Patient FollowUp</option>
+                        <option value="S">Op Service</option>
+                    </select>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                    <label>Patient Search</label>
+                    <input id="cboApptPatientSearch" type="text" class="form-control">
+                </div>
+            </div>
+            <div class="row rowBox padtop10">
+                <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                    <label>Q ID</label>
+                    <input type="text" name="int" id="txtUHID" value="" class="form-control" readonly />
+                </div>
+
+                <div class="col-lg-4 col-md-4 col-sm-6 form-group">
+                    <label>SAP MRN No</label>
+                    <input type="text" id="txtPatientID" value="" class="form-control" readonly />
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-6 form-group padtop15">
+                    <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" ><i class="fa fa-search"></i> </button>
+                </div>
+            </div>
+            <div class="row rowBox padtop10">
+                <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                    <label>First Name</label>
+                    <input type="text" name="text" id="txtFirstName" value="" class="form-control" autocomplete="on" />
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                    <label>Last Name</label>
+                    <input type="text" name="text" id="txtLastName" value="" class="form-control" autocomplete="on" />
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                    <label>Gender</label>
+                    <select class="form-control" id="cboGender">
+                        <option value="0">Choose gender</option>
+                        <option value="M">Male</option>
+                        <option value="F">Female</option>
+                        <option value="T">Transgender</option>
+                    </select>
+                </div>
+
+
+                <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                    <label>Date of Birth</label>
+                    <input type="date" name="text" id="txtDateOfBirth" value="" class="form-control" />
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                    <label>Mobile Number</label>
+                    <input type="text" name="int" id="txtMobileNumber" value="" class="form-control" maxlength="11" autocomplete="on" />
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                    <label>Email ID</label>
+                    <input type="text" name="text" id="txtEmailID" value="" class="form-control" autocomplete="on" />
+                </div>
+
+                <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                    <label class="col-md-6 d-inline mr-10 v-bottom "> <input type="radio" name="IsSponsored" value="G" checked /> Self</label>
+                    <label class="col-md-6 d-inline v-bottom"> <input type="radio" name="IsSponsored" value="S" /> Sponsored</label>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                    <label>Insurance Company</label>
+                    <select class="selectpicker" data-live-search="true" id="cboCustomer" title="" disabled>
+                        <option value="" selected>Choose a Insurance</option>
+                       
+                    </select>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12 form-group">
+                    <label> Reffered By</label>
+                    <select class="selectpicker" id="cboReferredBy">
+                        <option value="0">Choose Reffered By</option>
+                        
+                    </select>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6 form-group" style="display:none">
+                    <label>Reason</label>
+                    <input type="text" name="text" id="txtReason" value="" class="form-control" autocomplete="on" />
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12 form-group text-center">
+                    <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button"> Confirm</button>
+                </div>
+            </div>
+
+        </section>
+    </div>
+
+</div>

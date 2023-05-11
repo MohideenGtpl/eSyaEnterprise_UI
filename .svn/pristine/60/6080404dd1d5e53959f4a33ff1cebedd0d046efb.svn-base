@@ -1,0 +1,176 @@
+﻿
+$(document).ready(function () {
+    fnGridLoadDepartmentCodes();
+});
+var actiontype = "";
+function fnGridLoadDepartmentCodes() {
+    //alert('Hi');
+    $("#jqgDepartmentCodes").jqGrid('GridUnload');
+    $("#jqgDepartmentCodes").jqGrid({
+        url: getBaseURL() + '/DepartmentCodes/GetDepartmentCodes',
+        mtype: 'Post',
+        datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        async: false,
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Department ID", "Department Description", "Department Short Description","Status", "Actions"],
+        colModel: [
+            { name: "DepartmentID", width: 250, editable: true, align: 'left', hidden: true },
+            { name: "DepartmentDesc", width: 250, editable: true, align: 'left', hidden: false },
+            { name: "DeptShortDesc", width:150, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "ActiveStatus", editable: true, width: 28, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: Inactive" } },
+            {
+                name: 'Actions', search: false, align: 'left', width: 75, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditDepartmentCodes(event,\'edit\')"><i class="fas fa-pencil-alt"></i> Edit </button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" id="jqgView" onclick="return fnEditDepartmentCodes(event,\'view\')"><i class="far fa-eye"></i> View </button>'
+                }
+            }
+        ],
+        pager: "#jqpDepartmentCodes",
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0,
+        loadComplete: function (data) {
+            //$("#jqgDepartmentCodes").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+
+            SetGridControlByAction("jqgDepartmentCodes");
+        },
+    }).jqGrid('navGrid', '#jqpDepartmentCodes', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpDepartmentCodes', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshDepartmentCodes
+    }).jqGrid('navButtonAdd', '#jqpDepartmentCodes', {
+        caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddDepartmentCodes
+    });
+    $("[id^='jqgh'][id$='_rn']").empty();
+    $("[id^='jqgh'][id$='_rn']").text("S.No").css("text-align", 'center');
+    $("[id^='gbox_']").parent().css('overflow', 'auto');
+}
+
+function fnAddDepartmentCodes() {
+    fnClearFields();
+    $('#txtDepartmentID').val('');
+    $('#PopupDepartmentCodes').modal('show');
+    $('#PopupDepartmentCodes').modal({ backdrop: 'static', keyboard: false });
+    $('#PopupDepartmentCodes').find('.modal-title').text("Add Department Code");
+    $("#btnSaveDepartmentCode").html(' Save');
+}
+
+function fnEditDepartmentCodes(e, actiontype) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgDepartmentCodes').jqGrid('getRowData', rowid);
+
+    $('#PopupDepartmentCodes').modal('show');
+    $("#txtDepartmentID").val(rowData.DepartmentID);
+    $("#txtDepartmentDescription").val(rowData.DepartmentDesc);
+    $("#txtDeptShortDescription").val(rowData.DeptShortDesc);
+    $("#cboActiveStatus").val(rowData.ActiveStatus);
+    $("#cboActiveStatus").selectpicker('refresh');
+    if (actiontype.trim() == "edit") {
+        $('#PopupDepartmentCodes').find('.modal-title').text("Update Department Code");
+        $("#btnSaveDepartmentCode").html(' Update');
+    }
+    if (actiontype.trim() == "view") {
+        $('#PopupDepartmentCodes').find('.modal-title').text("View Department Code");
+        $("#btnSaveDepartmentCode").hide();
+        $("input,textarea").attr('readonly', true);
+        $("select").next().attr('disabled', true);
+        $("input[type=checkbox]").attr('disabled', true);
+        $("#PopupDepartmentCodes").on('hidden.bs.modal', function () {
+            $("#btnSaveDepartmentCode").show();
+            $("input,textarea").attr('readonly', false);
+            $("select").next().attr('disabled', false);
+            $("input[type=checkbox]").attr('disabled', false);
+        });
+    }
+}
+
+function fnSaveDepartmentCode() {
+
+    var obj = {
+        DepartmentID: $('#txtDepartmentID').val(),
+        DepartmentDesc: $('#txtDepartmentDescription').val(),
+        DeptShortDesc: $('#txtDeptShortDescription').val(),
+        ActiveStatus: $('#cboActiveStatus').val()
+    }
+    var URL = '';
+    //alert($('#txtDepartmentID').val());
+    if ($('#txtDepartmentID').val() != '')
+        URL = getBaseURL() + '/DepartmentCodes/UpdateDepartmentCodes';
+    else
+        URL = getBaseURL() + '/DepartmentCodes/InsertIntoDepartmentCodes';
+    $.ajax({
+        url: URL,
+        type: 'POST',
+        datatype: 'json',
+        data: { obj },
+        //contentType: 'application/json; charset=utf-8',
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                $("#btnSaveDepartmentCode").attr('disabled', true);
+                fnClearFields();
+                //$("#jqgDepartmentCodes").jqGrid('resetSelection');
+                fnGridLoadDepartmentCodes();
+                $('#PopupDepartmentCodes').modal('hide');
+            }
+            else {
+                toastr.error(response.Message);
+                $("#btnSaveDepartmentCode").attr('disabled', false);
+            }
+
+            $("#btnSaveDepartmentCode").attr('disabled', false);
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnSaveDepartmentCode").attr("disabled", false);
+            
+        }
+    });
+}
+
+function fnGridRefreshDepartmentCodes() {
+    $("[id^='jqgh'][id$='_rn']").empty();
+    $("[id^='jqgh'][id$='_rn']").text("S.No").css("text-align", 'center');
+    $("[id^='gbox_']").parent().css('overflow', 'auto');
+    $("#jqgDepartmentCodes").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+$("#btnCancelDepartmentCode").click(function () {
+    fnClearFields();
+    $("#jqgDepartmentCodes").jqGrid('resetSelection');
+    $('#PopupDepartmentCodes').modal('hide');
+});
+
+function fnClearFields() {
+    $("#txtDepartmentDescription").val("");
+    $("#txtShortDescription").val("");
+    $('#cboActiveStatus').val("true");
+    $('#cboActiveStatus').selectpicker('refresh');
+}
+
+function SetGridControlByAction(jqg) {
+    //$('#jqgEdit').removeClass('ui-state-disabled');
+    //if (_userFormRole.IsEdit === false) {
+    //    $('#jqgEdit').addClass('ui-state-disabled');
+    //}
+    if (_userFormRole.IsInsert === false) {
+        $('#jqgAdd').addClass('ui-state-disabled');
+    }
+
+    if (_userFormRole.IsEdit === false) {
+        var eleDisable = document.querySelectorAll('#jqgEdit');
+        for (var i = 0; i < eleDisable.length; i++) {
+            eleDisable[i].disabled = true;
+            eleDisable[i].className = "ui-state-disabled";
+        }
+    }
+}

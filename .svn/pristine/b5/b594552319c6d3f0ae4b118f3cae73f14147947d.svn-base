@@ -1,0 +1,250 @@
+﻿$(document).ready(function () {
+    fnGridLoadBlockedPackages();
+});
+
+function fnBusinessLocation_onChange() {
+
+    fnGridLoadBlockedPackages();
+}
+
+var actiontype = "";
+function fnGridLoadBlockedPackages() {
+    
+    $("#jqgBlockedPackage").GridUnload();
+
+    $("#jqgBlockedPackage").jqGrid({
+        url: getBaseURL() + '/PackageMaster/GetBlockedPackagesbyBusinessKey?businesskey=' + $("#cboBusinessLocation").val(),
+        datatype: 'json',
+        mtype: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        colNames: [localization.BusinessKey, localization.PackageId, localization.Package, localization.BlockedDate, localization.Active, localization.Actions],
+        colModel: [
+            { name: "BusinessKey", width: 50, align: 'left', editable: true, editoptions: { maxlength: 10 }, resizable: false, hidden: true },
+            { name: "PackageId", width: 50, align: 'left', editable: true, editoptions: { maxlength: 10 }, resizable: false, hidden: true },
+            { name: "PackageDesc", width: 180, align: 'left', editable: true, editoptions: { maxlength: 150 }, resizable: false },
+            //{ name: "BlockedPackageDate", width: 100, editable: true, align: 'center', hidden: false, formatter: 'date', formatoptions: { srcformat: 'Y/m/d H:i:s', newformat: 'd/m/Y' } },
+            {
+                name: 'BlockedPackageDate', index: 'BlockedPackageDate', width: 80, sorttype: "date", formatter: "date", formatoptions:
+                    { newformat: _cnfjqgDateFormat }
+            },
+            { name: "ActiveStatus", width: 35, editable: true, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            {
+                name: 'edit', search: false, align: 'left', width: 88, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditBlockedPackage(event,\'edit\');"><i class="fas fa-pen"></i> ' + localization.Edit + '</button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" id="jqgView" onclick="return fnEditBlockedPackage(event,\'view\');"><i class="far fa-eye"></i> ' + localization.View + '</button>' 
+                }
+            },
+        ],
+
+        pager: "#jqpBlockedPackage",
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        rownumWidth: '55',
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        scroll: false,
+        width: 'auto',
+        autowidth: true,
+        shrinkToFit: true,
+        forceFit: true, caption:'Blocked Package',
+        loadComplete: function (data) {
+            SetGridControlByAction(); fnJqgridSmallScreen("jqgBlockedPackage");
+        },
+
+    }).jqGrid('navGrid', '#jqpBlockedPackage', { add: false, edit: false, search: false, del: false, refresh: false, refreshtext: 'Reload' }).jqGrid('navButtonAdd', '#jqpBlockedPackage', {
+        caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshBlockedPackage
+        }).jqGrid('navButtonAdd', '#jqpBlockedPackage', {
+            caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddBlockedPackage
+    });
+
+    $(window).on("resize", function () {
+        var $grid = $("#jqgBlockedPackage"),
+            newWidth = $grid.closest(".BlockedPackagecontainer").parent().width();
+        $grid.jqGrid("setGridWidth", newWidth, true);
+    });
+    fnAddGridSerialNoHeading();
+}
+
+function fnAddBlockedPackage() {
+    if (IsStringNullorEmpty($("#cboBusinessLocation").val()) || $("#cboBusinessLocation").val() === "0") {
+        toastr.warning("Please select Business key to Add");
+        return;
+    }
+    else {
+
+        fnClearFields();
+        $('#PopupBlockedPackage').modal('show');
+        $("#chkActiveStatus").parent().addClass("is-checked");
+        $('#PopupBlockedPackage').find('.modal-title').text(localization.AddBlockedPackage);
+        $("#btnSaveBlockedpackage").html('<i class="fa fa-save"></i>' + localization.Save);
+        $("#chkActiveStatus").prop('disabled', true);
+        $("#btnSaveBlockedpackage").show();
+    }
+}
+
+function fnEditBlockedPackage(e, actiontype) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgBlockedPackage').jqGrid('getRowData', rowid);
+    
+    $('#PopupBlockedPackage').modal('show');
+    
+    $("#cboPackage").val(rowData.PackageId).selectpicker('refresh');
+    $('#cboPackage').prop('disabled', true).selectpicker('refresh');
+
+    if (rowData.BlockedPackageDate !== null) {
+        setDate($('#txtBlockedpackagedate'), fnGetDateFormat(rowData.BlockedPackageDate));
+    }
+    else {
+        $('#txtBlockedpackagedate').val('');
+    }
+
+    $("#txtBlockedpackagedate").prop('disabled', true);
+
+
+    if (rowData.ActiveStatus == 'true') {
+        $("#chkActiveStatus").parent().addClass("is-checked");
+    }
+    else {
+        $("#chkActiveStatus").parent().removeClass("is-checked");
+    }
+    $("#btnSaveBlockedpackage").attr("disabled", false);
+
+
+    if (actiontype.trim() == "edit") {
+        $('#PopupBlockedPackage').find('.modal-title').text(localization.EditBlockedPackage);
+        $("#btnSaveBlockedpackage").html('<i class="fa fa-sync"></i>' + localization.Update);
+        $("#chkActiveStatus").prop('disabled', false);
+        $("#btnSaveBlockedpackage").attr("disabled", false);
+    }
+
+    if (actiontype.trim() == "view") {
+        $('#PopupBlockedPackage').find('.modal-title').text(localization.ViewBlockedPackage);
+        $("#btnSaveBlockedpackage").attr("disabled", false);
+        $("input,textarea").attr('readonly', true);
+        $("select").next().attr('disabled', true);
+        $("#btnSaveBlockedpackage").hide();
+        $("#chkActiveStatus").prop('disabled', true);
+        $("#PopupBlockedPackage").on('hidden.bs.modal', function () {
+            $("#btnSaveBlockedpackage").show();
+            $("input,textarea").attr('readonly', false);
+            $("select").next().attr('disabled', false);
+        });
+    }
+   
+}
+
+function fnSaveBlockedpackage() {
+   
+    if (IsStringNullorEmpty($("#cboBusinessLocation").val()) || $("#cboBusinessLocation").val() === "0") {
+        toastr.warning("Please select Business key");
+        return;
+    }
+    if (IsStringNullorEmpty($("#cboPackage").val()) || $("#cboPackage").val() === "0") {
+        toastr.warning("Please select Package");
+        return;
+    }
+    if (IsStringNullorEmpty($("#txtBlockedpackagedate").val())) {
+        toastr.warning("Please select Blocked date");
+        return;
+    }
+    obj_block = {
+        BusinessKey: $("#cboBusinessLocation").val(),
+        PackageId: $("#cboPackage").val(),
+        BlockedPackageDate: getDate($("#txtBlockedpackagedate")),
+        ActiveStatus: $("#chkActiveStatus").parent().hasClass("is-checked")
+    };
+
+    $("#btnSaveBlockedpackage").attr("disabled", true);
+
+    $.ajax({
+        url: getBaseURL() + '/PackageMaster/InsertOrUpdateBlockedPackage',
+        type: 'POST',
+        datatype: 'json',
+        data: { obj: obj_block },
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                $("#btnSaveBlockedpackage").html('<i class="fa fa-spinner fa-spin"></i> wait');
+                $("#PopupBlockedPackage").modal('hide');
+                fnClearFields();
+                fnGridRefreshBlockedPackage();
+            }
+            else {
+                toastr.error(response.Message);
+                $("#btnSaveBlockedpackage").attr("disabled", false);
+            }
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnSaveBlockedpackage").attr("disabled", false);
+        }
+    });
+}
+
+function fnGridRefreshBlockedPackage() {
+    $("#jqgBlockedPackage").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+function fnClearFields() {
+    $('#cboPackage').val('0').selectpicker('refresh');
+    $('#cboPackage').prop('disabled', false).selectpicker('refresh');
+    $("#txtBlockedpackagedate").val('');
+    $("#txtBlockedpackagedate").prop('disabled', false);
+    $("#chkActiveStatus").prop('disabled', false);
+    $("#btnSaveBlockedpackage").attr("disabled", false);
+}
+
+$("#btnCancelActivities").click(function () {
+    $("#jqgBlockedPackage").jqGrid('resetSelection');
+    $('#PopupBlockedPackage').modal('hide');
+    fnClearFields();
+});
+
+function SetGridControlByAction() {
+
+    $('#jqgAdd').removeClass('ui-state-disabled');
+    var btn_editEnable = document.querySelectorAll('#jqgEdit');
+    var btn_viewEnable = document.querySelectorAll('#jqgView');
+    var btn_deleteEnable = document.querySelectorAll('#jqgDelete');
+    for (var i = 0; i < btn_editEnable.length; i++) {
+        btn_editEnable[i].disabled = false;
+    }
+    for (var j = 0; j < btn_viewEnable.length; j++) {
+        btn_viewEnable[j].disabled = false;
+    }
+    for (var k = 0; k < btn_deleteEnable.length; k++) {
+        btn_deleteEnable[k].disabled = false;
+    }
+
+
+    if (_userFormRole.IsInsert === false) {
+        $('#jqgAdd').addClass('ui-state-disabled');
+    }
+    if (_userFormRole.IsEdit === false) {
+        var btn_editDisable = document.querySelectorAll('#jqgEdit');
+        for (var i = 0; i < btn_editDisable.length; i++) {
+            btn_editDisable[i].disabled = true;
+            btn_editDisable[i].className = "ui-state-disabled";
+        }
+    }
+    if (_userFormRole.IsView === false) {
+        var btn_viewDisable = document.querySelectorAll('#jqgView');
+        for (var j = 0; j < btn_viewDisable.length; j++) {
+            btn_viewDisable[j].disabled = true;
+            btn_viewDisable[j].className = "ui-state-disabled";
+        }
+    }
+
+    if (_userFormRole.IsDelete === false) {
+        var btn_deleteDisable = document.querySelectorAll('#jqgDelete');
+        for (var k = 0; k < btn_deleteDisable.length; k++) {
+            btn_deleteDisable[k].disabled = true;
+            btn_deleteDisable[k].className = "ui-state-disabled";
+        }
+    }
+}

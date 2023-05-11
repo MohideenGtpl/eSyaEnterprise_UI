@@ -1,0 +1,349 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.ActionFilter;
+using eSyaEnterprise_UI.Areas.eSyaPayroll.Data;
+using eSyaEnterprise_UI.Areas.eSyaPayroll.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+
+namespace eSyaEnterprise_UI.Areas.eSyaPayroll.Controllers
+{
+    [SessionTimeout]
+    public class AttendanceProcessController : Controller
+    {
+        private readonly IeSyaPayrollAPIServices _eSyaPayrollAPIServices;
+        private readonly ILogger<AttendanceProcessController> _logger;
+
+        public AttendanceProcessController(IeSyaPayrollAPIServices eSyaPayrollAPIServices, ILogger<AttendanceProcessController> logger)
+        {
+            _eSyaPayrollAPIServices = eSyaPayrollAPIServices;
+            _logger = logger;
+        }
+        #region Attandance Process
+        [Area("eSyaPayroll")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public async Task<IActionResult> V_4021_00()
+        {
+            try
+            {
+                var parameter = "?Businesskey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                var serviceResponse = await _eSyaPayrollAPIServices.HttpClientServices.GetAsync<List<DO_PayPeriod>>("AttendanceProcess/GetPayPeriodbyBusinessKey" + parameter);
+
+                if (serviceResponse.Status)
+                {
+                    ViewBag.Payperiods = serviceResponse.Data.Select(b => new SelectListItem
+                    {
+                        Value = b.PayPeriod.ToString(),
+                        Text = b.PayPeriod.ToString(),
+                    }).ToList();
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetPayPeriodbyBusinessKey:params:" + JsonConvert.SerializeObject(new { parameter}));
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetPayPeriodbyBusinessKey");
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        ///Get Employees by Business Key, Pay Period for Grid
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetEmployeesbyBusinessKeyAndPayperiod(int Payperiod)
+        {
+            int Businesskey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+            try
+            {
+                var parameter = "?Businesskey=" + Businesskey + "&Payperiod=" + Payperiod;
+                var serviceResponse = await _eSyaPayrollAPIServices.HttpClientServices.GetAsync<List<DO_AttendanceProcess>>("AttendanceProcess/GetEmployeesbyBusinessKeyAndPayperiod" + parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetEmployeesbyBusinessKeyAndPayperiod:params:" + JsonConvert.SerializeObject(new { Businesskey, Payperiod }));
+
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetEmployeesbyBusinessKeyAndPayperiod:params:" + JsonConvert.SerializeObject(new {Businesskey,Payperiod }));
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Insert or Update Attendance Process
+        /// </summary>
+
+        [HttpPost]
+        public async Task<JsonResult> InsertorUpdateAttendanceProcess(List<DO_AttendanceProcess> obj)
+        {
+            try
+            {
+                obj.All(c =>
+                {
+                    c.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                    c.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                    c.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                    c.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                    return true;
+                });
+
+                var serviceResponse = await _eSyaPayrollAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("AttendanceProcess/InsertorUpdateAttendanceProcess", obj);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertorUpdateAttendanceProcess:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+        #endregion Attandance Process
+
+        #region Loss of PAY
+        [Area("eSyaPayroll")]
+        public async Task<IActionResult> V_4022_00()
+        {
+            try
+            {
+                var parameter = "?Businesskey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                var serviceResponse = await _eSyaPayrollAPIServices.HttpClientServices.GetAsync<List<DO_PayPeriod>>("AttendanceProcess/GetPayPeriodbyBusinessKey" + parameter);
+
+                if (serviceResponse.Status)
+                {
+                    ViewBag.Payperiods = serviceResponse.Data.Select(b => new SelectListItem
+                    {
+                        Value = b.PayPeriod.ToString(),
+                        Text = b.PayPeriod.ToString(),
+                    }).ToList();
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetPayPeriodbyBusinessKey:params:" + JsonConvert.SerializeObject(new { parameter }));
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetPayPeriodbyBusinessKey");
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+        /// <summary>
+        ///Get Employees by Business Key, Pay Period for Grid
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetLossofPaybyBusinessKeyAndPayperiod(int Payperiod)
+        {
+            int Businesskey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+            try
+            {
+                var parameter = "?Businesskey=" + Businesskey + "&Payperiod=" + Payperiod;
+                var serviceResponse = await _eSyaPayrollAPIServices.HttpClientServices.GetAsync<List<DO_LossofPAY>>("AttendanceProcess/GetLossofPaybyBusinessKeyAndPayperiod" + parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetLossofPaybyBusinessKeyAndPayperiod:params:" + JsonConvert.SerializeObject(new { Businesskey, Payperiod }));
+
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetLossofPaybyBusinessKeyAndPayperiod:params:" + JsonConvert.SerializeObject(new { Businesskey, Payperiod }));
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Insert or Update Attendance Process
+        /// </summary>
+
+        [HttpPost]
+        public async Task<JsonResult> UpdateLossofPAY(List<DO_LossofPAY> obj)
+        {
+            try
+            {
+                obj.All(c =>
+                {
+                    c.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                    c.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                    c.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                    c.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                    return true;
+                });
+
+                var serviceResponse = await _eSyaPayrollAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("AttendanceProcess/UpdateLossofPAY", obj);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:UpdateLossofPAY:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+        #endregion Loss of PAY
+
+        #region Arrear details
+        [Area("eSyaPayroll")]
+        public async Task<IActionResult> V_4023_00()
+        {
+            try
+            {
+                var parameter = "?Businesskey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                var emp_serviceResponse = await _eSyaPayrollAPIServices.HttpClientServices.GetAsync<List<DO_EmployeeInfo>>("AttendanceProcess/GetEmployeebyBusinessKey" + parameter);
+                var payperiod_serviceResponse = await _eSyaPayrollAPIServices.HttpClientServices.GetAsync<List<DO_PayPeriod>>("AttendanceProcess/GetPayPeriodbyBusinessKey" + parameter);
+
+
+                if (emp_serviceResponse.Status)
+                {
+                    ViewBag.Employees = emp_serviceResponse.Data.Select(b => new SelectListItem
+                    {
+                        Value = b.EmployeeNumber.ToString(),
+                        Text = b.EmployeeName.ToString(),
+                    }).ToList();
+                }
+                else
+                {
+                    _logger.LogError(new Exception(emp_serviceResponse.Message), "UD:GetEmployeebyBusinessKey:params:" + JsonConvert.SerializeObject(new { parameter }));
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+
+                if (payperiod_serviceResponse.Status)
+                {
+                    ViewBag.Payperiods = payperiod_serviceResponse.Data.Select(b => new SelectListItem
+                    {
+                        Value = b.PayPeriod.ToString(),
+                        Text = b.PayPeriod.ToString(),
+                    }).ToList();
+                }
+                else
+                {
+                    _logger.LogError(new Exception(payperiod_serviceResponse.Message), "UD:GetPayPeriodbyBusinessKey:params:" + JsonConvert.SerializeObject(new { parameter }));
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetEmployeebyBusinessKey,GetPayPeriodbyBusinessKey");
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        ///Get Paid To for Grid
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetPaidToEmployeesdetails(int Payperiod, int employeeNumber)
+        {
+            try
+            {
+                var parameter = "?Businesskey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext) + "&Payperiod=" + Payperiod + "&employeeNumber=" + employeeNumber;
+                var serviceResponse = await _eSyaPayrollAPIServices.HttpClientServices.GetAsync<List<DO_ArrearDays>>("AttendanceProcess/GetPaidToEmployees" + parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetPaidToEmployees:params:" + JsonConvert.SerializeObject(new { Payperiod, employeeNumber }));
+
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetPaidToEmployees:params:" + JsonConvert.SerializeObject(new {Payperiod, employeeNumber }));
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        ///Get Paid To for Grid
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetArreardetails(int Payperiod, int employeeNumber)
+        {
+            try
+            {
+                var parameter = "?Businesskey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext) + "&Payperiod=" + Payperiod + "&employeeNumber=" + employeeNumber;
+                var serviceResponse = await _eSyaPayrollAPIServices.HttpClientServices.GetAsync<List<DO_ArrearDays>>("AttendanceProcess/GetArreardays" + parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetArreardays:params:" + JsonConvert.SerializeObject(new {Payperiod, employeeNumber }));
+
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetArreardays:params:" + JsonConvert.SerializeObject(new { Payperiod, employeeNumber }));
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Insert or Update Arrear Details
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> InsertUpdateArreardays(List<DO_ArrearDays> obj)
+        {
+            try
+            {
+                obj.All(c =>
+                {
+                    c.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                    c.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                    c.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                    return true;
+                });
+
+                var serviceResponse = await _eSyaPayrollAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("AttendanceProcess/InsertOrUpdateArreardays", obj);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertOrUpdateArreardays:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+        #endregion Arrear details
+    }
+}

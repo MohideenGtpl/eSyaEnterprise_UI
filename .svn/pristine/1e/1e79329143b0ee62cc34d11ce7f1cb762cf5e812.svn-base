@@ -1,0 +1,24 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+
+namespace eSyaEnterprise_UI.Areas.eSyaFixedAssets.Controllers
+{
+    public class AssetAllocateController : Controller
+    {
+       
+        /// <summary>
+        /// Asset Allocation
+        /// </summary>
+        /// <returns></returns>
+
+        [Area("eSyaFixedAssets")]
+        public IActionResult V_2013_00()
+        {
+            ViewBag.formName = "Asset Allocation";
+            return View();
+        }
+    }
+}

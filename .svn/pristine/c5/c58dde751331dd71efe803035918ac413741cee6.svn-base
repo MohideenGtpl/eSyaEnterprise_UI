@@ -1,0 +1,66 @@
+﻿$(document).ready(function () {
+    fnLoadGridCurrencyRate();
+});
+function fnLoadGridCurrencyRate() {
+    $("#jqgCurrencyRate").jqGrid('GridUnload');
+    $("#jqgCurrencyRate").jqGrid({
+        // url: getBaseURL() + '/ApplicationCodes/GetApplicationCodesByCodeType?codeType=' + codeType,
+        //mtype: 'Post',
+        datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Code", "Date of exchange", "Standard Rate", "Selling Rate", "Selling Date", "Buying Rate", "Buying Date", "Active", "Actions"],
+        colModel: [
+            { name: "Code", width: 50, editable: true, align: 'left', hidden: false },
+            { name: "DateOfExchange", width: 70, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "StandardRate", width: 50, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            { name: "SellingRate", width: 50, editable: true, align: 'left', hidden: false },
+            { name: "SellingDate", width: 50, editable: true, align: 'left', hidden: false },
+            { name: "BuyingRate", width: 50, editable: true, align: 'left', hidden: false },
+            { name: "BuyingDate", width: 50, editable: true, align: 'left', hidden: false },
+            { name: "ActiveStatus", width: 35, editable: false, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+            {
+                name: 'edit', search: false, align: 'left', width: 54, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditApplicationCodes(event,\'edit\')"><i class="fas fa-pencil-alt"></i> ' + localization.Edit + ' </button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnEditApplicationCodes(event,\'view\')"><i class="far fa-file-alt"></i> ' + localization.View + ' </button>'
+
+                }
+            }
+        ],
+        pager: "#jqpCurrencyRate",
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0,
+        loadComplete: function (data) {
+            SetGridControlByAction();
+        },
+    }).jqGrid('navGrid', '#jqpCurrencyRate', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpCurrencyRate', {
+        caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshCurrencyRate
+        }).jqGrid('navButtonAdd', '#jqpCurrencyRate', {
+            caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddCurrencyRate
+    });
+    fnAddGridSerialNoHeading();
+}
+
+function fnAddCurrencyRate() {
+    $("#divGrid").hide();
+    $("#divCurrencyRateForm").show();
+}
+
+function fnGridRefreshCurrencyRate() {
+
+}
+function fnBackToGrid() {
+    $("#divGrid").show();
+    $("#divCurrencyRateForm").hide();
+}

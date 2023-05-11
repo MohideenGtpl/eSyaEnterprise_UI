@@ -1,0 +1,171 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Net.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using eSyaEnterprise_UI.Utility;
+using eSyaEnterprise_UI.Areas.Config.Models;
+using eSyaEnterprise_UI.Areas.eSyaFA.Models;
+using eSyaEnterprise_UI.Models;
+
+namespace eSyaEnterprise_UI.Areas.eSyaFA.Controllers
+{
+    public class AssetRegisterController : Controller
+    {
+        ESyaFA_WebAPI _eSyaFAWebAPI = new ESyaFA_WebAPI();
+        ESyaWebAPI _eSyaWebAPI = new ESyaWebAPI();
+
+        [Area("eSyaFA")]
+        public IActionResult V_100_00()
+        {
+            var clientFA = _eSyaFAWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+            HttpResponseMessage response = clientFA.GetAsync("AssetGroup/GetAssetGroupAndSubGroup").Result;
+            string stringData = response.Content.ReadAsStringAsync().Result;
+            List<DO_AssetGroup> dtAssetGroup = JsonConvert.DeserializeObject<List<DO_AssetGroup>>(stringData);
+            List<DO_AssetGroup> a_grp = dtAssetGroup.Select(x => new DO_AssetGroup { AssetGroupID = x.AssetGroupID, AssetGroup = x.AssetGroup }).Distinct().ToList();
+            ViewBag.AGroup = a_grp;
+
+            var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+            HttpResponseMessage ag_response = client.GetAsync("ConfigMasterData/GetApplicationCodesByCodeType?codeType=" + CodeTypeValues.Model).Result;
+            string mddata = ag_response.Content.ReadAsStringAsync().Result;
+            List<DO_ApplicationCodes> mdapp_codes = JsonConvert.DeserializeObject<List<DO_ApplicationCodes>>(mddata);
+            ViewBag.MDappcodes = mdapp_codes;
+
+            HttpResponseMessage mg_response = client.GetAsync("ConfigMasterData/GetApplicationCodesByCodeType?codeType=" + CodeTypeValues.Manufacturer).Result;
+            string mgdata = mg_response.Content.ReadAsStringAsync().Result;
+            List<DO_ApplicationCodes> mgapp_codes = JsonConvert.DeserializeObject<List<DO_ApplicationCodes>>(mgdata);
+            ViewBag.MGappcodes = mgapp_codes;
+
+            return View();
+        }
+
+        /// <summary>
+        /// Get Asset Sub Group for the given Asset group
+        /// </summary>
+        public JsonResult GetAssetSubGroup(int assetGroup)
+        {
+            var client = _eSyaFAWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+            HttpResponseMessage response = client.GetAsync("AssetGroup/GetAssetGroupAndSubGroup").Result;
+            string stringData = response.Content.ReadAsStringAsync().Result;
+            List<DO_AssetGroup> dtAssetGroup = JsonConvert.DeserializeObject<List<DO_AssetGroup>>(stringData);
+            List<DO_AssetGroup> asg = dtAssetGroup.Where(x => x.AssetGroupID == assetGroup && x.ActiveStatus == true).ToList();
+
+            return Json(asg);
+        }
+        
+        /// <summary>
+        /// Insert Asset Register
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertAssetRegisterHeader(DO_AssetRegister obj)
+        {
+
+            try
+            {
+                var client = _eSyaFAWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                obj.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                HttpResponseMessage Insertresponse = client.PostAsJsonAsync<DO_AssetRegister>("AssetRegister/InsertAssetRegisterHeader", obj).Result;
+                string resp = Insertresponse.Content.ReadAsStringAsync().Result;
+                var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(resp);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        /// <summary>
+        /// Update Asset Register
+        /// </summary>
+        [HttpPost]
+        public JsonResult UpdateAssetRegisterHeader(DO_AssetRegister obj)
+        {
+
+            try
+            {
+                var client = _eSyaFAWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                obj.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                HttpResponseMessage Insertresponse = client.PostAsJsonAsync<DO_AssetRegister>("AssetRegister/UpdateAssetRegisterHeader", obj).Result;
+                string resp = Insertresponse.Content.ReadAsStringAsync().Result;
+                var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(resp);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        /// <summary>
+        /// Create Asset Register Detail data based on header data
+        /// </summary>
+        public JsonResult GetAssetRegisterDetail(int internalAssetnumber)
+        {
+            var client = _eSyaFAWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+            HttpResponseMessage response = client.GetAsync("AssetRegister/GetAssetRegisterDetail?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext) + "&internalAssetANumber="+ internalAssetnumber).Result;
+            string stringData = response.Content.ReadAsStringAsync().Result;
+            List<DO_AssetRegisterDetail> asd = JsonConvert.DeserializeObject<List<DO_AssetRegisterDetail>>(stringData);
+            /*List<DO_AssetRegisterDetail> asd = new List<DO_AssetRegisterDetail>();
+            for (int i=0; i< dtAssetReg.Quantity; i++)
+            {
+                DO_AssetRegisterDetail rd = new DO_AssetRegisterDetail
+                {
+                    AssetDescription = dtAssetReg.AssetDescription,
+                    InternalAssetNumber = dtAssetReg.InternalAssetNumber,
+                    IASerialNumber = i + 1,
+                    UnitAcquisitionValue = dtAssetReg.AcquisitionValue / dtAssetReg.Quantity,
+                    UnitOriginalCost = dtAssetReg.OriginalCost / dtAssetReg.Quantity,
+                    InstallationDate = null,
+                    AssetCondition = "",
+                    AssetStatus = "Pending"
+                };
+                asd.Add(rd);
+
+            }*/
+
+            return Json(asd);
+        }
+
+        /// <summary>
+        /// Update Asset Register
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertUpdateAssetRegisterDetail(DO_AssetRegisterDetail obj)
+        {
+
+            try
+            {
+                var client = _eSyaFAWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                obj.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                HttpResponseMessage Insertresponse = client.PostAsJsonAsync<DO_AssetRegisterDetail>("AssetRegister/InsertUpdateAssetRegisterDetail", obj).Result;
+                string resp = Insertresponse.Content.ReadAsStringAsync().Result;
+                var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(resp);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        [Area("eSyaFA")]
+        public IActionResult V_101_00()
+        {
+            return View();
+        }
+    }
+}

@@ -1,0 +1,188 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = "EPM_11_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/bottom-sheets.css" rel="stylesheet" />
+<script src="~/js/bottom-sheets.js"></script>
+<script>
+    var localization = {
+            UHID: '@Localizer["UHID"]',
+            VisitDate: '@Localizer["Visit Date"]',
+            PatientName: '@Localizer["Patient Name"]',
+            Gender: '@Localizer["Gender"]',
+            Age: '@Localizer["Age"]',
+            PatientTypeDesc: '@Localizer["Patient Type"]',
+            PatientCategoryDesc: '@Localizer["Patient Category"]',
+            RatePlanDesc: '@Localizer["Rate Plan"]',
+            SpecialtyDesc: '@Localizer["Specialty"]',
+            DoctorName: '@Localizer["Doctor Name"]',
+            Actions:'@Localizer["Actions"]'
+    }
+</script>
+<div class="row m-0 py-2">
+    <div class="col-lg-1 offset-lg-11 col-md-1 col-sm-2 d-flex justify-content-end pr-0">
+        <button type="button" class="btn btn-primary" id="btnFilter"> <i class="fa fa-filter"></i></button>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+        <table id="jgvPatientRegisteredList"></table>
+        <div id="jpgPatientRegisteredList"></div>
+    </div>
+</div>
+
+
+<div id="dvsheet" class="sheet column items-center justify-end" aria-hidden="true">
+    <!-- Dark background for the sheet -->
+    <div class="overlay"></div>
+
+    <!-- The sheet itself -->
+    <div class="contents column border">
+        <!-- Sheet controls -->
+        <header class="controls border-bottom mb-3">
+            <!-- The thing to drag if you want to resize the sheet -->
+            <div class="draggable-area">
+                <div class="draggable-thumb"></div>
+            </div>
+            <div class=" d-block">
+                <h4 class="m-0">Filter</h4>
+                <button class="close-sheet" type="button" title="Close the sheet"><i class="fa fa-times"></i></button>
+            </div>
+        </header>
+
+        <!-- Body of the sheet -->
+        <main class="body fill column">
+            <div class="row">
+                <div class="col-lg-2 col-md-2 col-sm-3">
+                    <div class="card">
+                        <div class="card-header">
+                           Visit Date
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-12 form-group">
+                                    <label>From</label>
+                                    <input id="dtVisitFromDate" type="date" name="fromdate" class="form-control" value="" />
+                                </div>
+                                <div class="col-lg-12 col-md-12 col-12 form-group">
+                                    <label>Till</label>
+                                    <input id="dtVisitTillDate" type="date" name="todate" class="form-control" value="" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-3">
+                    <div class="card">
+                        <div class="card-header">
+                           ID Filter
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-12 form-group">
+                                    <label>Clinic Type ID</label>
+                                    <input type="text" name="clinicTypeId" class="form-control" value="" />
+                                </div>
+                                <div class="col-lg-12 col-md-12 col-12 form-group">
+                                    <label>Patient Type ID</label>
+                                    <input type="text" name="patientTypeId" class="form-control" value="" />
+                                </div>
+                                <div class="col-lg-12 col-md-12 col-12 form-group">
+                                    <label>UHID</label>
+                                    <input type="text" name="uhid" class="form-control" value="" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+           
+        </main>
+    </div>
+</div>
+<script>
+
+    document.getElementById("dtVisitFromDate").valueAsDate = new Date();
+    document.getElementById("dtVisitTillDate").valueAsDate = new Date();
+
+    $(function () {
+        fnBottomSheets("#btnFilter","#dvsheet");
+        fnGridLoadPatientRegisteredList()
+    });
+
+    function fnGridLoadPatientRegisteredList() {
+       // var gridData = [{ UHID: '10021', OpNumber: '3000213', VisitNumber: '5404031', VisitDate: '02/02/2022', PatientName: 'Arya', PatientTypeDesc: 'Inpatient', DoctorName: 'Dr.Pandian', edit: '' }];
+        $("#jgvPatientRegisteredList").jqGrid({
+            url: getBaseURL() + '/OpBilling/GetPatientRegisteredList',
+            datatype: "json",
+           // data:gridData,
+            contenttype: "application/json; charset-utf-8",
+            mtype: 'GET',
+            postData: {
+                visitFromDate: function () { return $('#dtVisitFromDate').val() },
+                visitTillDate: function () { return $('#dtVisitTillDate').val() },
+            },
+            jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+            colNames: [localization.UHID, 'Op Number','Visit No.', localization.VisitDate, localization.PatientName, localization.PatientTypeDesc, localization.SpecialtyDesc, localization.DoctorName, localization.Actions],
+            colModel: [
+                { name: "UHID", width: 70, align: 'left' },
+                { name: "OpNumber", width: 70, align: 'left' },
+                { name: "VisitNumber", hidden:true },
+                { name: "VisitDate", width: 70, resizable: true, width: 150, sortable: true, formatter: "date", formatoptions: { newformat: _cnfjqgDateFormat } },
+                { name: "PatientName", width: 160, resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+                { name: "PatientTypeDesc", width: 60, resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+                { name: "SpecialtyDesc", width: 120, resizable: false, editoption: { 'text-align': 'left', maxlength: 15 } },
+                { name: "DoctorName", width: 150, resizable: false, editoption: { 'text-align': 'left', maxlength: 15 } },
+                {
+                    name: 'edit', search: false, align: 'center', width: 78, sortable: false, resizable: false,
+                    formatter: function (cellValue, options, rowdata, action) {
+                        //return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Op Bill" id="jqgCreateOpBill" onclick="return fnCreateOpBill(event)"><i class="fas fa-file-invoice"></i></button>';
+                        return '<ul class="navbar-nav"><li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a><div class="dropdown-menu" data-container="body" aria-labelledby="navbarDropdownMenuLink"><a class="dropdown-item" href="#">Action</a><a class="dropdown-item" href="#">Action</a><a class="dropdown-item" href="#">Action</a></div></li></ul>' +
+                        '<i class="fa fa-arrow-right"></i>'
+                    }
+                }
+            ],
+            pager: "#jpgPatientRegisteredList",
+            rowNum: 10000,
+            rownumWidth: '55',
+            pgtext: null,
+            pgbuttons: null,
+            loadonce: true,
+            viewrecords: true,
+            gridview: true,
+            rownumbers: true,
+            height: 'auto',
+            align: "left",
+            width: 'auto',
+            autowidth: true,
+            shrinkToFit: true,
+            forceFit: true,
+            scrollOffset: 0,
+            loadComplete: function (data) {
+               // SetGridControlByAction();
+                fnJqgridSmallScreen("jgvPatientRegisteredList");
+            },
+            
+        });
+        fnAddGridSerialNoHeading();
+    }
+
+    function fnCreateOpBill(e) {
+        var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+        var rowData = $('#jgvPatientRegisteredList').jqGrid('getRowData', rowid);
+
+        // var url = getBaseURL() + '/PatientManagement/OpBilling/EPM_12_00/' + rowData.UHID + '/' + rowData.OpNumber;
+
+        var url = '@Url.Action("EPM_12_00", "OpBilling")';
+        url += "?UHID=" + rowData.UHID;
+        url += "&opNumber=" + rowData.OpNumber;
+
+        window.open(url, '_blank').focus();
+    }
+
+</script>
+
+

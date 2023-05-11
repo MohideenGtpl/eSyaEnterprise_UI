@@ -1,0 +1,112 @@
+﻿$(document).ready(function () {
+    fnLoadLanguageCultureGrid();
+});
+
+function fnLoadLanguageCultureGrid() {
+
+    $("#jqgLanguageCulture").GridUnload();
+        $("#jqgLanguageCulture").jqGrid({
+            url: getBaseURL() + '/Localization/GetLanguageCulture?Culture=' + $("#cboCulture").val() + '&Resource=' + $("#cboResouce").val(),
+            datatype: "json",
+            contenttype: "application/json; charset-utf-8",
+            mtype: 'POST',
+            colNames: ["Resource Id","Resource Name","Key","Value" ,"", "Culture Value"],
+            colModel: [
+                { name: "ResourceId", width: 30, editable: false, hidden: false,editoptions: { disabled: true }, align: 'left', edittype: 'text' },
+                { name: "ResourceName", width: 50, editable: false, editoptions: { disabled: true }, align: 'left', edittype: 'text' },
+                { name: "Key", width: 100, editable: false, editoptions: { disabled: true }, align: 'left', edittype: 'text' },
+                { name: "Value", width: 100, editable: false, editoptions: { disabled: true }, align: 'left', edittype: 'text' },
+                { name: "Culture", width: 20, editable: false, hidden: true, editoptions: { disabled: true }, align: 'left', edittype: 'text' },
+                { name: "CultureValue", width: 100, editable: true, align: 'left', edittype: 'text' }
+            ], 
+            rowNum: 100,
+            pager: "#jqpLanguageCulture",
+            pgtext: null,
+            pgbuttons: null,
+            viewrecords: false,
+            gridview: true,
+            rownumbers: true,
+            height: 'auto',
+            width: 'auto',
+            autowidth: true,
+            shrinkToFit: false,
+            forceFit: false,
+            loadonce: true,
+            cellEdit: true,
+            editurl: 'url',
+            cellsubmit: 'clientArray',
+            onSelectRow: function (id) {
+                if (id) { $('#jqgLanguageCulture').jqGrid('editRow', id, true); }
+            },
+            ondblClickRow: function (rowid) {
+            },
+            loadComplete: function (data) {
+                $(this).find(">tbody>tr.jqgrow:odd").addClass("myAltRowClassEven");
+                $(this).find(">tbody>tr.jqgrow:even").addClass("myAltRowClassOdd");
+                $("#jqgLanguageCulture").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+            }
+        }).jqGrid('navGrid', '#jqpLanguageCulture', { add: false, edit: false, search: false, del: false, refresh: false });
+    
+}
+
+function fnSaveLanguageCulture() {
+   
+    var $grid = $("#jqgLanguageCulture");
+    var r_culture = [];
+    var ids = jQuery("#jqgLanguageCulture").jqGrid('getDataIDs');
+    for (var i = 0; i < ids.length; i++) {
+        var rowId = ids[i];
+        var rowData = jQuery('#jqgLanguageCulture').jqGrid('getRowData', rowId);
+
+        if (!IsStringNullorEmpty(rowData.CultureValue)) {
+            r_culture.push({
+                ResourceId: rowData.ResourceId,
+                ResourceName: rowData.ResourceName,
+                Key: rowData.Key,
+                Value: rowData.Value,
+                Culture: $("#cboCulture").val(),
+                CultureValue: rowData.CultureValue,
+                
+            });
+        }
+    }
+
+    $("#btnSave").attr("disabled", true);
+    $.ajax({
+        url: getBaseURL() + '/Localization/InsertOrUpdateLanguageCulture',
+        type: 'POST',
+        datatype: 'json',
+        data: { obj: r_culture },
+        async: false,
+        success: function (response) {
+            if (response.Status === true) {
+                toastr.success("saved");
+                $("#jqgLanguageCulture").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+            }
+            else {
+                toastr.error(response.Message);
+            }
+            $("#btnSave").attr("disabled", false);
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnSave").attr("disabled", false);
+        }
+    });
+
+}
+
+
+$(document).on('focusout', '[role="gridcell"] *', function () {
+    $("#jqgLanguageCulture").jqGrid('editCell', 0, 0, false);
+});
+
+function fnShowSideBar() {
+    $("#divSideBar").toggleClass("activeSideBar");
+    $(".itemblur").toggleClass('on');
+
+}
+function fnCloseSidebar() {
+    $("#divSideBar").removeClass('activeSideBar');
+    $(".itemblur").toggleClass('on');
+}

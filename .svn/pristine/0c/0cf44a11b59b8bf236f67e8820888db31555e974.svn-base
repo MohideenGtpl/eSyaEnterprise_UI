@@ -1,0 +1,22 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+
+namespace eSyaEnterprise_UI.Areas.PatientManagement.Controllers
+{
+    public class PaymentModeController : Controller
+    {
+        [Area("PatientManagement")]
+        public IActionResult _PaymentDetail()
+        {
+            return View();
+        }
+        [Area("PatientManagement")]
+        public IActionResult Billing()
+        {
+            return View();
+        }
+    }
+}

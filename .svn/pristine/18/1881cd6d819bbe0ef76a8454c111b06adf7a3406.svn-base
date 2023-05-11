@@ -1,0 +1,228 @@
+﻿
+var actiontype = "";
+function fnGridSalaryInfo() {
+
+    $("#jqgSalaryInfo").GridUnload();
+    var dataForGrid = [{ 'salary': '1000000', "CurrencyName": "INR", "Percentage": "70%" }, { 'salary': '1000000', "CurrencyName": "KES", "Percentage": "20%" }, { 'salary': '1000000', "CurrencyName": "USD", "Percentage": "20%" }]
+    $("#jqgSalaryInfo").jqGrid({
+        //url: getBaseURL() + '/Employee/GetEmployeeSalaryInfobyEmpNumber?EmpNumber=' + $("#txtEmployeenumber").val(),
+        //mtype: 'POST',
+        datatype: 'local',
+        contentType: 'application/json; charset=utf-8',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        colNames: ["Salary", "Currency Name", "Percentage"],
+        colModel: [
+            { name: "Salary", width: 80, align: 'left', editable: true, editoptions: { maxlength: 50 }, resizable: false, hidden: false },
+            { name: "CurrencyName", width: 95, align: 'left', editable: true, editoptions: { maxlength: 50 }, resizable: false },
+            { name: "Percentage", editable: true, width: 90, align: 'left', sortable: true, stype: 'text' },
+
+        ],
+        pager: "#jqpSalaryInfo",
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        scroll: false,
+        width: 'auto',
+        autowidth: false,
+        data: dataForGrid,
+        shrinkToFit: false,
+        forceFit: false,
+        loadComplete: function (data) {
+            //SetGridControlByAction();
+        },
+    }).jqGrid('navGrid', '#jqpSalaryInfo', { add: false, edit: false, search: false, del: false, refresh: false, refreshtext: 'Reload' })
+    $("#jqgSalaryInfo").jqGrid('inlineNav', '#jqpSalaryInfo', {
+        edit: true,
+        edittext:"Edit",
+        add: true,
+        addicon:'fa fa-plus',
+        addtext: 'Add',
+        deltext: 'Delete',
+        editicon:'fa fa-pen',
+        del: false,
+        search: false,
+        searchicon:'fa fa-search',
+        save: true,
+        saveicon:'fa fa-save',
+        savetext: 'Save',
+        cancel: true,
+        canceltext: 'Cancel',
+        cancelicon:'fa fa-times'
+    });
+
+
+    $(window).on("resize", function () {
+        var $grid = $("#jqgSalaryInfo"),
+            newWidth = $grid.closest(".SalaryInfocontainer").parent().width();
+        $grid.jqGrid("setGridWidth", newWidth, true);
+    });
+    fnAddGridSerialNoHeading();
+}
+
+function fnAddSalaryInfo() {
+    $("#divForm").css("display", "block");
+    $("#divGrid").hide();
+    fnClearSalaryInfoFields();
+    $('#PopupSalaryInfo').find('.modal-title').text("Add Salary Details");
+    $('#PopupSalaryInfo').modal('show');
+    $("#btnSaveSalaryInfo").attr("disabled", false);
+    $("#btnSaveSalaryInfo").html('Save');
+    $("#btnSaveSalaryInfo").show();
+    $("#btnCancelSalaryInfo").show();
+    $("#chkAccountStatus").prop('disabled', false);
+    $("input,textarea").attr('readonly', false);
+    $("select").next().attr('disabled', false);
+    
+}
+
+function fnEditSalaryInfo(e, actiontype) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgSalaryInfo').jqGrid('getRowData', rowid);
+
+    $("#cboErcode").val(rowData.Ercode).selectpicker('refresh');
+    $('#cboErcode').prop('disabled', true).selectpicker('refresh');
+    $("#txtAmount").val(rowData.Amount);
+
+    if (rowData.EffectiveFrom !== null) {
+        setDate($('#txtEffectivefrom'), rowData.EffectiveFrom);
+    }
+    else {
+        $('#txtEffectivefrom').val('');
+    }
+    $("#txtEffectivefrom").prop('disabled', true);
+    if (rowData.EffectiveTill !== null) {
+        setDate($('#txtEffectivetill'), rowData.EffectiveTill);
+    }
+    else {
+        $('#txtEffectivetill').val('');
+    }
+    if (rowData.ActiveStatus == 'true') {
+        $("#chkAccountStatus").parent().addClass("is-checked");
+    }
+    else {
+        $("#chkAccountStatus").parent().removeClass("is-checked");
+    }
+    $("#btnSaveSalaryInfo").attr("disabled", false);
+    $('#PopupSalaryInfo').modal('show');
+   
+
+    if (actiontype.trim() == "edit") {
+        $('#PopupSalaryInfo').find('.modal-title').text("Update Salary Details");
+        $("#btnSaveSalaryInfo").show();
+        $("#btnCancelSalaryInfo").show();
+        $("#btnSaveSalaryInfo").html('Update');
+        $("#chkAccountStatus").prop('disabled', false);
+        $("input,textarea").attr('readonly', false);
+        $("select").next().attr('disabled', false);
+        
+    }
+
+    if (actiontype.trim() == "view") {
+        $('#PopupSalaryInfo').find('.modal-title').text("View Salary Details");
+        $("#btnSaveSalaryInfo").attr("disabled", true);
+        $("#btnSaveSalaryInfo").hide();
+        $("#btnCancelSalaryInfo").hide();
+        $("input,textarea").attr('readonly', true);
+        $("select").next().attr('disabled', true);
+        $("#chkAccountStatus").prop('disabled', true);
+
+    }
+
+}
+
+function fnSaveEmpSalaryInfo() {
+    debugger;
+    if (IsValidSalaryInfo() === false) {
+        return;
+    }
+    var objsalinfo = {
+        BusinessKey: $("#txtBusinesskey").val(),
+        EmployeeNumber: $("#txtEmployeenumber").val(),
+        Ercode: $("#cboErcode").val(),
+        EffectiveFrom: $("#txtEffectivefrom").val(),
+        Amount: $("#txtAmount").val(),
+        EffectiveTill: $("#txtEffectivetill").val(),
+        ActiveStatus: $("#chkAccountStatus").parent().hasClass("is-checked")
+
+    };
+    $("#btnSaveSalaryInfo").attr('disabled', true);
+    $.ajax({
+        url: getBaseURL() + '/Employee/InsertOrUpdateEmployeeSalaryInfo',
+        type: 'POST',
+        datatype: 'json',
+        data: {obj: objsalinfo },
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                $('#PopupSalaryInfo').modal('hide');
+                fnGridRefreshSalaryInfo();
+                $("#btnSaveSalaryInfo").attr('disabled', false);
+                fnClearSalaryInfoFields();
+                return true;
+            }
+            else {
+                toastr.error(response.Message);
+                $("#btnSaveSalaryInfo").attr('disabled', false);
+                return false;
+            }
+
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnSaveSalaryInfo").attr('disabled', false);
+        }
+    });
+
+}
+
+function IsValidSalaryInfo() {
+    if (IsStringNullorEmpty($("#txtEmployeenumber").val())) {
+        toastr.warning("Please Create Employee details Details");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtBusinesskey").val())) {
+        toastr.warning("Please Create Employee details Details");
+        return false;
+    }
+    if ($("#cboErcode").val() == 0 || $("#cboErcode").val() == "0") {
+        toastr.warning("Please select ER Code");
+        return false;
+    }
+    
+    if (IsStringNullorEmpty($("#txtAmount").val())) {
+        toastr.warning("Please Enter Amount");
+        return false;
+    }
+
+    if (IsStringNullorEmpty($("#txtEffectivefrom").val())) {
+        toastr.warning("Please Select Effective From Date");
+        return false;
+    }
+    
+}
+
+function fnGridRefreshSalaryInfo() {
+    $("#jqgSalaryInfo").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+function fnClearSalaryInfoFields() {
+    $("#cboErcode").val('0').selectpicker('refresh');
+    $('#cboErcode').prop('disabled', false).selectpicker('refresh');
+    $("#txtAmount").val('');
+    $("#txtEffectivefrom").val('');
+    $("#txtEffectivefrom").prop('disabled', false);
+    $("#txtEffectivetill").val('');
+    $("#chkAccountStatus").parent().addClass("is-checked");
+    $("#btnSaveSalaryInfo").attr("disabled", false);
+    $("#btnSaveSalaryInfo").html("Save");
+}
+
+$("#btnCancelSalaryInfo").click(function () {
+    $("#jqgSalaryInfo").jqGrid('resetSelection');
+    $('#PopupSalaryInfo').modal('hide');
+    fnClearSalaryInfoFields();
+});

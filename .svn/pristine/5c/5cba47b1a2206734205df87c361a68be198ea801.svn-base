@@ -1,0 +1,196 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.Areas.eSyaPayrollExpat.Data;
+using eSyaEnterprise_UI.Areas.eSyaPayrollExpat.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
+
+namespace eSyaEnterprise_UI.Areas.eSyaPayrollExpat.Controllers
+{
+    public class EmployeeExpatController : Controller
+    {
+        private readonly IeSyaPayrollExpatAPIServices _eSyaPayrollExpatAPIServices;
+        private readonly ILogger<EmployeeExpatController> _logger;
+
+        public EmployeeExpatController(IeSyaPayrollExpatAPIServices eSyaPayrollExpatAPIServices, ILogger<EmployeeExpatController> logger)
+        {
+            _eSyaPayrollExpatAPIServices = eSyaPayrollExpatAPIServices;
+            _logger = logger;
+        }
+
+        [Area("eSyaPayrollExpat")]
+        //[ServiceFilter(typeof(ViewBagActionFilter))]
+        public async Task<IActionResult> V_4500_00()
+        {
+            try
+            {
+                List<int> l_ac = new List<int>();
+                l_ac.Add(CodeTypeValues.EmployeeDepartment);
+                l_ac.Add(CodeTypeValues.EmployeeDesignation);
+
+                var response = await _eSyaPayrollExpatAPIServices.HttpClientServices.PostAsJsonAsync<List<DO_ApplicationCodes>>("CommonData/GetApplicationCodesByCodeTypeList", l_ac);
+                var Bk_response = await _eSyaPayrollExpatAPIServices.HttpClientServices.GetAsync<List<DO_BusinessLocation>>("CommonData/GetBusinessKey");
+
+                if (response.Status && Bk_response.Status)
+                {
+                    if (response.Data != null && Bk_response.Data != null)
+                    {
+                        List<DO_ApplicationCodes> app_codes = response.Data;
+                        
+                        ViewBag.EmployeeDepartmentList = app_codes.Where(w => w.CodeType == CodeTypeValues.EmployeeDepartment).Select(b => new SelectListItem
+                        {
+                            Value = b.ApplicationCode.ToString(),
+                            Text = b.CodeDesc,
+                        }).ToList();
+
+                        ViewBag.EmployeeDesignationList = app_codes.Where(w => w.CodeType == CodeTypeValues.EmployeeDesignation).Select(b => new SelectListItem
+                        {
+                            Value = b.ApplicationCode.ToString(),
+                            Text = b.CodeDesc,
+                        }).ToList();
+
+                        ViewBag.BusinessKeyList = Bk_response.Data.Select(b => new SelectListItem
+                        {
+                            Value = b.BusinessKey.ToString(),
+                            Text = b.LocationDescription.ToString(),
+                        }).ToList();
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(response.Message), "UD:EmployeeMaster");
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(response.Message), "UD:EmployeeMaster");
+                }
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:EmployeeMaster");
+                throw ex;
+            }
+        }
+
+        [Area("eSyaPayrollExpat")]
+        //[ServiceFilter(typeof(ViewBagActionFilter))]
+        public async Task<IActionResult> _EmployeeDetails()
+        {
+            try
+            {
+                List<int> l_ac = new List<int>();
+                l_ac.Add(CodeTypeValues.EmployeeGroup);
+                l_ac.Add(CodeTypeValues.EmployeeWorkStatus);
+
+                var response = await _eSyaPayrollExpatAPIServices.HttpClientServices.PostAsJsonAsync<List<DO_ApplicationCodes>>("CommonData/GetApplicationCodesByCodeTypeList", l_ac);
+
+                if (response.Status)
+                {
+                    if (response.Data != null)
+                    {
+                        List<DO_ApplicationCodes> app_codes = response.Data;
+                        
+                        ViewBag.EmployeeGroupList = app_codes.Where(w => w.CodeType == CodeTypeValues.EmployeeGroup).Select(b => new SelectListItem
+                        {
+                            Value = b.ApplicationCode.ToString(),
+                            Text = b.CodeDesc,
+                        }).ToList();
+                        
+                        ViewBag.EmployeeWorkStatusList = app_codes.Where(w => w.CodeType == CodeTypeValues.EmployeeWorkStatus).Select(b => new SelectListItem
+                        {
+                            Value = b.ApplicationCode.ToString(),
+                            Text = b.CodeDesc,
+                        }).ToList();
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(response.Message), "UD:EmployeeDetails");
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(response.Message), "UD:EmployeeDetails");
+                }
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:EmployeeDetails");
+                throw ex;
+            }
+        }
+
+        [Area("eSyaPayrollExpat")]
+        //[ServiceFilter(typeof(ViewBagActionFilter))]
+        public async Task<IActionResult> _PersonalInformation()
+        {
+            try
+            {
+                List<int> l_ac = new List<int>();
+                l_ac.Add(CodeTypeValues.BloodGroup);
+                l_ac.Add(CodeTypeValues.Language);
+
+                var response = await _eSyaPayrollExpatAPIServices.HttpClientServices.PostAsJsonAsync<List<DO_ApplicationCodes>>("CommonData/GetApplicationCodesByCodeTypeList", l_ac);
+
+                if (response.Status)
+                {
+                    if (response.Data != null)
+                    {
+                        List<DO_ApplicationCodes> app_codes = response.Data;
+
+                        ViewBag.BloodGroupList = app_codes.Where(w => w.CodeType == CodeTypeValues.BloodGroup).Select(b => new SelectListItem
+                        {
+                            Value = b.ApplicationCode.ToString(),
+                            Text = b.CodeDesc,
+                        }).ToList();
+                        
+                        ViewBag.LanguageList = app_codes.Where(w => w.CodeType == CodeTypeValues.Language).Select(b => new SelectListItem
+                        {
+                            Value = b.ApplicationCode.ToString(),
+                            Text = b.CodeDesc,
+                        }).ToList();
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(response.Message), "UD:PersonalInformation");
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(response.Message), "UD:PersonalInformation");
+                }
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:PersonalInformation");
+                throw ex;
+            }
+        }
+
+        [Area("eSyaPayrollExpat")]
+        public IActionResult _SalaryInfo()
+        {
+            return View();
+        }
+        [Area("eSyaPayrollExpat")]
+        public IActionResult _BankDetail()
+        {
+            return View();
+        }
+        [Area("eSyaPayrollExpat")]
+        public IActionResult _CurrentJob()
+        {
+            return View();
+        }
+        [Area("eSyaPayrollExpat")]
+        public IActionResult _FixedDeduction()
+        {
+            return View();
+        }
+    }
+}

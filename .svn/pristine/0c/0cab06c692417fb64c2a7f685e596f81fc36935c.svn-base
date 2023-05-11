@@ -1,0 +1,21 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+
+namespace eSyaEnterprise_UI.Areas.eSyaOutPatient.Controllers
+{
+    public class EmergencyController : Controller
+    {
+        public IActionResult V_2001_00()
+        {
+            return View();
+        }
+
+        public IActionResult V_2002_00()
+        {
+            return View();
+        }
+    }
+}

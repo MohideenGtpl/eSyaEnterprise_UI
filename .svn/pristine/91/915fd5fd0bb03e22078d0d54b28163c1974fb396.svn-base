@@ -1,0 +1,54 @@
+﻿function populateClinicType() {
+    $.get(getBaseURL() + '/Registration/GetClinictype', {},
+        function (data, status) {
+            var s = '<option value="-1">select</option>';
+            for (var i = 0; i < data.length; i++) {
+                s += '<option data-clinictype=' + data[i].ClinicType + ' data-clinictypecode=' + data[i].ClinicTypeCode + ' data-consultationtype=' + data[i].ConsultationType + '  data-consultationtypecode=' + data[i].ConsultationTypeCode + '>' +
+                    data[i].ClinicTypeDesc + ' - ' + data[i].ConsultationTypeDesc + '' + '</option>';
+            }
+            $("#cboClinicType").html(s);
+            if (data.length === 1) {
+                var sVal = $('#cboClinicType').find("option:first").val();
+                $("#cboClinicType").val(sVal);
+            }
+            $("#cboClinicType").selectpicker('refresh');
+    });
+    return null;
+}
+
+function populateSpecialty() {
+    $.get(getBaseURL() + '/Registration/GetSpecialty', {},
+        function (data, status) {
+            var s = '<option value="-1">select</option>';
+            for (var i = 0; i < data.length; i++) {
+                if (data.length === 1)
+                    s += '<option value="' + data[i].SpecialtyId + '" selected>' + data[i].SpecialtyDesc + '</option>';
+                else
+                    s += '<option value="' + data[i].SpecialtyId + '" >' + data[i].SpecialtyDesc + '</option>';
+            }
+            $("#cboSpecialty").html(s);
+            $("#cboSpecialty").selectpicker('refresh');
+        });
+    return null;
+}
+
+function populateDoctors() {
+    $.get(getBaseURL() + '/Registration/GetDoctorScheduleListByClinicTypeSpecialtyDate',
+        {
+            clinicTypeId: $(':selected', $('#cboClinicType')).data('clinictype'),
+            consultationTypeId: $(':selected', $('#cboClinicType')).data('consultationtype'),
+            specialtyId: $("#cboSpecialty").val()
+        },
+        function (data, status) {
+            var s = '<option value="-1">select</option>';
+            for (var i = 0; i < data.length; i++) {
+                if (data.length === 1)
+                    s += '<option value="' + data[i].DoctorId + '" selected>' + data[i].DoctorName + '</option>';
+                else
+                    s += '<option value="' + data[i].DoctorId + '" >' + data[i].DoctorName + '</option>';
+            }
+            $("#cboDoctors").html(s);
+            $("#cboDoctors").selectpicker('refresh');
+        });
+    return null;
+}

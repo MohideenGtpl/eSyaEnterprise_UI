@@ -1,0 +1,61 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+
+namespace eSyaEnterprise_UI.Areas.eSyaInPatient.Controllers
+{
+    public class WardServicesController : Controller
+    {
+        /// <summary>
+        /// Ward Master
+        /// </summary>
+        /// <returns></returns>
+        [Area("WardServices")]
+        public IActionResult V_2501_00()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// Room Master
+        /// </summary>
+        /// <returns></returns>
+        [Area("WardServices")]
+        public IActionResult V_2502_00()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// Ward Room – Business Link
+        /// </summary>
+        /// <returns></returns>
+        [Area("WardServices")]
+        public IActionResult V_2503_00()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// Bed Master
+        /// </summary>
+        /// <returns></returns>
+        [Area("WardServices")]
+        public IActionResult V_2504_00()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// Room Bed Tariff
+        /// </summary>
+        /// <returns></returns>
+        [Area("WardServices")]
+        public IActionResult V_2505_00()
+        {
+            return View();
+        }
+    }
+}

@@ -1,0 +1,293 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.ActionFilter;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using eSyaEnterprise_UI.Areas.eSyaNatureCure.Data;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Areas.eSyaNatureCure.Models;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
+
+namespace eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers
+{
+    [SessionTimeout]
+    public class RoomAmenitiesController : Controller
+    {
+
+        private readonly IeSyaNatureCureAPIServices _eSyaNatureCureAPIServices;
+        private readonly ILogger<RoomAmenitiesController> _logger;
+        private readonly IHostingEnvironment _appEnvironment;
+
+        public RoomAmenitiesController(IeSyaNatureCureAPIServices eSyaNatureCureAPIServices, ILogger<RoomAmenitiesController> logger, IHostingEnvironment hostingEnvironment)
+        {
+            _eSyaNatureCureAPIServices = eSyaNatureCureAPIServices;
+            _logger = logger;
+            _appEnvironment = hostingEnvironment;
+        }
+        #region Room Amenities
+        /// <summary>
+        /// Room Amenities
+        /// </summary>
+        /// <returns></returns>
+
+        [Area("eSyaNatureCure")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public async Task<IActionResult> V_ENC_15_00()
+        {
+
+            try
+            {
+
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<List<DO_RoomType>>("RoomType/GetActiveRoomTypes");
+
+                if (serviceResponse.Status)
+                {
+                    ViewBag.RoomTypes = serviceResponse.Data;
+                    return View();
+
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetActiveRoomTypes");
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetActiveRoomTypes");
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+
+
+        }
+        /// <summary>
+        ///Get Room Amenities by Room Type for Grid
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetAllRoomAmenitiesbyRoomType(int roomType)
+        {
+
+            try
+            {
+                var parameter = "?roomtype=" + roomType;
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<List<DO_RoomAmenities>>("RoomAmenities/GetAllRoomAmenitiesbyRoomType" + parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetAllRoomAmenitiesbyRoomType");
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetAllBedMastersbyRoomType");
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+
+        }
+
+        /// <summary>
+        /// Insert or Update Room Amenities
+        /// </summary>
+        //[HttpPost]
+        //public async Task<JsonResult> InsertOrUpdateRoomAmenities(bool isInsert, DO_RoomAmenities obj)
+        //{
+
+        //    try
+        //    {
+        //        obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+        //        obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+        //        obj.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+        //        if (isInsert)
+        //        {
+        //            var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("RoomAmenities/InsertRoomAmenities", obj);
+        //            if (serviceResponse.Status)
+        //                return Json(serviceResponse.Data);
+        //            else
+        //                return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+        //        }
+        //        else
+        //        {
+        //            var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("RoomAmenities/UpdateRoomAmenitie", obj);
+        //            if (serviceResponse.Status)
+        //                return Json(serviceResponse.Data);
+        //            else
+        //                return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(ex, "UD:InsertOrUpdateRoomAmenities:params:" + JsonConvert.SerializeObject(obj));
+        //        return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+        //    }
+        //}
+
+
+        [HttpPost]
+        public async Task<JsonResult> InsertOrUpdateRoomAmenities(DO_RoomAmenities obj)
+        {
+
+            try
+            {
+                if(obj.Imagefile==null && obj.OptionValues == null)
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please select Image or Enter Option Values" });
+                }
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                obj.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+
+                if (obj.Imagefile != null && (obj.Imagefile.Length > 0))
+                {
+                    var file = obj.Imagefile;
+
+                    var uploads = Path.Combine(_appEnvironment.WebRootPath, "Uploads/RoomAmenities");
+                    if (file.Length > 0)
+                    {
+
+                        var fileName = Path.GetFileName(file.FileName);
+                        using (var fileStream = new FileStream(Path.Combine(uploads, fileName), FileMode.Create))
+                        {
+                            await file.CopyToAsync(fileStream);
+                            //string filePath = "Uploads/RoomAmenities/" + fileName;
+                            //for server path
+                            string filePath = "/Uploads/RoomAmenities/" + fileName;
+                            obj.ProfileImagePath = filePath;
+                        }
+
+                    }
+                    if (obj.isInsert)
+                    {
+                        obj.OptionValues = obj.ProfileImagePath;
+                        var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("RoomAmenities/InsertRoomAmenities", obj);
+                        if (serviceResponse.Status)
+                            return Json(serviceResponse.Data);
+                        else
+                            return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                    }
+                    else
+                    {
+                        obj.OptionValues = obj.ProfileImagePath;
+                        var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("RoomAmenities/UpdateRoomAmenitie", obj);
+                        if (serviceResponse.Status)
+                            return Json(serviceResponse.Data);
+                        else
+                            return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                    }
+                }
+
+                else
+                {
+                    if (obj.isInsert)
+                    {
+                        var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("RoomAmenities/InsertRoomAmenities", obj);
+                        if (serviceResponse.Status)
+                            return Json(serviceResponse.Data);
+                        else
+                            return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                    }
+                    else
+                    {
+                        var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("RoomAmenities/UpdateRoomAmenitie", obj);
+                        if (serviceResponse.Status)
+                            return Json(serviceResponse.Data);
+                        else
+                            return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                    }
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertOrUpdateDocumentUpload:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Activate or De Activate Room Amenities
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> ActiveOrDeActiveRoomAmenities(DO_RoomAmenities objamenities)
+        {
+
+            try
+            {
+
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("RoomAmenities/ActiveOrDeActiveRoomAmenities", objamenities);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:ActiveOrDeActiveRoomAmenities:params:" + JsonConvert.SerializeObject(objamenities));
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetRoomAmenitiesbyroomtype(int roomTypeId ,string optionType,int serilalNo)
+        {
+            try
+            {
+                var parameter = "?roomTypeId=" + roomTypeId + "&optionType=" + optionType + "&serilalNo=" + serilalNo;
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<DO_RoomAmenities>("RoomAmenities/GetRoomAmenitiesbyroomtype" + parameter);
+                if (serviceResponse.Status)
+                {
+                    var domainname = this.Request.PathBase;
+                    if (serviceResponse.Data != null)
+                    {
+                        if (serviceResponse.Data.OptionValues.Contains("RoomAmenities"))
+                        {
+                            serviceResponse.Data.ProfileImagePath = serviceResponse.Data.OptionValues;
+                        }
+                            
+                        if (serviceResponse.Data.ProfileImagePath != null)
+                        {
+                            string filename = null;
+                            // using the method
+                            filename = Path.GetFileName(serviceResponse.Data.ProfileImagePath);
+                            serviceResponse.Data.FileName = filename;
+
+                            serviceResponse.Data.ProfileImagePath = domainname + serviceResponse.Data.ProfileImagePath;
+
+
+                        }
+                    }
+                    else
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetDoctordetailsbydoctorId");
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetDoctordetailsbydoctorId");
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        #endregion Room Amenities
+    }
+}

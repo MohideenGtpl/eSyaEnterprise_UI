@@ -1,0 +1,135 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "V_72_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts{
+    <script src="~/js/Config/CurrencyRate.js"></script>
+}
+
+@{
+    var userFormRole = (eSyaEnterprise_UI.Models.DO_UserFormRole)ViewBag.UserFormRole;
+}
+<script>
+    var _userFormRole = JSON.parse('@Html.Raw(Json.Serialize(userFormRole))');
+
+     var localization = {
+         CurrencyCode: '@Localizer["CurrencyCode"]',
+         CurrencyName: '@Localizer["CurrencyName"]',
+         DateOfExchangeRate: '@Localizer["DateOfExchangeRate"]',
+         StandardRate: '@Localizer["StandardRate"]',
+         SellingRate: '@Localizer["SellingRate"]',
+         SellingLastVoucherDate: '@Localizer["SellingLastVoucherDate"]',
+         BuyingRate: '@Localizer["BuyingRate"]',
+         BuyingLastVoucherDate: '@Localizer["BuyingLastVoucherDate"]',
+         Active: '@Localizer["Active"]',
+         Actions: '@Localizer["Actions"]',
+         Edit: '@Localizer["Edit"]',
+         View: '@Localizer["View"]',
+         Update: '@Localizer["Update"]',
+    };
+
+</script>
+
+<section id="divGrid">
+    <div class="row">
+        <div class="col-lg-4 col-md-4 col-sm-6 itemblur">
+            <div class="form-group">
+                <label class="lable-color">@Localizer["BusinessLocation"] </label>
+               
+                @await Component.InvokeAsync("UserBusinessLocation")
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-6 itemblur">
+            <div class="form-group ">
+                <label>@Localizer["CurrencyName"]  </label>
+                <input id="txtCurrencyName" class=" form-control" maxlength="30" type="text" readonly="readonly" />
+            </div>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-lg-12 col-md-12">
+            <table id="jqgCurrencyRate"></table>
+            <div id="jqpCurrencyRate"></div>
+        </div>
+    </div>
+</section>
+
+<section id="divCurrencyRateForm" style="display:none">
+    <div class="row">
+        <div class="col-sm-12" style="display:none">
+            <div class="form-group">
+                <label for="txtCurrencyCode">Currency Code </label>
+                <input class="form-control" type="text" id="txtCurrencyCode" />
+            </div>
+        </div>
+        <div class="col-sm-12" style="display:none">
+            <div class="form-group">
+                <label for="txtBusinesskey">Business Key </label>
+                <input class="form-control" type="text" id="txtBusinesskey" />
+            </div>
+        </div>
+       
+    </div>
+    <div class="row padbot4">
+        <div class="col-lg-2  col-md-3 col-sm-12 col-xs-12">
+            <div class="form-group">
+                <label for="txtDateOfExchange">@Localizer["DateOfExchangeRate"] </label>
+                <input id="txtDateOfExchange" class="form-control datepicker" maxlength="50" type="text" onkeydown="event.preventDefault()" />
+            </div>
+        </div>
+        <div class="col-lg-2  col-md-3 col-sm-12 col-xs-12">
+            <div class="form-group">
+                <label for="txtStandardRate">@Localizer["StandardRate"] </label>
+                <input id="txtStandardRate" class="form-control decimalFormat" maxlength="18" type="text" />
+            </div>
+        </div>
+        <div class="col-lg-2  col-md-3 col-sm-12 col-xs-12">
+            <div class="form-group">
+                <label for="txtSellingRate">@Localizer["SellingRate"] </label>
+                <input id="txtSellingRate" class="form-control decimalFormat" maxlength="18" type="text" />
+            </div>
+        </div>
+        <div class="col-lg-2  col-md-3 col-sm-12 col-xs-12">
+            <div class="form-group">
+                <label for="txtSellingDate">@Localizer["SellingLastVoucherDate"]  </label>
+                <input id="txtSellingDate" class="form-control datepicker" maxlength="50" type="text" onkeydown="event.preventDefault()" />
+            </div>
+        </div>
+        <div class="col-lg-2  col-md-3 col-sm-12 col-xs-12">
+            <div class="form-group">
+                <label for="txtBuyingRate">@Localizer["BuyingRate"] </label>
+                <input id="txtBuyingRate" class="form-control decimalFormat" maxlength="18" type="text" />
+            </div>
+        </div>
+        <div class="col-lg-2  col-md-3 col-sm-12 col-xs-12">
+            <div class="form-group">
+                <label for="txtBuyingDate">@Localizer["BuyingLastVoucherDate"] </label>
+                <input id="txtBuyingDate" class="form-control datepicker" maxlength="50" type="text" onkeydown="event.preventDefault()" />
+            </div>
+        </div>
+
+        <div class="col-lg-2  col-md-3 col-sm-12 col-xs-12">
+            <div class="default-checkbox separate">
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActiveStatus">
+                    <input type="checkbox" id="chkActiveStatus" class="mdl-checkbox__input">
+                    <span class="mdl-checkbox__label">@Localizer["Active"]</span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <hr />
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button m-r-15" id="btnSaveCurrencyRate" onclick="fnSaveCurrencyRate();">
+                @Localizer["Save"]
+            </button>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" id="btnCancel" onclick="fnBackToGrid()"> @Localizer["Cancel"]</button>
+        </div>
+    </div>
+</section>
+

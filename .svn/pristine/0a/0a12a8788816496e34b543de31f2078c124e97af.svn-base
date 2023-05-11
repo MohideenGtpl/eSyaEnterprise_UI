@@ -1,0 +1,161 @@
+﻿
+@{
+    ViewData["Title"] = "V_6_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+ @section scripts{
+<script src="~/js/Config/CurrencyMaster.js"></script>}
+ 
+<div class="row">
+    <div class="col-md-4 col-sm-4 col-lg-4 " id="divSearch">
+        <div class="form-group">
+            <label id="lblSearchBox">Search by Currency Name </label>
+            <input id="txtSearchCurrencyName" type="text" class="form-control" />
+
+        </div>
+    </div>
+</div>
+
+<div class="row padbot10">
+    <div class="col-lg-12">
+        <div class="UserCreationcontainer">
+            <table id="jqgCurrencyMaster"></table>
+            <div id="jqpCurrencyMaster"></div>
+        </div>
+
+    </div>
+</div>
+
+<!-- The Modal -->
+<div class="modal" id="PopupCurrencyMaster">
+    <div class="modal-dialog  modal-md" style="box-shadow:none">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header popupHeader">
+                <h4 class="modal-title">Add Currency Details</h4>
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+            </div>
+            <div class="err_div_mar animated fadeInUp" id="errpopUP" style="display:none">
+                <p class="errorMsg_p" id="errmsg"></p>
+                <p class="succMsg_p" id="succmsg"></p>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group">
+                            <div class="form-group">
+                                <label for="txtCurrencyName"> Currency Name</label>
+                                <input id="txtCurrencyName" class="form-control" maxlength="25" type="text" />
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group">
+                            <div class="form-group">
+                                <label for="txtCurrencyCode"> Currency Code</label>
+                                <input id="txtCurrencyCode" class="form-control" maxlength="4" type="text" />
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group">
+                            <div class="form-group">
+                                <label for="txtSymbol"> Currency Symbol</label>
+                                <input id="txtSymbol" class="form-control" maxlength="10" type="text" />
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group">
+                            <div class="form-group">
+                                <label for="txtDecimalPlaces"> Decimal Places</label>
+                                <input id="txtDecimalPlaces" class="form-control" maxlength="8" type="text" onkeypress="return AllowOnlyNumbers(event);" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 form-group">
+                        <label class="mdl-checkbox mdl-js-checkbox" for="chkShowInMilions">
+                            <input type="checkbox" id="chkShowInMilions"
+                                   class="mdl-checkbox__input">
+                            <span class="mdl-checkbox__label">Show In Millions </span>
+                        </label>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 form-group">
+                        <label class="mdl-checkbox mdl-js-checkbox" for="chkSymbolSuffixToAmount">
+                            <input type="checkbox" id="chkSymbolSuffixToAmount"
+                                   class="mdl-checkbox__input">
+                            <span class="mdl-checkbox__label">Symbol Suffix To Amount </span>
+                        </label>
+                    </div>
+                </div>
+                <div class="row" style="margin-top:20px;">
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group">
+                            <div class="form-group">
+                                <label for="txtDecimalPortionWord"> Decimal Portion Word</label>
+                                <input id="txtDecimalPortionWord" class="form-control" maxlength="50" type="text" />
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select class=" selectpicker dropDownwidth" data-live-search="false" id="cboActiveStatus">
+                                <option value="true">Active</option>
+                                <option value="false">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button class="mdl-button mdl-js-button mdl-button--raised primary-button" id="btnSaveCurrencyMaster" onclick="fnSaveCurrencyMaster();">
+                    Save
+                </button>
+                <button class="mdl-button mdl-js-button mdl-button--raised cancel-button" data-dismiss="modal">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="PopupCurrencyDenominationInformation">
+    <div class="modal-dialog  modal-lg" style="box-shadow:none">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header popupHeader">
+                <h4 class="modal-title">Currency Denomination Information</h4>
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="row" style="padding-bottom:10px;">
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                        Currency Name:  <span id="lblCurrencyName" style="color: #1094f8 !important;font-weight: 600 !important;font-size:16px;"></span>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                        Currency Code:  <span id="lblCurrencyCode" style="color: #1094f8 !important;font-weight: 600 !important;font-size:16px;"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <table id="jqgDenominationSequence"></table>
+                        <div id="jqpDenominationSequence"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

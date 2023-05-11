@@ -1,0 +1,238 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.ActionFilter;
+using eSyaEnterprise_UI.Areas.Configure.Data;
+using eSyaEnterprise_UI.Areas.Configure.Models;
+using eSyaEnterprise_UI.DataServices;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
+using eSyaEnterprise_UI.Extension;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace eSyaEnterprise_UI.Areas.Configure.Controllers
+{
+    public class BusinessAddressController : Controller
+    {
+        private readonly IConfigAPIServices _configAPIServices;
+        private readonly ILogger<BusinessAddressController> _logger;
+
+        public BusinessAddressController(IConfigAPIServices configAPIServices, ILogger<BusinessAddressController> logger)
+        {
+            _configAPIServices = configAPIServices;
+            _logger = logger;
+        }
+
+        [Area("Configure")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public IActionResult ECA_23_00()
+        {
+            return View();
+        }
+        /// <summary>
+        /// Get ISD Code by Busines Key.
+        /// </summary>
+        [HttpGet]
+        public async Task<JsonResult> GetISDCodesbyBusinessKey(int businessKey)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + businessKey;
+                var serviceResponse = await _configAPIServices.HttpClientServices.GetAsync<List<DO_IsdCodes>>("BusinessAddress/GetISDCodesbyBusinessKey" + parameter);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetISDCodebyBusinessKey:For businessKey", businessKey);
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetISDCodebyBusinessKey:For businessKey ", businessKey);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetISDCodesbyBusinessKey:For businessKey ", businessKey);
+                throw ex;
+            }
+        }
+        /// <summary>
+        /// Get State List by isdCode.
+        /// </summary>
+        [HttpGet]
+        public async Task<JsonResult> GetStateList(int isdCode)
+        {
+            try
+            {
+                var parameter = "?isdCode=" + isdCode;
+                var serviceResponse = await _configAPIServices.HttpClientServices.GetAsync<List<DO_Place>>("BusinessAddress/GetStateList" + parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetStateList:For isdCode ", isdCode);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetStateList:For isdCode ", isdCode);
+                throw ex;
+            }
+        }
+        /// <summary>
+        /// Get City List by isdCode and stateCode.
+        /// </summary>
+        [HttpGet]
+        public async Task<JsonResult> GetCityList(int isdCode, int? stateCode)
+        {
+            try
+            {
+                var parameter = "?isdCode=" + isdCode + "&stateCode=" + stateCode;
+                var serviceResponse = await _configAPIServices.HttpClientServices.GetAsync<List<DO_Place>>("BusinessAddress/GetCityList" + parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                   
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetCityList:For isdCode {0} with stateCode entered {1}", isdCode, stateCode);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetCityList:For isdCode {0} with stateCode entered {1}", isdCode, stateCode);
+                throw ex;
+            }
+        }
+        /// <summary>
+        /// Get Get AreaList by isdCode and stateCode and cityCode and pincode.
+        /// </summary>
+        [HttpGet]
+        public async Task<JsonResult> GetAreaList(int isdCode, int? stateCode, int? cityCode, string pincode)
+        {
+            try
+            {
+                var parameter = "?isdCode=" + isdCode + "&stateCode=" + stateCode + "&cityCode=" + cityCode + "&pincode=" + pincode;
+                var serviceResponse = await _configAPIServices.HttpClientServices.GetAsync<List<DO_AddressIN>>("BusinessAddress/GetAreaList" + parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                   
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetAreaList:For isdCode {0} with stateCode cityCode pincode entered {1} {2}{3}", isdCode, stateCode, cityCode, pincode);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetAreaList:For isdCode {0} with stateCode cityCode pincode entered {1} {2}{3}", isdCode, stateCode, cityCode, pincode);
+                throw ex;
+            }
+        }
+
+
+        /// <summary>
+        /// Get Patient Area details for select by default dropdown values based on  pincode Text box
+        /// UI Reffered - Patient PreRegistrations
+        [HttpGet]
+        public async Task<JsonResult> GetAreaDetailsbyPincode(int isdCode, string pincode)
+        {
+            try
+            {
+                var parameter = "?isdCode=" + isdCode + "&pincode=" + pincode;
+                var serviceResponse = await _configAPIServices.HttpClientServices.GetAsync<DO_AddressIN>("BusinessAddress/GetAreaDetailsbyPincode" + parameter);
+                if (serviceResponse.Status)
+                {
+
+                    return Json(serviceResponse.Data);
+
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetAreaDetailsbyPincode:For isdCode {0} with stateCode cityCode pincode entered {1} ", isdCode, pincode);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetAreaDetailsbyPincode:For isdCode {0} with  pincode entered {1} }", isdCode, pincode);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Get Business Address by businessKey.
+        /// </summary>
+        [HttpGet]
+        public async Task<JsonResult> GetBusinessAddressbyBusinessKey(int businessKey, int isdCode)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + businessKey + "&isdCode=" + isdCode; 
+                var serviceResponse = await _configAPIServices.HttpClientServices.GetAsync<DO_BusinessAddress>("BusinessAddress/GetBusinessAddressbyBusinessKey" + parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);  
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetBusinessAddressbyBusinessKey:For businessKey ", businessKey);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetBusinessAddressbyBusinessKey:For businessKey ", businessKey);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Insert or Update Business Address
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> InsertOrUpdateIntoBusinessAddress(DO_BusinessAddress obj)
+        {
+
+            try
+            {
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                obj.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                
+                    var serviceResponse = await _configAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("BusinessAddress/InsertOrUpdateIntoBusinessAddress", obj);
+                    if (serviceResponse.Status)
+                        return Json(serviceResponse.Data);
+                    else
+                        return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertOrUpdateIntoBusinessAddress:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+    }
+}

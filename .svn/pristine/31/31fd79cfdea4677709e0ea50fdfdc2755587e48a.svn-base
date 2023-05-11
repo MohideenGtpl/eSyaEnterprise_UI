@@ -1,0 +1,174 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.ActionFilter;
+using eSyaEnterprise_UI.Areas.Stores.Data;
+using eSyaEnterprise_UI.Areas.Stores.Models;
+using eSyaEnterprise_UI.DataServices;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
+using eSyaEnterprise_UI.Extension;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace eSyaEnterprise_UI.Areas.Stores.Controllers
+{
+    [SessionTimeout]
+    public class DocumentControlController : Controller
+    {
+        private readonly IStoreAPIServices _storeAPIServices;
+        private readonly ILogger<DocumentControlController> _logger;
+
+        public DocumentControlController(IStoreAPIServices storeAPIServices, ILogger<DocumentControlController> logger)
+        {
+            _storeAPIServices = storeAPIServices;
+            _logger = logger;
+        }
+        #region Document Control-Stores 
+
+        [Area("Stores")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public async Task<IActionResult> ECI_04_00()
+        {
+            try
+            {
+                ViewBag.UserFormRoles = new DO_UserFormRole { IsInsert = true, IsEdit = true, IsDelete = true, IsView = true };
+
+                int businesskey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                var store_res = await _storeAPIServices.HttpClientServices.GetAsync<List<DO_StoreMaster>>("DocumentControl/GetStoresByBusinessKey?businesskey=" + businesskey);
+                var docs_res = await _storeAPIServices.HttpClientServices.GetAsync<List<DO_DocumentControlMaster>>("DocumentControl/GetActiveDocuments");
+                if (store_res.Status)
+                {
+                    ViewBag.Storecodes = store_res.Data.
+                         Select(b => new SelectListItem
+                         {
+                             Value = b.StoreCode.ToString(),
+                             Text = b.StoreDesc,
+                         }).ToList();
+                }
+                else
+                {
+                    _logger.LogError(new Exception(store_res.Message), "UD:GetStoresByBusinessKey");
+
+                }
+                if (docs_res.Status)
+                {
+                    ViewBag.Documents = docs_res.Data.
+                         Select(b => new SelectListItem
+                         {
+                             Value = b.DocumentId.ToString(),
+                             Text = b.DocumentDesc,
+                         }).ToList();
+                }
+                else
+                {
+                    _logger.LogError(new Exception(docs_res.Message), "UD:GetActiveDocuments");
+
+                }
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:V_21_00");
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+
+        /// <summary>
+        /// Getting All Document Generations for Grid
+        /// </summary>
+        [Area("Stores")]
+        [HttpPost]
+        public async Task<JsonResult> GetDocumentGenerationsbyBusinessKey(int businesskey, string Transactionmode)
+        {
+
+            try
+            {
+
+                var parameter = "?businesskey=" + businesskey + "&Transactionmode=" + Transactionmode;
+                var serviceResponse = await _storeAPIServices.HttpClientServices.GetAsync<List<DO_DocumentGeneration>>("DocumentControl/GetDocumentGenerationsbyBusinessKey" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetDocumentGenerationsbyBusinessKey:For businesskey {0} ", businesskey);
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Insert or Update Document Generations
+        /// </summary>
+        [Area("Stores")]
+        [HttpPost]
+        public async Task<JsonResult> InsertOrUpdateDocumentGeneration(bool isInsert, DO_DocumentGeneration obj)
+        {
+
+            try
+            {
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                if (isInsert)
+                {
+                    var serviceResponse = await _storeAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("DocumentControl/InsertIntoDocumentGeneration", obj);
+                    if (serviceResponse.Status)
+                        return Json(serviceResponse.Data);
+                    else
+                        return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+                else
+                {
+                    var serviceResponse = await _storeAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("DocumentControl/UpdateDocumentGeneration", obj);
+                    if (serviceResponse.Status)
+                        return Json(serviceResponse.Data);
+                    else
+                        return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertOrUpdateDocumentGeneration:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Activate or De Activate Room Type
+        /// </summary>
+        [Area("Stores")]
+        [HttpPost]
+        public async Task<JsonResult> ActiveOrDeActiveDocumentGeneration(DO_DocumentGeneration objgen)
+        {
+
+            try
+            {
+
+                var serviceResponse = await _storeAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("DocumentControl/ActiveOrDeActiveDocumentGeneration", objgen);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:ActiveOrDeActiveDocumentGeneration:", objgen);
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+        #endregion Document Control 
+    }
+}

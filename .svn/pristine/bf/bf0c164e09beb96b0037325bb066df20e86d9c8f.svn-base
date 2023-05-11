@@ -1,0 +1,836 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.Areas.eSyaPayrollExpat.Data;
+using eSyaEnterprise_UI.Areas.eSyaPayrollExpat.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
+using eSyaEnterprise_UI.Utility;
+using System.Text.RegularExpressions;
+using eSyaEnterprise_UI.ActionFilter;
+using Newtonsoft.Json;
+using eSyaEnterprise_UI.Models;
+using System.Text;
+
+namespace eSyaEnterprise_UI.Areas.eSyaPayrollExpat.Controllers
+{
+    public class EmployeeExpatController : Controller
+    {
+        private readonly IeSyaPayrollExpatAPIServices _eSyaPayrollExpatAPIServices;
+        private readonly ILogger<EmployeeExpatController> _logger;
+
+        public EmployeeExpatController(IeSyaPayrollExpatAPIServices eSyaPayrollExpatAPIServices, ILogger<EmployeeExpatController> logger)
+        {
+            _eSyaPayrollExpatAPIServices = eSyaPayrollExpatAPIServices;
+            _logger = logger;
+        }
+
+        [Area("eSyaPayrollExpat")]
+        //[ServiceFilter(typeof(ViewBagActionFilter))]
+        public async Task<IActionResult> V_4500_00()
+        {
+            try
+            {
+                List<int> l_ac = new List<int>();
+                l_ac.Add(CodeTypeValues.EmployeeDepartment);
+                l_ac.Add(CodeTypeValues.EmployeeDesignation);
+                l_ac.Add(CodeTypeValues.EmployeeGroup);
+                l_ac.Add(CodeTypeValues.EmployeeWorkStatus);
+                l_ac.Add(CodeTypeValues.BloodGroup);
+                l_ac.Add(CodeTypeValues.Language);
+
+                var response = await _eSyaPayrollExpatAPIServices.HttpClientServices.PostAsJsonAsync<List<DO_ApplicationCodes>>("CommonData/GetApplicationCodesByCodeTypeList", l_ac);
+                var Bk_response = await _eSyaPayrollExpatAPIServices.HttpClientServices.GetAsync<List<DO_BusinessLocation>>("CommonData/GetBusinessKey");
+
+                if (response.Status && Bk_response.Status)
+                {
+                    if (response.Data != null && Bk_response.Data != null)
+                    {
+                        List<DO_ApplicationCodes> app_codes = response.Data;
+
+                        ViewBag.BusinessKeyList = Bk_response.Data.Select(b => new SelectListItem
+                        {
+                            Value = b.BusinessKey.ToString(),
+                            Text = b.LocationDescription.ToString(),
+                        }).ToList();
+
+                        ViewBag.EmployeeGroupList = app_codes.Where(w => w.CodeType == CodeTypeValues.EmployeeGroup).Select(b => new SelectListItem
+                        {
+                            Value = b.ApplicationCode.ToString(),
+                            Text = b.CodeDesc,
+                        }).ToList();
+
+                        ViewBag.EmployeeWorkStatusList = app_codes.Where(w => w.CodeType == CodeTypeValues.EmployeeWorkStatus).Select(b => new SelectListItem
+                        {
+                            Value = b.ApplicationCode.ToString(),
+                            Text = b.CodeDesc,
+                        }).ToList();
+
+                        ViewBag.EmployeeDepartmentList = app_codes.Where(w => w.CodeType == CodeTypeValues.EmployeeDepartment).Select(b => new SelectListItem
+                        {
+                            Value = b.ApplicationCode.ToString(),
+                            Text = b.CodeDesc,
+                        }).ToList();
+
+                        ViewBag.EmployeeDesignationList = app_codes.Where(w => w.CodeType == CodeTypeValues.EmployeeDesignation).Select(b => new SelectListItem
+                        {
+                            Value = b.ApplicationCode.ToString(),
+                            Text = b.CodeDesc,
+                        }).ToList();
+
+                        ViewBag.BloodGroupList = app_codes.Where(w => w.CodeType == CodeTypeValues.BloodGroup).Select(b => new SelectListItem
+                        {
+                            Value = b.ApplicationCode.ToString(),
+                            Text = b.CodeDesc,
+                        }).ToList();
+
+                        ViewBag.LanguageList = app_codes.Where(w => w.CodeType == CodeTypeValues.Language).Select(b => new SelectListItem
+                        {
+                            Value = b.ApplicationCode.ToString(),
+                            Text = b.CodeDesc,
+                        }).ToList();
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(response.Message), "UD:EmployeeMaster");
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(response.Message), "UD:EmployeeMaster");
+                }
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:EmployeeMaster");
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        ///Get Employee Master List
+        /// </summary>
+        [HttpGet]
+        public async Task<JsonResult> GetEmployeeListByNamePrefix(int BusinessKey, string employeeNamePrefix)
+        {
+            try
+            {
+                var parameter = "?BusinessKey=" + BusinessKey + "&employeeNamePrefix=" + employeeNamePrefix;
+                var serviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.GetAsync<List<DO_EmployeeMaster>>("EmployeeMaster/GetEmployeeListByNamePrefix" + parameter);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetEmployeeListByNamePrefix:For BusinessKey {0} With employeeNamePrefix entered {1}", BusinessKey, employeeNamePrefix);
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetEmployeeListByNamePrefix:For BusinessKey {0} With employeeNamePrefix entered {1}", BusinessKey, employeeNamePrefix);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetEmployeeListByNamePrefix:For BusinessKey {0} With employeeNamePrefix entered {1}", BusinessKey, employeeNamePrefix);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        ///Get Employee Master Details
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetEmployeeDetails(int BusinessKey, int EmployeeNumber)
+        {
+            try
+            {
+                var parameter = "?BusinessKey=" + BusinessKey + "&EmployeeNumber=" + EmployeeNumber;
+                var serviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.GetAsync<DO_EmployeeMaster>("EmployeeMaster/GetEmployeeDetails" + parameter);
+
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        var data = serviceResponse.Data;
+
+                        string userimageURI = string.Empty;
+                        if (data.Photo.Length != 0)
+                            userimageURI = ConvertByteArraytoImageURI(data.Photo);
+                        data.EmployeeImage = userimageURI;
+                        
+                        return Json(data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetEmployeeDetails:For BusinessKey {0} With EmployeeNumber entered {1}", BusinessKey, EmployeeNumber);
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetEmployeeDetails:For BusinessKey {0} With EmployeeNumber entered {1}", BusinessKey, EmployeeNumber);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetEmployeeDetails:For BusinessKey {0} With EmployeeNumber entered {1}", BusinessKey, EmployeeNumber);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Insert or Update Employee Master
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> InsertOrUpdateEmployeeMaster(DO_EmployeeMaster obj, string file)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(obj.EmployeeID))
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Enter Login ID" });
+                }
+                else if (string.IsNullOrEmpty(obj.Title))
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Select Title" });
+                }
+                else if (string.IsNullOrEmpty(obj.EmployeeName))
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Enter Employee Name" });
+                }
+                else if (string.IsNullOrEmpty(obj.Gender))
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Enter Gender" });
+                }
+                else if (string.IsNullOrEmpty(obj.MobileNumber))
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Enter Mobile Number" });
+                }
+                else if (string.IsNullOrEmpty(obj.EmployeeGroup.ToString()) || obj.EmployeeGroup == 0)
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Select Employee Group" });
+                }
+                else if (string.IsNullOrEmpty(obj.WorkStatus.ToString()) || obj.WorkStatus == 0)
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Select Work Status" });
+                }
+                else if (string.IsNullOrEmpty(obj.DateOfJoining.ToString()))
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Select Date Of Joining" });
+                }
+                else if (string.IsNullOrEmpty(obj.EmployeeStatus.ToString()))
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Select Employee Status" });
+                }
+                else
+                {
+                    obj.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                    obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                    obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                    obj.ActiveStatus = true;
+                    if (file != null)
+                    {
+                        string userbase64 = file;// load base 64 code to this variable from js 
+                        Byte[] userbitmapData = new Byte[userbase64.Length];
+                        userbitmapData = Convert.FromBase64String(FixBase64ForImage(userbase64));
+                        if (userbitmapData.Length > 2 * 1024 * 1024)
+                        {
+                            return Json(new DO_ReturnParameter() { Status = false, Message = "User Photo file size should be smaller than 2 MB" });
+                        }
+
+                        obj.Photo = userbitmapData;
+                    }
+                    else
+                    {
+                        byte[] emptyByte = { };
+                        obj.Photo = emptyByte;
+                    }
+                    
+                    var serviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("EmployeeMaster/InsertOrUpdateEmployeeMaster", obj);
+                    if (serviceResponse.Status)
+                        return Json(serviceResponse.Data);
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:InsertOrUpdateEmployeeMaster:params:" + JsonConvert.SerializeObject(obj));
+                        return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertOrUpdateEmployeeMaster:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+
+        public static string FixBase64ForImage(string image)
+        {
+
+            var regex = new Regex(@"data:(?<mime>[\w/\-\.]+);(?<encoding>\w+),(?<data>.*)", RegexOptions.Compiled);
+            var match = regex.Match(image);
+            var mime = match.Groups["mime"].Value;
+            var encoding = match.Groups["encoding"].Value;
+            var data = match.Groups["data"].Value;
+            return data;
+        }
+
+        public static string ConvertByteArraytoImageURI(Byte[] image)
+        {
+
+            StringBuilder ImageURI = new StringBuilder();
+            ImageURI.Append("data:");
+            string image_data = Convert.ToBase64String(image);
+            string mime = "image/jpeg";
+            string encoding = "base64";
+            ImageURI.Append(mime);
+            ImageURI.Append(";");
+            ImageURI.Append(encoding);
+            ImageURI.Append(",");
+            ImageURI.Append(image_data);
+            return Convert.ToString(ImageURI);
+        }
+
+        /// <summary>
+        /// Insert or Update Personal Info
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> InsertOrUpdatePersonalInfo(DO_PersonalInfo obj)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(obj.PermanentOrCurrent))
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Select Permanent Or Current Status" });
+                }
+                else if (string.IsNullOrEmpty(obj.Address))
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Enter Address" });
+                }
+                else if (string.IsNullOrEmpty(obj.City.ToString()) || obj.City == 0)
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Select City" });
+                }
+                else if (string.IsNullOrEmpty(obj.Pincode))
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Enter Pincode" });
+                }
+                else if (string.IsNullOrEmpty(obj.State.ToString()) || obj.State == 0)
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Select State" });
+                }
+                else if (string.IsNullOrEmpty(obj.Country.ToString()) || obj.Country == 0)
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Select Country" });
+                }
+                else
+                {
+                    obj.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                    obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                    obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                    
+                    var serviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("EmployeeMaster/InsertOrUpdatePersonalInfo", obj);
+                    if (serviceResponse.Status)
+                        return Json(serviceResponse.Data);
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:InsertOrUpdatePersonalInfo:params:" + JsonConvert.SerializeObject(obj));
+                        return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertOrUpdatePersonalInfo:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+
+        /// <summary>
+        ///Get Employee Personal Info
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetEmployeePersonalInfo(int BusinessKey, int EmployeeNumber)
+        {
+            try
+            {
+                var parameter = "?BusinessKey=" + BusinessKey + "&EmployeeNumber=" + EmployeeNumber;
+                var serviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.GetAsync<DO_PersonalInfo>("EmployeeMaster/GetEmployeePersonalInfo" + parameter);
+
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetEmployeePersonalInfo:For BusinessKey {0} With EmployeeNumber entered {1}", BusinessKey, EmployeeNumber);
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetEmployeePersonalInfo:For BusinessKey {0} With EmployeeNumber entered {1}", BusinessKey, EmployeeNumber);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetEmployeePersonalInfo:For BusinessKey {0} With EmployeeNumber entered {1}", BusinessKey, EmployeeNumber);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        ///Get Employee Personal Info
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetAddressDetail(int BusinessKey, int EmployeeNumber, string PermanentOrCurrent)
+        {
+            try
+            {
+                var parameter = "?BusinessKey=" + BusinessKey + "&EmployeeNumber=" + EmployeeNumber + "&PermanentOrCurrent=" + PermanentOrCurrent;
+                var serviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.GetAsync<DO_PersonalInfo>("EmployeeMaster/GetAddressDetail" + parameter);
+
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetAddressDetail:For BusinessKey {0} With EmployeeNumber {1} AND PermanentOrCurrent entered {2}", BusinessKey, EmployeeNumber, PermanentOrCurrent);
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetAddressDetail:For BusinessKey {0} With EmployeeNumber {1} AND PermanentOrCurrent entered {2}", BusinessKey, EmployeeNumber, PermanentOrCurrent);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetAddressDetail:For BusinessKey {0} With EmployeeNumber {1} AND PermanentOrCurrent entered {2}", BusinessKey, EmployeeNumber, PermanentOrCurrent);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Insert or Update Salary Info
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> InsertIntoSalaryInfo(DO_SalaryInfo obj)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(obj.SalaryAmount.ToString()) || obj.SalaryAmount == 0)
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Enter Salary Amount" });
+                }
+                else if (string.IsNullOrEmpty(obj.SalaryCurrency.ToString()) || obj.SalaryCurrency == 0)
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Enter Salary Currency" });
+                }
+                else if (obj.IsNHIFApplicable &&  obj.NHIFAmount == 0)
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Enter NHIF Amount" });
+                }
+                else if (obj.IsNSSFApplicable && obj.NSSFAmount == 0)
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Enter NSSF Amount" });
+                }
+                else
+                {
+                    obj.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                    obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                    obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                    var serviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("EmployeeMaster/InsertIntoSalaryInfo", obj);
+                    if (serviceResponse.Status)
+                        return Json(serviceResponse.Data);
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:InsertIntoSalaryInfo:params:" + JsonConvert.SerializeObject(obj));
+                        return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertIntoSalaryInfo:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+
+        /// <summary>
+        ///Get Employee Salary Info
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetSalaryInfo(int BusinessKey, int EmployeeNumber)
+        {
+            try
+            {
+                var parameter = "?BusinessKey=" + BusinessKey + "&EmployeeNumber=" + EmployeeNumber;
+                var serviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.GetAsync<DO_SalaryInfo>("EmployeeMaster/GetSalaryInfo" + parameter);
+
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetSalaryInfo:For BusinessKey {0} With EmployeeNumber entered {1}", BusinessKey, EmployeeNumber);
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetSalaryInfo:For BusinessKey {0} With EmployeeNumber entered {1}", BusinessKey, EmployeeNumber);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetSalaryInfo:For BusinessKey {0} With EmployeeNumber entered {1}", BusinessKey, EmployeeNumber);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        ///Get Salary Breakup Detail
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetSalaryBreakup(int BusinessKey, int EmployeeNumber)
+        {
+            try
+            {
+                var parameter = "?BusinessKey=" + BusinessKey + "&EmployeeNumber=" + EmployeeNumber;
+                var serviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.GetAsync<List<DO_SalaryBreakup>>("EmployeeMaster/GetSalaryBreakup" + parameter);
+
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetSalaryBreakup:For BusinessKey {0} With EmployeeNumber entered {1}", BusinessKey, EmployeeNumber);
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetSalaryBreakup:For BusinessKey {0} With EmployeeNumber entered {1}", BusinessKey, EmployeeNumber);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetSalaryBreakup:For BusinessKey {0} With EmployeeNumber entered {1}", BusinessKey, EmployeeNumber);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Insert or Update BankDetail
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> InsertOrUpdateBankDetail(DO_BankDetail obj)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(obj.BankRemittance.ToString()))
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Enter Bank Remittance" });
+                }
+                else if (string.IsNullOrEmpty(obj.BankCurrency.ToString()))
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Enter Bank Currency" });
+                }
+                else if (string.IsNullOrEmpty(obj.AccountHolderName.ToString()))
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Enter Account Holder Name" });
+                }
+                else if (string.IsNullOrEmpty(obj.BankCode.ToString()))
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Enter Bank Code" });
+                }
+                else if (string.IsNullOrEmpty(obj.BankName.ToString()))
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Enter Bank Name" });
+                }
+                else if (string.IsNullOrEmpty(obj.AccountNumber.ToString()))
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Enter Account Number" });
+                }
+                else
+                {
+                    obj.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                    obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                    obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                    var serviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("EmployeeMaster/InsertOrUpdateBankDetail", obj);
+                    if (serviceResponse.Status)
+                        return Json(serviceResponse.Data);
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:InsertOrUpdateBankDetail:params:" + JsonConvert.SerializeObject(obj));
+                        return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertOrUpdateBankDetail:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+
+        /// <summary>
+        ///Get Employee Bank Detail
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetBankDetail(int BusinessKey, int EmployeeNumber)
+        {
+            try
+            {
+                var parameter = "?BusinessKey=" + BusinessKey + "&EmployeeNumber=" + EmployeeNumber;
+                var serviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.GetAsync<List<DO_BankDetail>>("EmployeeMaster/GetBankDetail" + parameter);
+
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetBankDetail:For BusinessKey {0} With EmployeeNumber entered {1}", BusinessKey, EmployeeNumber);
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetBankDetail:For BusinessKey {0} With EmployeeNumber entered {1}", BusinessKey, EmployeeNumber);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetBankDetail:For BusinessKey {0} With EmployeeNumber entered {1}", BusinessKey, EmployeeNumber);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Insert or Update BankDetail
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> InsertOrUpdateCurrentJob(DO_CurrentJob obj)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(obj.FromDate.ToString()))
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Enter From Date" });
+                }
+                else if (string.IsNullOrEmpty(obj.Department.ToString()) || obj.Department == 0)
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Select Department" });
+                }
+                else if (string.IsNullOrEmpty(obj.Designation.ToString()) || obj.Designation == 0)
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Select Designation" });
+                }
+                else
+                {
+                    obj.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                    obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                    obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                    var serviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("EmployeeMaster/InsertOrUpdateCurrentJob", obj);
+                    if (serviceResponse.Status)
+                        return Json(serviceResponse.Data);
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:InsertOrUpdateCurrentJob:params:" + JsonConvert.SerializeObject(obj));
+                        return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertOrUpdateCurrentJob:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+
+        /// <summary>
+        ///Get Employee Current Job
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetCurrentJob(int BusinessKey, int EmployeeNumber)
+        {
+            try
+            {
+                var parameter = "?BusinessKey=" + BusinessKey + "&EmployeeNumber=" + EmployeeNumber;
+                var serviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.GetAsync<List<DO_CurrentJob>>("EmployeeMaster/GetCurrentJob" + parameter);
+
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetCurrentJob:For BusinessKey {0} With EmployeeNumber entered {1}", BusinessKey, EmployeeNumber);
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetCurrentJob:For BusinessKey {0} With EmployeeNumber entered {1}", BusinessKey, EmployeeNumber);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetCurrentJob:For BusinessKey {0} With EmployeeNumber entered {1}", BusinessKey, EmployeeNumber);
+                throw ex;
+            }
+        }
+
+        [Area("eSyaPayrollExpat")]
+        //[ServiceFilter(typeof(ViewBagActionFilter))]
+        public async Task<IActionResult> _EmployeeDetails()
+        {
+            try
+            {
+                List<int> l_ac = new List<int>();
+                l_ac.Add(CodeTypeValues.EmployeeGroup);
+                l_ac.Add(CodeTypeValues.EmployeeWorkStatus);
+
+                var response = await _eSyaPayrollExpatAPIServices.HttpClientServices.PostAsJsonAsync<List<DO_ApplicationCodes>>("CommonData/GetApplicationCodesByCodeTypeList", l_ac);
+
+                if (response.Status)
+                {
+                    if (response.Data != null)
+                    {
+                        List<DO_ApplicationCodes> app_codes = response.Data;
+                        
+                        ViewBag.EmployeeGroupList = app_codes.Where(w => w.CodeType == CodeTypeValues.EmployeeGroup).Select(b => new SelectListItem
+                        {
+                            Value = b.ApplicationCode.ToString(),
+                            Text = b.CodeDesc,
+                        }).ToList();
+                        
+                        ViewBag.EmployeeWorkStatusList = app_codes.Where(w => w.CodeType == CodeTypeValues.EmployeeWorkStatus).Select(b => new SelectListItem
+                        {
+                            Value = b.ApplicationCode.ToString(),
+                            Text = b.CodeDesc,
+                        }).ToList();
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(response.Message), "UD:EmployeeDetails");
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(response.Message), "UD:EmployeeDetails");
+                }
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:EmployeeDetails");
+                throw ex;
+            }
+        }
+
+        [Area("eSyaPayrollExpat")]
+        //[ServiceFilter(typeof(ViewBagActionFilter))]
+        public async Task<IActionResult> _PersonalInformation()
+        {
+            try
+            {
+                List<int> l_ac = new List<int>();
+                l_ac.Add(CodeTypeValues.BloodGroup);
+                l_ac.Add(CodeTypeValues.Language);
+
+                var response = await _eSyaPayrollExpatAPIServices.HttpClientServices.PostAsJsonAsync<List<DO_ApplicationCodes>>("CommonData/GetApplicationCodesByCodeTypeList", l_ac);
+
+                if (response.Status)
+                {
+                    if (response.Data != null)
+                    {
+                        List<DO_ApplicationCodes> app_codes = response.Data;
+
+                        ViewBag.BloodGroupList = app_codes.Where(w => w.CodeType == CodeTypeValues.BloodGroup).Select(b => new SelectListItem
+                        {
+                            Value = b.ApplicationCode.ToString(),
+                            Text = b.CodeDesc,
+                        }).ToList();
+                        
+                        ViewBag.LanguageList = app_codes.Where(w => w.CodeType == CodeTypeValues.Language).Select(b => new SelectListItem
+                        {
+                            Value = b.ApplicationCode.ToString(),
+                            Text = b.CodeDesc,
+                        }).ToList();
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(response.Message), "UD:PersonalInformation");
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(response.Message), "UD:PersonalInformation");
+                }
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:PersonalInformation");
+                throw ex;
+            }
+        }
+
+        [Area("eSyaPayrollExpat")]
+        public IActionResult _SalaryInfo()
+        {
+            return View();
+        }
+        [Area("eSyaPayrollExpat")]
+        public IActionResult _BankDetail()
+        {
+            return View();
+        }
+        [Area("eSyaPayrollExpat")]
+        public IActionResult _CurrentJob()
+        {
+            return View();
+        }
+        [Area("eSyaPayrollExpat")]
+        public IActionResult _FixedDeduction()
+        {
+            return View();
+        }
+    }
+}

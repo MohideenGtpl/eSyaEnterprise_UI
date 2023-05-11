@@ -1,0 +1,37 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace eSyaEnterprise_UI.Areas.eSyaVendor.Models
+{
+    public class DO_Vendor
+    {
+    }
+    public class DO_VendorRegistration
+    {
+        public int VendorCode { get; set; }
+        public string VendorName { get; set; }
+        public string CreditType { get; set; }
+        public decimal CreditPeriod { get; set; }
+        public string PreferredPaymentMode { get; set; }
+        public bool ApprovalStatus { get; set; }
+        public bool IsBlackListed { get; set; }
+        public string ReasonForBlacklist { get; set; }
+        public int SupplierScore { get; set; }
+        public bool ActiveStatus { get; set; }
+        public string FormId { get; set; }
+        public int UserID { get; set; }
+        public string TerminalID { get; set; }
+    }
+    public class DO_ReturnParameter
+    {
+        public bool Status { get; set; }
+        public string StatusCode { get; set; }
+        public string Message { get; set; }
+        public string ErrorCode { get; set; }
+        public decimal ID { get; set; }
+        public string Key { get; set; }
+        public int Vendorcode { get; set; }
+    }
+}

@@ -1,0 +1,355 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = "EPM_11_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/bottom-sheets.css" rel="stylesheet" />
+<script src="~/js/bottom-sheets.js"></script>
+<script src="~/js/context-menu.js"></script>
+<script src="~/js/jquery.contextMenu.min.js"></script>
+@*<script src="~/js/jquery.ui.position.min.js"></script>*@
+<link href="~/css/jquery.contextMenu.min.css" rel="stylesheet" />
+
+@*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.7.1/jquery.contextMenu.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.7.1/jquery.contextMenu.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.7.1/jquery.ui.position.js"></script>*@
+
+<script>
+    var localization = {
+            UHID: '@Localizer["UHID"]',
+            VisitDate: '@Localizer["Visit Date"]',
+            PatientName: '@Localizer["Patient Name"]',
+            Gender: '@Localizer["Gender"]',
+            Age: '@Localizer["Age"]',
+            PatientTypeDesc: '@Localizer["Patient Type"]',
+            PatientCategoryDesc: '@Localizer["Patient Category"]',
+            RatePlanDesc: '@Localizer["Rate Plan"]',
+            SpecialtyDesc: '@Localizer["Specialty"]',
+            DoctorName: '@Localizer["Doctor Name"]',
+            Actions:'@Localizer["Actions"]'
+    }
+</script>
+<style>
+    .kebab {
+        cursor: pointer;
+        position: relative;
+        display: inline-block;
+        box-sizing: border-box;
+        padding: 0 16px;
+        top: 12px;
+    }
+
+        .kebab figure {
+            width: 6px;
+            height: 6px;
+            border-radius: 5px;
+            background: #00bcd4;
+            margin: 3px 0;
+        }
+
+    .middle {
+        transition: all 0.25s cubic-bezier(0.72, 1.2, 0.71, 0.72);
+        transform: scale(1);
+        position: relative;
+        box-shadow: 0 0.1px 0.1px 0 rgba(0, 0, 0, 0.16), 0 0.1px 0.3px 0 rgba(0, 0, 0, 0.12);
+        -webkit-filter: blur(0.1px);
+        filter: blur(0.1px);
+    }
+
+        .middle.active {
+            transform: scale(4.5);
+            transition: all 0.25s cubic-bezier(0.32, 2.04, 0.85, 0.54);
+            box-shadow: 0 0.1px 0.1px 0 rgba(0, 0, 0, 0.16), 0 0.1px 0.3px 0 rgba(0, 0, 0, 0.12);
+        }
+
+    .cross {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        margin-top: -1px;
+        font-family: "Nunito", sans-serif;
+        color: white;
+        transition: all 0.2s cubic-bezier(0.72, 1.2, 0.71, 0.72);
+        font-size: 22px;
+        user-select: none;
+    }
+
+        .cross.active {
+            transform: translate(-50%, -50%) scale(1);
+            transition: all 0.15s cubic-bezier(0.32, 2.04, 0.85, 0.54);
+        }
+
+    .kebab-dropdown {
+        position: absolute;
+        right: 0;
+        top: 0.5em;
+        transition: all 0.25s ease-out;
+        transform: scale(0);
+        transform-origin: 100% 0;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16), 0 2px 8px 0 rgba(0, 0, 0, 0.12);
+    }
+
+        .kebab-dropdown li {
+            display: block;
+            width: 100%;
+        }
+
+            .kebab-dropdown li a {
+                width: 100%;
+                padding: 1em 18px;
+                display: inline-block;
+                white-space: pre;
+                box-sizing: border-box;
+            }
+
+                .kebab-dropdown li a:hover {
+                    background: #ebebeb;
+                }
+
+        .kebab-dropdown:hover ul {
+            transform: scale(1);
+        }
+
+        .kebab-dropdown.active {
+            transform: scale(1);
+            transition: all 0.25s cubic-bezier(0.5, 1.8, 0.9, 0.8);
+        }
+</style>
+<div class="row m-0 py-2">
+    <div class="col-lg-1 offset-lg-11 col-md-1 col-sm-2 d-flex justify-content-end pr-0">
+        <button type="button" class="btn btn-primary" id="btnFilter"> <i class="fa fa-filter"></i></button>
+    </div>
+</div>
+<div class="row">
+
+    <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+        <table id="jgvPatientRegisteredList"></table>
+        <div id="jpgPatientRegisteredList"></div>
+    </div>
+
+    @*<div class="col-12">
+            <div class="kebab"><figure></figure><figure class="middle"></figure><p class="cross">x</p><figure></figure><ul class="kebab-dropdown"><li><a href="http://www.g.com">Art</a></li><li><a href="http://www.g.com">Coding</a></li><li><a href="http://www.g.com">Design</a></li><li><a href="http://www.g.com">Web Development</a></li></ul></div>
+        </div>*@
+</div>
+<div class="contextMenu" id="myMenu1" style="display:none">
+    <ul style="width: 200px">
+        <li id="add">
+            <span class=""><i class="fa fa-plus"></i></span>
+            <span style="font-size:11px; font-family:Verdana">Create Bill</span>
+        </li>
+        <li id="edit">
+            <span class=""><i class="fa fa-print"></i></span>
+            <span style="font-size:11px; font-family:Verdana">Print Bill</span>
+        </li>
+    </ul>
+</div>
+
+<div id="dvsheet" class="sheet column items-center justify-end" aria-hidden="true">
+    <!-- Dark background for the sheet -->
+    <div class="overlay"></div>
+
+    <!-- The sheet itself -->
+    <div class="contents column border">
+        <!-- Sheet controls -->
+        <header class="controls border-bottom mb-3">
+            <!-- The thing to drag if you want to resize the sheet -->
+            <div class="draggable-area">
+                <div class="draggable-thumb"></div>
+            </div>
+            <div class=" d-block">
+                <h4 class="m-0">Filter</h4>
+                <button class="close-sheet" type="button" title="Close the sheet"><i class="fa fa-times"></i></button>
+            </div>
+        </header>
+
+        <!-- Body of the sheet -->
+        <main class="body fill column">
+            <div class="row">
+                <div class="col-lg-2 col-md-2 col-sm-3">
+                    <div class="card">
+                        <div class="card-header">
+                            Visit Date
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-12 form-group">
+                                    <label>From</label>
+                                    <input id="dtVisitFromDate" type="date" name="fromdate" class="form-control" value="" />
+                                </div>
+                                <div class="col-lg-12 col-md-12 col-12 form-group">
+                                    <label>Till</label>
+                                    <input id="dtVisitTillDate" type="date" name="todate" class="form-control" value="" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-3">
+                    <div class="card">
+                        <div class="card-header">
+                            ID Filter
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-12 form-group">
+                                    <label>Clinic Type ID</label>
+                                    <input type="text" name="clinicTypeId" class="form-control" value="" />
+                                </div>
+                                <div class="col-lg-12 col-md-12 col-12 form-group">
+                                    <label>Patient Type ID</label>
+                                    <input type="text" name="patientTypeId" class="form-control" value="" />
+                                </div>
+                                <div class="col-lg-12 col-md-12 col-12 form-group">
+                                    <label>UHID</label>
+                                    <input type="text" name="uhid" class="form-control" value="" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </main>
+    </div>
+</div>
+
+@*<span class="context-menu-one btn btn-neutral">left click me</span>*@
+<script>
+
+    document.getElementById("dtVisitFromDate").valueAsDate = new Date();
+    document.getElementById("dtVisitTillDate").valueAsDate = new Date();
+
+    $(function () {
+        fnBottomSheets("#btnFilter","#dvsheet");
+        fnGridLoadPatientRegisteredList();
+        $.contextMenu({
+            // define which elements trigger this menu
+            selector: "#btnContextMenu",
+            trigger: 'left',
+            // define the elements of the menu
+            items: {
+                foo: { name: "Create OP Bill", icon: "edit", callback: function (key, opt) { fnCreateOpBill(event) } }
+              
+            }
+            // there's more, have a look at the demos and docs...
+        });
+        $(".context-menu-icon-print:before").addClass('fa fa-print');
+    });
+
+    function fnGridLoadPatientRegisteredList() {
+     // var gridData = [{ UHID: '10021', OpNumber: '3000213', VisitNumber: '5404031', VisitDate: '02/02/2022', PatientName: 'Arya', PatientTypeDesc: 'Inpatient', DoctorName: 'Dr.Pandian', edit: '' }];
+        $("#jgvPatientRegisteredList").jqGrid({
+            url: getBaseURL() + '/OpBilling/GetPatientRegisteredList',
+            datatype: "json",
+          //  data:gridData,
+            contenttype: "application/json; charset-utf-8",
+            mtype: 'GET',
+            postData: {
+                visitFromDate: function () { return $('#dtVisitFromDate').val() },
+                visitTillDate: function () { return $('#dtVisitTillDate').val() },
+            },
+            jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+            colNames: [localization.UHID, 'Op Number','Visit No.', localization.VisitDate, localization.PatientName, localization.PatientTypeDesc, localization.SpecialtyDesc, localization.DoctorName, localization.Actions],
+            colModel: [
+                { name: "UHID", width: 70, align: 'left' },
+                { name: "OpNumber", width: 70, align: 'left' },
+                { name: "VisitNumber", hidden:true },
+                { name: "VisitDate", width: 70, resizable: true, width: 150, sortable: true, formatter: "date", formatoptions: { newformat: _cnfjqgDateFormat } },
+                { name: "PatientName", width: 160, resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+                { name: "PatientTypeDesc", width: 60, resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+                { name: "SpecialtyDesc", width: 120, resizable: false, editoption: { 'text-align': 'left', maxlength: 15 } },
+                { name: "DoctorName", width: 150, resizable: false, editoption: { 'text-align': 'left', maxlength: 15 } },
+                {
+                    name: 'edit', search: false, align: 'center', width: 78, sortable: false, resizable: false,
+                    formatter: function (cellValue, options, rowdata, action) {
+                        //return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Op Bill" id="jqgCreateOpBill" onclick="return fnCreateOpBill(event)"><i class="fas fa-file-invoice"></i></button>';
+                       return  '<button class="mr-1 btn btn-outline" id="btnContextMenu"><i class="fa fa-ellipsis-v"></i></button>'
+                           + '<button class="mr-1 btn btn-outline" onclick="fnCreateOpBill(event)"><i class="fas fa-arrow-circle-right"></i></button>'
+                    }
+                }
+            ],
+            pager: "#jpgPatientRegisteredList",
+            rowNum: 10000,
+            rownumWidth: '55',
+            pgtext: null,
+            pgbuttons: null,
+            loadonce: true,
+            viewrecords: true,
+            gridview: true,
+            rownumbers: true,
+            height: 'auto',
+            align: "left",
+            width: 'auto',
+            autowidth: true,
+            shrinkToFit: true,
+            forceFit: true,
+            scrollOffset: 0,
+            loadComplete: function (data) {
+               // SetGridControlByAction();
+                fnJqgridSmallScreen("jgvPatientRegisteredList");
+                
+            },
+        });
+        fnAddGridSerialNoHeading();
+       // fnkebabMenu();
+    }
+   
+   
+    function initGrid() {
+        $(".jqgrow", "#jgvPatientRegisteredList").contextMenu('contextMenu', {
+            bindings: {
+                'edit': function (t) {
+                    editRow();
+                },
+                'add': function (t) {
+                    addRow();
+                },
+                'del': function (t) {
+                    delRow();
+                }
+            },
+            onContextMenu: function (event, menu) {
+                var rowId = $(event.target).parent("tr").attr("id")
+                var grid = $("#jgvPatientRegisteredList");
+                grid.setSelection(rowId);
+
+                return true;
+            }
+        });
+    }
+
+    function fnCreateOpBill(e) {
+        var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+        var rowData = $('#jgvPatientRegisteredList').jqGrid('getRowData', rowid);
+
+        // var url = getBaseURL() + '/PatientManagement/OpBilling/EPM_12_00/' + rowData.UHID + '/' + rowData.OpNumber;
+
+        var url = '@Url.Action("EPM_12_00", "OpBilling")';
+        url += "?UHID=" + rowData.UHID;
+        url += "&opNumber=" + rowData.OpNumber;
+
+        window.open(url, '_blank').focus();
+    }
+
+</script>
+<script>
+    function fnkebabMenu() {
+        var kebab = document.querySelector('.kebab'),
+            middle = document.querySelector('.middle'),
+            cross = document.querySelector('.cross'),
+            dropdown = document.querySelector('.kebab-dropdown');
+
+        kebab.addEventListener('click', function () {
+            middle.classList.toggle('active');
+            cross.classList.toggle('active');
+            dropdown.classList.toggle('active');
+        })
+    }
+    $("#demo-menu-lower-left").click(function () {
+        $('tr.jqgrow', this).contextMenu();
+    })
+
+</script>

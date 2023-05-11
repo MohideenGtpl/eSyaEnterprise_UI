@@ -1,0 +1,170 @@
+﻿
+$('#txtCalDefFRMDate').change(function () {
+   
+    var date = this.valueAsDate;
+    date.setDate(date.getDate() + 365);
+  
+    $('#txtCalDefTillDate')[0].valueAsDate = date;
+  
+});
+
+
+$(document).ready(function () {
+
+    $("#txtfinancialyear").blur(function () {
+        var year = $("#txtfinancialyear").val();
+        $("#txtCalDefFRMDate").val(year + '-01-01');
+        $("#txtCalDefTillDate").val(year + '-12-31');
+    });
+
+    fnGridLoadCalendarDefinition();
+});
+
+function fnGridLoadCalendarDefinition() {
+  
+    $("#jqgCalendarDefinition").jqGrid('GridUnload');
+    $("#jqgCalendarDefinition").jqGrid({
+        url: getBaseURL() + '/DocumentControl/GetCalendarHeaders',
+        mtype: 'Post',
+        datatype: 'json',
+        data: [{ CodeDesc: '1000', DefaultStatus: 'True', ActiveStatus: 'True' }],
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Financial Year","From Date", "Till Date","Status"],
+        colModel: [
+          
+            { name: "FinancialYear", width: 70, editable: true, align: 'left', hidden: false },
+            {
+                name: "FromDate", editable: true, width: 70, align: 'left', formatter: 'date', formatoptions: { srcformat: 'Y/m/d H:i:s', newformat: 'm/d/yy' }
+
+            },
+            {
+                name: "TillDate", editable: true, width: 70, align: 'left', formatter: 'date', formatoptions: { srcformat: 'Y/m/d H:i:s', newformat: 'm/d/yy' }
+
+            },
+            { name: "Status", editable: true, width: 28, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: Inactive" } },
+            
+        ],
+        rowNum: 10,
+        loadonce: false,
+        pager: "#jqpCalendarDefinition",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0
+    }).jqGrid('navGrid', '#jqpCalendarDefinition', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpCalendarDefinition', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshCalendarDefinition
+    }).jqGrid('navButtonAdd', '#jqpCalendarDefinition', {
+        caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Add', buttonicon: 'none', id: 'custAdd', position: 'first', onClickButton: fnGridAddCalendarDefinition
+    });
+}
+
+function fnGridAddCalendarDefinition() {
+    fnClearFields();
+   
+        $('#PopupCalendarDefinition').modal('show');
+        $('#PopupCalendarDefinition').modal({ backdrop: 'static', keyboard: false });
+        $('#PopupCalendarDefinition').find('.modal-title').text("Add Calendar Definition");
+        $("#btnSaveApplicationCode").html(' Save');
+
+    
+}
+
+function fnClearFields() {
+    $('#cboBusinessKey').val("0");
+    $('#cboBusinessKey').selectpicker('refresh');
+    $('#txtfinancialyear').val('');
+    $('#txtCalDefFRMDate').val('');
+    $('#txtCalDefTillDate').val('');
+    $('#cboActiveStatus').val("true");
+    $('#cboActiveStatus').selectpicker('refresh');
+}
+
+function fnGridRefreshCalendarDefinition() {
+    $("#jqgCalendarDefinition").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+ 
+
+function fnViewCalendarDefinition(e) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgCalendarDefinition').jqGrid('getRowData', rowid);
+     $('#PopupCalendarDefinition').modal('show');
+    $('#PopupCalendarDefinition').find('.modal-title').text("View Calendar Definition");
+
+}
+
+function AllowOnlyNumbers(e) {
+    e = (e) ? e : window.event;
+    var clipboardData = e.clipboardData ? e.clipboardData : window.clipboardData;
+    var key = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
+    var str = (e.type && e.type == "paste") ? clipboardData.getData('Text') : String.fromCharCode(key);
+    return (/^\d+$/.test(str));
+}
+
+
+function fnSaveCalendarDefinition() {
+    
+    if (ValidateCalendarDefinition() === false) {
+        return;
+    }
+   
+    var calendarheader = {
+        BusinessKey: $("#cboBusinessKey").val(),
+        FinancialYear: $("#txtfinancialyear").val(),
+        FromDate: $("#txtCalDefFRMDate").val(),
+        TillDate: $("#txtCalDefTillDate").val(),
+        Status: $("#cboActiveStatus").val()
+    }
+
+    $.ajax({
+        url: getBaseURL() + '/DocumentControl/InsertCalendarHeaderAndDetails',
+        type: "post",
+        data: JSON.stringify(calendarheader),
+        contentType: "application/json",
+        success: function (response) {
+            if (response.Status === false) {
+                toastr.error(response.Message);
+                return false;
+            }
+
+            if (response.Status === true) {
+                toastr.success(response.Message);
+                fnClearFields();
+                $('#PopupCalendarDefinition').modal('hide');
+                fnGridLoadCalendarDefinition();
+                return true;
+            }
+
+
+        }
+    })
+}
+
+function ValidateCalendarDefinition() {
+   
+    if ($("#cboBusinessKey").val() === "0" || $("#cboBusinessKey").val() === null) {
+        toastr.warning("Please Select Segment Id");
+        return false;
+    }
+    if ($("#txtfinancialyear").val() === "" || $("#txtfinancialyear").val() === null) {
+        toastr.warning("Please Enter Financial year");
+        return false;
+    }
+
+    if ($("#txtCalDefFRMDate").val() === "" || $("#txtCalDefFRMDate").val() === null) {
+        toastr.warning("Please Enter From Date");
+        return false;
+    }
+
+    if ($("#txtCalDefTillDate").val() === "" || $("#txtCalDefTillDate").val() === null) {
+        toastr.warning("Please Enter Till Date");
+        return false;
+    }
+}
+
+

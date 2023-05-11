@@ -1,0 +1,16 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+
+namespace eSyaEnterprise_UI.Areas.Packages.Controllers
+{
+    public class PkPackagesController : Controller
+    {
+        public IActionResult EPK_01_00()
+        {
+            return View();
+        }
+    }
+}

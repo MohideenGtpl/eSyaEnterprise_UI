@@ -1,0 +1,196 @@
+﻿
+@{
+    ViewData["Title"] = "Service Master";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    var userFormRole = (eSyaEnterprise_UI.Models.DO_UserFormRole)ViewBag.UserFormRole;
+}
+<script>
+        var _userFormRole = JSON.parse('@Html.Raw(Json.Serialize(userFormRole))');
+    </script>
+@section scripts{
+    <script src="~/js/jsTree.js"></script>
+    <link href="~/css/jsTree.css" rel="stylesheet" />
+     <script src="~/js/eSyaServices/ServiceMaster.js"></script>
+}
+
+
+<style>
+
+
+    .w-120 {
+        width: 120px !important
+    }
+
+    .mdl-card__title {
+        max-height: 45px !important;
+        display: block !important;
+        padding-left: 0px !important;
+        padding-top: 0px !important;
+    }
+
+    .mdl-card {
+        min-height: auto !important
+    }
+
+    h5 {
+        margin-top: 0px;
+        font-weight: 600;
+        color: #0e75bc;
+        padding-left: 0px;
+        margin-bottom: 10px;
+        font-size: 20px;
+    }
+
+    hr {
+        border-color: #f1f1f1 !important;
+    }
+
+    #pnlAddMainMenu, #pnlAddSubMenu {
+        width: 100%;
+    }
+
+    #lblServiceMaster {
+        cursor: pointer;
+        padding: 2px 4px;
+    }
+
+        #lblServiceMaster:hover {
+            background: #e7f4f9;
+            box-shadow: inset 0 0 1px #cccccc;
+        }
+
+    .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
+        width: 100% !important
+    }
+
+    hr {
+        margin-bottom: 8px;
+        margin-top: 8px;
+    }
+</style>
+
+<div class="row row-bottom-pad">
+    <div class="col-sm-4 col-md-4 col-lg-4">
+
+        <div id="ServiceMasterTree">
+        </div>
+    </div>
+    <div class="col-sm-1 col-md-1 col-lg-1"></div>
+    <div id="dvServiceMaster" class="col-lg-5 col-md-5 col-sm-5 f-right">
+
+        <div class="demo-card-square mdl-card mdl-shadow--2dp marbot15 fullwidth" id="pnlAddServiceMaster">
+            <div class="mdl-card__title mdl-card--expand padleft0 padtop0 h-60 d-block">
+                <h5 class="mdl-card__title-text">Add Service Master</h5>
+            </div>
+            <div class="mdl-card__supporting-text fullwidth">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <label>Service Description</label>
+                            <input type="text" class="form-control" id="txtServiceDesc" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label>Service Short Description</label>
+                            <input type="text" maxlength="6" class="form-control" id="txtServiceShortDesc" />
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label>Service Cost</label>
+                            <input type="number" class="form-control" id="txtServiceCost" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label>
+                                Gender
+                            </label>
+                            <div>
+                                <select class="selectpicker" data-live-search="true" id="cboGender" title="">
+                                    <option value="M"> Male </option>
+                                    <option value="F"> Female </option>
+                                    <option value="B" selected> Both </option>
+
+
+                                </select>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-6 col-lg-6">
+                        <label class="mdl-checkbox mdl-js-checkbox" for="chkBillable">
+                            <input type="checkbox" id="chkBillable"
+                                   class="mdl-checkbox__input">
+                            <span class="mdl-checkbox__label">Billable</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="row ">
+                    <div class="col-lg-12" style="margin-bottom: 15px;">
+                        <label class="mdl-checkbox mdl-js-checkbox" for="chkActiveStatus">
+                            <input type="checkbox" id="chkActiveStatus"
+                                   class="mdl-checkbox__input">
+                            <span class="mdl-checkbox__label">Is Active</span>
+                        </label>
+                    </div>
+                    
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <p class="subheading">Service Parameters</p>
+                            <hr class="left" />
+                            
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            @await Component.InvokeAsync("eSyaParameter", new { parameterType = "7" })
+                        </div>
+                    
+                <hr />
+                <div class="mdl-card__actions text-center pad0">
+                    <button type="button" class="btn btn-primary" id="btnSMAdd" onclick="fnAddOrUpdateServiceMaster()"><i class="fa fa-plus"></i> Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 hide-in-smallscreen">
+        <div>
+            <h5>Action</h5>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 btn_pdnTop collapse">
+                <button class="mdl-button mdl-js-button mdl-button--raised cancel-button btn_wdth" onclick="fnDeleteNode()">
+                    <i class="fa fa-times" style="color:#fff !important"></i>     Delete Node
+                </button>
+            </div>
+            <div class="col-lg-12 btn_pdnTop collapse">
+                <button class="mdl-button mdl-js-button mdl-button--raised primary-button btn_wdth" id="btnMoveUp" onclick="fnMoveItemUpDown('U')">
+                    <i class="fas fa-arrow-up" style="color:#fff !important"></i>   Move Up
+                </button>
+            </div>
+            <div class="col-lg-12 btn_pdnTop collapse">
+                <button class="mdl-button mdl-js-button mdl-button--raised primary-button btn_wdth" id="btnMoveDown" onclick="fnMoveItemUpDown('D')">
+                    <i class="fas fa-arrow-down" style="color:#fff !important"></i>   Move Down
+                </button>
+            </div>
+            <div class="col-lg-12 btn_pdnTop">
+                <button class="mdl-button mdl-js-button mdl-button--raised primary-button btn_wdth" id="btnExpandAll"  onclick="fnExpandAll()">
+                    <i class="fas fa-expand" style="color:#fff !important"></i>   Expand All
+                </button>
+            </div>
+            <div class="col-lg-12 btn_pdnTop">
+                <button class="mdl-button mdl-js-button mdl-button--raised primary-button btn_wdth" id="btnCollapseAll" onclick="fnCollapseAll()">
+                    <i class="fas fa-compress" style="color:#fff !important"></i>   Collapse All
+                </button>
+            </div>
+            
+        </div>
+    </div>
+
+</div>

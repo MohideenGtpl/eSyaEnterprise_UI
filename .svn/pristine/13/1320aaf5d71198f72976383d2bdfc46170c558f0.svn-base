@@ -1,0 +1,254 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "V_101_IN";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/js/Config/BusinessUnit.js"></script>
+
+@{
+    var userFormRole = (eSyaEnterprise_UI.Models.DO_UserFormRole)ViewBag.UserFormRole;
+}
+<script>
+    var _userFormRole = JSON.parse('@Html.Raw(Json.Serialize(userFormRole))');
+
+     var localization = {
+         BusinessEntity: '@Localizer["BusinessEntity"]',
+         BusinessUnit: '@Localizer["BusinessUnit"]',
+         UnitDescription: '@Localizer["UnitDescription"]',
+         BusinessName: '@Localizer["BusinessName"]',
+         ISDCode: '@Localizer["ISDCode"]',
+         City: '@Localizer["City"]',
+         Location: '@Localizer["Location"]',
+         CurrencyCode: '@Localizer["CurrencyCode"]',
+         TaxIdentification: '@Localizer["TaxIdentification"]',
+         BoaCostCenter: '@Localizer["BoaCostCenter"]',
+         IsBookofAccounts: '@Localizer["IsBookofAccounts"]',
+         SubUnits: '@Localizer["SubUnits"]',
+         ToLocalCurrency: '@Localizer["ToLocalCurrency"]',
+         ToCurreConversion: '@Localizer["ToCurreConversion"]',
+         ToRealCurrency: '@Localizer["ToRealCurrency"]',
+         Country: '@Localizer["Country"]',
+         CurrencyName:'@Localizer["CurrencyName"]',
+         SubUnit:'@Localizer["SubUnit"]',
+         BoacostCentre: '@Localizer["BoacostCentre"]',
+         TaxIdentificationDesc: '@Localizer["TaxIdentificationDesc"]',
+         IsBookOfAccounts: '@Localizer["IsBookOfAccounts"]',
+         TolocalCurrency: '@Localizer["TolocalCurrency"]',
+         TocurrConversion: '@Localizer["TocurrConversion"]',
+         TorealCurrency: '@Localizer["TorealCurrency"]',
+         AddBusinessUnit: '@Localizer["AddBusinessUnit"]',
+         UpdateBusinessUnit: '@Localizer["UpdateBusinessUnit"]',
+         ViewBusinessUnit: '@Localizer["ViewBusinessUnit"]',
+         Active: '@Localizer["Active"]',
+         Actions: '@Localizer["Actions"]',
+         Edit: '@Localizer["Edit"]',
+         View: '@Localizer["View"]',
+         Save: '@Localizer["Save"]',
+         Update: '@Localizer["Update"]',
+         Delete: '@Localizer["Delete"]',
+         DeActivate: '@Localizer["DeActivate"]',
+         Activate: '@Localizer["Activate"]',
+         
+    };
+</script>
+
+<div class="row">
+    <div class="col-lg-3 col-md-5 col-sm-6 col-xs-12">
+        <div class="form-group">
+            <label class="lable-color">@Localizer["BusinessEntity"] </label>
+            <div>
+                <select class="selectpicker" data-live-search="true" id="cboBusinessId" title="" data-size="8"
+                        asp-items="@ViewBag.Entities"
+                        onchange="fnGridLoadBusinessUnit()">
+                    
+                </select>
+            </div>
+        </div>
+    </div>
+    
+</div>
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <table id="jqgBusinessUnit"></table>
+        <div id="jpgBusinessUnit"></div>
+    </div>
+</div>
+
+<div class="modal fade" id="PopupBusinessUnit">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close" data-dismiss="modal" onclick="fnClearFields()"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">@Localizer["BusinessUnit"] </h4>
+            </div>
+
+            <div class="modal-body">
+             
+            <div class="row padbot4">
+                <div class="row padbot4 mar0">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group collapse">
+                            
+                            <input id="txtBusinessKey" class="form-control" style="display:none" />
+                            <input id="txtBusinessUnitId" class="form-control" style="display:none" />
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group">
+                            <label> @Localizer["UnitDescription"] </label>
+                            <input id="txtUnitDescription" class="form-control" maxlength="100" type="text" />
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group">
+                            <label> @Localizer["BusinessName"] </label>
+                            <input id="txtBusinessName" class="form-control" maxlength="100" type="text" />
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4  col-md-6 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label> @Localizer["ISDCode"] </label>
+                            <div>
+                                <select class="selectpicker" data-live-search="true" id="cboISDCode" title="" data-size="8"
+                                        asp-items="@ViewBag.ISDCodes">
+                                    <option value="0">Select</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-6 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label> @Localizer["City"] </label>
+                            <div>
+                                <select class="selectpicker" data-live-search="false" id="cboCity" title="">
+                                    <option value="0">Select</option>
+                                    <option value="1">Banglore</option>
+                                    <option value="2">Hyderabad</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label> @Localizer["Location"] </label>
+                            <input id="txtLocation" class="form-control" maxlength="100" type="text" />
+                        </div>
+                    </div>
+
+
+
+                    <div class="col-lg-4  col-md-6 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label> @Localizer["CurrencyCode"] </label>
+                            <div>
+                                <select class="selectpicker" data-live-search="true" id="cboCurrencyCode" title="" data-size="8"
+                                        asp-items="@ViewBag.CurrencyCodes">
+                                    <option value="0">Select</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-6 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label> @Localizer["TaxIdentification"] </label>
+                            <div>
+                                <select class="selectpicker" data-live-search="true" id="cboTaxIdentification" title="" data-size="8"
+                                        asp-items="@ViewBag.TaxIdentifications">
+                                    <option value="0">Select</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-6 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label> @Localizer["BoaCostCenter"] </label>
+                            <div>
+                                <select class="selectpicker" data-live-search="true" id="cboBoaCostCenter" title="" data-size="8">
+                                    <option value="0">Select</option>
+                                    <option value="1">Default Cost Center</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-6 col-sm-12 col-xs-12">
+                        <div class="default-checkbox checkbox-group">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsBookofAccounts">
+                                <input type="checkbox" id="chkIsBookofAccounts" class="mdl-checkbox__input" onchange="fnGetBusinessSubUnits(this)">
+                                <span class="mdl-checkbox__label">@Localizer["IsBookofAccounts"]</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-6 col-sm-12 col-xs-12" id="BSSubUnitContainer">
+                        <div class="form-group">
+                            <label> @Localizer["SubUnits"] </label>
+                            <div>
+                                <select class="selectpicker" data-live-search="true" id="cboSubUnit" title="" data-size="8">
+                                    <option value="0">Select</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-6 col-sm-12 col-xs-12">
+                        <div class="default-checkbox checkbox-group">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkToLocalCurrency">
+                                <input type="checkbox" id="chkToLocalCurrency" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">@Localizer["ToLocalCurrency"]</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4  col-md-6 col-sm-12 col-xs-12">
+                        <div class="default-checkbox checkbox-group">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkToCurrCurrency">
+                                <input type="checkbox" id="chkToCurrCurrency" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">@Localizer["ToCurreConversion"]</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4  col-md-6 col-sm-12 col-xs-12">
+                        <div class="default-checkbox checkbox-group">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkToRealCurrency">
+                                <input type="checkbox" id="chkToRealCurrency" class="mdl-checkbox__input" >
+                                <span class="mdl-checkbox__label">@Localizer["ToRealCurrency"]</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4  col-md-6 col-sm-12 col-xs-12">
+                        <div class="default-checkbox checkbox-group">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActiveStatus">
+                                <input type="checkbox" id="chkActiveStatus" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">@Localizer["Active"]</span>
+                            </label>
+                        </div>
+                    </div>
+
+                </div>
+                </div>
+                    
+            </div>
+                    <div class="modal-footer">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveBusinessUnit" onclick="fnSaveBusinessUnit()">
+                                    <i class="fa fa-save"></i>   @Localizer["Save"]
+                                </button>
+                                <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" id="btnDeactivateBusinessUnit" onclick="fnDeleteBusinessUnit()"><i class="fas fa-ban"></i>  @Localizer["DeActivate"] </button>
+                                <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button" data-dismiss="modal" id="btnCancelBusinessUnit" onclick="fnClearFields()"><i class="fa fa-times"></i> @Localizer["Cancel"] </button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    </div>
+</div>
+
+
+

@@ -1,0 +1,86 @@
+﻿$(document).ready(function () {
+    fnGridLoadDrugBinInfo();
+});
+function fnGridLoadDrugBinInfo() {
+    $("#jqgDrugBinInfo").jqGrid('GridUnload');
+    $("#jqgDrugBinInfo").jqGrid({
+        //url:'',
+        //mtype: 'Post',
+        //datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Drug Code", "Drug Name", "Maximum stock Level", "Re-Order Level", "Safety Stock Level", "Bin Info", ""],
+        colModel: [
+            { name: "DrugCode", width: 50, editable: true, align: 'left', hidden: false },
+            { name: "DrugName", width: 120, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "MaximumStockLevel", width: 70, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            { name: "ReOrderLevel", width: 60, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 15 } },
+            { name: "SafetyStockLevel", width: 70, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            { name: "BinInfo", width: 70, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            {
+                name: 'edit', search: false, align: 'left', width: 54, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditDrugBinInfo(event,\'edit\')"><i class="fas fa-pencil-alt"></i> ' + Edit + ' </button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnEditDrugBinInfo(event,\'view\')"><i class="far fa-file-alt"></i> ' + View + ' </button>'
+
+                }
+            }
+        ],
+        pager: "#jqpDrugBinInfo",
+        rowNum: 10000,
+        pgtext: null,
+        pgbuttons: null,
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0,
+        loadComplete: function (data) {
+            SetGridControlByAction();
+        },
+    }).jqGrid('navGrid', '#jqpDrugBinInfo', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpDrugBinInfo', {
+        caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshDrugBinInfo
+    }).jqGrid('navButtonAdd', '#jqpDrugBinInfo', {
+        caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddDrugBinInfo
+    });
+    fnAddGridSerialNoHeading();
+}
+
+function fnAddDrugBinInfo() {
+    $("#divDrugBinInfoGrid").css('display', 'none');
+    $("#divDrugBinInfoForm").css('display', 'block');
+}
+
+function fnEditDrugBinInfo(e, actiontype) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgDrugBinInfo').jqGrid('getRowData', rowid);
+
+    $("#divDrugBinInfoGrid").css('display', 'none');
+    $("#divDrugBinInfoForm").css('display', 'block');
+
+
+    if (actiontype.trim() == "edit") {
+        $("input,textarea").attr('readonly', false);
+        $("select").next().attr('disabled', false);
+        $("#btnSaveDrugBinInfo").show();
+    }
+    if (actiontype.trim() == "view") {
+        $("input,textarea").attr('readonly', true);
+        $("select").next().attr('disabled', true);
+        $("#btnSaveDrugBinInfo").hide();
+    }
+}
+function fnCloseDrugBinInfo() {
+    $("#divDrugBinInfoGrid").css('display', 'block');
+    $("#divDrugBinInfoForm").css('display', 'none');
+}
+
+
+function fnGridRefreshDrugBinInfo() {
+
+}

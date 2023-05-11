@@ -1,0 +1,58 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.ActionFilter;
+using eSyaEnterprise_UI.Areas.eSyaOutsourcedServices.Data;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using eSyaEnterprise_UI.Areas.eSyaOutsourcedServices.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace eSyaEnterprise_UI.Areas.eSyaOutsourcedServices.Controllers
+{
+    [SessionTimeout]
+    public class OutSourcedVendorController : Controller
+    {
+        private readonly IeSyaOutSourcedAPIService _eSyaOutSourcedAPIService;
+        private readonly ILogger<OutSourcedVendorController> _logger;
+        public OutSourcedVendorController(IeSyaOutSourcedAPIService eSyaOutSourcedAPIService, ILogger<OutSourcedVendorController> logger)
+        {
+            _eSyaOutSourcedAPIService = eSyaOutSourcedAPIService;
+            _logger = logger;
+        }
+        [Area("eSyaOutsourcedServices")]
+        public async Task<IActionResult> V_3500_00()
+        {
+            try
+            {
+                var serviceResponse = await _eSyaOutSourcedAPIService.HttpClientServices.GetAsync<List<DO_BusinessLocation>>("OutSourcedVendor/GetBusinessKey");
+                if (serviceResponse.Status)
+                {
+                    ViewBag.PatientCategory = serviceResponse.Data.Select(b => new SelectListItem
+                    {
+                        Value = b.BusinessKey.ToString(),
+                        Text = b.LocationDescription,
+                    }).ToList();
+
+                    return View();
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetBusinessKey");
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetBusinessKey");
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+        [Area("eSyaOutsourcedServices")]
+        public IActionResult V_3501_00()
+        {
+            return View();
+        }
+    }
+}

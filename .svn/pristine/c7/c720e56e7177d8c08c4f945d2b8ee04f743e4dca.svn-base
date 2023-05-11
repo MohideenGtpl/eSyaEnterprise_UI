@@ -1,0 +1,129 @@
+﻿
+@{
+    ViewData["Title"] = "V_9003_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts{
+    <script src="~/js/eSyaPharma/DrugFormulation.js"></script>
+}
+<section id="divGrid">
+    <div class="row form-group">
+
+        <div class="col-lg-2 col-md-2 col-sm-3">
+            <div class="form-group">
+                <label class="lable-color"> ISD Code</label>
+
+                <select class="selectpicker" data-live-search="false" id="cboISDCode" title="Choose ISD Code"></select>
+
+            </div>
+        </div>
+        <div class="col-lg-10">
+            <label>Choose Drug by alphabets</label>
+            <span class="filter-char">A</span>
+            <span class="filter-char">B</span>
+            <span class="filter-char">C</span>
+            <span class="filter-char">D</span>
+            <span class="filter-char">E</span>
+            <span class="filter-char">F</span>
+            <span class="filter-char">G</span>
+            <span class="filter-char">H</span>
+            <span class="filter-char">I</span>
+            <span class="filter-char">J</span>
+            <span class="filter-char">K</span>
+            <span class="filter-char">L</span>
+            <span class="filter-char">M</span>
+            <span class="filter-char">N</span>
+            <span class="filter-char">O</span>
+            <span class="filter-char">P</span>
+            <span class="filter-char">Q</span>
+            <span class="filter-char">R</span>
+            <span class="filter-char">S</span>
+            <span class="filter-char">T</span>
+            <span class="filter-char">U</span>
+            <span class="filter-char">V</span>
+            <span class="filter-char">W</span>
+            <span class="filter-char">X</span>
+            <span class="filter-char">Y</span>
+            <span class="filter-char">Z</span>
+            @*<span class="filter-char">0-9</span>*@
+        </div>
+    </div>
+    @*<div class="row form-group" style="display:none" id="divSearch">
+        <div class="col-lg-12 col-xl-12 col-sm-4">
+
+            <div class="filter-div"></div>
+        </div>
+        <div class="col-lg-12">
+            <p class="martop10"> (or)</p>
+        </div>
+        <div class="col-lg-4 padright0">
+            <input type="text" name="name" value="" class="form-control d-inline-b" />
+        </div>
+        <div class="col-lg-2 padleft0">
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button m-r-15"> <i class="fa fa-search"></i></button>
+        </div>
+        <div class="col-lg-1">
+            <p>(or)</p>
+        </div>
+        <div class="col-lg-3">
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button m-r-15"> Browse All Medications</button>
+        </div>
+    </div>*@
+
+    <div class="row padbot10">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <table id="jqgDrugBrands"></table>
+            <div id="jqpDrugBrands"></div>
+        </div>
+    </div>
+</section>
+
+
+<section id="divDrugBrandsForm" style="display:none">
+    <div class="row">
+        <div class="col-lg-4 col-md-4 col-sm-6">
+            <div class="form-group">
+                <label class="lable-color"> Generics</label>
+                <select class="selectpicker" data-live-search="true" id="cboDrugCategory" title="Select" asp-items="@ViewBag.DrugCategoryList" onchange="fnGetGenericDetails()">
+                    <option value="0">Select</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-12 collapse">
+            <div class="form-group">
+                <label for="txtFormulationId"> Formulation Id</label>
+                <input id="txtFormulationId" class="form-control" maxlength="10" type="text" />
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6">
+            <div class="form-group">
+                <label for="txtFormulation"> Formulation</label>
+                <input id="txtFormulation" type="text" class="form-control" maxlength="500" />
+            </div>
+        </div>
+
+        <div class="col-lg-6 col-md-6 col-sm-6">
+            <div class="form-group">
+                <label for="txtDrugClass"> Drug Class</label>
+                <input id="txtDrugClass" type="text" class="form-control" maxlength="200" />
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+            <div class="default-checkbox">
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActiveStatus">
+                    <input type="checkbox" id="chkActiveStatus" class="mdl-checkbox__input">
+                    <span class="mdl-checkbox__label">Active</span>
+                </label>
+            </div>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 form-group text-center">
+            <hr />
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button m-r-15" id="btnSaveDrugFormulation" onclick="fnSaveDrugFormulation()">
+                Save
+            </button>
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button" id="" onclick="fnBackToGrid()"> Cancel</button>
+        </div>
+    </div>
+</section>
+

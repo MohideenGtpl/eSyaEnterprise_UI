@@ -1,0 +1,81 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
+using eSyaEnterprise_UI.Areas.Config.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+namespace eSyaEnterprise_UI.Areas.Config.Controllers
+{
+    public class ReportHeaderController : Controller
+    {
+        ESyaWebAPI _eSyaWebAPI = new ESyaWebAPI();
+        /// <summary>
+        /// General Report Header
+        /// </summary>
+        /// <returns></returns>
+         
+        [Area("Config")]
+        public IActionResult V_17_00()
+        {
+            ViewBag.formName = "General Report Header";
+            var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+            HttpResponseMessage Bk_response = client.GetAsync("ConfigMasterData/GetBusinessKey").Result;
+            string Bk_data = Bk_response.Content.ReadAsStringAsync().Result;
+            List<DO_BusinessLocation> Bkeys = JsonConvert.DeserializeObject<List<DO_BusinessLocation>>(Bk_data);
+            ViewBag.BusinessKeys = Bkeys;
+            return View();
+        }
+        [HttpPost]
+        public JsonResult GetReportHeaderList(int Businesskey)
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("ReportHeader/GetReportHeaderList?BusinessKey="+ Businesskey).Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<List<DO_ReportHeader>>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+
+        [HttpPost]
+        public JsonResult InsertOrUpdateReportHeader(DO_ReportHeader rpHeader)
+        {
+            try
+            {
+                rpHeader.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                rpHeader.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.PostAsJsonAsync<DO_ReportHeader>("ReportHeader/InsertOrUpdateReportHeader", rpHeader).Result;
+                string respData = response.Content.ReadAsStringAsync().Result;
+                var rp_app = JsonConvert.DeserializeObject<DO_ReturnParameter>(respData);
+                return Json(rp_app);
+                
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+
+        /// <summary>
+        /// Pharmacy Report Header
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult V_12_00()
+        {
+            return View();
+        }
+    }
+}

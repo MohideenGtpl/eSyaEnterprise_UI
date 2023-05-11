@@ -1,0 +1,40 @@
+﻿
+@{
+    ViewData["Title"] = "V_24_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts{
+<script src="~/js/Config/LocalizationLanguageMapping.js"></script>
+} 
+
+<div class="row">
+    <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label>Language</label>
+            <select class="selectpicker" data-live-search="true" id="cboLanguage" title="" data-size="5" onchange="cboLanguage_onChanged()">
+                <option value="0"> Choose a language</option>
+                @if (ViewBag.Language != null)
+                {
+                    foreach (var code in ViewBag.Language)
+                    {
+                        <option value="@code.LanguageCode">@code.LanguageName</option>
+                    }
+                }
+            </select>
+        </div>
+    </div>
+</div>
+    <div class="row padbot10">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <table id="jqgLocalizationLanguage"></table>
+            <div id="jqpLocalizationLanguage"></div>
+        </div>
+    </div>
+
+
+    <script>
+    var LocalizationTableMaster = (@Html.Raw(Json.Serialize(ViewBag.locMasterlist)));
+    var FormMaster = (@Html.Raw(Json.Serialize(ViewBag.formMasterlist)));
+    </script>
+

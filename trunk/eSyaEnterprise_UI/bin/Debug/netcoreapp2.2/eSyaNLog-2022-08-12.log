@@ -1,0 +1,266 @@
+2022-08-12 00:00:38.1467||ERROR|eSyaEnterprise_UI.Areas.Facilities.Controllers.DoctorsController|UD:GetClinicConsultantTreeList:For BusinessId 111 , SpecialtyId 1 and DoctorId entered 1 System.Exception: Internal Server Error|url: http://localhost/Doctors/GetClinicConsultantTreeList|action: GetClinicConsultantTreeList
+2022-08-12 00:00:39.3958||ERROR|eSyaEnterprise_UI.Areas.Facilities.Controllers.DoctorsController|UD:GetClinicConsultantTreeList:For BusinessId 111 , SpecialtyId 1 and DoctorId entered 1 System.Exception: Internal Server Error|url: http://localhost/Doctors/GetClinicConsultantTreeList|action: GetClinicConsultantTreeList
+2022-08-12 00:00:44.0737||ERROR|eSyaEnterprise_UI.Areas.Facilities.Controllers.DoctorsController|UD:GetClinicConsultantTreeList:For BusinessId 111 , SpecialtyId 0 and DoctorId entered 1 System.Exception: Internal Server Error|url: http://localhost/Doctors/GetClinicConsultantTreeList|action: GetClinicConsultantTreeList
+2022-08-12 00:00:45.3577||ERROR|eSyaEnterprise_UI.Areas.Facilities.Controllers.DoctorsController|UD:GetClinicConsultantTreeList:For BusinessId 111 , SpecialtyId 1 and DoctorId entered 1 System.Exception: Internal Server Error|url: http://localhost/Doctors/GetClinicConsultantTreeList|action: GetClinicConsultantTreeList
+2022-08-12 00:04:39.2241||ERROR|eSyaEnterprise_UI.Areas.Facilities.Controllers.DoctorsController|UD:GetClinicConsultantTreeList:For BusinessId 111 , SpecialtyId 1 and DoctorId entered 1 System.Exception: Internal Server Error|url: http://localhost/Doctors/GetClinicConsultantTreeList|action: GetClinicConsultantTreeList
+2022-08-12 00:04:41.0922||ERROR|eSyaEnterprise_UI.Areas.Facilities.Controllers.DoctorsController|UD:GetClinicConsultantTreeList:For BusinessId 111 , SpecialtyId 1 and DoctorId entered 1 System.Exception: Internal Server Error|url: http://localhost/Doctors/GetClinicConsultantTreeList|action: GetClinicConsultantTreeList
+2022-08-12 18:14:22.0621|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2022-08-12 18:14:34.7203||ERROR|eSyaEnterprise_UI.Areas.Configure.Controllers.FormNamesController|UD:ECA_01_00 System.Exception: Bad Gateway|url: http://localhost/Configure/FormNames/ECA_01_00|action: ECA_01_00
+2022-08-12 18:14:38.3355||ERROR|eSyaEnterprise_UI.Areas.Configure.Controllers.FormNamesController|UD:GetFormList System.Exception: Bad Gateway|url: http://localhost/FormNames/GetFormList|action: GetFormList
+2022-08-12 18:14:38.9307||ERROR|eSyaEnterprise_UI.Areas.Configure.Controllers.FormNamesController|UD:GetFormList System.Exception: Bad Gateway|url: http://localhost/FormNames/GetFormList|action: GetFormList
+2022-08-12 18:14:59.7150||ERROR|eSyaEnterprise_UI.Areas.Configure.Controllers.FormNamesController|UD:ECA_01_00 System.Exception: Bad Gateway|url: http://localhost/Configure/FormNames/ECA_01_00|action: ECA_01_00
+2022-08-12 18:15:02.1459||ERROR|eSyaEnterprise_UI.Areas.Configure.Controllers.FormNamesController|UD:GetFormList System.Exception: Bad Gateway|url: http://localhost/FormNames/GetFormList|action: GetFormList
+2022-08-12 18:15:02.8077||ERROR|eSyaEnterprise_UI.Areas.Configure.Controllers.FormNamesController|UD:GetFormList System.Exception: Bad Gateway|url: http://localhost/FormNames/GetFormList|action: GetFormList
+2022-08-12 18:16:34.5914|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2022-08-12 18:17:35.1663|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2022-08-12 18:20:20.0924||ERROR|eSyaEnterprise_UI.Areas.EndUser.Controllers.UserCreationController|UD:GetFormActionLinkbyUserGroup:For UserID 10004 BusinessKey 20001 with MenuKey 30003 System.Exception: Internal Server Error|url: http://localhost/UserCreation/GetFormActionLinkbyUserGroup|action: GetFormActionLinkbyUserGroup
+2022-08-12 18:31:41.2165|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2022-08-12 19:14:02.3275|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2022-08-12 19:18:32.0386|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2022-08-12 19:18:53.7058|1|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An unhandled exception has occurred while executing the request. System.NullReferenceException: Object reference not set to an instance of an object.
+   at AspNetCore.Views_Shared_Components_eSyaParameter__eSyaParameter.ExecuteAsync() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Views\Shared\Components\eSyaParameter\_eSyaParameter.cshtml:line 15
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewComponents.ViewViewComponentResult.ExecuteAsync(ViewComponentContext context)
+   at Microsoft.AspNetCore.Mvc.ViewComponents.DefaultViewComponentInvoker.InvokeAsync(ViewComponentContext context)
+   at Microsoft.AspNetCore.Mvc.ViewComponents.DefaultViewComponentHelper.InvokeCoreAsync(ViewComponentDescriptor descriptor, Object arguments)
+   at AspNetCore.Areas_Stores_Views_ManageStores_ECI_01_00.ExecuteAsync() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\Stores\Views\ManageStores\ECI_01_00.cshtml:line 96
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ActionContext actionContext, IView view, ViewDataDictionary viewData, ITempDataDictionary tempData, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeResultAsync(IActionResult result)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResultFilterAsync[TFilter,TFilterAsync]()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResultExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeResultFilters()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResourceFilter()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeFilterPipelineAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeAsync()
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/Stores/ManageStores/ECI_01_00|action: ECI_01_00
+2022-08-12 19:18:54.1082|3|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An exception was thrown attempting to execute the error handler. System.ArgumentNullException: Value cannot be null.
+Parameter name: logger
+   at Microsoft.Extensions.Logging.LoggerExtensions.Log(ILogger logger, LogLevel logLevel, EventId eventId, Exception exception, String message, Object[] args)
+   at Microsoft.Extensions.Logging.LoggerExtensions.LogError(ILogger logger, Exception exception, String message, Object[] args)
+   at eSyaEnterprise_UI.Extension.ExceptionMiddlewareExtensions.<>c.<<ConfigureExceptionHandler>b__0_1>d.MoveNext() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Extension\ExceptionMiddlewareExtensions.cs:line 44
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/Stores/ManageStores/ECI_01_00|action: ECI_01_00
+2022-08-12 19:18:54.1467|1|ERROR|Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware|An unhandled exception has occurred while executing the request. System.NullReferenceException: Object reference not set to an instance of an object.
+   at AspNetCore.Views_Shared_Components_eSyaParameter__eSyaParameter.ExecuteAsync() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Views\Shared\Components\eSyaParameter\_eSyaParameter.cshtml:line 15
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewComponents.ViewViewComponentResult.ExecuteAsync(ViewComponentContext context)
+   at Microsoft.AspNetCore.Mvc.ViewComponents.DefaultViewComponentInvoker.InvokeAsync(ViewComponentContext context)
+   at Microsoft.AspNetCore.Mvc.ViewComponents.DefaultViewComponentHelper.InvokeCoreAsync(ViewComponentDescriptor descriptor, Object arguments)
+   at AspNetCore.Areas_Stores_Views_ManageStores_ECI_01_00.ExecuteAsync() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\Stores\Views\ManageStores\ECI_01_00.cshtml:line 96
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ActionContext actionContext, IView view, ViewDataDictionary viewData, ITempDataDictionary tempData, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeResultAsync(IActionResult result)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResultFilterAsync[TFilter,TFilterAsync]()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResultExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeResultFilters()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResourceFilter()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeFilterPipelineAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeAsync()
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)|url: http://localhost/Stores/ManageStores/ECI_01_00|action: ECI_01_00
+2022-08-12 19:19:28.8792|1|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An unhandled exception has occurred while executing the request. System.NullReferenceException: Object reference not set to an instance of an object.
+   at AspNetCore.Views_Shared_Components_eSyaParameter__eSyaParameter.ExecuteAsync() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Views\Shared\Components\eSyaParameter\_eSyaParameter.cshtml:line 15
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewComponents.ViewViewComponentResult.ExecuteAsync(ViewComponentContext context)
+   at Microsoft.AspNetCore.Mvc.ViewComponents.DefaultViewComponentInvoker.InvokeAsync(ViewComponentContext context)
+   at Microsoft.AspNetCore.Mvc.ViewComponents.DefaultViewComponentHelper.InvokeCoreAsync(ViewComponentDescriptor descriptor, Object arguments)
+   at AspNetCore.Areas_Stores_Views_ManageStores_ECI_01_00.ExecuteAsync() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\Stores\Views\ManageStores\ECI_01_00.cshtml:line 96
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ActionContext actionContext, IView view, ViewDataDictionary viewData, ITempDataDictionary tempData, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeResultAsync(IActionResult result)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResultFilterAsync[TFilter,TFilterAsync]()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResultExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeResultFilters()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResourceFilter()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeFilterPipelineAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeAsync()
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/Stores/ManageStores/ECI_01_00|action: ECI_01_00
+2022-08-12 19:19:29.0072|3|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An exception was thrown attempting to execute the error handler. System.ArgumentNullException: Value cannot be null.
+Parameter name: logger
+   at Microsoft.Extensions.Logging.LoggerExtensions.Log(ILogger logger, LogLevel logLevel, EventId eventId, Exception exception, String message, Object[] args)
+   at Microsoft.Extensions.Logging.LoggerExtensions.LogError(ILogger logger, Exception exception, String message, Object[] args)
+   at eSyaEnterprise_UI.Extension.ExceptionMiddlewareExtensions.<>c.<<ConfigureExceptionHandler>b__0_1>d.MoveNext() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Extension\ExceptionMiddlewareExtensions.cs:line 44
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/Stores/ManageStores/ECI_01_00|action: ECI_01_00
+2022-08-12 19:19:29.0602|1|ERROR|Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware|An unhandled exception has occurred while executing the request. System.NullReferenceException: Object reference not set to an instance of an object.
+   at AspNetCore.Views_Shared_Components_eSyaParameter__eSyaParameter.ExecuteAsync() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Views\Shared\Components\eSyaParameter\_eSyaParameter.cshtml:line 15
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewComponents.ViewViewComponentResult.ExecuteAsync(ViewComponentContext context)
+   at Microsoft.AspNetCore.Mvc.ViewComponents.DefaultViewComponentInvoker.InvokeAsync(ViewComponentContext context)
+   at Microsoft.AspNetCore.Mvc.ViewComponents.DefaultViewComponentHelper.InvokeCoreAsync(ViewComponentDescriptor descriptor, Object arguments)
+   at AspNetCore.Areas_Stores_Views_ManageStores_ECI_01_00.ExecuteAsync() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\Stores\Views\ManageStores\ECI_01_00.cshtml:line 96
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ActionContext actionContext, IView view, ViewDataDictionary viewData, ITempDataDictionary tempData, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeResultAsync(IActionResult result)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResultFilterAsync[TFilter,TFilterAsync]()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResultExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeResultFilters()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResourceFilter()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeFilterPipelineAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeAsync()
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)|url: http://localhost/Stores/ManageStores/ECI_01_00|action: ECI_01_00
+2022-08-12 21:19:03.8316|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2022-08-12 23:10:06.0936||ERROR|eSyaEnterprise_UI.Areas.Facilities.Controllers.DoctorsController|UD:GetClinicConsultantTreeList:For BusinessId 111 , SpecialtyId 1 and DoctorId entered 1 System.Threading.Tasks.TaskCanceledException: The operation was canceled. ---> System.IO.IOException: Unable to read data from the transport connection: The I/O operation has been aborted because of either a thread exit or an application request. ---> System.Net.Sockets.SocketException: The I/O operation has been aborted because of either a thread exit or an application request
+   --- End of inner exception stack trace ---
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.GetResult(Int16 token)
+   at System.Net.Http.HttpConnection.SendAsyncCore(HttpRequestMessage request, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsyncCore(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithNtConnectionAuthAsync(HttpConnection connection, HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithRetryAsync(HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncBuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at eSyaEssentials_UI.HttpClientServices.GetAsync[T](String url)
+   at eSyaEnterprise_UI.Areas.Facilities.Controllers.DoctorsController.GetClinicConsultantTreeList(Int32 businessKey, Int32 specialtyId, Int32 doctorId) in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\Facilities\Controllers\DoctorsController.cs:line 366|url: http://localhost/Doctors/GetClinicConsultantTreeList|action: GetClinicConsultantTreeList
+2022-08-12 23:10:06.3120|1|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An unhandled exception has occurred while executing the request. System.Threading.Tasks.TaskCanceledException: The operation was canceled. ---> System.IO.IOException: Unable to read data from the transport connection: The I/O operation has been aborted because of either a thread exit or an application request. ---> System.Net.Sockets.SocketException: The I/O operation has been aborted because of either a thread exit or an application request
+   --- End of inner exception stack trace ---
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.GetResult(Int16 token)
+   at System.Net.Http.HttpConnection.SendAsyncCore(HttpRequestMessage request, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at eSyaEnterprise_UI.Areas.Facilities.Controllers.DoctorsController.GetClinicConsultantTreeList(Int32 businessKey, Int32 specialtyId, Int32 doctorId) in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\Facilities\Controllers\DoctorsController.cs:line 425
+   at lambda_method(Closure , Object )
+   at Microsoft.Extensions.Internal.ObjectMethodExecutorAwaitable.Awaiter.GetResult()
+   at Microsoft.AspNetCore.Mvc.Internal.ActionMethodExecutor.TaskOfActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeNextActionFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Rethrow(ActionExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeInnerFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResourceFilter()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeFilterPipelineAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeAsync()
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/Doctors/GetClinicConsultantTreeList|action: GetClinicConsultantTreeList
+2022-08-12 23:10:06.4842|3|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An exception was thrown attempting to execute the error handler. System.ArgumentNullException: Value cannot be null.
+Parameter name: logger
+   at Microsoft.Extensions.Logging.LoggerExtensions.Log(ILogger logger, LogLevel logLevel, EventId eventId, Exception exception, String message, Object[] args)
+   at Microsoft.Extensions.Logging.LoggerExtensions.LogError(ILogger logger, Exception exception, String message, Object[] args)
+   at eSyaEnterprise_UI.Extension.ExceptionMiddlewareExtensions.<>c.<<ConfigureExceptionHandler>b__0_1>d.MoveNext() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Extension\ExceptionMiddlewareExtensions.cs:line 44
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/Doctors/GetClinicConsultantTreeList|action: GetClinicConsultantTreeList
+2022-08-12 23:10:06.5223|1|ERROR|Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware|An unhandled exception has occurred while executing the request. System.Threading.Tasks.TaskCanceledException: The operation was canceled. ---> System.IO.IOException: Unable to read data from the transport connection: The I/O operation has been aborted because of either a thread exit or an application request. ---> System.Net.Sockets.SocketException: The I/O operation has been aborted because of either a thread exit or an application request
+   --- End of inner exception stack trace ---
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.GetResult(Int16 token)
+   at System.Net.Http.HttpConnection.SendAsyncCore(HttpRequestMessage request, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at eSyaEnterprise_UI.Areas.Facilities.Controllers.DoctorsController.GetClinicConsultantTreeList(Int32 businessKey, Int32 specialtyId, Int32 doctorId) in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\Facilities\Controllers\DoctorsController.cs:line 425
+   at lambda_method(Closure , Object )
+   at Microsoft.Extensions.Internal.ObjectMethodExecutorAwaitable.Awaiter.GetResult()
+   at Microsoft.AspNetCore.Mvc.Internal.ActionMethodExecutor.TaskOfActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeNextActionFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Rethrow(ActionExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeInnerFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResourceFilter()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeFilterPipelineAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeAsync()
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)|url: http://localhost/Doctors/GetClinicConsultantTreeList|action: GetClinicConsultantTreeList
+2022-08-12 23:41:10.3358||ERROR|eSyaEnterprise_UI.Areas.DoctorScheduler.Controllers.AppointmentController|UD:GetDoctorUnScheduleWorkOrder:params:specialtyId:1:doctorId:1 System.Exception: Internal Server Error|url: http://localhost/Appointment/GetDoctorUnScheduleWorkOrder|action: GetDoctorUnScheduleWorkOrder
+2022-08-12 23:41:11.1436||ERROR|eSyaEnterprise_UI.Areas.DoctorScheduler.Controllers.AppointmentController|UD:GetPatientAppointmentByDoctorDate:params:businessKey:111:specialtyId:1:doctorId1:start:8/8/2022 12:00:00 AM:end:8/9/2022 12:00:00 AM System.Exception: Internal Server Error|url: http://localhost/Appointment/GetPatientAppointmentByDoctorDate|action: GetPatientAppointmentByDoctorDate
+2022-08-12 23:41:38.0059||ERROR|eSyaEnterprise_UI.Areas.DoctorScheduler.Controllers.AppointmentController|UD:GetDoctorUnScheduleWorkOrder:params:specialtyId:1:doctorId:1 System.Exception: Internal Server Error|url: http://localhost/Appointment/GetDoctorUnScheduleWorkOrder|action: GetDoctorUnScheduleWorkOrder
+2022-08-12 23:41:38.6857||ERROR|eSyaEnterprise_UI.Areas.DoctorScheduler.Controllers.AppointmentController|UD:GetPatientAppointmentByDoctorDate:params:businessKey:111:specialtyId:1:doctorId1:start:8/15/2022 12:00:00 AM:end:8/16/2022 12:00:00 AM System.Exception: Internal Server Error|url: http://localhost/Appointment/GetPatientAppointmentByDoctorDate|action: GetPatientAppointmentByDoctorDate
+2022-08-12 23:41:39.8115||ERROR|eSyaEnterprise_UI.Areas.DoctorScheduler.Controllers.AppointmentController|UD:InsertIntoDoctorSlotBooking:params:{"BusinessKey":111,"FinancialYear":0,"DocumentID":0,"DocumentNumber":0,"AppointmentKey":0,"ClinicId":0,"ConsultationId":0,"SpecialtyID":1,"SpecialtyDesc":null,"DoctorID":1,"DoctorName":null,"AppointmentDate":"2022-08-15T00:00:00","AppointmentFromTime":"10:00:00","Duration":5,"StartDate":"0001-01-01T00:00:00","EndDate":"0001-01-01T00:00:00","AppointmentStatus":null,"ReasonforAppointment":null,"ReasonforCancellation":null,"QueueTokenKey":null,"VisitType":null,"EpisodeType":null,"ClinicType":0,"ConsultationType":0,"PatientID":null,"UHID":null,"PatientFirstName":null,"PatientMiddleName":null,"PatientLastName":null,"Gender":null,"DateOfBirth":null,"PatientMobileNumber":null,"SecondaryMobileNumber":null,"PatientEmailID":null,"IsSponsored":false,"CustomerID":null,"ReferredBy":0,"PaymentReceived":false,"RequestChannel":0,"PatientName":null,"Age":0,"BMI":null,"SurgeryCode":null,"SurgeryName":null,"SurgeryDate":"0001-01-01T00:00:00","ActiveStatus":true,"FormID":"EDA_01_00","UserID":10,"TerminalID":"192.168.1.5"} System.Exception: Internal Server Error|url: http://localhost/Appointment/InsertIntoDoctorSlotBooking|action: InsertIntoDoctorSlotBooking
+2022-08-12 23:54:29.2228|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2022-08-12 23:57:40.8562||ERROR|eSyaEnterprise_UI.Areas.DoctorScheduler.Controllers.AppointmentController|UD:GetDoctorUnScheduleWorkOrder:params:specialtyId:1:doctorId:1 System.Exception: Internal Server Error|url: http://localhost/Appointment/GetDoctorUnScheduleWorkOrder|action: GetDoctorUnScheduleWorkOrder
+2022-08-12 23:57:47.9635||ERROR|eSyaEnterprise_UI.Areas.DoctorScheduler.Controllers.AppointmentController|UD:GetPatientAppointmentByDoctorDate:params:businessKey:111:specialtyId:1:doctorId1:start:8/15/2022 12:00:00 AM:end:8/16/2022 12:00:00 AM System.Exception: Internal Server Error|url: http://localhost/Appointment/GetPatientAppointmentByDoctorDate|action: GetPatientAppointmentByDoctorDate
+2022-08-12 23:57:49.7639||ERROR|eSyaEnterprise_UI.Areas.DoctorScheduler.Controllers.AppointmentController|UD:InsertIntoDoctorSlotBooking:params:{"BusinessKey":111,"FinancialYear":0,"DocumentID":0,"DocumentNumber":0,"AppointmentKey":0,"ClinicId":0,"ConsultationId":0,"SpecialtyID":1,"SpecialtyDesc":null,"DoctorID":1,"DoctorName":null,"AppointmentDate":"2022-08-15T00:00:00","AppointmentFromTime":"10:05:00","Duration":5,"StartDate":"0001-01-01T00:00:00","EndDate":"0001-01-01T00:00:00","AppointmentStatus":null,"ReasonforAppointment":null,"ReasonforCancellation":null,"QueueTokenKey":null,"VisitType":null,"EpisodeType":null,"ClinicType":0,"ConsultationType":0,"PatientID":null,"UHID":null,"PatientFirstName":null,"PatientMiddleName":null,"PatientLastName":null,"Gender":null,"DateOfBirth":null,"PatientMobileNumber":null,"SecondaryMobileNumber":null,"PatientEmailID":null,"IsSponsored":false,"CustomerID":null,"ReferredBy":0,"PaymentReceived":false,"RequestChannel":0,"PatientName":null,"Age":0,"BMI":null,"SurgeryCode":null,"SurgeryName":null,"SurgeryDate":"0001-01-01T00:00:00","ActiveStatus":true,"FormID":"EDA_01_00","UserID":10,"TerminalID":"192.168.1.5"} System.Exception: Internal Server Error|url: http://localhost/Appointment/InsertIntoDoctorSlotBooking|action: InsertIntoDoctorSlotBooking
+2022-08-12 23:59:50.5070||ERROR|eSyaEnterprise_UI.Areas.DoctorScheduler.Controllers.AppointmentController|UD:InsertIntoDoctorSlotBooking:params:{"BusinessKey":111,"FinancialYear":0,"DocumentID":0,"DocumentNumber":0,"AppointmentKey":0,"ClinicId":0,"ConsultationId":0,"SpecialtyID":1,"SpecialtyDesc":null,"DoctorID":1,"DoctorName":null,"AppointmentDate":"2022-08-15T00:00:00","AppointmentFromTime":"10:10:00","Duration":5,"StartDate":"0001-01-01T00:00:00","EndDate":"0001-01-01T00:00:00","AppointmentStatus":null,"ReasonforAppointment":null,"ReasonforCancellation":null,"QueueTokenKey":null,"VisitType":null,"EpisodeType":null,"ClinicType":0,"ConsultationType":0,"PatientID":null,"UHID":null,"PatientFirstName":null,"PatientMiddleName":null,"PatientLastName":null,"Gender":null,"DateOfBirth":null,"PatientMobileNumber":null,"SecondaryMobileNumber":null,"PatientEmailID":null,"IsSponsored":false,"CustomerID":null,"ReferredBy":0,"PaymentReceived":false,"RequestChannel":0,"PatientName":null,"Age":0,"BMI":null,"SurgeryCode":null,"SurgeryName":null,"SurgeryDate":"0001-01-01T00:00:00","ActiveStatus":true,"FormID":"EDA_01_00","UserID":10,"TerminalID":"192.168.1.5"} System.Exception: Internal Server Error|url: http://localhost/Appointment/InsertIntoDoctorSlotBooking|action: InsertIntoDoctorSlotBooking

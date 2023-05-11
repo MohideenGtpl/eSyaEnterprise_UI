@@ -1,0 +1,38 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "V_4030_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts{
+    <script src="~/js/eSyaPayroll/VariableIncentive.js"></script>
+}
+
+
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-6 form-group">
+        <label>Pay Period</label>
+        <select class="selectpicker" data-live-search="true" id="cboPayperiod" title="" data-size="8"
+                asp-items="@ViewBag.Payperiods"
+                onchange="fnGridLoadIncentiveAmount()"></select>
+    </div>
+
+    <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+        <label>ER Code</label>
+        <select class="selectpicker" data-live-search="true" id="cboErcode" title="" data-size="8"
+                asp-items="@ViewBag.ERcodes"
+                onchange="fnGridLoadIncentiveAmount()"></select>
+
+    </div>
+
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <table id="jqgIncentiveAmount"></table>
+        <div id="jqpIncentiveAmount"></div>
+    </div>
+
+</div>
+<hr />
+<div class="mdl-card__actions text-center pad0 itemblur">
+    <button type="button" class="btn btn-primary marbot15" id="btnSave" onclick="fnSaveIncentiveAmount()"><i class="fa fa-save"></i> Save </button>
+</div>

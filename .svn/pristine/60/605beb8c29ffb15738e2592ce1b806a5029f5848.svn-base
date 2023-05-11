@@ -1,0 +1,494 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.ActionFilter;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using eSyaEnterprise_UI.Areas.Pharmacy.Data;
+using eSyaEnterprise_UI.Areas.Pharmacy.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
+using eSyaEnterprise_UI.Areas.ConfigureServices.Models;
+using Newtonsoft.Json;
+
+namespace eSyaEnterprise_UI.Areas.Pharmacy.Controllers
+{
+    [SessionTimeout]
+    public class GenericController : Controller
+    {
+        private readonly IPharmacyAPIServices _IPharmacyAPIServices;
+        private readonly ILogger<GenericController> _logger;
+
+        public GenericController(IPharmacyAPIServices PharmacyAPIServices, ILogger<GenericController> logger)
+        {
+            _IPharmacyAPIServices = PharmacyAPIServices;
+            _logger = logger;
+        }
+
+        #region Generic
+        [Area("Pharmacy")]
+        public IActionResult ECP_01()
+        {
+            //var serviceResponse = await _IPharmacyAPIServices.HttpClientServices.GetAsync<List<DO_ApplicationCode>>("Generic/GetDrugClass");
+            //if (serviceResponse.Status)
+            //{
+            //    if (serviceResponse.Data != null)
+            //    {
+            //        ViewBag.DrugClassList = serviceResponse.Data.Select(c => new SelectListItem
+            //        {
+            //            Value = c.ApplicationCode.ToString(),
+            //            Text = c.CodeDesc,
+            //        }).ToList();
+            //    }
+            //}
+            //else
+            //{
+            //    _logger.LogError(new Exception(serviceResponse.Message), "UD:Index:GetDrugClass");
+            //}
+            return View();
+        }
+
+        /// <summary>
+        /// Getting Generic List By Prefix
+        /// </summary>
+        [HttpGet]
+        public async Task<JsonResult> GetGenericByPrefix(string prefix)
+        {
+            try
+            {
+                var parameter = "?prefix=" + prefix;
+                var serviceResponse = await _IPharmacyAPIServices.HttpClientServices.GetAsync<List<DO_Generic>>("Generic/GetGenericByPrefix" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetGenericByPrefix :For prefix {0} ", prefix);
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Getting  Drug Characteristics List.
+        /// </summary>
+        [HttpGet]
+        public async Task<JsonResult> GetDrugCharacteristicsByTypeList(string l_type)
+        {
+            try
+            {
+                var parameter = "?l_type=" + l_type;
+                var serviceResponse = await _IPharmacyAPIServices.HttpClientServices.GetAsync<List<DO_DrugCharacteristics>>("Generic/GetDrugCharacteristicsByTypeList" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetDrugCharacteristicsByTypeList :For l_type {0} ", l_type);
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Insert or Update Generic
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> AddOrUpdateGeneric(DO_Generic obj)
+        {
+
+            try
+            {
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                
+                    var serviceResponse = await _IPharmacyAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("Generic/AddOrUpdateGeneric", obj);
+                    if (serviceResponse.Status)
+                        return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:AddOrUpdateGeneric:params:" + JsonConvert.SerializeObject(obj));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+                       
+               
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:AddOrUpdateGeneric:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Getting Generic List For tree
+        /// </summary>
+        [HttpGet]
+        public async Task<ActionResult> GetGenericForTree(string prefix)
+        {
+            try
+            {
+                List<jsTreeObject> treeView = new List<jsTreeObject>();
+
+                jsTreeObject jsObj = new jsTreeObject();
+                jsObj.id = "G";
+                jsObj.parent = "#";
+                jsObj.text = "Generics";
+                jsObj.icon = "/images/jsTree/foldergroupicon.png";
+                jsObj.state = new stateObject { opened = true, selected = false };
+                treeView.Add(jsObj);
+
+                var parameter = "?prefix=" + prefix;
+                var serviceResponse = await _IPharmacyAPIServices.HttpClientServices.GetAsync<List<DO_Generic>>("Generic/GetGenericByPrefix" + parameter);
+
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        var g_list = serviceResponse.Data;
+                        foreach (var g in g_list)
+                        {
+                            jsObj = new jsTreeObject();
+                            jsObj.id = g.GenericId.ToString();
+                            jsObj.text = g.GenericDesc;
+                            jsObj.icon = "/images/jsTree/openfolder.png";
+                            jsObj.parent = "G";
+                            treeView.Add(jsObj);
+                        }
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetGenericForTree :For prefix {0} ", prefix);
+                }
+
+                return Json(treeView);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetGenericForTree :For prefix {0} ", prefix);
+                return Json(new DO_ReturnParameter() { Status = false, Message = ex.Message });
+            }
+        }
+
+
+        /// <summary>
+        /// Getting Generic By ID
+        /// </summary>
+        [HttpGet]
+        public async Task<JsonResult> GetGenericByID(int GenericID)
+        {
+            try
+            {
+                var parameter = "?GenericID=" + GenericID;
+                var serviceResponse = await _IPharmacyAPIServices.HttpClientServices.GetAsync<DO_Generic>("Generic/GetGenericByID" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetGenericByID :For GenericID {0} ", GenericID);
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+        #endregion
+
+        #region Composition
+        [Area("Pharmacy")]
+        public IActionResult ECP_02()
+        {            
+            return View();
+        }
+
+        /// <summary>
+        /// Getting Composition List By Prefix
+        /// </summary>
+        [HttpGet]
+        public async Task<JsonResult> GetCompositionByPrefix(string prefix)
+        {
+            try
+            {
+                var parameter = "?prefix=" + prefix;
+                var serviceResponse = await _IPharmacyAPIServices.HttpClientServices.GetAsync<List<DO_Composition>>("Generic/GetCompositionByPrefix" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetCompositionByPrefix :For prefix {0} ", prefix);
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Insert or Update Composition
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> AddOrUpdateComposition(DO_Composition obj)
+        {
+
+            try
+            {
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                var serviceResponse = await _IPharmacyAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("Generic/AddOrUpdateComposition", obj);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:AddOrUpdateComposition:params:" + JsonConvert.SerializeObject(obj));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:AddOrUpdateComposition:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Getting Composition List For tree
+        /// </summary>
+        [HttpGet]
+        public async Task<ActionResult> GetCompositionForTree(string prefix)
+        {
+            try
+            {
+                List<jsTreeObject> treeView = new List<jsTreeObject>();
+
+                jsTreeObject jsObj = new jsTreeObject();
+                jsObj.id = "C";
+                jsObj.parent = "#";
+                jsObj.text = "Compositions";
+                jsObj.icon = "/images/jsTree/foldergroupicon.png";
+                jsObj.state = new stateObject { opened = true, selected = false };
+                treeView.Add(jsObj);
+
+                var parameter = "?prefix=" + prefix;
+                var serviceResponse = await _IPharmacyAPIServices.HttpClientServices.GetAsync<List<DO_Composition>>("Generic/GetCompositionByPrefix" + parameter);
+
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        var g_list = serviceResponse.Data;
+                        foreach (var g in g_list)
+                        {
+                            jsObj = new jsTreeObject();
+                            jsObj.id = g.CompositionId.ToString();
+                            jsObj.text = g.CompositionDesc;
+                            jsObj.icon = "/images/jsTree/openfolder.png";
+                            jsObj.parent = "C";
+                            treeView.Add(jsObj);
+                        }
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetCompositionForTree :For prefix {0} ", prefix);
+                }
+
+                return Json(treeView);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetCompositionForTree :For prefix {0} ", prefix);
+                return Json(new DO_ReturnParameter() { Status = false, Message = ex.Message });
+            }
+        }
+
+
+        /// <summary>
+        /// Getting Composition By ID
+        /// </summary>
+        [HttpGet]
+        public async Task<JsonResult> GetCompositionByID(int CompositionID)
+        {
+            try
+            {
+                var parameter = "?CompositionID=" + CompositionID;
+                var serviceResponse = await _IPharmacyAPIServices.HttpClientServices.GetAsync<DO_Composition>("Generic/GetCompositionByID" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetCompositionByID :For CompositionID {0} ", CompositionID);
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+        #endregion
+
+        #region Generic Composition Link
+        [Area("Pharmacy")]
+        public IActionResult ECP_03()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// Getting Generic/Composition Link List.
+        /// </summary>
+        [HttpGet]
+        public async Task<JsonResult> GetGenericComposition(string prefix)
+        {
+            try
+            {
+                var parameter = "?prefix=" + prefix;
+                var serviceResponse = await _IPharmacyAPIServices.HttpClientServices.GetAsync<List<DO_GenericComposition>>("Generic/GetGenericComposition" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetGenericComposition:For prefix {0} ", prefix);
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+
+        /// <summary>
+        /// Add Or Update Generic/Composition Link.
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> AddOrUpdateGenericComposition(DO_GenericComposition obj)
+        {
+
+            try
+            {
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                var serviceResponse = await _IPharmacyAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("Generic/AddOrUpdateGenericComposition", obj);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:AddOrUpdateGenericComposition:params:" + JsonConvert.SerializeObject(obj));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:AddOrUpdateGenericComposition:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Getting Generic List For tree
+        /// </summary>
+        [HttpGet]
+        public async Task<ActionResult> GetGenericCompositionForTree(string prefix)
+        {
+            try
+            {
+                List<jsTreeObject> treeView = new List<jsTreeObject>();
+
+                jsTreeObject jsObj = new jsTreeObject();
+                jsObj.id = "L";
+                jsObj.parent = "#";
+                jsObj.text = "Generics / Compositions";
+                jsObj.icon = "/images/jsTree/foldergroupicon.png";
+                jsObj.state = new stateObject { opened = true, selected = false };
+                treeView.Add(jsObj);
+
+                var parameter = "?prefix=" + prefix;
+                var serviceResponse = await _IPharmacyAPIServices.HttpClientServices.GetAsync<List<DO_GenericComposition>>("Generic/GetGenericComposition" + parameter);
+
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        var g_list = serviceResponse.Data
+                            .Select(s => new { GenericId = s.GenericId, GenericDesc = s.GenericDesc })
+                            .Distinct().ToList(); ;
+                        foreach (var g in g_list)
+                        {
+                            jsObj = new jsTreeObject();
+                            jsObj.id = "G" + g.GenericId.ToString();
+                            jsObj.text = g.GenericDesc;
+                            jsObj.icon = "/images/jsTree/openfolder.png";
+                            jsObj.parent = "L";
+                            treeView.Add(jsObj);
+                            var c_list = serviceResponse.Data
+                                .Where(w=> w.GenericId == g.GenericId)
+                                .Select(r => new DO_GenericComposition { CompositionId =r.CompositionId , CompositionDesc = r.CompositionDesc }).Distinct().ToList(); ;
+                            foreach (var c in c_list)
+                            {
+                                jsObj = new jsTreeObject();
+                                jsObj.id = "C" + g.GenericId.ToString() + c.CompositionId.ToString();
+                                jsObj.text = c.CompositionDesc;
+                                jsObj.icon = "/images/jsTree/openfolder.png";
+                                jsObj.parent = "G" + g.GenericId.ToString();
+                                treeView.Add(jsObj);
+
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetGenericCompositionForTree :For prefix {0} ", prefix);
+                }
+
+                return Json(treeView);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetGenericCompositionForTree :For prefix {0} ", prefix);
+                return Json(new DO_ReturnParameter() { Status = false, Message = ex.Message });
+            }
+        }
+
+
+        /// <summary>
+        /// Getting  Generic/Composition Link.
+        /// </summary>
+        [HttpGet]
+        public async Task<JsonResult> GetGenericCompositionByID(int GenericID, int CompositionID)
+        {
+            try
+            {
+                var parameter = "?GenericID=" + GenericID;
+                parameter += "&CompositionID=" + CompositionID;
+                var serviceResponse = await _IPharmacyAPIServices.HttpClientServices.GetAsync<DO_GenericComposition>("Generic/GetGenericCompositionByID" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetGenericCompositionByID :For GenericID {0} , CompositionID {1} ", GenericID,CompositionID);
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+        #endregion
+    }
+}

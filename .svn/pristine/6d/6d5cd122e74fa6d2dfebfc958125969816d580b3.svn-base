@@ -1,0 +1,448 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
+using eSyaEnterprise_UI.Areas.Config.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using System.IO;
+using System.Drawing;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
+using System.Text.RegularExpressions;
+namespace eSyaEnterprise_UI.Areas.Config.Controllers
+{
+    public class CountryController : Controller
+    {
+        ESyaWebAPI _eSyaWebAPI = new ESyaWebAPI();
+        private IHostingEnvironment _env;
+
+        public CountryController(IHostingEnvironment env)
+        {
+            _env = env;
+        }
+        #region Country Codes
+        /// <summary>
+        /// Country codes
+        /// </summary>
+        /// <returns></returns>
+        /// 
+
+        [Area("Config")]
+        public IActionResult V_7_00()
+        {
+            try
+            {
+                var domainname = this.Request.PathBase;
+                var ImagePath = Path.Combine(_env.WebRootPath, "Uploads/CountryFlagICons");
+                DirectoryInfo dir = new DirectoryInfo(ImagePath);
+                FileInfo[] files = dir.GetFiles();
+
+                var localdname = domainname + "Uploads/CountryFlagICons";
+                var serverdname = domainname + "/Uploads/CountryFlagICons";
+
+                List<IMGCountryFlag> ImageList = new List<IMGCountryFlag>();
+                foreach (var item in files)
+                {
+                    IMGCountryFlag obj = new IMGCountryFlag()
+                    {
+                        Name = item.Name,
+                        localDomainwithPath = localdname,
+                        ServerDomainwithPath = serverdname,
+                        DomainName = domainname
+                    };
+                    ImageList.Add(obj);
+
+                }
+                ViewBag.Images = ImageList;
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("CurrencyMaster/GetActiveCurrencyList").Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<List<DO_CurrencyMaster>>(stringData);
+                ViewBag.currencyList = data;
+                return View();
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+
+        }
+
+        /// <summary>
+        /// Insert or Update Country Codes
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertOrUpdateCountryCodes([FromBody] DO_CountryCodes countrycode)
+        {
+            try
+            {
+                string filePath = "Uploads/CountryFlagICons/" + countrycode.imgName;
+                countrycode.CountryFlag = filePath;
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                countrycode.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                countrycode.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                countrycode.FormId = AppSessionVariables.GetSessionFormID(HttpContext).ToString();
+                if (countrycode.Isadd == 1)
+                {
+
+                    HttpResponseMessage Insertresponse = client.PostAsJsonAsync<DO_CountryCodes>("Country/InsertIntoCountryCode", countrycode).Result;
+                    string resp = Insertresponse.Content.ReadAsStringAsync().Result;
+                    var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(resp);
+                    return Json(result);
+                }
+
+                else
+                {
+                    HttpResponseMessage Updateresponse = client.PostAsJsonAsync<DO_CountryCodes>("Country/UpdateCountryCode", countrycode).Result;
+                    string resp = Updateresponse.Content.ReadAsStringAsync().Result;
+                    var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(resp);
+                    return Json(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+        /// <summary>
+        ///Get All Country Codes for Grid
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetAllCountryCodes()
+        {
+
+            try
+            {
+                var domainname = this.Request.PathBase;
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("Country/GetAllCountryCodes").Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<List<DO_CountryCodes>>(stringData);
+                List<DO_CountryCodes> countries = new List<DO_CountryCodes>();
+                //for server hosting
+                foreach (var item in data)
+                {
+                    DO_CountryCodes country = new DO_CountryCodes()
+                    {
+                        Isdcode = item.Isdcode,
+                        CountryCode = item.CountryCode,
+                        CountryName = item.CountryName,
+                        CountryFlag = domainname + item.CountryFlag,
+                        CurrencyCode = item.CurrencyCode,
+                        MobileNumberPattern = item.MobileNumberPattern,
+                        Uidlabel = item.Uidlabel,
+                        Uidpattern = item.Uidpattern,
+                        Nationality = item.Nationality,
+                        IsPoboxApplicable = item.IsPoboxApplicable,
+                        PoboxPattern = item.PoboxPattern,
+                        IsPinapplicable = item.IsPinapplicable,
+                        PincodePattern = item.PincodePattern,
+                        ActiveStatus = item.ActiveStatus,
+                        postedfile = item.postedfile,
+                        imgName = item.imgName,
+                        CurrencyName = item.CurrencyName
+                    };
+                    countries.Add(country);
+
+                }
+                return Json(countries);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+        #endregion Country Codes
+
+
+        #region Country Statutory Details
+
+        /// <summary>
+        /// Country Statutory Details
+        /// </summary>
+        /// <returns></returns>
+        /// 
+        [Area("Config")]
+        public IActionResult V_8_00()
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("Country/GetActiveCountryCodes").Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<List<DO_CountryCodes>>(stringData);
+                ViewBag.Isdcodes = data;
+                return View();
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+
+        }
+
+
+
+        /// <summary>
+        /// Get Country Statutory Details by ISD Code for Grid
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetStatutoryCodesbyIsdcode(int Isdcode)
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                var parameter = "?Isdcode=" + Isdcode;
+                HttpResponseMessage response = client.GetAsync("Country/GetStatutoryCodesbyIsdcode" + parameter).Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<List<DO_CountryStatutoryDetails>>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Insert or Update Country Statutory Details
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertOrUpdateStatutoryCodes([FromBody] DO_CountryStatutoryDetails postData)
+        {
+
+            try
+            {
+                if (postData.Isdcode == 0)
+                {
+                    return Json(new { Status = false, Message = "Please Select ISD Code" });
+                }
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                postData.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                postData.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                postData.FormId = AppSessionVariables.GetSessionFormID(HttpContext).ToString();
+                HttpResponseMessage response = client.PostAsJsonAsync<DO_CountryStatutoryDetails>("Country/InsertOrUpdateStatutoryCodes", postData).Result;
+                string data = response.Content.ReadAsStringAsync().Result;
+                var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(data);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+        #endregion Country Statutory Details
+
+        #region Tax Structure
+        [Area("Config")]
+        public IActionResult V_9_00()
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("ConfigMasterData/GetISDCodes").Result;
+                string data = response.Content.ReadAsStringAsync().Result;
+                List<DO_CountryCodes> countrycodes = JsonConvert.DeserializeObject<List<DO_CountryCodes>>(data);
+                ViewBag.co_list = countrycodes;
+                return View();
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+
+        /// <summary>
+        ///Get Tax Structure by Country Code for Grid
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetTaxStructureByISDCode(int ISDCode)
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("TaxStructure/GetTaxStructureByISDCode?ISDCode=" + ISDCode).Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<List<DO_TaxStructure>>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        ///Get Tax Structure by Country Code And Tax Code for Grid
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetTaxStructureByTaxCode(int ISDCode, int TaxCode)
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("TaxStructure/GetTaxStructureByTaxCode?ISDCode=" + ISDCode + "&TaxCode=" + TaxCode).Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<List<DO_TaxStructure>>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Insert Tax Structure 
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertOrUpdateTaxStructure([FromBody] DO_TaxStructure tax_Struc)
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                tax_Struc.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                tax_Struc.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                tax_Struc.FormId = AppSessionVariables.GetSessionFormID(HttpContext).ToString();
+                tax_Struc.ActiveStatus = true;
+                if (tax_Struc.TaxCode == 0)
+                {
+
+                    HttpResponseMessage Insertresponse = client.PostAsJsonAsync<DO_TaxStructure>("TaxStructure/InsertIntoTaxStructure", tax_Struc).Result;
+                    string resp = Insertresponse.Content.ReadAsStringAsync().Result;
+                    var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(resp);
+                    return Json(result);
+                }
+
+                else
+                {
+                    HttpResponseMessage Updateresponse = client.PostAsJsonAsync<DO_TaxStructure>("TaxStructure/UpdateTaxStructure", tax_Struc).Result;
+                    string resp = Updateresponse.Content.ReadAsStringAsync().Result;
+                    var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(resp);
+                    return Json(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+        #endregion Tax Structure Details
+
+        #region Tax Code Rule
+        [Area("Config")]
+        public IActionResult V_10_00()
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("ConfigMasterData/GetISDCodes").Result;
+                string data = response.Content.ReadAsStringAsync().Result;
+                List<DO_CountryCodes> countrycodes = JsonConvert.DeserializeObject<List<DO_CountryCodes>>(data);
+                ViewBag.co_list = countrycodes;
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+
+        /// <summary>
+        ///Get Tax Codes by ISD Codes
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetTaxCodeByISDCode(int ISDCode)
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                var parameter = "?ISDCode=" + ISDCode;
+                HttpResponseMessage response = client.GetAsync("ConfigMasterData/GetTaxCodeByISDCodes" + parameter).Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<List<DO_TaxStructure>>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        ///Get Tax Rule Details by Country Code And Tax Code for Grid
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetTaxRuleByISDandTaxCode(int ISDCode, int TaxCode)
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("TaxRule/GetTaxRuleByISDandTaxCode?ISDCode=" + ISDCode + "&TaxCode=" + TaxCode).Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<List<DO_TaxRule>>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Insert Tax Structure 
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertIntoTaxRule([FromBody] DO_TaxRule tax_Rule)
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                tax_Rule.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                tax_Rule.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                tax_Rule.FormId = AppSessionVariables.GetSessionFormID(HttpContext).ToString();
+                tax_Rule.ActiveStatus = true;
+                if (tax_Rule.SerialNumber == 0)
+                {
+
+                    HttpResponseMessage Insertresponse = client.PostAsJsonAsync<DO_TaxRule>("TaxRule/InsertIntoTaxRule", tax_Rule).Result;
+                    string resp = Insertresponse.Content.ReadAsStringAsync().Result;
+                    var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(resp);
+                    return Json(result);
+                }
+
+                else
+                {
+                    HttpResponseMessage Updateresponse = client.PostAsJsonAsync<DO_TaxRule>("TaxRule/UpdateTaxRule", tax_Rule).Result;
+                    string resp = Updateresponse.Content.ReadAsStringAsync().Result;
+                    var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(resp);
+                    return Json(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+        
+        #endregion Tax Code Rule
+
+        #region Tax Identification
+        [Area("Config")]
+        public IActionResult V_11_00()
+        {
+            return View();
+        }
+
+        #endregion Tax Identification
+
+    }
+}
+

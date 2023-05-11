@@ -1,0 +1,218 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.ActionFilter;
+using eSyaEnterprise_UI.Areas.PatientManagement.Data;
+using eSyaEnterprise_UI.Areas.PatientManagement.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+
+namespace eSyaEnterprise_UI.Areas.PatientManagement.Controllers
+{
+    [SessionTimeout]
+    public class RegistrationController : Controller
+    {
+        private readonly IPatientManagementAPIServices _patientManagementAPIServices;
+        private readonly ILogger<RegistrationController> _logger;
+
+        public RegistrationController(IPatientManagementAPIServices patientManagementAPIServices, ILogger<RegistrationController> logger)
+        {
+            _patientManagementAPIServices = patientManagementAPIServices;
+            _logger = logger;
+        }
+
+        [Area("PatientManagement")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public IActionResult EPM_03_00(string TokenKey)
+        {
+            ViewBag.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+            ViewBag.TokenKey = TempData["TokenKey"];
+            return View();
+        }
+
+        [Area("PatientManagement")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public IActionResult EPM_03_01(string TokenKey)
+        {
+            ViewBag.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+            ViewBag.TokenKey = TempData["TokenKey"];
+            return View();
+        }
+
+        [Area("PatientManagement")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public IActionResult EPR_03_00(string TokenKey)
+        {
+            ViewBag.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+            ViewBag.TokenKey = TempData["TokenKey"];
+            return View("EPM_03_00");
+        }
+
+        //public PartialViewResult _address()
+        //{
+        //    return PartialView();
+        //}
+        [Area("PatientManagement")]
+        public IActionResult _PatientSearch()
+        {
+            return View();
+        }
+
+
+        public async Task<IActionResult> GetPatientFODeskListByMobile(string mobileNumber)
+        {
+            try
+            {
+                var parameter = "?mobileNumber=" + mobileNumber;
+                var serviceResponse = await _patientManagementAPIServices.HttpClientServices.GetAsync<DO_PatientFODeskList>("OpClinicDetails/GetPatientFODeskListByMobile" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetPatientInfoRegistrationByMobileNo:params:mobileNumber:{0}" + mobileNumber);
+                    return Json(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetPatientInfoRegistrationByMobileNo:params:mobileNumber:{0}" + mobileNumber);
+                throw ex;
+            }
+        }
+
+        public async Task<JsonResult> GetEpisodeType()
+        {
+            try
+            {
+                var serviceResponse = await _patientManagementAPIServices.HttpClientServices.GetAsync<List<DO_EpisodeType>>("Master/GetEpisodeType");
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetEpisodeType");
+                    return Json(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetEpisodeType");
+                throw ex;
+            }
+        }
+
+        public async Task<IActionResult> GetClinictype()
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                var serviceResponse = await _patientManagementAPIServices.HttpClientServices.GetAsync<List<DO_ClinicType>>("OpClinicDetails/GetClinicTypes"+ parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetClinicTypes");
+                    return Json(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetClinicTypes");
+                throw ex;
+            }
+        }
+
+        public async Task<IActionResult> GetSpecialty()
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                var serviceResponse = await _patientManagementAPIServices.HttpClientServices.GetAsync<List<DO_Specialty>>("OpClinicDetails/GetSpecialty"+ parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetSpecialty");
+                    return Json(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetSpecialty");
+                throw ex;
+            }
+        }
+
+        public async Task<IActionResult> GetDoctorScheduleListByClinicTypeSpecialtyDate(int clinicTypeId, int consultationTypeId,
+           int specialtyId)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&clinicTypeId=" + clinicTypeId.ToString();
+                parameter += "&consultationTypeId=" + consultationTypeId.ToString();
+                parameter += "&specialtyID=" + specialtyId.ToString();
+                parameter += "&scheduleDate=" + DateTime.Now.ToString("dd-MMM-yyyy");
+
+                var serviceResponse = await _patientManagementAPIServices.HttpClientServices.GetAsync<List<DO_DoctorClinicSchedule>>("OpClinicDetails/GetDoctorScheduleListByClinicTypeSpecialtyDate"+parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetDoctorScheduleListByClinicTypeSpecialtyDate");
+                    return Json(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetDoctorScheduleListByClinicTypeSpecialtyDate");
+                throw ex;
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<JsonResult> InsertOPRegistrationVisit(DO_OPRegistrationVisit obj)
+        {
+            try
+            {
+
+                if(string.IsNullOrEmpty(obj.PatientProfile.FirstName) 
+                    || string.IsNullOrEmpty(obj.PatientProfile.LastName)
+                    || string.IsNullOrEmpty(obj.PatientProfile.Gender)
+                    || (obj.PatientProfile.DateOfBirth == null && obj.PatientProfile.AgeYY < 0 && obj.PatientProfile.AgeMM < 0)
+                    || string.IsNullOrEmpty(obj.PatientProfile.MobileNumber))
+                {
+                    return Json(new DO_ResponseParameter() { Status = false, Message = "please fill the patient profile" });
+                }
+                obj.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                var serviceResponse = await _patientManagementAPIServices.HttpClientServices.PostAsJsonAsync<DO_ResponseParameter>("OpRegistrationBilling/InsertOPRegistrationVisit", obj);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data.Status)
+                        return Json(serviceResponse.Data);
+                    else
+                        return Json(new { Status = false, serviceResponse.Data.Warning, serviceResponse.Data.WarningMessage, serviceResponse.Data.Message });
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:InsertOPRegistrationVisit:params:" + JsonConvert.SerializeObject(obj));
+                    return Json(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertOPRegistrationVisit:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Warning = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+    }
+}

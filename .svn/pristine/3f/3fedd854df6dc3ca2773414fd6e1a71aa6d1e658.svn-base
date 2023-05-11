@@ -1,0 +1,107 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.Areas.PatientManagement.Data;
+using eSyaEnterprise_UI.Areas.PatientManagement.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+
+namespace eSyaEnterprise_UI.Areas.PatientManagement.Controllers
+{
+    [Route("[controller]/[action]")]
+    [ApiController]
+    public class ServiceRatesController : ControllerBase
+    {
+        private readonly IPatientManagementAPIServices _patientManagementAPIServices;
+        private readonly ILogger<ServiceRatesController> _logger;
+
+        public ServiceRatesController(IPatientManagementAPIServices patientManagementAPIServices, ILogger<ServiceRatesController> logger)
+        {
+            _patientManagementAPIServices = patientManagementAPIServices;
+            _logger = logger;
+        }
+
+        public async Task<IActionResult> GetOpConsultationServiceRate(string episodeId, int clinicId, int consultationId,
+            int specialtyId, int doctorId,
+            int rateType, string currencyCode, long uhid)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&episodeId=" + episodeId;
+                parameter += "&clinicId=" + clinicId;
+                parameter += "&consultationId=" + consultationId;
+                parameter += "&specialtyId=" + specialtyId;
+                parameter += "&doctorId=" + doctorId;
+                parameter += "&rateType=" + rateType;
+                parameter += "&currencyCode=" + currencyCode;
+                parameter += "&uhid=" + uhid;
+
+                var serviceResponse = await _patientManagementAPIServices.HttpClientServices.GetAsync<List<DO_ServiceRates>>("ServiceRates/GetOpConsultationServiceRate" + parameter);
+                if (serviceResponse.Status)
+                    return Ok(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetOpConsultationServiceRate");
+                    return Ok(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetOpConsultationServiceRate");
+                throw ex;
+            }
+        }
+
+        public async Task<IActionResult> GetServiceList()
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+
+                var serviceResponse = await _patientManagementAPIServices.HttpClientServices.GetAsync<List<DO_ServiceRates>>("ServiceRates/GetServiceList"+parameter);
+                if (serviceResponse.Status)
+                    return Ok(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetServiceList");
+                    return Ok(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetServiceList");
+                throw ex;
+            }
+        }
+
+        public async Task<IActionResult> GetServiceRatesForOpBilling(int serviceId, int rateType, string currencyCode)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&serviceId=" + serviceId;
+                parameter += "&rateType=" + rateType;
+                parameter += "&currencyCode=" + currencyCode;
+
+                var serviceResponse = await _patientManagementAPIServices.HttpClientServices.GetAsync<DO_ServiceRates>("ServiceRates/GetServiceRatesForOpBilling"+parameter);
+                if (serviceResponse.Status)
+                    return Ok(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetServiceRatesForOpBilling"+ parameter);
+                    return Ok(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetServiceRatesForOpBilling");
+                throw ex;
+            }
+        }
+
+    }
+}

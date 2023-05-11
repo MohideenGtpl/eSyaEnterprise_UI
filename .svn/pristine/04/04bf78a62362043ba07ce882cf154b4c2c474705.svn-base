@@ -1,0 +1,1309 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model eSyaEnterprise_UI.Areas.eSyaNatureCure.Models.DO_GuestCheckInDetails
+@{
+    ViewData["Title"] = "Guest Info";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/js/eSyaNatureCure/GuestDocumentUpload.js"></script>
+
+
+<script>
+     var localization = {
+         Active: '@Localizer["Active"]',
+         Actions: '@Localizer["Actions"]',
+         Edit: '@Localizer["Edit"]',
+         View: '@Localizer["View"]',
+         Save: '@Localizer["Save"]',
+         Update: '@Localizer["Update"]',
+         Delete: '@Localizer["Delete"]',
+         Activate: '@Localizer["Activate"]',
+         DActivate: '@Localizer["De activate"]',
+         EditDocumentUpload: '@Localizer["Edit Document Upload"]',
+         AddDocumentUpload: '@Localizer["Add Document Upload"]',
+         ViewDocumentUpload: '@Localizer["View Document Upload"]',
+
+    };
+
+</script>
+
+
+<link href="~/css/eSyaNatureCure.css" rel="stylesheet" />
+<style>
+    #rs_mjqgAddOnServices, #rs_mjqgActivities {
+        display: none;
+    }
+</style>
+
+<input id="hdBookingKey" type="hidden" value="@Model.BookingKey" />
+<input id="hdGuestId" type="hidden" value="@Model.GuestId" />
+<input id="hdUHID" type="hidden" value="@Model.UHID" />
+<input id="hdPackageId" type="hidden" value="@Model.PackageId" />
+<section class="">
+    <div class="row m-0">
+        <div class="col-lg-3 col-md-6 col-sm-6 main-content-box d-flex align-items-center">
+            <span class="box-icon"><i class="fas fa-user-md fa-2x"></i></span>
+            <div class="pl-2 d-flex justify-content-around flex-column">
+                @if (Model.UHID > 0)
+                {
+                    <label class=""><span>UHID :</span><span class="text-data"> @Model.UHID</span></label>
+                }
+                <label class=""><span class="text-data">@Model.FirstName  @Model.LastName  </span></label>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6 main-content-box">
+            <div class="d-flex">
+                <span class="box-icon"><i class="fas fa-bed fa-2x"></i></span>
+                <div class="pl-2 d-flex justify-content-around flex-column">
+                    <label class=""><span class="text-data">@Model.PackageDesc</span></label>
+                    <label class=""><span class="text-label">Room Type :</span><span class="text-data"> @Model.RoomTypeName</span></label>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6 col-6 main-content-box">
+            <div class="d-flex">
+                <span class="box-icon"><i class="far fa-building fa-2x"></i></span>
+                <div class="pl-2 d-flex justify-content-around flex-column">
+                    <label class=""><span class="text-label">Room No.:</span><span class="text-data">@Model.RoomNumber</span></label>
+                    <label class=""><span class="text-label">Bed No.:</span><span class="text-data">@Model.BedNumber</span></label>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-lg-3 col-md-6 col-sm-6 col-6 main-content-box">
+            <div class="d-flex justify-content-evenly">
+                <span class="box-icon"><i class="far fa-calendar fa-2x"></i></span>
+                <div class="pl-2 d-flex justify-content-around flex-column">
+                    <label class=""><span class="text-label">Check-In:</span><span class="text-data">@Model.CheckedInDate.ToShortDateString()</span></label>
+                    <label class=""><span class="text-label">Check-Out:</span><span class="text-data">@Model.CheckedOutDate.ToShortDateString()</span></label>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="tab-content py-1"id="statusInfoSection">
+    <div class="row">
+        <div class="col-lg-12 p-0">
+            <label style="display:none;" id="lblcheckedout">
+                Patient has been already CheckedIn
+            </label>
+         </div>
+    </div>
+</section>
+<section class="tab-content mt-0">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 p-0">
+                <ul class="nav nav-pills border-bottom" id="myTabCheckIn" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="personalInfo-tab" data-toggle="tab" href="#tab_personalInfo" role="tab" aria-controls="home" aria-selected="true">Personal Information</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="documentupload-tab" data-toggle="tab" href="#tab_documentupload" role="tab" aria-controls="profile" aria-selected="false" onclick="fnLoadDocumentUpload()">Document Upload</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="guestDetails-tab" data-toggle="tab" href="#tab_guestDetails" role="tab" aria-controls="profile" aria-selected="false" onclick="fnLoadPaymentDetails()">Guest Details</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="payment-tab" data-toggle="tab" href="#tab_payment" role="tab" aria-controls="profile" aria-selected="false" onclick="fnLoadPaymentDetails()">Payment</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="invoicebilling-tab" data-toggle="tab" href="#tab_invoicebilling" role="tab" aria-controls="profile" aria-selected="false" onclick="fnLoadBillingServices()"> Invoice Billing </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="guestcheckout-tab" data-toggle="tab" href="#tab_guestcheckout" role="tab" aria-controls="profile" aria-selected="false" onclick="fnLoadGuestCheckOut()"> Guest Checkout </a>
+                    </li>
+                  
+                </ul>
+
+               
+                <div class="tab-content" id=" myTabCheckInContent">
+
+                    <div class="tab-pane fade show active" id="tab_personalInfo" role="tabpanel" aria-labelledby="personalinfo-tab">
+
+                        <div class="row">
+                            @if (Model.IsCheckedIn == false)
+                            {
+                                <div class="col-lg-4 col-md-4 col-sm-6 form-group">
+                                    <label>Registration is for</label>
+                                    <hr class="left" />
+                                    <div class="form-check border py-1">
+                                        <label>
+                                            <input type='radio' name='chkPatient' value="0" onclick='fnPatient_onSelection();'>
+                                            New Patient
+                                        </label>
+                                    </div>
+                                    @if (Model.lst_Patient.Count > 0)
+                                    {
+                                        @foreach (var p in Model.lst_Patient)
+                                        {
+                                            <div class="form-check border py-1">
+                                                <label>
+                                                    <input type='radio' name='chkPatient' value="@p.RUhid" onclick='fnPatient_onSelection();'>
+                                                    @p.FirstName  @p.LastName (@p.RUhid.ToString())
+                                                </label>
+                                            </div>
+                                        }
+
+                                    }
+                                </div>
+                            }
+                   
+                           
+                              
+                                    <div class="col-lg-2 col-md-2 col-sm-6 form-group">
+                                        <label>First Name</label>
+                                        <input type="text" class="form-control" id="txtFirstName" value="@Model.FirstName" />
+                                    </div>
+                                    <div class="col-lg-2 col-md-2 col-sm-6 form-group">
+                                        <label>Last Name</label>
+                                        <input type="text" class="form-control" id="txtLastName" value="@Model.LastName" />
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-6">
+                                        <div class="row">
+                                            <div class="col-lg-5 col-md-5 col-sm-6 pr-0">
+                                                <div class="form-group">
+                                                    <label for="txtDateOfBirth">DOB <span class="lblInfo"></span></label>
+                                                    <input id="txtDateOfBirth" type="text" class="form-control datepicker" value="@Model.DateOfBirth" />
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-1 col-md-1 col-sm-1  padtop20 pl-lg-0 pl-md-0 pr-0">
+                                                <label>(or)</label>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-sm-6 pl-0">
+                                                <div class="form-group">
+                                                    <label class="d-block">Age <span class="lblInfo">(YY)</span></label>
+                                                    <input id="txtAgeYY" type="text" class="form-control d-inline-block w-25" placeholder="YY" value="@Model.AgeYy" />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-6">
+                                        <div class="form-group">
+                                            <label for="">Gender</label>
+                                            <select class="form-control " id="cboGender" data-container="body" disabled>
+                                                <option>Select</option>
+                                                <option value="M">Male</option>
+                                                <option value="F">Female</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-6 form-group">
+                                        <label>Mobile Number</label>
+                                        @*<input type="text" class="form-control" id="txtMobileNumber" value=@Model.MobileNumber />*@
+                                        @await Component.InvokeAsync("IsdMobileInput", new { id = "MobileNo", value = @Model.MobileNumber })
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-6 form-group">
+                                        <label>Email ID</label>
+                                        <input type="text" class="form-control" id="txtEmailId" value="@Model.EmailId" />
+                                    </div>
+                                
+                               
+                                    @*<div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                                <label>Address</label>
+                                <input type="text" class="form-control" id="txtAddress" value="@Model.Address" />
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+                                <label>City</label>
+                                <input type="text" class="form-control" value="" />
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+                                <label>Pincode</label>
+                                <input type="text" class="form-control" id="txtPincode" value=@Model.Pincode />
+                            </div>*@
+                                    <div class="col-lg-4 col-md-4 col-sm-12">
+                                        <div class="form-group">
+                                            <label>Address</label>
+                                            <textarea id="txtAddress" rows="4" class="form-control" value="@Model.Address">@Model.Address</textarea>
+
+                                        </div>
+
+                                    </div>
+                                    <div class="col-lg-8 col-md-8 col-sm-12">
+                                        <div class="row">
+                                            <div class="col-lg-6 col-lg-6 col-sm-6 form-group">
+                                                <label>State</label>
+                                                <select class="w-100 selectpicker" id="cboState" data-size="8" data-live-search="true" onchange="fncboState_change()">
+                                                    <option value="0">Select</option>
+
+                                                </select>
+                                            </div>
+
+                                            <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                                                <label>City</label>
+                                                <select class="w-100 selectpicker" id="cboCity" data-size="8" data-live-search="true" onchange="fncboCity_change()">
+                                                    <option value="0">Select</option>
+
+                                                </select>
+                                            </div>
+
+                                            <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                                                <label>Area</label>
+                                                <select class="w-100 selectpicker" id="cboArea" data-size="8" data-live-search="true">
+                                                    <option value="0">Select</option>
+
+                                                </select>
+                                            </div>
+
+                                            <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                                                <label>Pin Code</label>
+                                                <input type="text" name="number" class="form-control" id="txtPincode" value=@Model.Pincode />
+                                            </div>
+
+                                        </div>
+                                    </div>
+                             
+                          
+                            <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+                                <hr />
+                                <button class="btn btn-primary mb-1 float-right text-white p-1 btn-sm" id="btnprint" onclick="fnDownloadVoucher();"><i class="fa fa-download"></i> Download Voucher</button>
+                                <button type="button" class="btn btn-primary mr-2" id="btnUpdateCheckInGuest" onclick="fnSubmitForUpdate()"><i class="fa fa-sync"></i>Update</button>
+                                <button type="button" class="btn btn-primary mr-2" id="btnSubmitCheckInGuest" onclick="fnSubmitForCheckIn()"><i class="fa fa-check"></i> Confirm Guest Check-In</button>
+                                <button type="button" class="btn btn-primary" onclick="close_window();return false;"><i class="fa fa-times"></i> Close</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="tab_documentupload" role="tabpanel" aria-labelledby="documentupload-tab">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                                <table id="jqgDocumentUpload"></table>
+                                <div id="jqpDocumentUpload"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="tab_guestDetails" role="tabpanel" aria-labelledby="guestDetails-tab">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                                <table id="jqgGuestDetails"></table>
+                                <div id="jqpGuestDetails"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="tab_payment" role="tabpanel" aria-labelledby="payment-tab">
+                        <div class="row">
+                            <div class="col-lg-2  col-md-2 col-sm-6">
+                                <label class="text-right">Package Amount</label>
+                                <input type="text" id="txtPackageAmount" class="form-control currencyFormat" onkeypress="return OnlyNumeric(event);" readonly style="text-align:right;width:100%" value="@Model.TotalPackageAmount" />
+                            </div>
+                            <div class="col-lg-2  col-md-2 col-sm-6">
+                                <label class="text-right">Net Bill Amount</label>
+                                <input type="text" id="txtNetBillAmount" class="form-control currencyFormat" onkeypress="return OnlyNumeric(event);" readonly style="text-align:right;width:100%" />
+                            </div>
+                            <div class="col-lg-2  col-md-2 col-sm-6">
+                                <label class="text-right">Collected Amount</label>
+                                <input type="text" id="txtCollectedAmount" class="form-control currencyFormat" onkeypress="return OnlyNumeric(event);" readonly style="text-align:right;width:100%" />
+                            </div>
+                            <div class="col-lg-2  col-md-2 col-sm-6">
+                                <label class="text-right">Balance Amount</label>
+                                <input type="text" id="txtBalanceAmount" class="form-control currencyFormat" onkeypress="return OnlyNumeric(event);" readonly style="text-align:right;width:100%" />
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-6" style="vertical-align:bottom;top:10px">
+                                <button type="button" class="btn btn-sm btn-primary " style="font-size:12px !important" onclick="fnShowAddPaymentPopup()"><i class="fa fa-plus"></i> Add Payment</button>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-lg-10 col-md-10 col-sm-12 col-12">
+                                <table id="jqgPaymentDetails"></table>
+                                <div id="jqpPaymentDetails"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="tab_invoicebilling" role="tabpanel" aria-labelledby="invoicebilling-tab">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-12">
+                                <table id="jqgGuestServiceBilling"></table>
+                                <div id="jqpGuestServiceBilling"></div>
+                            </div>
+
+                            <div class="col-lg-6 col-md-6 col-sm-6 padbot10">
+                                <div class="total-box  h-220 shadow-sm p-2">
+                                    <h5 class="total-cash-heading bg-light py-2"><i class="fa fa-file-invoice"></i> Net Bill Amount</h5>
+
+                                    <div class="row m-0">
+                                        <label class="col-lg-6 pad-x-10 fontsize-12">Total Bill Amount</label>
+                                        <div class="col-lg-6 pad-x-10">
+                                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label fullwidth" style="padding-top:0px !important; padding-bottom:10px !important">
+                                                <input type="text" id="txtTotalBillAmount" class="mdl-textfield__input   currencyFormat  text-right" readonly style="display:inline-block  ">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row m-0">
+                                        <label class="col-lg-6 pad-x-10 fontsize-12">Concession Amount</label>
+                                        <div class="col-lg-6 pad-x-10">
+                                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label fullwidth" style="padding-top:0px !important; padding-bottom:10px !important">
+                                                <input type="text" id="txtTotalConcessionAmount" class="mdl-textfield__input currencyFormat  text-right" onkeypress="return OnlyNumeric(event);" onblur="fnConcesssionAmount_onLeave()">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row m-0">
+                                        <label class="col-lg-6 pad-x-10 fontsize-12">Net Bill Amount</label>
+                                        <div class="col-lg-6 pad-x-10">
+                                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label fullwidth" style="padding-top:0px !important; padding-bottom:10px !important">
+                                                <input type="text" id="txtNetBillAmount" class="mdl-textfield__input currencyFormat  text-right" readonly style="display:inline-block  ">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row m-0">
+                                        <label class="col-lg-6 pad-x-10 fontsize-12">Collected Amount</label>
+                                        <div class="col-lg-6 pad-x-10">
+                                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label fullwidth" style="padding-top:0px !important; padding-bottom:10px !important">
+                                                <input type="text" id="txtTotalCollectedAmount" class="mdl-textfield__input currencyFormat  text-right" readonly style="display:inline-block  ">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row m-0">
+                                        <label class="col-lg-6 pad-x-10 fontsize-12">Narration</label>
+                                        <div class="col-lg-12 pad-x-10">
+                                            <textarea rows="1" id="txtNarration" maxlength="250" class="form-control"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+                            <hr />
+                            <button type="button" class="btn btn-primary mr-2" id="btnSaveGuestBilling" onclick="fnSubmitGuestBilling()"><i class="fa fa-check"></i> Generate Invoice Bill</button>
+                        </div>
+
+                    </div>
+
+                    <div class="tab-pane fade" id="tab_guestcheckout" role="tabpanel" aria-labelledby="guestcheckout-tab">
+                        <br />
+                       
+                        <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+                            <hr />
+                            <button type="button" class="btn btn-primary mr-2" id="btnSubmitGuestCheckOut" onclick="fnSubmitGuestCheckOutProcess()"><i class="fa fa-check"></i> Confirm Guest Check-Out </button>
+                            <button type="button" class="btn btn-primary mr-2" id="btnPrintGuestInvoiceBill" onclick="fnPrintGuestInvoiceBill()"><i class="fa fa-check"></i> Print Invoice Bill</button>
+                        </div>
+
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="popupAddPayment" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modaltitle">Payment</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fa fa-times"></i></span>
+                </button>
+            </div>
+            <div class="modal-body" style="min-height:280px;  overflow: inherit !important">
+
+                @await Html.PartialAsync("~/Areas/eSyaNatureCure/Views/CheckInGuest/_PaymentModeDetails.cshtml")
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary mr-2" id="btnAddOnServices" onclick="fnSavePaymentRefund()"><i class="fa fa-check"></i> Save</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="popUpAddService" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modaltitle">Add Services</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fa fa-times"></i></span>
+                </button>
+            </div>
+            <div class="modal-body" style="min-height:280px;  overflow: inherit !important">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <label class="col-lg-6" style="padding-left:0px">Service Items</label>
+                        <select class="selectpicker" data-size="5" data-live-search="true" id="cboBillingServices" title="" style="width:300px" onchange="fnBillingServicesChanged(this);">
+                            <option value=0>Select</option>
+                        </select>
+                    </div>
+                </div>
+                <br />
+                <div class="row m-0">
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <label class="fontsize-12">Service Amount</label>
+                        <input type="text" id="txtServiceRate" class="mdl-textfield__input currencyFormat  text-right" readonly style="display:inline-block  ">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary mr-2" id="btnAddServices" onclick="fnGridAddService()"><i class="fa fa-check"></i> Add Service</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade in" id="PopupDocumentUpload" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-md  " role="document" style="box-shadow:none;">
+        <div class="modal-content ">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">@Localizer["AddDocument"]</h4>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="row padbot4">
+
+                    <div class="col-lg-12" style="display:none">
+                        <div class="form-group">
+                            <div>
+                                <label for="txtSerialNumber"> @Localizer["SerialNumber"]</label>
+                                <input class="form-control" type="text" maxlength="9" id="txtSerialNumber" data-inputmask="'mask': '9', 'repeat': 10, 'greedy' : false" />
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label for="txtDocumentName"> @Localizer["DocumentName"]</label>
+                            <input id="txtDocumentName" class="form-control" maxlength="100" type="text" />
+
+                        </div>
+                    </div>
+                    <div class="col-lg-6  col-md-6 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <div class="form-group">
+                                <img id="imgPhotoimageblah" src="" style="display:none">
+                                <label> @Localizer["SelectDocument"] </label>
+                                <input class="mdl-textfield__input fullwidth FileUpload" id="Photoimage" type="file" name="file" accept='image/*' enctype="multipart/form-data" style="border-bottom:none !important" />
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3  col-md-3 col-sm-12 col-xs-12">
+                        <div class="default-checkbox">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActiveStatus">
+                                <input type="checkbox" id="chkActiveStatus" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">@Localizer["Active"]</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveDocumentUpload" onclick="fnSaveDocumentUpload()">
+                            <i class="fa fa-save"></i> @Localizer["Save"]
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="btnCancelDocumentUpload" onclick="fnClearDocumentUpload()"><i class="fa fa-times"></i> @Localizer["Cancel"] </button>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<script src="~/js/jquery-3.6.0.min.js"></script>
+    <script src="~/js/jquery-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="~/js/i18n/grid.locale-en.js"></script>
+    <script src="~/js/jquery.jqGrid.min.js"></script>
+    <script type="text/javascript" src="~/js/all.min.js"></script>
+    <script src="~/js/toastr.min.js"></script>*@
+
+<script>
+
+    var _cityCode, _areaCode;
+    $(function () {
+
+        var _ischeckedin = "@Model.IsCheckedIn";
+       
+        if (_ischeckedin === "True") {
+
+            $("#btnUpdateCheckInGuest").attr('disabled', false);
+            $('#btnUpdateCheckInGuest').show();
+
+            $("#btnSubmitCheckInGuest").attr('disabled', true);
+            $('#btnSubmitCheckInGuest').hide();
+            
+            $("#btnSubmitGuestCheckOut").attr('disabled', true);
+            $('#btnSubmitGuestCheckOut').hide();
+            $('#lblcheckedout,#statusInfoSection').show(); 
+
+        }
+        else
+        {
+           
+            $("#btnUpdateCheckInGuest").attr('disabled', true);
+            $('#btnUpdateCheckInGuest').hide();
+
+            $('#btnSubmitCheckInGuest').show();
+            $("#btnSubmitCheckInGuest").attr('disabled', false);
+
+            $('#btnSubmitGuestCheckOut').show();
+            $("#btnSubmitGuestCheckOut").attr('disabled', false);
+            $('#lblcheckedout,#statusInfoSection').hide(); 
+        }
+
+        $('#cboGender').val('@Model.Gender');
+
+        fnLoadGuestDetails();
+        fnLoadPaymentDetails();
+        fnLoadDocumentUpload();
+
+        $("#alertmod_jqgActivities,#alertmod_jqgAddOnServices").css('display', 'none');
+
+        _cityCode = '@Model.CityCode';
+        _areaCode = '@Model.AreaCode';
+        fnBindStates();
+
+    });
+
+    $(document).ready(function () {
+        $.get(getBaseURL() + '/CheckInGuest/GetServiceList',
+            function (data) {
+                var s = '<option value="-1">select</option>';
+                for (var i = 0; i < data.length; i++) {
+                    s += '<option value="' + data[i].ServiceId + '">' + data[i].ServiceDesc + '</option>';
+                }
+                $("#cboBillingServices").html(s);
+                $("#cboBillingServices").selectpicker('refresh');
+            });
+
+    });
+
+    function close_window() {
+        history.back();
+        //if (confirm("Close Window?")) {
+        //    close();
+        //}
+    }
+
+    var _uhid = 0;
+    function fnPatient_onSelection() {
+        var chkPatient = $("input[name='chkPatient']:checked").val();
+        if (chkPatient != "0") {
+            _uhid = chkPatient;
+            $('#hdUHID').val(chkPatient);
+            getPatientInfo(chkPatient);
+        }
+    }
+
+    function getPatientInfo(uhid) {
+        $.get(getBaseURL() + '/CheckInGuest/GetPatientProfileByUHID', {
+            uhid: uhid
+        }, function (data, status) {
+            $("#txtFirstName").val(data.FirstName);
+            $("#txtLastName").val(data.LastName);
+            $("#txtDateOfBirth").val(data.DateOfBirth);
+            $("#txtAgeYY").val(data.AgeYY);
+            $("#txtEmail").val(data.eMailID);
+            if (data.CurrentPatientAddress != null) {
+                $("#txtAddress").val(data.CurrentPatientAddress.Address);
+                $("#cboState").val(data.CurrentPatientAddress.StateCode);
+                $("#cboState").selectpicker("refresh");
+                _cityCode = data.CurrentPatientAddress.CityCode;
+                _areaCode = data.CurrentPatientAddress.AreaCode;
+                fncboState_change();
+                $("#txtPincode").val(data.CurrentPatientAddress.Pincode);
+            }
+        });
+        return null;
+    }
+
+    function fncboState_change() {
+        fnBindCities();
+        //fnBindAreas();
+    }
+
+    function fncboCity_change() {
+        fnBindAreas();
+    }
+
+    function fnBindStates() {
+        $("#cboState").empty();
+
+        $.ajax({
+            url: getBaseURL() + '/CheckInGuest/GetStateList?isdCode=' + _cnfISDCode,
+            type: 'GET',
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            async: false,
+            processData: false,
+            error: function (xhr) {
+                toastr.error('Error: ' + xhr.statusText);
+            },
+            success: function (response, data) {
+
+                //refresh each time
+                $("#cboState").empty();
+                $("#cboState").append($("<option value='0'> Select </option>"));
+                for (var i = 0; i < response.length; i++) {
+
+                    $("#cboState").append($("<option></option>").val(response[i]["PlaceId"]).html(response[i]["PlaceName"]));
+                }
+                $('#cboState').val(@Model.StateCode);
+                $("#cboState").selectpicker('refresh');
+                fncboState_change();
+
+            }
+        });
+
+    }
+
+    function fnBindCities() {
+
+            $("#cboCity").empty();
+            $.ajax({
+                url: getBaseURL() + '/CheckInGuest/GetCityList?isdCode=' + _cnfISDCode + '&stateCode=' + $("#cboState").val(),
+                type: 'GET',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                error: function (xhr) {
+                    toastr.error('Error: ' + xhr.statusText);
+                },
+                success: function (response, data) {
+
+                    //refresh each time
+                    $("#cboCity").empty();
+
+                    $("#cboCity").append($("<option value='0'> Select </option>"));
+                    for (var i = 0; i < response.length; i++) {
+
+                        $("#cboCity").append($("<option></option>").val(response[i]["PlaceId"]).html(response[i]["PlaceName"]));
+                    }
+                    $('#cboCity').val(_cityCode);
+                    $('#cboCity').selectpicker('refresh');
+
+                },
+                async: false,
+                processData: false
+            });
+        }
+
+    function fnBindAreas() {
+
+            $("#cboArea").empty();
+            $.ajax({
+
+                url: getBaseURL() + '/CheckInGuest/GetAreaList?isdCode=' + _cnfISDCode + "&stateCode=" + $('#cboState').val()
+                    + "&cityCode=" + $('#cboCity').val(),
+                type: 'GET',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                error: function (xhr) {
+                    toastr.error('Error: ' + xhr.statusText);
+                },
+                success: function (response, data) {
+
+                    //refresh each time
+                    $("#cboArea").empty();
+                    $("#cboArea").append($("<option value='0'> Select </option>"));
+                    for (var i = 0; i < response.length; i++) {
+
+                        $("#cboArea").append($("<option></option>").val(response[i]["AreaCode"]).html(response[i]["AreaName"]));
+                    }
+                    $('#cboArea').val(_areaCode);
+                    $('#cboArea').selectpicker('refresh');
+                },
+
+                async: false,
+                processData: false
+            });
+        }
+
+    $("#txtPincode").blur(function () {
+
+                $.ajax({
+                    url: getBaseURL() + '/CheckInGuest/GetAreaDetailsbyPincode?isdCode=' + _cnfISDCode + '&pincode=' + $("#txtPincode").val(),
+                type: 'GET',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                success: function (result) {
+                    if (result != null) {
+
+                        fnBindStates();
+                        $('#cboState').val(result.StateCode);
+                        $('#cboState').selectpicker('refresh');
+                        fnBindCities();
+                        $('#cboCity').val(result.CityCode);
+                        $('#cboCity').selectpicker('refresh');
+                        fnBindAreas();
+                        $('#cboArea').val(result.AreaCode);
+                        $('#cboArea').selectpicker('refresh');
+                    }
+
+                    else {
+                        $('#cboState').selectpicker('refresh');
+                        $('#CityCode').selectpicker('refresh');
+                        $('#cboArea').selectpicker('refresh');
+                    }
+                },
+                error: function (result) {
+                    //Your error message
+                    $('#cboState').selectpicker('refresh');
+                    $('#CityCode').selectpicker('refresh');
+                    $('#cboArea').selectpicker('refresh');
+                },
+                async: false,
+                processData: false
+            });
+        });
+
+
+    function fnSubmitForCheckIn() {
+
+        if ($("input[name='chkPatient']:checked").val() === undefined) {
+            toastr.error("Please select the Registration for");
+            return;
+        }
+
+        if (IsStringNullorEmpty($("#cboMobileNo").val()) || $("#cboMobileNo").val() === "0") {
+            toastr.warning("Please select Isd Code");
+            return;
+        }
+        if (IsStringNullorEmpty($("#txtMobileNo").val())) {
+            toastr.warning("Please Enter Mobile Number");
+            return;
+        }
+        if (IsStringNullorEmpty($("#txtAddress").val())) {
+            toastr.warning("Please Enter Address");
+            return;
+        }
+        if (IsStringNullorEmpty($("#cboState").val()) || $("#cboState").val() === "0") {
+            toastr.warning("Please select State");
+            return;
+        }
+        if (IsStringNullorEmpty($("#cboArea").val()) || $("#cboArea").val() === "0") {
+            toastr.warning("Please select Area");
+            return;
+        }
+        if (IsStringNullorEmpty($("#cboCity").val()) || $("#cboCity").val() === "0") {
+            toastr.warning("Please select City");
+            return;
+        }
+        if (IsStringNullorEmpty($("#txtPincode").val())) {
+            toastr.warning("Please Enter Pincode");
+            return;
+        }
+        
+        var obj = {
+            BookingKey: $('#hdBookingKey').val(),
+            GuestId: $('#hdGuestId').val(),
+            UHID: $('#hdUHID').val(),
+            FirstName: $('#txtFirstName').val(),
+            LastName: $('#txtLastName').val(),
+            DateOfBirth: $("#txtDateOfBirth").val(),
+            AgeYY: $("#txtAgeYY").val(),
+            AgeMM: 0,
+            AgeDD: 0,
+            Isdcode: $("#cboMobileNo").val(),
+            MobileNumber: $('#txtMobileNo').val(),
+            EmailId: $('#txtEmailId').val(),
+            Address: $('#txtAddress').val(),
+            AreaCode: $("#cboArea").val(),
+            CityCode: $("#cboCity").val(),
+            StateCode: $("#cboState").val(),
+            Pincode: $('#txtPincode').val(),
+            Gender: $('#cboGender').val()
+        };
+
+        $("#btnSubmitCheckInGuest").attr('disabled', true);
+
+        var URL = getBaseURL() + '/CheckInGuest/CreateGuestCheckin';
+        $.ajax({
+            url: URL,
+            type: 'POST',
+            datatype: 'json',
+            contenttype: 'application/json; charset=utf-8',
+            data: obj,
+            async: true,
+            success: function (response) {
+                if (response.Status) {
+                    toastr.success("Guest Checked-In");
+                    location.reload();
+                }
+                else {
+                    toastr.error(response.Message);
+                }
+                $("#btnSubmitCheckInGuest").attr('disabled', false);
+            },
+            error: function (error) {
+                toastr.error(error.statusText);
+                $("#btnSubmitCheckInGuest").attr('disabled', false);
+            }
+        });
+    }
+
+    function fnLoadGuestDetails()
+    {
+        $("#jqgGuestDetails").GridUnload();
+
+        $("#jqgGuestDetails").jqGrid({
+            url: getBaseURL() + '/CheckInGuest/GetGuestDetailsByBookingKey',
+            datatype: "json",
+            contenttype: "application/json; charset-utf-8",
+            mtype: 'GET',
+            postData: {
+                bookingKey: function () { return parseInt($('#hdBookingKey').val()) },
+            },
+            jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+            colNames: ["@Localizer["Guest Id"]", "@Localizer["First Name"]", "@Localizer["Last Name"]", "@Localizer["Gender"]", "@Localizer["Age YY"]", "@Localizer["Mobile Number"]", "@Localizer["Room Type"]", "@Localizer["Room No"]", "@Localizer["Bed No"]", "@Localizer["Price"]", "@Localizer["Action"]"],
+            colModel: [
+                { name: "GuestId", width: 40, editable: false, editoptions: { disabled: true }, align: 'left', edittype: 'text', hidden: true },
+                { name: "FirstName", width: 150, editable: true, align: 'left', edittype: 'text', hidden: false },
+                { name: "LastName", width: 150, editable: true, align: 'left', edittype: 'text', hidden: false },
+                { name: "Gender", width: 70, editable: true, align: 'left', edittype: 'text', hidden: false },
+                { name: "AgeYy", width: 70, editable: true, align: 'left', edittype: 'text', hidden: false },
+                { name: "MobileNumber", width: 160, editable: true, align: 'left', edittype: 'text', hidden: false },
+                { name: "RoomTypeName", width: 120, editable: true, align: 'left', edittype: 'text', hidden: false },
+                { name: "RoomNumber", width: 80, editable: true, align: 'left', edittype: 'text', hidden: false },
+                { name: "BedNumber", width: 80, editable: true, align: 'left', edittype: 'text', hidden: false },
+                { name: 'PackagePrice', index: 'PackagePrice', width: '120', align: "right", formatter: 'integer', formatoptions: { decimalSeparator: ".", decimalPlaces: 2, thousandsSeparator: ',' } },
+                {
+                    name: "Button", width: 100, editable: false, align: 'left', hidden: false, formatter: function (cellValue, options, rowObject) {
+                        var i = options.rowId;
+                        return "<button id=btnCheckin_" + i + " type='button'  class='btn btn-primary' onclick=fnGuestCheckin('" + rowObject.GuestId + "') >  View </button >";
+                    }
+                },
+            ],
+            rowNum: 10,
+            pager: "#jqpGuestDetails",
+            rownumWidth: 55,
+            viewrecords: true,
+            gridview: true,
+            rownumbers: true,
+            height: 'auto',
+            width: 'auto',
+            autowidth: true,
+            shrinkToFit: true,
+            forceFit: true,
+            loadonce: true,
+            loadBeforeSend: function () {
+                $("#jqgh_jqgGuestDetails_PackagePrice").css('text-align', 'right');
+            },
+            loadComplete: function (data) {
+            },
+        }).jqGrid('navGrid', '#jqpGuestDetails', { add: false, edit: false, search: false, del: false, refresh: false });
+    }
+
+    function fnGuestCheckin(guestId) {
+        var url = getBaseURL() + '/eSyaNatureCure/CheckInGuest/V_ENC_04_00?bookingKey=' + $('#hdBookingKey').val() + '&guestId=' + guestId;
+        window.location.href = url;
+    }
+
+    function fnSetBillSummaryAmount() {
+        $.get(getBaseURL() + '/CheckInGuest/GetGuestBillingSummary?bookingKey=' + parseInt($('#hdBookingKey').val()),
+            function (data) {
+                $("#txtNetBillAmount").val(data.NetBillAmount);
+            });
+    }
+
+    function fnLoadPaymentDetails() {
+
+        fnSetBillSummaryAmount();
+
+        $("#jqgPaymentDetails").GridUnload();
+
+        $("#jqgPaymentDetails").jqGrid({
+            url: getBaseURL() + '/CheckInGuest/GetGuestPaymentReceiptDetails',
+            datatype: "json",
+            contenttype: "application/json; charset-utf-8",
+            mtype: 'GET',
+            postData: {
+                bookingKey: function () { return parseInt($('#hdBookingKey').val()) },
+            },
+            jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+            colNames: ["@Localizer["Voucher Type"]", "@Localizer["Voucher Type Desc"]","@Localizer["Payment Mode"]", "@Localizer["Voucher Key"]", "@Localizer["Voucher Date"]", "@Localizer["Voucher Amount"]"],
+            colModel: [
+                { name: "VoucherType", width: 40, editable: false, editoptions: { disabled: true }, align: 'left', edittype: 'text', hidden: true },
+                { name: "VoucherTypeDesc", width: 150, editable: true, align: 'left', edittype: 'text', hidden: false },
+                { name: "PaymentModeDesc", width: 260, editable: true, align: 'left', edittype: 'text', hidden: false },
+
+                { name: "VoucherKey", width: 180, editable: true, align: 'left', edittype: 'text', editoptions: { maxlength: 50 }, hidden: false },
+                {
+                    name: 'VoucherDate', index: 'VoucherDate', width: 180, sortable: true, formatter: "date", formatoptions:{ newformat: _cnfjqgDateFormat }, width: '100'
+                },
+                { name: 'VoucherAmount', index: 'VoucherAmount', width: '170', align: "right", formatter: 'integer', formatoptions: { decimalSeparator: ".", decimalPlaces: 2, thousandsSeparator: ',' } },
+            ],
+            rowNum: 10,
+            pager: "#jqpPaymentDetails",
+            rownumWidth: 55,
+            viewrecords: true,
+            gridview: true,
+            rownumbers: true,
+            height: 'auto',
+            width: 'auto',
+            autowidth: true,
+            shrinkToFit: true,
+            forceFit: true,
+            loadonce: true,
+            loadComplete: function (data) {
+                var totalCollectionAmount = 0;
+                var rowIds = $("#jqgPaymentDetails").getDataIDs();
+                for (var i = 0; i < rowIds.length; i++) {
+                    totalCollectionAmount = totalCollectionAmount + Math.round(parseFloat($("#jqgPaymentDetails").jqGrid('getCell', rowIds[i], 'VoucherAmount')));
+                }
+
+                var netBillAmount = parseFloat($('#txtNetBillAmount').val());
+                if (netBillAmount <= 0)
+                    netBillAmount = parseFloat($('#txtPackageAmount').val());
+                var balanceAmount = netBillAmount - totalCollectionAmount;
+                $('#txtCollectedAmount').val(totalCollectionAmount.toFixed(2));
+                $('#txtTotalCollectedAmount').val(totalCollectionAmount.toFixed(2));
+                $('#txtBalanceAmount').val(balanceAmount.toFixed(2));
+
+                fnAddGridSerialNoHeading();
+            },
+        }).jqGrid('navGrid', '#jqpPaymentDetails', { add: false, edit: false, search: false, del: false, refresh: false });
+
+    }
+
+    function fnShowAddPaymentPopup() {
+
+        $('#popupAddPayment').modal('show');
+    }
+
+    function fnLoadBillingServices() {
+        fnLoadGuestBillingServices();
+    }
+
+    function fnLoadGuestBillingServices() {
+        $("#jqgGuestServiceBilling").jqGrid("GridUnload");
+        $("#jqgGuestServiceBilling").jqGrid(
+            {
+                url: getBaseURL() + '/CheckInGuest/GetGuestServiceBilling',
+                datatype: "json",
+                contenttype: "application/json; charset-utf-8",
+                mtype: 'GET',
+                postData: {
+                    bookingKey: function () { return parseInt($('#hdBookingKey').val()) },
+                },
+                jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+                colNames: ['Service Code', 'Service Description', 'Qty', 'Package Amount'],
+                colModel: [
+                    { name: 'ServiceCode', index: 'ServiceCode', width: '100', hidden: true },
+                    { name: 'ServiceName', index: 'ServiceName', width: '300' },
+                    { name: 'Quantity', index: 'Quantity', width: '80', align: "right", editable: false, formatter: 'integer', formatoptions: { decimalSeparator: ".", decimalPlaces: 0, thousandsSeparator: ',' } },
+                    { name: 'TotalAmount', index: 'TotalAmount', width: '150', align: "right", formatter: 'integer', formatoptions: { decimalSeparator: ".", decimalPlaces: 2, thousandsSeparator: ',' } },
+                ],
+                rowNum: 10,
+                rownumWidth:55,
+                pager: "#jqpGuestServiceBilling",
+                viewrecords: true,
+                gridview: true,
+                rownumbers: true,
+                height: 'auto',
+                width: 'auto',
+                autowidth: true,
+                shrinkToFit: true,
+                forceFit: true,
+                loadonce: true,
+                editurl: 'url',
+                cellsubmit: 'clientArray',
+                cellEdit: true,
+                loadBeforeSend: function () {
+                    $("#jqgh_jqgGuestServiceBilling_Quantity").css('text-align', 'right');
+                },
+                loadComplete: function () {
+                    fnAddGridSerialNoHeading();
+                },
+                gridComplete: function () {
+                    CalculateTotalAmount();
+                },
+            }).jqGrid('navGrid', '#jqpGuestServiceBilling', {
+                add: false, edit: false, search: false, del: false, refresh: false
+            }).jqGrid('navButtonAdd', '#jqpGuestServiceBilling', {
+                caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Add', buttonicon: 'none', id: 'custAdd', position: 'first', onClickButton: fnAddService
+            }).jqGrid('navButtonAdd', '#jqpGuestServiceBilling', {
+                caption: '<span class="fa fa-trash" data-toggle="modal"  data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Delete', buttonicon: 'none', id: 'custDelete', position: 'last', onClickButton: fnDeleteService
+            });
+
+        jQuery("#jqgGuestServiceBilling").trigger('reloadGrid');
+    }
+
+
+    function fnBillingServicesChanged(event) {
+        $("#txtServiceRate").val(0);
+        $.get(getBaseURL() + '/CheckInGuest/GetServiceRates?serviceId=' + $("#cboBillingServices").val(),
+            function (data) {
+                $("#txtServiceRate").val(data.ServiceRate);
+            });
+    }
+
+    function fnAddService() {
+        $("#popUpAddService").modal('show');
+    }
+
+    function fnDeleteService() {
+        var rowId = jQuery("#jqgGuestServiceBilling").jqGrid('getGridParam', 'selrow');
+        if (rowId != 1)
+            jQuery("#jqgGuestServiceBilling").delRowData(rowId);
+    }
+
+    function fnGridAddService() {
+        if (IsStringNullorEmpty($("#cboBillingServices").val()) || $("#cboBillingServices").val() <= 0) {
+            toastr.warning("please select the service");
+            return;
+        }
+        var gdData = { ServiceCode: $("#cboBillingServices").val(), ServiceName: $("#cboBillingServices").find("option:selected").text(), Quantity: "1", TotalAmount: $("#txtServiceRate").val() };
+        var rowIds = $("#jqgGuestServiceBilling").getDataIDs();
+        jQuery("#jqgGuestServiceBilling").addRowData(rowIds.length + 1, gdData);
+        $("#popUpAddService").modal('hide');
+    }
+
+    function CalculateTotalAmount() {
+        var quantity = 0;
+        var totalAmount = 0;
+        var netBillAmount = 0;
+
+        var rowIds = $("#jqgGuestServiceBilling").getDataIDs();
+        for (var i = 0; i < rowIds.length; i++) {
+            quantity = parseFloat($("#jqgGuestServiceBilling").jqGrid('getCell', rowIds[i], 'Quantity'));
+            totalAmount += parseFloat($("#jqgGuestServiceBilling").jqGrid('getCell', rowIds[i], 'TotalAmount'));
+        }
+
+        $('#txtTotalBillAmount').val(totalAmount.toFixed(2));
+        var concessionAmount = 0;
+        if (!$.isEmptyObject($("#txtTotalConcessionAmount").val()) && $("#txtTotalConcessionAmount").val().length > 0) {
+            concessionAmount = parseFloat($('#txtTotalConcessionAmount').val()).toFixed(2);
+        }
+        else {
+            $('#txtTotalConcessionAmount').val(0);
+        }
+
+        if (concessionAmount > totalAmount) {
+            $('#txtTotalConcessionAmount').val(0);
+            concessionAmount = 0;
+        }
+        $('#txtTotalConcessionAmount').val(concessionAmount);
+        netBillAmount = totalAmount - concessionAmount;
+        $('#txtNetBillAmount').val(netBillAmount);
+
+    }
+
+    function fnConcesssionAmount_onLeave() {
+        CalculateTotalAmount();
+    }
+
+    function fnSubmitGuestBilling() {
+        if (parseFloat($("#txtTotalConcessionAmount").val()) > 0) {
+            if ($("#txtNarration").val().length <= 1) {
+                alert("please enter the narration for discount");
+                return;
+            }
+        }
+
+        $("#btnSaveGuestBilling").prop('disabled', true);
+        var l_Services = [];
+        var gvServices = jQuery("#jqgGuestServiceBilling").jqGrid('getRowData');
+        for (var i = 0; i < gvServices.length; ++i) {
+            var serv = {};
+            serv.ServiceCode = gvServices[i]['ServiceCode'];
+            serv.Quantity = parseFloat(gvServices[i]['Quantity']);
+            serv.Rate = parseFloat(gvServices[i]['TotalAmount']);
+            serv.DiscountAmount = 0;
+            serv.ConcessionAmount = 0;
+            serv.TotalAmount = parseFloat(gvServices[i]['TotalAmount']);
+            serv.PayableByPatient = parseFloat(gvServices[i]['TotalAmount']);
+            serv.PayableByInsurance = 0;
+            serv.ChargableToPatient = true;
+            l_Services.push(serv);
+        }
+        var obj_PatientBillHeader = {
+            BookingKey: $('#hdBookingKey').val(),
+            UHID: $('#hdUHID').val(),
+            OPNumber: 0,
+            PackageId: $('#hdPackageId').val(),
+            TransCurrencyCode: "INR",
+            LocalCurrencyCode: "INR",
+            ExchangeRate: 1,
+            ConcessionOn:"N",
+            TotalBillAmount : $('#txtTotalBillAmount').val(),
+            TotalDiscountAmount : 0,
+            TotalConcessionAmount : $('#txtTotalConcessionAmount').val(),
+            RoundOff : 0,
+            NetBillAmount : $('#txtNetBillAmount').val(),
+            Narration: $('#txtNarration').val(),
+            l_PatientBillDetails: l_Services,
+        }
+
+        var URL = getBaseURL() + '/CheckInGuest/CreateGuestBill';
+        $.ajax({
+            url: URL,
+            type: 'POST',
+            datatype: 'json',
+            contenttype: 'application/json; charset=utf-8',
+            data: obj_PatientBillHeader,
+            async: true,
+            success: function (response) {
+                if (response.Status) {
+                    toastr.success("Guest Bill Generated.");
+                }
+                else {
+                    toastr.error(response.Message);
+                }
+                $("#btnSaveGuestBilling").attr('disabled', false);
+            },
+            error: function (error) {
+                toastr.error(error.statusText);
+                $("#btnSaveGuestBilling").attr('disabled', false);
+            }
+        });
+
+    }
+
+
+    function fnLoadGuestCheckOut() {
+      
+    }
+
+    function fnSubmitGuestCheckOutProcess() {
+
+        $("#btnSubmitGuestCheckOut").prop('disabled', true);
+
+        var obj = {
+            BookingKey: $('#hdBookingKey').val(),
+        }
+
+        var URL = getBaseURL() + '/CheckInGuest/GuestCheckOutProcess';
+        $.ajax({
+            url: URL,
+            type: 'POST',
+            datatype: 'json',
+            contenttype: 'application/json; charset=utf-8',
+            data: obj,
+            async: true,
+            success: function (response) {
+                if (response.Status) {
+                    toastr.success("Guest Checked Out Successfully.");
+                }
+                else {
+                    toastr.error(response.Message);
+                }
+                $("#btnSubmitGuestCheckOut").attr('disabled', false);
+            },
+            error: function (error) {
+                toastr.error(error.statusText);
+                $("#btnSubmitGuestCheckOut").attr('disabled', false);
+            }
+        });
+
+    }
+
+
+    function fnPrintGuestInvoiceBill() {
+
+        $.get(getBaseURL() + '/CheckInGuest/GetGuestCheckOutStatus?bookingKey=' + $('#hdBookingKey').val() + '&guestId=' + $('#hdGuestId').val(),
+            function (data) {
+                if (data.Status)
+                    window.open(getReportBaseURL() + '/eSyaNatureCure/ReportViewer/GuestInvoiceBill?businessKey=' + 111 + '&bookingKey=' + $('#hdBookingKey').val(), "popupWindow", "width=700,height=800,scrollbars=yes");
+                else {
+                    toastr.warning("Bill Print will be enable after checkout process is completed.");
+                }
+            });
+
+
+    }
+
+    function fnDownloadVoucher() {
+        window.open(getReportBaseURL() + '/eSyaNatureCure/ReportViewer/BookingVoucher?businessKey=' + 111 + '&bookingKey=' + $('#hdBookingKey').val(), "popupWindow", "width=700,height=800,scrollbars=yes");
+    }
+
+    function fnSubmitForUpdate() {
+
+        if (IsStringNullorEmpty($("#cboMobileNo").val()) || $("#cboMobileNo").val() === "0") {
+            toastr.warning("Please select Isd Code");
+            return;
+        }
+        if (IsStringNullorEmpty($("#txtMobileNo").val())) {
+            toastr.warning("Please Enter Mobile Number");
+            return;
+        }
+        if (IsStringNullorEmpty($("#txtAddress").val())) {
+            toastr.warning("Please Enter Address");
+            return;
+        }
+        if (IsStringNullorEmpty($("#cboState").val()) || $("#cboState").val() === "0") {
+            toastr.warning("Please select State");
+            return;
+        }
+        if (IsStringNullorEmpty($("#cboArea").val()) || $("#cboArea").val() === "0") {
+            toastr.warning("Please select Area");
+            return;
+        }
+        if (IsStringNullorEmpty($("#cboCity").val()) || $("#cboCity").val() === "0") {
+            toastr.warning("Please select City");
+            return;
+        }
+        //if (IsStringNullorEmpty($("#txtPincode").val())) {
+        //    toastr.warning("Please Enter Pincode");
+        //    return;
+        //}
+
+        var obj = {
+            BookingKey: $('#hdBookingKey').val(),
+            GuestId: $('#hdGuestId').val(),
+            UHID: $('#hdUHID').val(),
+            FirstName: $('#txtFirstName').val(),
+            LastName: $('#txtLastName').val(),
+            DateOfBirth: $("#txtDateOfBirth").val(),
+            AgeYY: $("#txtAgeYY").val(),
+            AgeMM: 0,
+            AgeDD: 0,
+            Isdcode: $("#cboMobileNo").val(),
+            MobileNumber: $('#txtMobileNo').val(),
+            EmailId: $('#txtEmailId').val(),
+            Address: $('#txtAddress').val(),
+            AreaCode: $("#cboArea").val(),
+            CityCode: $("#cboCity").val(),
+            StateCode: $("#cboState").val(),
+            Pincode: $('#txtPincode').val(),
+            Gender: $('#cboGender').val()
+        };
+
+        $("#btnUpdateCheckInGuest").attr('disabled', true);
+
+        var URL = getBaseURL() + '/CheckInGuest/UpdateGuestCheckin';
+        $.ajax({
+            url: URL,
+            type: 'POST',
+            datatype: 'json',
+            contenttype: 'application/json; charset=utf-8',
+            data: obj,
+            async: true,
+            success: function (response) {
+                if (response.Status) {
+                    toastr.success(response.Message);
+                    location.reload();
+                }
+                else {
+                    toastr.error(response.Message);
+                }
+                $("#btnUpdateCheckInGuest").attr('disabled', false);
+            },
+            error: function (error) {
+                toastr.error(error.statusText);
+                $("#btnUpdateCheckInGuest").attr('disabled', false);
+            }
+        });
+    }
+</script>
+
+

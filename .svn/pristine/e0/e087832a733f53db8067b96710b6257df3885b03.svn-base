@@ -1,0 +1,202 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/css/bootstrap-timepicker.css" rel="stylesheet" />
+
+@section scripts{
+
+    <script src="~/js/bootstrap-timepicker.js"></script>
+    <script src="~/js/context-menu.js"></script>
+    <script src="~/js/jquery.contextMenu.min.js"></script>
+    <script src="~/js/eSyaNatureCure/PackageMaster.js"></script>
+}
+
+    <link href="~/css/jquery.contextMenu.min.css" rel="stylesheet" />
+
+@{
+    var userFormRole = (eSyaEnterprise_UI.Models.DO_UserFormRole)ViewBag.UserFormRole;
+}
+<script>
+    var _userFormRole = JSON.parse('@Html.Raw(Json.Serialize(userFormRole))');
+
+     var localization = {
+         PackageId: '@Localizer["PackageId"]',
+         Description: '@Localizer["Description"]',
+         NoOfNights: '@Localizer["NoOfNights"]',
+         CheckInWeekDays: '@Localizer["CheckInWeekDays"]',
+         CheckInFromTime: '@Localizer["CheckInFromTime"]',
+         CheckInToTime: '@Localizer["CheckInToTime"]',
+         CheckOutFromTime: '@Localizer["CheckOutFromTime"]',
+         CheckOutToTime: '@Localizer["CheckOutToTime"]',
+         AddPackage: '@Localizer["AddPackage"]',
+         UpdatePackage: '@Localizer["UpdatePackage"]',
+         ViewPackage: '@Localizer["ViewPackage"]',
+         ServiceDescription: '@Localizer["ServiceDescription"]',
+         BookingRule: '@Localizer["BookingRule"]',
+         BookingWindow: '@Localizer["BookingWindow"]',
+         BookingApplicableFor: '@Localizer["BookingApplicableFor"]',
+         Active: '@Localizer["Active"]',
+         Actions: '@Localizer["Actions"]',
+         Edit: '@Localizer["Edit"]',
+         View: '@Localizer["View"]',
+         Save: '@Localizer["Save"]',
+         Update: '@Localizer["Update"]',
+         Delete: '@Localizer["Delete"]',
+         Activate: '@Localizer["Activate"]',
+         DActivate: '@Localizer["DActivate"]',
+    };
+
+</script>
+
+
+<div class="row padbot10">
+    <div class="col-lg-12 col-md-12 col-sm-12 PackageMastercontainer">
+        <table id="jqgPackageMaster"></table>
+        <div id="jqpPackageMaster"></div>
+    </div>
+</div>
+
+<div class="modal fade in" id="PopupPackageMaster" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">@Localizer["PackageMaster"] </h4>
+            </div>
+            <div class="modal-body">
+                <div class="row padbot4">
+                    <div class="col-sm-12">
+                        <input type="text" class="form-control" id="txtPackageId" style="display:none">
+                    </div>
+
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label for="txtPackagedesc">@Localizer["PackageDescription"] </label>
+                            <input id="txtPackagedesc" class="form-control" type="text" autocomplete="off" maxlength="150" />
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label for="txtServicedesc">Service Description </label>
+                            <input id="txtServicedesc" class="form-control" type="text" autocomplete="off" maxlength="150" />
+                        </div>
+                    </div>
+
+
+
+                    <div class="col-lg-6  col-md-6 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label for="txtBookingRule"> Booking Rule(In days)</label>
+                            <input id="txtBookingRule" class="form-control" maxlength="9" type="text" data-inputmask="'mask': '9', 'repeat': 10, 'greedy' : false" />
+
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6  col-md-6 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label for="txtBookingWindow"> Booking Window(In days)</label>
+                            <input id="txtBookingWindow" class="form-control" maxlength="9" type="text" data-inputmask="'mask': '9', 'repeat': 10, 'greedy' : false" />
+
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6  col-md-6 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label for="txtNoofNights"> @Localizer["NoofNights"]</label>
+                            <input id="txtNoofNights" class="form-control" maxlength="9" type="text" data-inputmask="'mask': '9', 'repeat': 10, 'greedy' : false" />
+
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <div>
+                                <label class="lable-color">@Localizer["BookingApplicableFor"] </label>
+                                <select class="selectpicker" data-live-search="false" id="cboBookingApplicableFor" title="">
+                                    <option value="0">@Localizer["Select"]</option>
+                                    <option value="P">@Localizer["Portal"]</option>
+                                    <option value="U">@Localizer["User"]</option>
+                                    <option value="B">@Localizer["Both"]</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label>  @Localizer["CheckInFromTime"]</label>
+                            <input id="txtCheckInFromTime" class="form-control" type="time" autocomplete="off" />
+
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label>  @Localizer["CheckInToTime"]</label>
+                            <input id="txtCheckInToTime" class="form-control" type="time" autocomplete="off" />
+
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label>  @Localizer["CheckOutFromTime"]</label>
+                            <input id="txtCheckOutFromTime" class="form-control" type="time" autocomplete="off" />
+
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label>  @Localizer["CheckOutToTime"]</label>
+                            <input id="txtCheckOutToTime" class="form-control" type="time" autocomplete="off" />
+
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                        <div class="default-checkbox separate">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActiveStatus">
+                                <input type="checkbox" id="chkActiveStatus" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">@Localizer["Active"] </span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <p class="subheading">@Localizer["CheckInWeekDays"]</p>
+                    <hr class="left" />
+                    <table id="jqgCheckInWeekDays"></table>
+                    <div id="jqpCheckInWeekDays"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSavePackageMaster" onclick="fnSavePackageMaster();">
+                            <i class="fa fa-save"></i> @Localizer["Save"]
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="btnCancelPackageMaster"><i class="fa fa-times"></i> @Localizer["Cancel"] </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" id="btndeActivePackageMaster" onclick="fnDeletePackageMaster();"><i class="fa fa-times"></i> @Localizer["DeActivate"] </button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+

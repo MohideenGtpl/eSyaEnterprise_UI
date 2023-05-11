@@ -1,0 +1,138 @@
+﻿
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts{
+<script src="~/js/eSyaClinicalServices/DoctorMaster.js"></script>
+    }
+
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <table id="jqgDoctorMaster"></table>
+        <div id="jqpDoctorMaster"></div>
+    </div>
+</div>
+
+<div class="modal fade in" id="PopupDoctorMaster">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Add Doctor</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row padbot4">
+                    <input type="hidden" id="hdvDoctorId" value="" />
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <label> Doctor Short Name</label>
+                            <input class="form-control" type="text" autocomplete="off" maxlength="20" id="txtDoctorShortName" />
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group">
+                            <label> Doctor Name</label>
+                            <input class="form-control" type="text" autocomplete="off" maxlength="100" id="txtDoctorName" />
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label class="lable-color"> Gender</label>
+                            <select class="selectpicker" data-live-search="false" title="Choose Gender" id="cboGender">
+                                <option value="M">Male</option>
+                                <option value="F">Female</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <label> Qualification</label>
+                            <input class="form-control" type="text" autocomplete="off" maxlength="100" id="txtQualification" />
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <label> Mobile Number</label>
+                            <input class="form-control" type="text" autocomplete="off" maxlength="10" id="txtMobileNumber" />
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group">
+                            <label> Email ID</label>
+                            <input class="form-control" type="text" autocomplete="off" maxlength="50" id="txtEMailId" />
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label class="lable-color"> Status</label>
+                            <select class="selectpicker" data-live-search="true" data-size="" id="cboActiveStatus" title="">
+                                <option value="true">Active</option>
+                                <option value="false">InActive</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label class="lable-color"> Doctor Class</label>
+                            <select class="selectpicker" data-live-search="true" data-size="10" title="Choose Doctor Class" id="cboDoctorClass">
+                                @*<option value="0">Choose Doctor Class</option>*@
+                                @foreach (var dc in ViewBag.doctorClass)
+                                {
+                                    <option value="@dc.ApplicationCode">@dc.CodeDesc</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label class="lable-color"> Doctor Category</label>
+                            <select class="selectpicker" data-live-search="true" data-size="10" title="Choose Doctor Category" id="cboDoctorCategory">
+                                @*<option value="0">Choose Doctor Category</option>*@
+                                @foreach (var dc in ViewBag.doctorCategory)
+                                {
+                                    <option value="@dc.ApplicationCode">@dc.CodeDesc</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        <div class="default-checkbox">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkAllowConsultation">
+                                <input type="checkbox" id="chkAllowConsultation" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label"> Allow Consultation ?</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        <div class="default-checkbox">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkAllowSMS">
+                                <input type="checkbox" id="chkAllowSMS" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label"> Allow SMS ?</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="default-checkbox">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsRevenueShareApplicable">
+                                <input type="checkbox" id="chkIsRevenueShareApplicable" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label"> Is Revenue Share Applicable ?</span>
+                            </label>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveDoctorMaster" onclick="fnSaveDoctorMaster()"> Save</button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal"> Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

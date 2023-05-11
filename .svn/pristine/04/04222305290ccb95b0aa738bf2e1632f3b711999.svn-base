@@ -1,0 +1,300 @@
+﻿using System;
+using System.Text;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
+using eSyaEnterprise_UI.Areas.eSyaUserManagement.Data;
+using eSyaEnterprise_UI.Areas.eSyaUserManagement.Models;
+using eSyaEnterprise_UI.Models;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
+using eSyaEnterprise_UI.Areas.Config.Models;
+using eSyaEnterprise_UI.Utility;
+using System.Text.RegularExpressions;
+
+namespace eSyaEnterprise_UI.Areas.eSyaUserManagement.Controllers
+{
+    public class UserController : Controller
+    {
+        ESyaUserMgmt_WebAPI _eSyaUMWebAPI = new ESyaUserMgmt_WebAPI();
+        ESyaWebAPI _eSyaWebAPI = new ESyaWebAPI();
+
+        //private IHostingEnvironment _env;
+
+        //public UserController(IHostingEnvironment env)
+        //{
+        //    _env = env;
+        //}
+
+
+        [Area("eSyaUserManagement")]
+        public IActionResult V_51_00()
+        {
+            ViewBag.formName = "User Group";
+            return View();
+        }
+
+        [Area("eSyaUserManagement")]
+        public IActionResult V_52_00()
+        {
+            ViewBag.formName = "User Management";
+            return View();
+        }
+
+       // [Area("eSyaUserManagement")]
+        public IActionResult _UserPrivilege()
+        {
+            ViewBag.formName = "User Group";
+            return View();
+        }
+
+        public IActionResult _userMenu()
+        {
+            ViewBag.formName = "User Menu";
+            return View();
+        }
+
+
+        [Area("eSyaUserManagement")]
+        public IActionResult _UserCreation(short UserID)
+        {
+            var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+            HttpResponseMessage mg_response = client.GetAsync("ConfigMasterData/GetApplicationCodesByCodeType?codeType=" + CodeTypeValues.PreferredLanguage).Result;
+            string mgdata = mg_response.Content.ReadAsStringAsync().Result;
+            List<DO_ApplicationCodes> plapp_codes = JsonConvert.DeserializeObject<List<DO_ApplicationCodes>>(mgdata);
+            ViewBag.PLappcodes = plapp_codes;
+
+            HttpResponseMessage mg_response1 = client.GetAsync("ConfigMasterData/GetApplicationCodesByCodeType?codeType=" + CodeTypeValues.UserGroup).Result;
+            string mgdata1 = mg_response1.Content.ReadAsStringAsync().Result;
+            List<DO_ApplicationCodes> ugapp_codes = JsonConvert.DeserializeObject<List<DO_ApplicationCodes>>(mgdata1);
+            ViewBag.UGappcodes = ugapp_codes;
+
+            HttpResponseMessage mg_response2 = client.GetAsync("ConfigMasterData/GetApplicationCodesByCodeType?codeType=" + CodeTypeValues.UserType).Result;
+            string mgdata2 = mg_response2.Content.ReadAsStringAsync().Result;
+            List<DO_ApplicationCodes> utapp_codes = JsonConvert.DeserializeObject<List<DO_ApplicationCodes>>(mgdata2);
+            ViewBag.UTappcodes = utapp_codes;
+
+            ViewBag.UserID = UserID;
+
+            ViewBag.formName = "User Creation";
+            return View();
+        }
+
+        /// <summary>
+        ///Get User Master for Grid
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetUserMaster()
+        {
+            try
+            {
+                var client = _eSyaUMWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("UserCreation/GetUserMaster").Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<List<DO_UserMaster>>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        ///Get User Master Details
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetUserDetails(int UserID)
+        {
+            try
+            {
+                var client = _eSyaUMWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                var parameter = "?UserID=" + UserID;
+                HttpResponseMessage response = client.GetAsync("UserCreation/GetUserDetails" + parameter).Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<DO_UserMaster>(stringData);
+
+                string userimageURI = string.Empty;
+                if (data.Photo.Length != 0)
+                    userimageURI = ConvertByteArraytoImageURI(data.Photo);
+                data.userimage = userimageURI;
+
+                //
+                string DSimageURI = string.Empty;
+                if (data.DigitalSignature.Length != 0)
+                    DSimageURI = ConvertByteArraytoImageURI(data.DigitalSignature);
+                data.DSimage = DSimageURI;
+
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        ///Get User Business Location for Grid
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetUserBusinessLocation(short UserID)
+        {
+            try
+            {
+                var client = _eSyaUMWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("UserCreation/GetUserBusinessLocation?UserID=" + UserID + "&CodeTypeUG=" + CodeTypeValues.UserGroup + "&CodeTypeUT=" + CodeTypeValues.UserType).Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<List<DO_UserBusinessLink>>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Insert or Update User Master
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertOrUpdateUserMaster(DO_UserMaster userMaster, string file, string DSfile)
+        {
+            try
+            {
+                var client = _eSyaUMWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                userMaster.CreatedBy = AppSessionVariables.GetSessionUserID(HttpContext);
+                userMaster.TerminalId = AppSessionVariables.GetIPAddress(HttpContext);
+
+                if (file != null)
+                {
+                    string userbase64 = file;// load base 64 code to this variable from js 
+                    Byte[] userbitmapData = new Byte[userbase64.Length];
+                    userbitmapData = Convert.FromBase64String(FixBase64ForImage(userbase64));
+                    userMaster.Photo = userbitmapData;
+                }
+                else
+                {
+                    byte[] emptyByte = { };
+                    userMaster.Photo = emptyByte;
+                }
+                if (DSfile != null)
+                {
+                    string DSbase64 = DSfile;// load base 64 code to this variable from js 
+                    Byte[] DSbitmapData = new Byte[DSbase64.Length];
+                    DSbitmapData = Convert.FromBase64String(FixBase64ForImage(DSbase64));
+                    userMaster.DigitalSignature = DSbitmapData;
+                }
+                else
+                {
+                    byte[] emptyByte = { };
+                    userMaster.DigitalSignature = emptyByte;
+                }
+
+                if (userMaster.UserID == 0)
+                {
+
+                    HttpResponseMessage Insertresponse = client.PostAsJsonAsync<DO_UserMaster>("UserCreation/InsertIntoUserMaster", userMaster).Result;
+                    string resp = Insertresponse.Content.ReadAsStringAsync().Result;
+                    var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(resp);
+                    return Json(result);
+                }
+
+                else
+                {
+                    HttpResponseMessage Updateresponse = client.PostAsJsonAsync<DO_UserMaster>("UserCreation/UpdateUserMaster", userMaster).Result;
+                    string resp = Updateresponse.Content.ReadAsStringAsync().Result;
+                    var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(resp);
+                    return Json(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        public static string FixBase64ForImage(string image)
+        {
+
+            var regex = new Regex(@"data:(?<mime>[\w/\-\.]+);(?<encoding>\w+),(?<data>.*)", RegexOptions.Compiled);
+            var match = regex.Match(image);
+            var mime = match.Groups["mime"].Value;
+            var encoding = match.Groups["encoding"].Value;
+            var data = match.Groups["data"].Value;
+            return data;
+        }
+
+        public static string ConvertByteArraytoImageURI(Byte[] image)
+        {
+
+            StringBuilder ImageURI = new StringBuilder();
+            ImageURI.Append("data:");
+            string image_data = Convert.ToBase64String(image);
+            string mime = "image/jpeg";
+            string encoding = "base64";
+            ImageURI.Append(mime);
+            ImageURI.Append(";");
+            ImageURI.Append(encoding);
+            ImageURI.Append(",");
+            ImageURI.Append(image_data);
+            return Convert.ToString(ImageURI);
+        }
+
+        /// <summary>
+        /// Insert or Update User Business Link
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertOrUpdateUserBL(DO_UserBusinessLink UserBusinessLink)
+        {
+            try
+            {
+                var client = _eSyaUMWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                UserBusinessLink.CreatedBy = AppSessionVariables.GetSessionUserID(HttpContext);
+                UserBusinessLink.TerminalId = AppSessionVariables.GetIPAddress(HttpContext);
+                
+                if (UserBusinessLink.IUStatus == 0)
+                {
+                    HttpResponseMessage Insertresponse = client.PostAsJsonAsync<DO_UserBusinessLink>("UserCreation/InsertIntoUserBL", UserBusinessLink).Result;
+                    string resp = Insertresponse.Content.ReadAsStringAsync().Result;
+                    var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(resp);
+                    return Json(result);
+                }
+
+                else
+                {
+                    HttpResponseMessage Updateresponse = client.PostAsJsonAsync<DO_UserBusinessLink>("UserCreation/UpdateUserBL", UserBusinessLink).Result;
+                    string resp = Updateresponse.Content.ReadAsStringAsync().Result;
+                    var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(resp);
+                    return Json(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        /// <summary>
+        /// Get Menu List for js tree
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetMenulist()
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage MainMenu_response = client.GetAsync("UserCreation/GetMenulist").Result;
+                string data = MainMenu_response.Content.ReadAsStringAsync().Result;
+                var MainMenu = JsonConvert.DeserializeObject<List<DO_MainMenu>>(data);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+    }
+}

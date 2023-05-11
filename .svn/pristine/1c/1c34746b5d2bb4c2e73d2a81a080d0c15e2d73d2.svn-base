@@ -1,0 +1,37 @@
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
+
+namespace eSyaEnterprise_UI.Areas.Config.Data
+{
+    public class eSyaConfigAPIServices: IeSyaConfigAPIServices
+    {
+        public HttpClient CreateClient(IConfiguration iConfig)
+        {
+            string apiBaseURI = iConfig.GetValue<string>("eSyaWebAPIUrl");
+            string apiKey = iConfig.GetValue<string>("Apikey");
+
+            var client = new HttpClient();
+            //Passing service base url    
+            client.BaseAddress = new Uri(apiBaseURI);
+
+            client.DefaultRequestHeaders.Clear();
+
+            client.DefaultRequestHeaders.Add("Apikey", apiKey);
+
+            //Define request data format    
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            return client;
+        }
+
+            
+
+    }
+}

@@ -1,0 +1,27 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.ActionFilter;
+using eSyaEnterprise_UI.Areas.TokenSystem.Data;
+using eSyaEnterprise_UI.Areas.TokenSystem.Models;
+using eSyaEnterprise_UI.DataServices;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
+using eSyaEnterprise_UI.Extension;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace eSyaEnterprise_UI.Areas.TokenSystem.Controllers
+{
+    public class GenerateController : Controller
+    {
+        
+    }
+}

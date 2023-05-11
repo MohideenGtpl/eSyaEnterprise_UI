@@ -1,0 +1,778 @@
+﻿
+@{
+    ViewData["Title"] = "V_6000_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+ 
+<link href="~/css/emergency.css" rel="stylesheet" />
+@section scripts{
+    <script src="~/js/eSyaOutPatient/emergency.js"></script>
+
+}
+
+<div class="divFixedBar">
+    <div class="row mar0">
+        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-6 d-none">
+            <p><span class="labelname"> UHID No:</span> <span id="lblUHID">XXXXXXXX10</span></p>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-6 d-none">
+            <p><span class="labelname"> IP Number</span> <span id="lblipnumber">XXXXXXXX10</span></p>
+        </div>
+       
+
+        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+            <p><span id="lblpatientname">Mr.Arun Kumar</span></p>
+            <p><span id="lblgender">Male</span> | <span id="lblage">55</span></p>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+           
+            <p><span class="labelname"> DOA</span> <span id="lbldoa">DD/MM/YYYY</span></p>
+            <p><span id="lblconsultantname">Dr.Riyaz Khan</span></p>
+        </div>
+       
+      
+        <div id="floatButtons" class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-right">
+            <button class="mdl-button"><i class="far fa-save c-green"></i> <span class="btntext">Save Draft</span></button><button class="mdl-button"><i class="far fa-check-circle c-brown"></i> <span class="btntext">Submit</span></button><button class="mdl-button"><i class="fas fa-print c-blue"></i> <span class="btntext">Print</span></button>
+        </div>
+    </div>
+    </div>
+
+<div class="row">
+    <nav class="col-md-3 col-lg-2 col-sm-3 sidebar" id="navbar-example2" style="display:none">
+        <div class="sidebar-sticky">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="#assessment1">
+                        Assessment - I <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#assessment2"> Assessment - II</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#assessment3"> Assessment - III</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#assessment4"> Assessment - IV</a>
+                </li>
+                
+            </ul>
+        </div>
+    </nav>
+        <main class="" id="mainContent" data-spy="scroll" data-target="#navbar-example2" data-offset="30">
+
+        <div class="pageSection">
+            <h4 id="assessment1">Initial Assessment - I</h4>
+            <div class="row">
+                <div class="col-lg-6 col-md-12 col-sm-6">
+                    <section class="wrapByBox">
+                        <div class="form-group">
+                            <label for="">Chief Complaints/ Duration</label>
+                            <textarea id="" class="form-control" cols="20" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Allergies</label>
+                            <textarea id="" class="form-control" cols="20" rows="3"></textarea>
+                        </div>
+                    </section>
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-6">
+                    <section class="wrapByBox">
+
+                        <div class="form-group">
+                            <label>Implants / Prosthesis Present</label>
+                            <label><input type="checkbox" name="name" value="" />  Artificial Eye</label>
+                            <label><input type="checkbox" name="name" value="" />   Artificial Limbs</label>
+                            <label><input type="checkbox" name="name" value="" />  Dentures</label>
+                            <label><input type="checkbox" name="name" value="" />  Hearing Aid</label>
+                            <label><input type="checkbox" name="name" value="" />  Other</label>
+                            <label><input type="checkbox" name="name" value="" />  Pacemaker</label>
+
+                        </div>
+                        <div class="form-group">
+                            <label>Ornaments/ Yellow Metal/ White Metal handed over to patient relative name</label>
+                            <input type="text" name="name" class="form-control" value="" />
+                        </div>
+
+                    </section>
+                </div>
+
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <p class="heading m-0">Vital Signs</p>
+                        <hr class="left" />
+                    </div>
+                
+                    <div class="row wrapByRow">
+                        <div class="col-lg-3 col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <label for="">Temp (C)</label>
+                                <input id="" class="form-control" type="text" />
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <label for="">Pulse (C)</label>
+                                <input id="" class="form-control" type="text" />
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <label for="">Reap (Min)</label>
+                                <input id="" class="form-control" type="text" />
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <label for="">B.P  (mm/hg)</label>
+                                <input id="" class="form-control" type="text" />
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <label for="">Weight (in Kgs)</label>
+                                <input id="" class="form-control" type="text" />
+                            </div>
+                        </div>
+                    </div>    
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <p class="heading m-0">Past History</p>
+                    <hr class="left" />
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12 form-group">
+                    <section class="wrapByBox">
+                        <div class="default_checkbox_inline">
+                            <label>HyperTension</label>
+                            
+                            <label class="" for="YesHyperTension">
+                                <input type="radio" id="YesHyperTension" class="" name="hypertension" value="1">
+                                Yes
+                            </label>
+                            <label class="" for="NoHyperTension">
+                                <input type="radio" id="NoHyperTension" class="" name="hypertension" value="1">
+                               No
+                            </label>
+                          </div>
+                        <div class="default_checkbox_inline">
+                            <label>COPD</label>
+                            <label class="" for="YesCOPD">
+                                <input type="radio" id="YesCOPD" class="" name="COPD" value="1">
+                               Yes
+                            </label>
+                            <label class="" for="NoCOPD">
+                                <input type="radio" id="NoCOPD" class="" name="COPD" value="1">
+                                No
+                            </label>
+                            </div>
+                        <div class="default_checkbox_inline">
+                            <label>Diabetes</label>
+                            <label class="" for="YesDiabetes">
+                                <input type="radio" id="YesDiabetes" class="" name="Diabetes" value="1">
+                                Yes
+                            </label>
+                            <label class="" for="NoDiabetes">
+                                <input type="radio" id="NoDiabetes" class="" name="Diabetes" value="1">
+                                No
+                            </label>
+                             </div>
+                        <div class="default_checkbox_inline">
+                            <label>Cancer</label>
+                            <label class="" for="YesCancer">
+                                <input type="radio" id="YesCancer" class="" name="Cancer" value="1">
+                                Yes
+                            </label>
+                            <label class="" for="NoCancer">
+                                <input type="radio" id="NoCancer" class="" name="Cancer" value="1">
+                                No
+                            </label>
+                            
+                        </div>
+                        <div class="default_checkbox_inline">
+                            <label>Kidney Disease</label>
+                            <label class="" for="YesKidneyDisease">
+                                <input type="radio" id="YesKidneyDisease" class="" name="KidneyDisease" value="1">
+                                Yes
+                            </label>
+                            <label class="" for="NoKidneyDisease">
+                                <input type="radio" id="NoKidneyDisease" class="" name="KidneyDisease" value="1">
+                                No
+                            </label>
+                            
+                        </div>
+                        <div class="default_checkbox_inline">
+                            <label>Ciggarettes/Beedi</label>
+                            <label class="" for="YesCiggarettes">
+                                <input type="radio" id="YesCiggarettes" class="" name="Ciggarettes" value="1">
+                                Yes
+                            </label>
+                            <label class="" for="NoCiggarettes">
+                                <input type="radio" id="NoCiggarettes" class="" name="Ciggarettes" value="1">
+                                No
+                            </label>
+                          
+                        </div>
+                        <div class="default_checkbox_inline">
+                            <label>Heart Disease</label>
+                            <label class="" for="YesHeartDisease">
+                                <input type="radio" id="YesHeartDisease" class="" name="Heart" value="1">
+                                Yes
+                            </label>
+                            <label class="" for="NoHeartDisease">
+                                <input type="radio" id="NoHeartDisease" class="" name="Heart" value="1">
+                                No
+                            </label>
+                             
+                        </div>
+                        <div class="default_checkbox_inline">
+                            <label>Asthma</label>
+                            <label class="" for="YesAsthma">
+                                <input type="radio" id="YesAsthma" class="" name="Asthma" value="1">
+                                Yes
+                            </label>
+                            <label class="" for="NoAsthma">
+                                <input type="radio" id="NoAsthma" class="" name="Asthma" value="1">
+                                No
+                            </label>
+                          
+                        </div>
+                    </section>
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12 form-group">
+                    <section class="wrapByBox">
+                        <div class="default_checkbox_inline">
+                            <label>TB</label>
+
+                            <label class="" for="YesHyperTension">
+                                <input type="radio" id="YesHyperTension" class="" name="hypertension" value="1">
+                                Yes
+                            </label>
+                            <label class="" for="NoHyperTension">
+                                <input type="radio" id="NoHyperTension" class="" name="hypertension" value="1">
+                                No
+                            </label>
+                          
+                        </div>
+                        <div class="default_checkbox_inline">
+                            <label>Ulcer</label>
+
+                            <label class="" for="YesUlcer">
+                                <input type="radio" id="YesUlcer" class="" name="Ulcer" value="1">
+                                Yes
+                            </label>
+                            <label class="" for="NoUlcer">
+                                <input type="radio" id="NoUlcer" class="" name="Ulcer" value="1">
+                                No
+                            </label>
+                            
+                        </div>
+                        <div class="default_checkbox_inline">
+                            <label>Mental Disorder</label>
+                            <label class="" for="YesMentalDisorder">
+                                <input type="radio" id="YesMentalDisorder" class="" name="MentalDisorder" value="1">
+                                Yes
+                            </label>
+                            <label class="" for="NoMentalDisorder">
+                                <input type="radio" id="NoMentalDisorder" class="" name="MentalDisorder" value="1">
+                                No
+                            </label>
+                           
+                        </div>
+                        <div class="default_checkbox_inline">
+                            <label>Stroke</label>
+                            <label class="" for="YesStroke">
+                                <input type="radio" id="YesStroke" class="" name="Stroke" value="1">
+                                Yes
+                            </label>
+                            <label class="" for="NoStroke">
+                                <input type="radio" id="NoStroke" class="" name="Stroke" value="1">
+                                No
+                            </label>
+                            
+                        </div>
+                        <div class="default_checkbox_inline">
+                            <label>Alcohol/Drug</label>
+                            <label class="" for="YesAlcohol">
+                                <input type="radio" id="YesAlcohol" class="" name="Alcohol" value="1">
+                                Yes
+                            </label>
+                            <label class="" for="NoAlcohol">
+                                <input type="radio" id="NoAlcohol" class="" name="Alcohol" value="1">
+                                No
+                            </label>
+                            
+                        </div>
+                        <div class="default_checkbox_inline">
+                            <label>Hepetitis</label>
+                            <label class="" for="YesHepetitis">
+                                <input type="radio" id="YesHepetitis" class="" name="Hepetitis" value="1">
+                                Yes
+                            </label>
+                            <label class="" for="NoHepetitis">
+                                <input type="radio" id="NoHepetitis" class="" name="Hepetitis" value="1">
+                                No
+                            </label>
+ 
+                        </div>
+                        <div class="default_checkbox_inline">
+                            <label>Seizures</label>
+                            <label class="" for="YesSeizures">
+                                <input type="radio" id="YesSeizures" class="" name="Seizures" value="1">
+                                Yes
+                            </label>
+                            <label class="" for="NoSeizures">
+                                <input type="radio" id="NoSeizures" class="" name="Seizures" value="1">
+                                No
+                            </label>
+                           
+                        </div>
+                        <div class="default_checkbox_inline">
+                            <label>Tobacco</label>
+                            <label class="" for="YesTobacco">
+                                <input type="radio" id="YesTobacco" class="" name="Tobacco" value="1">
+                                Yes
+                            </label>
+                            <label class="" for="NoTobacco">
+                                <input type="radio" id="NoTobacco" class="" name="Tobacco" value="1">
+                                No
+                            </label>
+                            
+                        </div>
+                    </section>
+                </div>
+
+                <div class="col-lg-6 col-md-12 col-sm-6">
+                    <section class="wrapByBox">
+                        <div class="form-group">
+                            <label for="">Any Other Neurological Problem(Mention)</label>
+                            <textarea id="" class="form-control" cols="20" rows="2"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Operations</label>
+                            <textarea id="" class="form-control" cols="20" rows="2"></textarea>
+                        </div>
+                    </section>
+                </div>
+
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <section class="wrapByBox">
+                         <div class="form-group">
+                            <label for="">Injuries</label>
+                            <textarea id="" class="form-control" cols="20" rows="2"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Vaccinations</label>
+                            <textarea id="" class="form-control" cols="20" rows="2"></textarea>
+                        </div>
+                    </section>
+                </div>
+               
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <p class="heading m-0">Family History</p>
+                    <hr class="left" />
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <section class="wrapByBox">
+                        <div class="default_checkbox_inline">
+                            <label>Heart Disease</label>
+                            <label class="" for="YesfmHeartDisease">
+                                <input type="radio" id="YesfmHeartDisease" class="mdl-radio__button" name="fmHeartDisease" value="1">
+                                Yes
+                            </label>
+                            <label class="" for="NofmHeartDisease">
+                                <input type="radio" id="NofmHeartDisease" class="mdl-radio__button" name="fmHeartDisease" value="1">
+                                No
+                            </label>
+                          
+                        </div>
+                        <div class="default_checkbox_inline">
+                            <label>HTN</label>
+                            <label class="" for="YesfmHtn">
+                                <input type="radio" id="YesfmHtn" class="" name="fmHtn" value="1">
+                                Yes
+                            </label>
+                            <label class="" for="NofmHtn">
+                                <input type="radio" id="NofmHtn" class="" name="fmHtn" value="1">
+                                No
+                            </label>
+                          
+                        </div>
+
+                        <div class="default_checkbox_inline">
+                            <label>Stroke</label>
+                            <label class="" for="YesfmStroke">
+                                <input type="radio" id="YesfmStroke" class="" name="fmStroke" value="1">
+                                Yes
+                            </label>
+                            <label class="" for="NoStroke">
+                                <input type="radio" id="NoStroke" class="" name="fmStroke" value="1">
+                                No
+                            </label>
+                          
+                        </div>
+                        <div class="default_checkbox_inline">
+                            <label>Asthma</label>
+                            <label class="" for="YesfmAsthma">
+                                <input type="radio" id="YesfmStroke" class="" name="fmAsthma" value="1">
+                                Yes
+                            </label>
+                            <label class="" for="NofmAsthma">
+                                <input type="radio" id="NofmAsthma" class="" name="fmAsthma" value="1">
+                                No
+                            </label>
+                            
+                        </div>
+                        <div class="default_checkbox_inline">
+                            <label>Mental Disorder</label>
+                            <label class="" for="YesfmMentalDisorder">
+                                <input type="radio" id="YesfmMentalDisorder" class="" name="fmMentalDisorder" value="1">
+                                Yes
+                            </label>
+                            <label class="" for="NofmMentalDisorder">
+                                <input type="radio" id="NofmMentalDisorder" class="" name="fmMentalDisorder" value="1">
+                                No
+                            </label>
+                          
+                        </div>
+                        <div class="default_checkbox_inline">
+                            <label>Diabetes</label>
+                            <label class="" for="YesfmDiabetes">
+                                <input type="radio" id="YesfmDiabetes" class="" name="fmDiabetes" value="1">
+                                Yes
+                            </label>
+                            <label class="" for="NofmDiabetes">
+                                <input type="radio" id="NofmDiabetes" class="" name="fmDiabetes" value="1">
+                                No
+                            </label>
+                           
+                        </div>
+                    </section>
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <section class="wrapByBox">
+
+
+                        <div class="default_checkbox_inline">
+                            <label>TB</label>
+
+                            <label class="" for="YesfmTB">
+                                <input type="radio" id="YesfmTB" class="" name="fmTB" value="1">
+                                Yes
+                            </label>
+                            <label class="" for="NoHyperTension">
+                                <input type="radio" id="NoHyperTension" class="" name="fmTB" value="1">
+                                No
+                            </label>
+                          
+                        </div>
+
+                        <div class="default_checkbox_inline">
+                            <label>Kidney Disease</label>
+
+                            <label class="" for="YesKidneyDisease">
+                                <input type="radio" id="YesKidneyDisease" class="" name="fmKidneyDisease" value="1">
+                                Yes
+                            </label>
+                            <label class="" for="NoHyperTension">
+                                <input type="radio" id="NoKidneyDisease" class="" name="fmKidneyDisease" value="1">
+                                No
+                            </label>
+                           
+                        </div>
+                        <div class="default_checkbox_inline">
+                            <label>Cancer</label>
+
+                            <label class="" for="YesfmCancer">
+                                <input type="radio" id="YesfmCancer" class="" name="fmCancer" value="1">
+                                Yes
+                            </label>
+                            <label class="" for="NofmCancer">
+                                <input type="radio" id="NofmCancer" class="" name="fmCancer" value="1">
+                                No
+                            </label>
+                            
+                        </div>
+                        <div class="default_checkbox_inline">
+                            <label>Seizures</label>
+
+                            <label class="" for="YesfmSeizures">
+                                <input type="radio" id="YesfmSeizures" class="" name="fmSeizures" value="1">
+                                Yes
+                            </label>
+                            <label class="" for="NofmSeizures">
+                                <input type="radio" id="NofmSeizures" class="" name="fmSeizures" value="1">
+                                No
+                            </label>
+                            
+                        </div>
+                        <div class="default_checkbox_inline">
+                            <label>Blood Disorder</label>
+
+                            <label class="" for="YesfmBloodDisorder">
+                                <input type="radio" id="YesfmBloodDisorder" class="" name="fmBloodDisorder" value="1">
+                                Yes
+                            </label>
+                            <label class="" for="NofmBloodDisorder">
+                                <input type="radio" id="NofmBloodDisorder" class="" name="fmBloodDisorder" value="1">
+                                No
+                            </label>
+                            
+                        </div>
+                    </section>
+                </div>
+            </div>
+            </div>
+        <div class="pageSection">
+            <h4 id="assessment2">Initial Assessment - II</h4>
+           
+
+            <section class=wrapByBox>
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 col-sm-6">
+                        <div class="form-group">
+                            <label for="">Personal History </label>
+                            <textarea name="name" value="" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-2 col-md-6 col-sm-4">
+                        <div class="form-group">
+                            <label for="">Marital Status </label>
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="MaritalOption1">
+                                <input type="checkbox" id="MaritalOption1" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label"></span> Option 1
+                            </label>
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="MaritalOption2">
+                                <input type="checkbox" id="MaritalOption2" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label"></span> Option 2
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Emotional Status </label>
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="EmotionalOption1">
+                                <input type="checkbox" id="EmotionalOption1" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label"></span> Option 1
+                            </label>
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="EmotionalOption2">
+                                <input type="checkbox" id="EmotionalOption2" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label"></span> Option 2
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-3 form-group">
+                        <label>Activity Level</label>
+                        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="alevelAmbulatory">
+                            <input type="checkbox" id="alevelAmbulatory" class="mdl-checkbox__input">
+                            <span class="mdl-checkbox__label"></span> Ambulatory
+                        </label>
+
+                        <div class="">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="alevelBedrest">
+                                <input type="checkbox" id="alevelBedrest" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label"></span> Bed Rest
+                            </label>
+                        </div>
+                        <div class="">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="alevelCane">
+                                <input type="checkbox" id="alevelCane" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label"></span> Cane
+                            </label>
+                        </div>
+
+                        <div class="">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="alevelWalking">
+                                <input type="checkbox" id="alevelWalking" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label"></span> Walking
+                            </label>
+                        </div>
+                        <div class="">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="alevelWheelChair">
+                                <input type="checkbox" id="alevelWheelChair" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label"></span> Wheel chair
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2 col-md-6 col-sm-4">
+                        <div class="form-group">
+                            <label for="">Do you have insurance ? </label>
+
+                            <label class="" for="YesPHInsurance">
+                                <input type="radio" id="YesPHInsurance" class="" name="PHInsurance" value="1">
+                                Yes
+                            </label>
+                            <label class="" for="NoPHInsurance">
+                                <input type="radio" id="NoPHInsurance" class="" name="PHInsurance" value="1">
+                                No
+                            </label>
+
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="wrapByBox d-none">
+                <div class="col-lg-12 col-md-12 col-sm-12 table-responsive">
+                    <table class="table table-borderless">
+                        <thead>
+                            <tr>
+
+                                <th scope="col">Risk Level</th>
+                                <th scope="col">MFS Score</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+
+                                <td>No Risk</td>
+                                <td>0-24</td>
+                                <td>Good Basing Nursing Care</td>
+                            </tr>
+                            <tr>
+
+                                <td>Low to Moderate Risk</td>
+                                <td>25-45</td>
+                                <td>Implement standard fall prevention intervention using the prevention program</td>
+                            </tr>
+                            <tr>
+
+                                <td>High Risk</td>
+                                <td>46+</td>
+                                <td>Implement high risk fall prevention interventions</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <section class="wrapByBox">
+                <div class="col-lg-12 col-md-12 col-sm-12 table-responsive">
+                    <table class="table table-borderless">
+                        <thead>
+                            <tr>
+
+                                <th scope="col">Variables</th>
+                                <th scope="col" class="text-center">Scoring</th>
+                                <th scope="col">Total Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+
+                                <td>History of Falling</td>
+                                <td>
+                                    <label class="d-inline mr-4"></label>
+                                    <div>
+                                        <label class="d-inline mr-2" for="yesHOF"><input type="radio" id="yesHOF" name="hof" /> Yes </label>
+                                        <label class="d-inline mr-2" for="noHOF"><input type="radio" id="noHOF" name="hof" /> No </label>
+                                        <label class="d-inline mr-2" for="NAHOF"><input type="radio" id="NAHOF" name="hof" /> NA </label>
+                                    </div>
+                                </td>
+                                <td><input type="text" name="name" value="0" class="w-25 text-right" /></td>
+                            </tr>
+                            <tr>
+
+                                <td>Secondary Diagnosis</td>
+                                <td> <label></label></td>
+                                <td><input type="text" name="name" value="0" class="w-25 text-right" /></td>
+                            </tr>
+                            <tr>
+
+                                <td>Ambulatory Aid</td>
+                                <td><label> </label></td>
+                                <td><input type="text" name="name" value="0" class="w-25 text-right" /></td>
+                            </tr>
+                            <tr>
+
+                                <td>+IV or IV Access Aid</td>
+                                <td><label></label></td>
+                                <td><input type="text" name="name" value="0" class="w-25 text-right" /></td>
+                            </tr>
+                            <tr>
+
+                                <td>Gait Aid</td>
+                                <td>
+                                    <label class="d-inline mr-4"></label>
+                                    <div>
+                                        <label class="d-inline mr-2" for="normal"><input type="radio" id="normal" name="Gaitaid" /> Normal </label>
+                                        <label class="d-inline mr-2" for="bedrest"><input type="radio" id="bedrest" name="Gaitaid" /> Bed Rest </label>
+                                        <label class="d-inline mr-2" for="Immobile"><input type="radio" id="Immobile" name="Gaitaid" /> Immobile </label>
+                                        <label class="d-inline mr-2" for="weak"><input type="radio" id="weak" name="Gaitaid" />  Weak </label>
+                                        <label class="d-inline mr-2" for="impaired"><input type="radio" id="impaired" name="Gaitaid" /> Impaired </label>
+                                    </div>
+
+                                </td>
+                                <td><input type="text" name="name" value="0" class="w-25 text-right" /></td>
+                            </tr>
+                            <tr>
+
+                                <td>Mental Status</td>
+                                <td>
+                                    <label class="d-inline mr-4"></label>
+                                    <div>
+                                        <label class="d-inline mr-2" for="limits"><input type="radio" id="limits" name="mentalstatus" /> Know your limits </label>
+                                        <label class="d-inline mr-2" for="overestimate"><input type="radio" id="overestimate" name="mentalstatus" /> Overestimate of forget limits </label>
+                                    </div>
+
+                                </td>
+                                <td><input type="text" name="name" value="0" class="w-25 text-right" /></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td align="right">Total</td>
+                                <td><input type="text" name="name" value="0" class="w-25 text-right" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </div>
+
+        <div class="pageSection" id="products">
+            <h4 id="assessment3">Initial Assessment - III</h4>
+              </div>
+        <div class="pageSection">
+            <h4 id="assessment4">Initial Assessment - IV</h4>
+              </div>
+    </main>
+       
+</div>
+
+<script>
+    let mainNavLinks = document.querySelectorAll("nav div ul li a");
+    let mainSections = document.querySelectorAll("main div");
+
+    let lastId;
+    let cur = [];
+
+    // This should probably be throttled.
+    // Especially because it triggers during smooth scrolling.
+    // https://lodash.com/docs/4.17.10#throttle
+    // You could do like...
+    // window.addEventListener("scroll", () => {
+    //    _.throttle(doThatStuff, 100);
+    // });
+    // Only not doing it here to keep this Pen dependency-free.
+
+    window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach(link => {
+            let section = document.querySelector(link.hash);
+
+            if (
+                section.offsetTop <= fromTop &&
+                section.offsetTop + section.offsetHeight > fromTop
+            ) {
+                link.classList.add("active");
+            } else {
+                link.classList.remove("active");
+            }
+        });
+    });
+</script>
+

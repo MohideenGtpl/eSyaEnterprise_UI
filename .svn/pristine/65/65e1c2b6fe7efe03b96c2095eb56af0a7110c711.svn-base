@@ -1,0 +1,170 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.Areas.eSyaNatureCure.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Areas.eSyaNatureCure.Data;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using eSyaEnterprise_UI.Utility;
+using Newtonsoft.Json;
+
+namespace eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers
+{
+    public class CheckInGuestController : Controller
+    {
+        private readonly IeSyaNatureCureAPIServices _eSyaNatureCureAPIServices;
+        private readonly ILogger<CheckInGuestController> _logger;
+
+        public CheckInGuestController(IeSyaNatureCureAPIServices eSyaNatureCureAPIServices, ILogger<CheckInGuestController> logger)
+        {
+            _eSyaNatureCureAPIServices = eSyaNatureCureAPIServices;
+            _logger = logger;
+        }
+
+        [Area("eSyaNatureCure")]
+        public async Task<IActionResult> V_ENC_04_00(long bookingKey, int guestId)
+        {
+            ViewBag.BookingKey = bookingKey;
+            ViewBag.GuestId = guestId;
+
+            var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+            parameter += "&bookingKey=" + bookingKey;
+            parameter += "&guestId=" + guestId;
+            var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<DO_GuestCheckInDetails>("GuestCheckIn/GetGuestDetailById" + parameter);
+            return View(serviceResponse.Data);
+        }
+
+        public async Task<JsonResult> GetGuestDetailById(long bookingKey, int guestId)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&bookingKey=" + bookingKey;
+                parameter += "&guestId=" + guestId;
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<DO_GuestCheckInDetails>("GuestCheckIn/GetGuestDetailById"+ parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetGuestDetails:params:bookingKey:{0}:guestId{1}" , bookingKey, guestId);
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetGuestDetails:params:bookingKey:{0}:guestId{1}", bookingKey, guestId);
+                throw ex;
+            }
+        }
+
+        public async Task<JsonResult> GetGuestDetailsByBookingKey(long bookingKey)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&bookingKey=" + bookingKey;
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<List<DO_GuestCheckInDetails>>("GuestCheckIn/GetGuestDetailsByBookingKey" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetGuestDetailsByBookingKey:params:bookingKey:{0}", bookingKey);
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetGuestDetails:params:GetGuestDetailsByBookingKey:{0}", bookingKey);
+                throw ex;
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> CreateGuestCheckin(DO_GuestCheckInDetails obj)
+        {
+            try
+            {
+                obj.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                var serviceResponse = await  _eSyaNatureCureAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("GuestCheckIn/CreateGuestCheckin", obj);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data.Status)
+                        return Json(new { Status = true, serviceResponse.Data.Warning, serviceResponse.Data.WarningMessage });
+                    else
+                        return Json(new { Status = false, serviceResponse.Data.Warning, serviceResponse.Data.WarningMessage, serviceResponse.Data.Message });
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:CreateGuestCheckin:params:" + JsonConvert.SerializeObject(obj));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:CreateGuestCheckin:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Warning = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        public async Task<JsonResult> GetGuestPaymentReceiptDetails(long bookingKey)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&bookingKey=" + bookingKey;
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<List<DO_GuestPaymentReceiptDetails>>("GuestPayment/GetGuestPaymentReceiptDetails" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetGuestPaymentReceiptDetails:params:bookingKey:{0}", bookingKey);
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetGuestPaymentReceiptDetails:params:bookingKey:{0}", bookingKey);
+                throw ex;
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> InsertPatientReceipt(DO_GuestPaymentReceiptDetails obj)
+        {
+            try
+            {
+                obj.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("GuestPayment/InsertPatientReceipt", obj);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data.Status)
+                        return Json(new { Status = true, serviceResponse.Data.Warning, serviceResponse.Data.WarningMessage });
+                    else
+                        return Json(new { Status = false, serviceResponse.Data.Warning, serviceResponse.Data.WarningMessage, serviceResponse.Data.Message });
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:InsertPatientReceipt:params:" + JsonConvert.SerializeObject(obj));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertPatientReceipt:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Warning = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+    }
+}

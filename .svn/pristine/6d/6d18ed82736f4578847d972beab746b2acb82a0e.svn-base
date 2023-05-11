@@ -1,0 +1,262 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.ActionFilter;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using eSyaEnterprise_UI.Areas.eSyaNatureCure.Data;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Areas.eSyaNatureCure.Models;
+
+namespace eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers
+{
+    [SessionTimeout]
+    public class MembershipRegistrationController : Controller
+    {
+        private readonly IeSyaNatureCureAPIServices _eSyaNatureCureAPIServices;
+        private readonly ILogger<MembershipRegistrationController> _logger;
+
+        public MembershipRegistrationController(IeSyaNatureCureAPIServices eSyaNatureCureAPIServices, ILogger<MembershipRegistrationController> logger)
+        {
+            _eSyaNatureCureAPIServices = eSyaNatureCureAPIServices;
+            _logger = logger;
+        }
+        #region MemberShip Registration
+        /// <summary>
+        /// Room Reservation
+        /// </summary>
+        /// <returns></returns>
+
+        [Area("eSyaNatureCure")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public async Task<IActionResult> V_ENC_22_00()
+        {
+
+            try
+            {
+                List<int> l_codeType = new List<int>();
+                l_codeType.Add(CodeTypeValues.PatientType);
+                l_codeType.Add(CodeTypeValues.PatientCategory);
+                l_codeType.Add(CodeTypeValues.MembershipType);
+                var response = await _eSyaNatureCureAPIServices.HttpClientServices.PostAsJsonAsync<List<DO_ApplicationCodes>>("CommonMaster/GetApplicationCodesByCodeTypeList", l_codeType);
+                var rmt_response = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<List<DO_RoomType>>("RoomType/GetActiveRoomTypes");
+
+                if (response.Status && rmt_response.Status)
+                {
+                    if (response.Data != null)
+                    {
+                        List<DO_ApplicationCodes> app_codes = response.Data;
+                        ViewBag.PatientType = app_codes.Where(w => w.CodeType == CodeTypeValues.PatientType);
+                        ViewBag.PatientCategory = app_codes.Where(w => w.CodeType == CodeTypeValues.PatientCategory);
+                        ViewBag.MembershipType = app_codes.Where(w => w.CodeType == CodeTypeValues.MembershipType);
+                        ViewBag.RoomTypes= rmt_response.Data;
+                        return View();
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(response.Message), "UD:GetApplicationCodesByCodeTypeList");
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(response.Message), "UD:GetApplicationCodesByCodeTypeList");
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetApplicationCodesByCodeTypeList");
+                throw ex;
+            }
+
+
+        }
+
+        /// <summary>
+        /// Get State List by isdCode.
+        /// </summary>
+        [HttpGet]
+        public async Task<JsonResult> GetStateList(int isdCode)
+        {
+            try
+            {
+                var parameter = "?isdCode=" + isdCode;
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<List<DO_Place>>("MembershipRegistration/GetStateList" + parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetStateList:For isdCode ", isdCode);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetStateList:For isdCode ", isdCode);
+                throw ex;
+            }
+        }
+        /// <summary>
+        /// Get City List by isdCode and stateCode.
+        /// </summary>
+        [HttpGet]
+        public async Task<JsonResult> GetCityList(int isdCode, int? stateCode)
+        {
+            try
+            {
+                var parameter = "?isdCode=" + isdCode + "&stateCode=" + stateCode;
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<List<DO_Place>>("MembershipRegistration/GetCityList" + parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetCityList:For isdCode {0} with stateCode entered {1}", isdCode, stateCode);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetCityList:For isdCode {0} with stateCode entered {1}", isdCode, stateCode);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Get Membership by businesskey-memberId-couponId
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetMembershipByMemberId(DO_MembershipRegistration objm)
+        {
+            try
+            {
+                var parameter = "?businesskey=" + objm.BusinessKey + "&memberId=" + objm.MemberId + "&couponId=" + objm.CouponId;
+                var serviceResponse =await  _eSyaNatureCureAPIServices.HttpClientServices.PostAsJsonAsync<DO_MembershipRegistration>("MembershipRegistration/GetMembershipByMemberId",objm);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetMembershipByMemberId", objm);
+                    return Json(new { serviceResponse.Data });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetMembershipByMemberId", objm);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Insert Into MemberShip
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertIntoMembership(DO_MembershipRegistration obj)
+        {
+            try
+            {
+                obj.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                obj.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+
+                var Insertresponse = _eSyaNatureCureAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("MembershipRegistration/InsertIntoMembership", obj).Result;
+                return Json(Insertresponse.Data);
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Update MemberShip
+        /// </summary>
+        [HttpPost]
+        public JsonResult UpdateMembership(DO_MembershipRegistration obj)
+        {
+            try
+            {
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                var response = _eSyaNatureCureAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("MembershipRegistration/UpdateMembership", obj).Result;
+                return Json(response.Data);
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Get MemberShip List
+        /// </summary>
+        [HttpGet]
+        public JsonResult GetMembershipByNamePrefix(string memberNamePrefix)
+        {
+            try
+            {
+                var response = _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<List<DO_MembershipRegistration>>("MembershipRegistration/GetMembershipByNamePrefix?memberNamePrefix=" + memberNamePrefix).Result;
+                if (response.Status)
+                {
+                    return Json(response.Data);
+                }
+                else
+                {
+                    return Json(new DO_ReturnParameter()
+                    {
+                        Status = false,
+                        StatusCode = response.StatusCode.ToString()
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Activate or De Activate MemberShip
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> ActiveOrDeActiveMembership(bool status, int businesskey, long memberId, string couponId)
+        {
+
+            try
+            {
+
+                var parameter = "?status=" + status + "&businesskey=" + businesskey + "&memberId=" + memberId + "&couponId=" + couponId;
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<DO_ReturnParameter>("MembershipRegistration/ActiveOrDeActiveMembership" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:ActiveOrDeActiveMembership:For memberId {0} ", memberId);
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+        #endregion
+    }
+}

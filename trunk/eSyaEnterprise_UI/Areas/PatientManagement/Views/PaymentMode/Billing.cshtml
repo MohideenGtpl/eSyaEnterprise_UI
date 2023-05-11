@@ -1,0 +1,213 @@
+﻿
+@{
+    ViewData["Title"] = "Billing";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/js/jquery.repeater.js"></script>
+<style>
+    .text-label {
+        width: auto !important;
+    }
+</style>
+
+<section class="bg-white">
+    <div class="row m-0 py-2">
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <label>UHID</label>
+            <input type="text" name="name" class="form-control" value="" />
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 d-flex align-items-end">
+            <button type="button" class="btn btn-primary"> Search</button>
+        </div>
+    </div>
+</section>
+<section class="">
+    <div class="row m-0">
+        <div class="col-lg-3 col-md-6 col-sm-6 main-content-box d-flex align-items-center">
+            <span class="box-icon"><i class="fas fa-user-md fa-2x"></i></span>
+            <p class="m-0 pl-2 d-inline"><span class="text-data">FirstName LastName  </span></p>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6 main-content-box">
+            <div class="d-flex">
+                <span class="box-icon"><i class="fas fa-bed fa-2x"></i></span>
+                <div class="pl-2 d-flex justify-content-around flex-column">
+                    <label class=""><span class="text-label">Age:&nbsp;</span><span class="text-data">25</span></label>
+                    <label class=""><span class="text-label">Sex:&nbsp;</span><span class="text-data">Male</span></label>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6 col-6 main-content-box">
+            <div class="d-flex">
+                <span class="box-icon"><i class="far fa-building fa-2x"></i></span>
+                <div class="pl-2 d-flex justify-content-around flex-column">
+                    <label class=""><span class="text-label">Visit Date:&nbsp;</span><span class="text-data">25/05/2022</span></label>
+                   @* <label class=""><span class="text-label">Bed Number:&nbsp;</span><span class="text-data">BedNumber</span></label>*@
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-lg-3 col-md-6 col-sm-6 col-6 main-content-box">
+            <div class="d-flex justify-content-evenly">
+                <span class="box-icon"><i class="far fa-calendar fa-2x"></i></span>
+                <div class="pl-2 d-flex justify-content-around flex-column">
+                    <label class=""><span class="text-label">Doctor Name:&nbsp;</span><span class="text-data">Dr.Sachin</span></label>
+                    <label class=""><span class="text-label">Specialty:&nbsp;</span><span class="text-data">Cardiology</span></label>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="d-inline">
+    <div class="row m-0">
+        <div class="col-lg-9 col-md-8 col-sm-6 bg-white p-3">
+            <div class="row pb-2">
+                <div class="col-lg-12 col-md-12 col-sm-6">
+                    <p class="subheading">Service details</p>
+                    <hr class="left" />
+                </div>
+                <div class="col-lg-3 col-md-4 col-sm-6 form-group">
+                    <label>Services</label>
+                    <select class="form-control">
+                        <option value="value">Choose</option>
+                    </select>
+                </div>
+
+                <div class="col-lg-12 col-md-12 col-sm-6">
+                    <table id="jqgGuestServiceBilling"></table>
+                    <div id="jqpGuestServiceBilling"></div>
+                </div>
+            </div>
+            <div class="row pb-2">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <p class="subheading">Payment details</p>
+                    <hr class="left" />
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    @Html.Partial("~/Areas/PatientManagement/Views/PaymentMode/_PaymentDetail.cshtml")
+                </div>
+            </div>
+            <div class="row pb-2">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+
+                </div>
+                </div>
+            </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 bg-white pb-2">
+            <div class="total-box h-220 shadow-sm p-2">
+                 <h5 class="total-cash-heading bg-light py-2"><i class="fa fa-file-invoice"></i> Net Bill Amount</h5>
+                <div class="row m-0">
+                    <label class="col-lg-6 pad-x-10 fontsize-12">Total Bill Amount</label>
+                    <div class="col-lg-6 pad-x-10">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label fullwidth" style="padding-top:0px !important; padding-bottom:10px !important">
+                            <input type="text" id="txtTotalBillAmount" class="mdl-textfield__input   currencyFormat  text-right" readonly style="display:inline-block  ">
+                        </div>
+                    </div>
+                </div>
+                <div class="row m-0">
+                    <label class="col-lg-6 pad-x-10 fontsize-12">Concession Amount</label>
+                    <div class="col-lg-6 pad-x-10">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label fullwidth" style="padding-top:0px !important; padding-bottom:10px !important">
+                            <input type="text" id="txtTotalConcessionAmount" class="mdl-textfield__input currencyFormat  text-right" onkeypress="return OnlyNumeric(event);" onblur="fnConcesssionAmount_onLeave()">
+                        </div>
+                    </div>
+                </div>
+                <div class="row m-0">
+                    <label class="col-lg-6 pad-x-10 fontsize-12">Net Bill Amount</label>
+                    <div class="col-lg-6 pad-x-10">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label fullwidth" style="padding-top:0px !important; padding-bottom:10px !important">
+                            <input type="text" id="txtNetBillAmount" class="mdl-textfield__input currencyFormat  text-right" readonly style="display:inline-block  ">
+                        </div>
+                    </div>
+                </div>
+                <div class="row m-0">
+                    <label class="col-lg-6 pad-x-10 fontsize-12">Collected Amount</label>
+                    <div class="col-lg-6 pad-x-10">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label fullwidth" style="padding-top:0px !important; padding-bottom:10px !important">
+                            <input type="text" id="txtTotalCollectedAmount" class="mdl-textfield__input currencyFormat  text-right" readonly style="display:inline-block  ">
+                        </div>
+                    </div>
+                </div>
+                <div class="row m-0">
+                    <label class="col-lg-6 pad-x-10 fontsize-12">Narration</label>
+                    <div class="col-lg-12 pad-x-10">
+                        <textarea rows="1" id="txtNarration" maxlength="250" class="form-control"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="d-inline">
+    <div class="row m-0">
+
+    </div>
+</section>
+<script>
+    $(function () {
+        fnLoadGuestBillingServices();
+    });
+    function fnLoadGuestBillingServices() {
+        $("#jqgGuestServiceBilling").jqGrid("GridUnload");
+        $("#jqgGuestServiceBilling").jqGrid(
+            {
+                //url: getBaseURL() + '/CheckInGuest/GetGuestServiceBilling',
+                datatype: "json",
+                contenttype: "application/json; charset-utf-8",
+                mtype: 'GET',
+                postData: {
+                    bookingKey: function () { return parseInt($('#hdBookingKey').val()) },
+                },
+                jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+                colNames: ['Service Code', 'Service Description', 'Service Provider', 'Quantity', 'Rate', 'Discount Amount'],
+                colModel: [
+                    { name: 'ServiceCode', index: 'ServiceCode', width: '100', hidden: true },
+                    { name: 'ServiceName', index: 'ServiceName', width: '100' },
+                    { name: 'ServiceProvider', index: 'ServiceProvider', width: '100' },
+                    { name: 'Rate', index: 'rate', width: '100' },
+                    { name: 'Quantity', index: 'Quantity', width: '80', align: "right", editable: false, formatter: 'integer', formatoptions: { decimalSeparator: ".", decimalPlaces: 0, thousandsSeparator: ',' } },
+                    { name: 'TotalAmount', index: 'TotalAmount', width: '150', align: "right", formatter: 'integer', formatoptions: { decimalSeparator: ".", decimalPlaces: 2, thousandsSeparator: ',' } },
+                ],
+                rowNum: 10,
+                rownumWidth: 55,
+                pager: "#jqpGuestServiceBilling",
+                viewrecords: true,
+                gridview: true,
+                rownumbers: true,
+                height: 'auto',
+                width: 'auto',
+                autowidth: true,
+                shrinkToFit: true,
+                forceFit: true,
+                loadonce: true,
+                //editurl: 'url',
+                //cellsubmit: 'clientArray',
+                //cellEdit: true,
+                loadBeforeSend: function () {
+                    $("#jqgh_jqgGuestServiceBilling_Quantity,#jqgh_jqgGuestServiceBilling_Rate").css('text-align', 'right');
+                },
+                loadComplete: function () {
+                    fnAddGridSerialNoHeading();
+                },
+                gridComplete: function () {
+                    CalculateTotalAmount();
+                },
+            }).jqGrid('navGrid', '#jqpGuestServiceBilling', {
+                add: false, edit: false, search: false, del: false, refresh: false
+            }).jqGrid('navButtonAdd', '#jqpGuestServiceBilling', {
+                caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Add', buttonicon: 'none', id: 'custAdd', position: 'first', onClickButton: fnAddService
+            }).jqGrid('navButtonAdd', '#jqpGuestServiceBilling', {
+                caption: '<span class="fa fa-trash" data-toggle="modal"  data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Delete', buttonicon: 'none', id: 'custDelete', position: 'last', onClickButton: fnDeleteService
+            });
+
+        jQuery("#jqgGuestServiceBilling").trigger('reloadGrid');
+    }
+    function fnAddService() {
+
+    }
+    function fnDeleteService() {
+
+    }
+</script>

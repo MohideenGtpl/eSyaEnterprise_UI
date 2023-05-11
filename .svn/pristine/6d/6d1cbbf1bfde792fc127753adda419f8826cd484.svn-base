@@ -1,0 +1,153 @@
+﻿var prevSelectedID = '';
+var TypeList
+
+$(document).ready(function () {
+    fnLoadFormsModuleTree();
+    fnTreeSize();
+});
+function fnTreeSize() {
+    $("#jstMenuFormModule").css({
+        'height': $(window).innerHeight() - 136,
+        'overflow': 'auto'
+    });
+}
+
+
+function fnLoadFormsModuleTree() {
+    $('#pnlFormModule').hide();
+    $("#jstMenuFormModule").jstree({
+        core: {
+            'data': [
+                
+                { "id": "ajson2", "parent": "#", "text": "eSya Enterprise","type":"root"},
+                { "id": "MMajson3", "parent": "ajson2", "text": "eSya Config", "type": "root" },
+                { "id": "SMjson4", "parent": "MMajson3", "text": "Forms & Menu", "type": "root" },
+                { "id": "FMjson5", "parent": "SMjson4", "text": "Form Names", "type": "child" },
+                { "id": "FMjson6", "parent": "SMjson4", "text": "eSya Menu", "type": "child" },
+            ],
+            'check_callback': true, 'multiple': false
+        },
+        types: {
+            "root": {
+                "icon": "/images/jsTree/openfolder.png"
+            },
+            "child": {
+                "icon": "/images/jsTree/fileIcon.png"
+            },
+            "default": {
+            }
+        },
+        plugins: ["search", "themes", "types"]
+    });
+
+    $("#jstMenuFormModule").on('loaded.jstree', function () {
+        $("#jstMenuFormModule").jstree()._open_to(prevSelectedID);
+        $('#jstMenuFormModule').jstree().select_node(prevSelectedID);
+    });
+
+    $('#jstMenuFormModule').on("changed.jstree", function (e, data) {
+        if (data.node != undefined) {
+            if (prevSelectedID != data.node.id) {
+                prevSelectedID = data.node.id;
+
+                if (data.node.id == "0") {
+                    $('#btnMoveUp,#btnMoveDown,#btnDeleteNode').prop('disabled', true)
+                }
+                else {
+                    
+
+                    if (data.node.parent == "#") {
+                        $('#pnlMainMenu').show();
+                        $('#pnlMainModuleHeading > h5').text('Add Main Menu');
+                        $('#btnMainMenuAdd').html('<i class="fa fa-plus"></i> Add');
+
+                        
+                    }
+                    else if (data.node.id.startsWith("MM")) {
+
+                        $('#' + data.node.id + "_anchor").html($('#' + data.node.id + "_anchor").html() + '<span id="Edit">&nbsp;<i class="fa fa-pen" style="color:#337ab7"aria-hidden="true"></i></span>')
+
+                        $('#Edit').on('click', function () {
+
+                            $('#pnlAddSubMenu').hide();
+                            $('#pnlrdoAddItem').hide();
+                            $('#pnlMainMenu').show();
+                            $('#pnlMainModuleHeading > h5').text('Edit Main Menu');
+                            $('#btnMainMenuAdd').html('<i class="fa fa-sync"></i> Update');
+
+                            fnFillMainMenu(data.node.id.substring(2));
+
+                        });
+
+                        $('#pnlFormModule').show();
+                         
+                        $('#pnlSubMenuHeading > h5').text('Add Sub Menu');
+                        $('#btnSubMenuAdd').html('<i class="fa fa-sync"></i> Add');
+                        $('#pnlFormMenuHeading > h5').text('Add Form');
+                        $('#btnFormAdd').html('<i class="fa fa-sync"></i> Add');
+
+                        $("#cboInternalForm").attr('disabled', false);
+                        //fnClearControl();
+
+                    }
+                    else if (data.node.id.startsWith("SM")) {
+                        $('#' + data.node.id + "_anchor").html($('#' + data.node.id + "_anchor").html() + '<span id="Edit">&nbsp;<i class="fa fa-pen" style="color:#337ab7"aria-hidden="true"></i></span>')
+
+                        $('#Edit').on('click', function () {
+
+                            $('#hdfMenuItemID').val(data.node.id.substring(2));
+                            $('#pnlAddSubMenu').show();
+                            $('#pnlrdoAddItem').hide();
+                            $('#pnlSubMenu').show();
+                            $('#pnlSubMenuHeading > h5').text('Edit Sub Menu');
+                            $('#btnSubMenuAdd').html('<i class="fa fa-sync"></i> Update');
+
+                            fnFillSubMenu(data.node.id.substring(2));
+
+                        });
+
+                        $('#hdfMenuItemID').val(0);
+                        $('#pnlAddSubMenu').show();
+                        $('#pnlrdoAddItem').show();
+                        $("#rdoAddSubMenu").prop({ 'checked': false });
+                        $("#rdoAddForm").prop({ 'checked': false });
+
+                        $('#pnlSubMenuHeading > h5').text('Add Sub Menu');
+                        $('#btnSubMenuAdd').html('<i class="fa fa-sync"></i> Add');
+                        $('#pnlFormMenuHeading > h5').text('Add Form');
+                        $('#btnFormAdd').html('<i class="fa fa-sync"></i> Add');
+
+                        $("#cboInternalForm").attr('disabled', false);
+                        fnClearControl();
+                    }
+                    else if (data.node.id.startsWith("FM")) {
+
+                        $('#pnlFormMenuHeading > h5').text('Edit Form');
+                        $('#btnFormAdd').html('<i class="fa fa-sync"></i> Update');
+
+                        var mainMenuID = 0, menuItemID = 0, formID = 0;
+                        formID = data.node.id.substring(2).split(".")[1];
+
+                        $('#hdfFormMenuItemID').val(data.node.parent.substring(2));
+                        $('#hdfFormID').val(formID); //data.node.id.substring(2));
+                        $('#pnlAddSubMenu').show();
+                        $('#pnlForm').show();
+
+                        if (data.node.parent.startsWith("MM"))
+                            mainMenuID = data.node.parent.substring(2);
+                        else if (data.node.parent.startsWith("SM"))
+                            menuItemID = data.node.parent.substring(2);
+
+                        fnFillFormDetail(mainMenuID, menuItemID, formID);
+                    }
+                }
+            }
+        }
+    });
+
+    $('#jstMenuFormModule').on("close_node.jstree", function (node) {
+        var closingNode = node.handleObj.handler.arguments[1].node;
+        $('#jstMenuFormModule').jstree().deselect_node(closingNode.children);
+    });
+
+};

@@ -1,0 +1,620 @@
+﻿var isUpdate = 0;
+$(document).ready(function () {
+    $('#cboCurrencyCode').empty();
+    $("#cboCurrencyCode").append($("<option value='0'>Choose Currency Code</option>"));
+    $("#cboSymbol").append($("<option value='0'>Choose Currency Symbol</option>"));
+    $.each(currency_symbols, function (key, value) {
+        $('#cboCurrencyCode').append('<option value=' + key + '>' + key + '</option>');
+        $('#cboSymbol').append('<option value=' + value + '>' + value + '</option>');
+    });
+    $('#cboCurrencyCode').selectpicker('refresh');
+    $('#cboSymbol').selectpicker('refresh');
+
+    fnGridLoadCurrencyMaster();
+});
+
+function fnCurrency_onChange() {
+    $('#cboSymbol').val(currency_symbols[$('#cboCurrencyCode').val()]);
+    $('#cboSymbol').selectpicker('refresh');
+}
+
+function fnGridLoadCurrencyMaster() {
+
+    $("#jqgCurrencyMaster").jqGrid({
+        url: getBaseURL() + '/Currency/GetCurrencyMaster',
+        datatype: 'json',
+        mtype: 'Get',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Currency Code", "Currency Name", "Symbol", "Decimal Places", "Show In Millions", "Symbol Suffix", "Decimal Portion Word", "Status", "Action"],
+        colModel: [
+            { name: "CurrencyCode", width: 30, align: 'left', editable: true, editoptions: { maxlength: 4 } },
+            { name: "CurrencyName", width: 205, editable: true, align: 'left', editoptions: { maxlength: 25 } },
+            { name: "Symbol", width: 50, editable: true, align: 'center', editoptions: { maxlength: 50 }, hidden: true },
+            { name: "DecimalPlaces", width: 40, editable: true, align: 'center', editoptions: { maxlength: 3 }, hidden: true, },
+            { name: "ShowInMillions", editable: true, width: 45, hidden: true, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            { name: "SymbolSuffixToAmount", editable: true, width: 75, hidden: true, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            { name: "DecimalPortionWord", width: 55, editable: true, align: 'left', editoptions: { maxlength: 25 }, hidden: true },
+            { name: "ActiveStatus", editable: true, width: 30, align: 'left', edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: Inactive" } },
+
+            {
+                name: 'edit', search: false, align: 'left', width: 150, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="UploadQuotation btn-xs ui-button ui- widget ui-corner-all btn-jqgrid" title="View " onclick="return fnCurrencyDenominationInfoPopup(event);"><i class="fa fa-plus"></i> Add Denomination</button>' +
+                        ' <button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" onclick="return fnEditCurrencyMaster(event)"><i class="fas fa-pencil-alt"></i> Edit </button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnViewCurrencyMaster(event)"><i class="far fa-file-alt"></i> View </button>';
+                }
+            },
+        ],
+        pager: "#jqpCurrencyMaster",
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0,
+       
+    }).
+        jqGrid('navGrid', '#jqpCurrencyMaster', { add: false, edit: false, search: true, searchtext:'Search', del: false, refresh: false }, {}, {}, {}, { multipleSearch: true }).jqGrid('navButtonAdd', '#jqpCurrencyMaster', {
+            caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Add', buttonicon: 'none', id: 'btnGridAdd', position: 'first', onClickButton: fnAddCurrencyMaster
+        }).
+        jqGrid('navButtonAdd', '#jqpCurrencyMaster', {
+            caption: '<span class="fa fa-sync" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: 'none', id: 'btnGridRefresh', position: 'last', onClickButton: fnGridRefreshCurrencyMaster
+        });
+}
+
+function fnAddCurrencyMaster() {
+
+    fnClearFields();
+    isUpdate = 0;
+    $('#PopupCurrencyMaster').modal('show');
+    $("#btnSaveCurrencyMaster").html("save");
+    $('#PopupCurrencyMaster').find('.modal-title').text("Add Currency Details");
+}
+
+function fnEditCurrencyMaster(e) {
+   
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgCurrencyMaster').jqGrid('getRowData', rowid);
+    isUpdate = 1;
+    $('#PopupCurrencyMaster').find('.modal-title').text("Update Currency Details");
+    $('#PopupCurrencyMaster').modal('show');
+    $("#btnSaveCurrencyMaster").html("Update");
+    $('#cboCurrencyCode').attr('disabled', true);
+    $('#cboCurrencyCode').val(rowData.CurrencyCode);
+    $('#cboCurrencyCode').selectpicker('refresh');
+    $('#txtCurrencyName').val(rowData.CurrencyName);
+    $('#cboSymbol').val(rowData.Symbol);
+    $('#cboSymbol').selectpicker('refresh');
+    $('#txtDecimalPlaces').val(rowData.DecimalPlaces);
+    var showInMillions = rowData.ShowInMillions;
+    var symbolSuffixToAmount = rowData.SymbolSuffixToAmount;
+    if (showInMillions === "true") {
+        $("#chkShowInMilions").parent().addClass("is-checked");
+    }
+    else { $("#chkShowInMilions").parent().removeClass("is-checked"); }
+
+    if (symbolSuffixToAmount === "true") {
+        $("#chkSymbolSuffixToAmount").parent().addClass("is-checked");
+    }
+    else { $("#chkSymbolSuffixToAmount").parent().removeClass("is-checked"); }
+    $('#txtDecimalPortionWord').val(rowData.DecimalPortionWord);
+    $("#cboActiveStatus").val(rowData.ActiveStatus);
+    $('#cboActiveStatus').selectpicker('refresh');
+}
+
+function fnSaveCurrencyMaster() {
+    if (ValidateCurrencyMaster() === false) {
+        return;
+    }
+    var currency = {
+        CurrencyCode: $("#cboCurrencyCode").val(),
+        CurrencyName: $("#txtCurrencyName").val(),
+        Symbol: $("#cboSymbol").val(),
+        DecimalPlaces: $("#txtDecimalPlaces").val(),
+        ShowInMillions: $('#chkShowInMilions').parent().hasClass("is-checked"),
+        SymbolSuffixToAmount: $('#chkSymbolSuffixToAmount').parent().hasClass("is-checked"),
+        DecimalPortionWord: $("#txtDecimalPortionWord").val(),
+        ActiveStatus: $("#cboActiveStatus").val()
+    };
+    var URL = getBaseURL() + '/Currency/InsertIntoCurrencyMaster';
+    if (isUpdate == 1)
+    {
+        URL = getBaseURL() + '/Currency/UpdateCurrencyMaster';
+    }
+    $.ajax({
+        url: URL,
+        type: 'POST',
+        datatype: 'json',
+        data: { currency },
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                fnGridRefreshCurrencyMaster();
+                $("#PopupCurrencyMaster").modal('hide');
+                fnClearFields();
+            }
+            else {
+                toastr.error(response.Message);
+            }
+
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+        }
+    });
+}
+
+function ValidateCurrencyMaster() {
+
+    if ($("#cboCurrencyCode").val() === '0') {
+        toastr.warning("Please Select Currency Code");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtCurrencyName").val())) {
+        toastr.warning("Please Enter Currency Name");
+        return false;
+    }
+    if ($("#cboSymbol").val() === '0') {
+        toastr.warning("Please Select Currency Symbol.");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtDecimalPlaces").val())) {
+        toastr.warning("Please Enter Decimal Places");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtDecimalPortionWord").val())) {
+        toastr.warning("Please Enter Decimal Portion Word");
+        return false;
+    }
+
+}
+
+function fnGridRefreshCurrencyMaster() {
+    $("#jqgCurrencyMaster").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+function fnViewCurrencyMaster(e) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgCurrencyMaster').jqGrid('getRowData', rowid);
+    $('#PopupCurrencyMaster').find('.modal-title').text("View Currency Details");
+    $('#PopupCurrencyMaster').modal('show');
+    $("#btnSaveCurrencyMaster").hide();
+    
+    $('#cboCurrencyCode').val(rowData.CurrencyCode);
+    $('#cboCurrencyCode').selectpicker('refresh');
+    $('#txtCurrencyName').val(rowData.CurrencyName);
+    $('#cboSymbol').val(rowData.Symbol);
+    $('#cboSymbol').selectpicker('refresh');
+    $('#txtDecimalPlaces').val(rowData.DecimalPlaces);
+
+    var showInMillions = rowData.ShowInMillions;
+    var symbolSuffixToAmount = rowData.SymbolSuffixToAmount;
+
+    if (showInMillions === "true") {
+        $("#chkShowInMilions").parent().addClass("is-checked");
+    }
+    else { $("#chkShowInMilions").parent().removeClass("is-checked"); }
+
+    if (symbolSuffixToAmount === "true") {
+        $("#chkSymbolSuffixToAmount").parent().addClass("is-checked");
+    }
+    else { $("#chkSymbolSuffixToAmount").parent().removeClass("is-checked"); }
+
+    $('#txtDecimalPortionWord').val(rowData.DecimalPortionWord);
+    $("#cboActiveStatus").val(rowData.ActiveStatus);
+    $('#cboActiveStatus').selectpicker('refresh');
+    $("#PopupCurrencyMaster").on('hidden.bs.modal', function () {
+        $("#btnSaveCurrencyMaster").show();
+    });
+}
+
+function fnClearFields() {
+    $('#cboCurrencyCode').attr('disabled', false);
+    $('#cboCurrencyCode').val('0');
+    $('#cboCurrencyCode').selectpicker('refresh');
+    $("#txtCurrencyName").val("");
+    $("#cboSymbol").val('0');
+    $('#cboSymbol').selectpicker('refresh');
+    $("#txtDecimalPlaces").val("");
+    $("#txtDecimalPortionWord").val("");
+    $('#chkSymbolSuffixToAmount').parent().removeClass('is-checked');
+    $('#chkShowInMilions').parent().removeClass('is-checked');
+    $('#cboActiveStatus').val("true");
+    $('#cboActiveStatus').selectpicker('refresh');
+
+}
+
+
+// currency Denomination Information
+
+function fnCurrencyDenominationInfoPopup(e) {
+
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgCurrencyMaster').getRowData(rowid);
+    $("#PopupCurrencyDenominationInformation").modal(true);
+    //for first grid
+    $("#txtcurrencycode").val('');
+    $("#txtcurrencycode").val(rowData.CurrencyCode);
+    ////for second grid
+    $("#lblCurrencyName").text(rowData.CurrencyName);
+    $("#lblCurrencyCode").text(rowData.CurrencyCode);
+    fnGridLoadCurrencyDenomitationInformation();
+}
+
+function fnGridLoadCurrencyDenomitationInformation() {
+    $('#jqgDenominationSequence').jqGrid('GridUnload');
+    $("#jqgDenominationSequence").jqGrid({
+        url: getBaseURL() + '/Currency/GetCurrencyDenominationInfoByCurrencyCode?CurrencyCode=' + $('#txtcurrencycode').val(),
+        datatype: 'json',
+        mtype: 'Post',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Currency Code", "Denomination ", "Denomination Sequence", "Effective Date", "Status", "Delete"],
+        colModel: [
+            { name: "CurrencyCode", width: 150, editable: true, align: 'left', editoptions: { maxlength: 4 }, hidden: true },
+            { name: "Denomination", width: 160, editable: true, align: 'left', editoptions: { maxlength: 10, onkeypress: 'return fnOnlyDigits(event)' } },
+            { name: "Sequence", width: 200, editable: true, align: 'left', editoptions: { maxlength: 10, onkeypress: 'return fnOnlyDigits(event)' } },
+            {
+                name: "EffectiveDate", editable: true, width: 150, align: 'left', resizable: false, formatter: 'date',
+                editoptions: {
+                    size: 10, maxlengh: 10,
+                    dataInit: function (element) {
+                        $(element).datepicker({ minDate: 0 });
+                    }
+                }
+            },
+            { name: "ActiveStatus", editable: true, width: 120, edittype: "select", align: 'left', formatter: 'select', editoptions: { value: "true:Active;false:Inactive" } },
+            {
+                name: 'delete', search: false, align: 'left', width: 100, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid cancel-button"  onclick="return fnDeleteDenominationInformation(event)"><i class="far fa-trash-alt"></i> Delete </button>'
+                }
+            },
+        ],
+        rowNum: 10,
+        rowList: [10, 20,30, 50,100],
+        emptyrecords: "No records to Veiw",
+        pager: "#jqpDenominationSequence",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        width: 'auto',
+        autowidth: true,
+        shrinkToFit: true,
+        forceFit: true,
+        loadonce: true,
+        editurl: getBaseURL() + '/Currency/InsertUpdateCurrencyDenominationInformation',
+        ajaxRowOptions: {
+            type: "POST",
+            dataType: "json"
+        },
+        serializeRowData: function (postData) {
+            if (IsStringNullorEmpty(postData.CurrencyCode)) {
+                postData.CurrencyCode = $('#txtcurrencycode').val();
+            }
+            return (postData);
+            
+        },
+        
+        ondblClickRow: function (rowid) {
+            $("#jqgDenominationSequence").trigger('click');
+        },
+    }).jqGrid('navGrid', '#jqpDenominationSequence', { add: false, edit: false, search: false, del: false, refresh: false });
+    $("#jqgDenominationSequence").jqGrid('inlineNav', '#jqpDenominationSequence',
+        {
+            edit: true,
+            editicon: " fa fa-pen",
+            edittext: " Edit",
+            add: true,
+            addicon: "fa fa-plus",
+            addtext: " Add",
+            save: true,
+            savetext: " Save",
+            saveicon: "fa fa-save",
+            cancelicon: "fa fa-ban",
+            canceltext: " Cancel",
+            editParams: {
+                keys: false,
+                oneditfunc: function (formid) {
+
+                    $("#" + formid + "_Denomination").prop('disabled', true);
+                   
+                },
+                url: null,
+                successfunc: function (result) {
+                    var res = JSON.stringify(result);
+                    var response = JSON.parse(res);
+                    var r = response.responseText;
+                    var p = JSON.parse(r)
+                    if (p.Status) {
+                        toastr.success(p.Message);
+                    }
+                    else {
+                        toastr.error(p.Message);
+                    }
+                    $("#jqgDenominationSequence").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+                },
+                aftersavefun: null,
+                errorfun: null,
+                afterrestorefun: null,
+                restoreAfterError: true,
+                mtype: "POST",
+            },
+            addParams: {
+                useDefValues: true,
+                position: "last",
+                addRowParams: {
+                    keys: true,
+                    oneditfunc: null,
+                    successfunc: function (result) {
+                        var res = JSON.stringify(result);
+                        var response = JSON.parse(res);
+                        var r = response.responseText;
+                        var p = JSON.parse(r)
+                        if (p.Status) {
+                            toastr.success(p.Message);
+                        }
+                        else {
+                            toastr.error(p.Message);
+                        }
+                        $("#jqgDenominationSequence").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+                    },
+                }
+            },
+        });
+}
+
+function fnOnlyDigits(e) {
+    if ((e.which < 48 || e.which > 57)) {
+        if (e.which == 8 || e.which == 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+}
+
+function fnDeleteDenominationInformation(e) {
+   
+
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgDenominationSequence').jqGrid('getRowData', rowid);
+    var cCode = rowData.CurrencyCode;
+    var cDenomination = rowData.Denomination;
+    bootbox.confirm({
+        title: 'Currency Denomination',
+        message: "Are you sure you want to delete ?",
+        buttons: {
+            confirm: {
+                label: 'Yes',
+                className: 'mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button'
+            },
+            cancel: {
+                label: 'No',
+                className: 'mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button'
+            }
+        },
+        callback: function (result) {
+            if (result) {
+                if ((cCode == null || cCode == undefined || cCode == "0" || cCode == '')
+                    || (cDenomination == null || cDenomination == undefined || cDenomination == "0" || cDenomination == '')) {
+                    alert("Could not Delete");
+                    return false;
+                }
+                $.ajax({
+                    type: 'POST',
+                    url: getBaseURL() + '/Currency/DeleteCurrencyDenominationInformation',
+                    data: {
+                        currencyCode: cCode,
+                        denomination: cDenomination,
+                    },
+                    success: function (response) {
+                        
+                        if (response.Status) {
+                            toastr.success(response.Message);
+                            fnGridLoadCurrencyDenomitationInformation();
+                        }
+                        else {
+                            toastr.error(response.Message);
+                        }
+                        $("#jqvDenominationSequence").setGridParam({ datatype: 'json' }).trigger('reloadGrid');
+                    },
+                    error: function (response) {
+                        toastr.error("Couldn't Delete");
+                    }
+                });
+            }
+        }
+    });
+}
+
+function fnEditRow(id) {
+    if (id && id !== lastSelection) {
+        var grid = $("#jqvDenominationSequence");
+        grid.jqGrid('restoreRow', lastSelection);
+        grid.jqGrid('editRow', id, { keys: true });
+        lastSelection = id;
+    }
+}
+
+var currency_symbols = {
+    'AED': 'د.إ',
+    'AFN': '؋',
+    'ALL': 'L',
+    'AMD': '֏',
+    'ANG': 'ƒ',
+    'AOA': 'Kz',
+    'ARS': '$',
+    'AUD': '$',
+    'AWG': 'ƒ',
+    'AZN': '₼',
+    'BAM': 'KM',
+    'BBD': '$',
+    'BDT': '৳',
+    'BGN': 'лв',
+    'BHD': '.د.ب',
+    'BIF': 'FBu',
+    'BMD': '$',
+    'BND': '$',
+    'BOB': '$b',
+    'BRL': 'R$',
+    'BSD': '$',
+    'BTC': '฿',
+    'BTN': 'Nu.',
+    'BWP': 'P',
+    'BYR': 'p.',
+    'BZD': 'BZ$',
+    'CAD': '$',
+    'CDF': 'FC',
+    'CHF': 'CHF',
+    'CLP': '$',
+    'CNY': '¥',
+    'COP': '$',
+    'CRC': '₡',
+    'CUC': '$',
+    'CUP': '₱',
+    'CVE': '$',
+    'CZK': 'Kč',
+    'DJF': 'Fdj',
+    'DKK': 'kr',
+    'DOP': 'RD$',
+    'DZD': 'دج',
+    'EEK': 'kr',
+    'EGP': 'EGP',
+    'ERN': 'Nfk',
+    'ETB': 'Br',
+    'ETH': 'Ξ',
+    'EUR': '€',
+    'FJD': '$',
+    'FKP': '£',
+    'GBP': '£',
+    'GEL': '₾',
+    'GGP': '£',
+    'GHC': '₵',
+    'GHS': 'GH₵',
+    'GIP': '£',
+    'GMD': 'D',
+    'GNF': 'FG',
+    'GTQ': 'Q',
+    'GYD': '$',
+    'HKD': '$',
+    'HNL': 'L',
+    'HRK': 'kn',
+    'HTG': 'G',
+    'HUF': 'Ft',
+    'IDR': 'Rp',
+    'ILS': '₪',
+    'IMP': '£',
+    'INR': '₹',
+    'IQD': 'ع.د',
+    'IRR': '﷼',
+    'ISK': 'kr',
+    'JEP': '£',
+    'JMD': 'J$',
+    'JOD': 'JD',
+    'JPY': '¥',
+    'KES': 'KSh',
+    'KGS': 'лв',
+    'KHR': '៛',
+    'KMF': 'CF',
+    'KPW': '₩',
+    'KRW': '₩',
+    'KWD': 'KD',
+    'KYD': '$',
+    'KZT': 'лв',
+    'LAK': '₭',
+    'LBP': '£',
+    'LKR': '₨',
+    'LRD': '$',
+    'LSL': 'M',
+    'LTC': 'Ł',
+    'LTL': 'Lt',
+    'LVL': 'Ls',
+    'LYD': 'LD',
+    'MAD': 'MAD',
+    'MDL': 'lei',
+    'MGA': 'Ar',
+    'MKD': 'ден',
+    'MMK': 'K',
+    'MNT': '₮',
+    'MOP': 'MOP$',
+    'MRO': 'UM',
+    'MUR': '₨',
+    'MVR': 'Rf',
+    'MWK': 'MK',
+    'MXN': '$',
+    'MYR': 'RM',
+    'MZN': 'MT',
+    'NAD': 'N$',
+    'NGN': '₦',
+    'NIO': 'C$',
+    'NOK': 'kr',
+    'NPR': '₨',
+    'NZD': '$',
+    'OMR': '﷼',
+    'PAB': 'B/.',
+    'PEN': 'S/.',
+    'PGK': 'K',
+    'PHP': '₱',
+    'PKR': '₨',
+    'PLN': 'zł',
+    'PYG': 'Gs',
+    'QAR': '﷼',
+    'RMB': '￥',
+    'RON': 'lei',
+    'RSD': 'Дин.',
+    'RUB': '₽',
+    'RWF': 'R₣',
+    'SAR': '﷼',
+    'SBD': '$',
+    'SCR': '₨',
+    'SDG': 'ج.س.',
+    'SEK': 'kr',
+    'SGD': '$',
+    'SHP': '£',
+    'SLL': 'Le',
+    'SOS': 'S',
+    'SRD': '$',
+    'SSP': '£',
+    'STD': 'Db',
+    'SVC': '$',
+    'SYP': '£',
+    'SZL': 'E',
+    'THB': '฿',
+    'TJS': 'SM',
+    'TMT': 'T',
+    'TND': 'د.ت',
+    'TOP': 'T$',
+    'TRL': '₤',
+    'TRY': '₺',
+    'TTD': 'TT$',
+    'TVD': '$',
+    'TWD': 'NT$',
+    'TZS': 'TSh',
+    'UAH': '₴',
+    'UGX': 'USh',
+    'USD': '$',
+    'UYU': '$U',
+    'UZS': 'лв',
+    'VEF': 'Bs',
+    'VND': '₫',
+    'VUV': 'VT',
+    'WST': 'WS$',
+    'XAF': 'FCFA',
+    'XBT': 'Ƀ',
+    'XCD': '$',
+    'XOF': 'CFA',
+    'XPF': '₣',
+    'YER': '﷼',
+    'ZAR': 'R',
+    'ZWD': 'Z$'
+};

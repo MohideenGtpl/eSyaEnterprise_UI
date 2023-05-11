@@ -1,0 +1,24 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace eSyaEnterprise_UI.Areas.eSyaNatureCure.Data
+{
+    public class CodeTypeValues
+    {
+        public const int PaymentMode = 80;
+
+        public const int PolicyType = 2004;
+
+        public const int ReasonType = 2005;
+
+        public const int PatientType = 71;
+
+        public const int PatientCategory = 72;
+
+        public const int MembershipType = 2006;
+
+        public const int patientTypeId = 710001;
+    }
+}

@@ -1,0 +1,155 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-2 col-md-4 col-sm-6 form-group">
+                <label class="lable-color"> @Localizer["FromDate"]</label>
+                <input type="date" name="fromdate" value="" class="form-control" id="txtfromdate" onchange="fnLoadAppointmentDetail()" />
+            </div>
+            <div class="col-lg-2 col-md-4 col-sm-6 form-group">
+                <label class="lable-color">  @Localizer["ToDate"]</label>
+                <input type="date" name="todate" value="" class="form-control" id="txttodate" onchange="fnLoadAppointmentDetail()" />
+            </div>
+        </div>
+        <div class="row padbot10">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <table id="jqgAppointmentDetail"></table>
+                <div id="jqpAppointmentDetail"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var localization = {
+        VisitNumber: '@Localizer["VisitNumber"]',
+        MRN: '@Localizer["MRN"]',
+        PatientName: '@Localizer["PatientName"]',
+        Mobile: '@Localizer["Mobile"]',
+        Email: '@Localizer["Email"]',
+        AppointmentDate: '@Localizer["AppointmentDate"]',
+        AppointmentTime: '@Localizer["AppointmentTime"]',
+        Status: '@Localizer["Status"]',
+        CreatedBy: '@Localizer["CreatedBy"]',
+        EMR: '@Localizer["EMR"]',
+
+    }
+
+    $(document).ready(function () {
+        fnSetCurrentdate();
+        fnLoadAppointmentDetail();
+
+        $(window).on('resize', function () {
+            if ($(window).width() < 1025) {
+                fnJqgridSmallScreen('jqgAppointmentDetail');
+            }
+        });
+    });
+
+    function fnSetCurrentdate() {
+        var date = new Date();
+
+        var day = date.getDate();
+        var month = date.getMonth() + 1;
+        var year = date.getFullYear();
+
+        if (month < 10) month = "0" + month;
+        if (day < 10) day = "0" + day;
+
+        var today = year + "-" + month + "-" + day;
+        document.getElementById("txtfromdate").value = today;
+        document.getElementById("txttodate").value = today;
+    }
+    function fnLoadAppointmentDetail() {
+
+        $("#jqgAppointmentDetail").jqGrid('GridUnload');
+        var fromdate = $("#txtfromdate").val();
+        var todate = $("#txttodate").val();
+
+        if (fromdate == "" || fromdate == null) {
+            fnAlert("Please select From Date", "e");
+            return false;
+        }
+        if (todate == "" || todate == null) {
+            fnAlert("Please select To Date", "e");
+            return false;
+        }
+        console.log('tamam')
+        $("#jqgAppointmentDetail").jqGrid(
+            {
+                url: getBaseURL() + '/DoctorDesk/GetAppointmentDetailByDate',
+                datatype: "json",
+                contentType: "application/json; charset-utf-8",
+                mtype: 'GET',
+                postData: {
+                    startDate: fromdate,
+                    endDate: todate,
+                },
+                ajaxGridOptions: { contentType: 'application/json; charset=utf-8', async: true },
+                colNames: [localization.VisitNumber, localization.MRN, localization.MRN, localization.PatientName, localization.Mobile, localization.Email, localization.AppointmentDate, localization.AppointmentTime, localization.Status, localization.CreatedBy, localization.EMR],
+                colModel: [
+                    { name: "AppointmentKey", width: 60, editable: true, align: 'left', hidden: false },
+                    { name: "PatientID", width: 60, editable: true, align: 'left', hidden: false },
+                    { name: "UHID", width: 60, editable: true, align: 'left', hidden: true },
+
+                    { name: "PatientName", width: 100, editable: true, align: 'left', hidden: false },
+                    { name: "PatientMobileNumber", width: 55, editable: true, align: 'left', hidden: false },
+                    { name: "PatientEmailID", width: 100, editable: true, align: 'left', hidden: true },
+
+
+                    { name: "AppointmentDate", width: 50, editable: true, align: 'center', hidden: false, formatter: 'date', formatoptions: { srcformat: 'Y/m/d H:i:s', newformat: 'd/m/Y' } },
+                    { name: "AppointmentFromTime", width: 50, editable: true, align: 'center', hidden: false },
+                    {
+                        name: "AppointmentStatus", width: 50, editable: true, formatter: 'select',
+                        edittype: 'select', editoptions: {
+                            //value: l_status
+                        },
+                    },
+                    { name: "StrCreatedBy", width: 60, editable: true, align: 'left', hidden: false },
+                    {
+                        name: "Button", width: 300, editable: false, align: 'left', hidden: false, formatter: function (cellValue, options, rowObject) {
+                            var i = options.rowId;
+                            return "<button id=btnEMR_" + i + " type='button' style='margin-right: 5px;' class='btn btn-primary' onclick=fnOpenEMR('" + rowObject.AppointmentKey + "','" + rowObject.UHID + "') > <i class='fas fa-edit c-white'></i> View EMR </button >";
+
+                        }
+                    },
+                ],
+                rowNum: 100000,
+                viewrecords: true,
+                colnumwidth:50,
+                gridview: true,
+                rownumbers: true,
+                scroll: false,
+                loadonce: true,
+                width: 'auto',
+                height: 'auto',
+                autowidth: true,
+                shrinkToFit: true,
+                forceFit: false,
+                pager: "#jqpAppointmentDetail",
+                onSelectRow: function (rowid) {
+
+                },
+                loadComplete: function (data) {
+                    fnJqgridSmallScreen('jqgAppointmentDetail');
+                    var rows = jQuery("#jqgAppointmentDetail").getDataIDs();
+                    for (a = 0; a < rows.length; a++) {
+                        row = jQuery("#jqgAppointmentDetail").getRowData(rows[a]);
+                        $("#btnEMR_" + rows[a]).hide();
+                        if (row['UHID'] > 0) {
+                            $("#btnEMR_" + rows[a]).show();
+                        }
+                    }
+
+                }
+            });
+
+
+    }
+
+</script>

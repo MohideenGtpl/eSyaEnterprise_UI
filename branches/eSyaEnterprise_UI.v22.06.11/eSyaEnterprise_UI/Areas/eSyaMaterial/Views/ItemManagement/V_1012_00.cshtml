@@ -1,0 +1,175 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "V_1012_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    var userFormRole = (eSyaEnterprise_UI.Models.DO_UserFormRole)ViewBag.UserFormRole;
+}
+
+<script>
+    var _userFormRole = JSON.parse('@Html.Raw(Json.Serialize(userFormRole))');
+     var localization = {
+         Add: '@Localizer["Add"]',
+         Update: '@Localizer["Update"]',
+         Save: '@Localizer["Save"]',
+         ViewCustodianStore: '@Localizer["ViewCustodianStore"]',
+         EditCustodianStore: '@Localizer["EditCustodianStore"]',
+         AddCustodianStore: '@Localizer["AddCustodianStore"]',
+         StoreCode: '@Localizer["StoreCode"]',
+         CustodianStore: '@Localizer["CustodianStore"]',
+
+         Active: '@Localizer["Active"]',
+    };
+</script>
+<link href="~/css/jsTree.css" rel="stylesheet" />
+@section scripts{
+    <script src="~/js/jsTree.js"></script>
+    <script src="~/js/eSyaMaterial/ItemCustodian.js"></script>
+}
+<style>
+    #popupAddItemCategory .ui-jqgrid-bdiv{
+        max-height:125px;
+    }
+</style>  
+<div class="row padbot10">
+    <div class="col-lg-4 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label>@Localizer["BusinessKey"] </label>
+            <select class="selectpicker" data-live-search="true" id="cboBusinessKey" title="" data-size="8" onchange="fnLoadtreebyBusinessKey()">
+                <option value="0">@Localizer["ChooseBusinessKey"] </option>
+                @foreach (var mg in ViewBag.businessKey)
+                {
+                    <option value="@mg.BusinessKey">@mg.LocationDescription</option>
+                }
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="row row-bottom-pad">
+    <div class="col-sm-4 col-md-4 col-lg-4">
+        <div id="ItemCustodianTree">
+        </div>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6">
+
+        <div class="demo-card-square mdl-card mdl-shadow--2dp marbot15 fullwidth" id="pnlAddItemCategory" style="display:none">
+            <div class="mdl-card__title mdl-card--expand padleft0 padtop0 h-60 d-block" id="pnlcustodianheading">
+                <h5 class="mdl-card__title-text">@Localizer["CustodianStore"]  </h5>
+            </div>
+            <div class="mdl-card__supporting-text fullwidth">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        
+                        <input type="text" id="txtItemcode" style="display:none" />
+                        <div class="form-group">
+                            <label>@Localizer["Accountingstore"] </label>
+                            <select class="selectpicker" data-live-search="true" id="cboAccountingStore" title="" onchange="fnFillCustodianStore()" data-size="8">
+                                <option value="0"> @Localizer["ChooseAccountingStore"] </option>
+                                @foreach (var mg in ViewBag.accountingstore)
+                                {
+                                    <option value="@mg.StoreCode">@mg.StoreDesc</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    @*<div class="col-sm-12 col-md-12 col-lg-12 form-group ">
+                            <table id="jqgCustodianStore"></table>
+                            <div id="jqpCustodianStore"></div>
+                        </div>*@
+
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <p class="subheading"> @Localizer["ItemParameter"] </p>
+                        <hr class="left" />
+                        @await Component.InvokeAsync("eSyaParameter", new { parameterType = "4" })
+                    </div>
+                </div>
+
+                <hr />
+                <div class="mdl-card__actions text-center pad0">
+                    <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect marbot15" id="btnICAdd" onclick="fnSaveItemCustodianStore()"><i class="fa fa-plus"></i>@Localizer["Add"] </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fullscreen fade" id="popupAddItemCategory" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close" data-dismiss="modal" onclick="fnClearFields()"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">@Localizer["CustodianStore"]</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12" style="display:none">
+                        <input type="text" id="txtItemcode" style="display:none" />
+                        <div class="form-group">
+                            <label>@Localizer["Accountingstore"] </label>
+                            <select class="selectpicker" data-live-search="true" id="cboAccountingStore" title="" onchange="fnFillCustodianStore()" data-size="8">
+                                <option value="0"> @Localizer["ChooseAccountingStore"] </option>
+                                @foreach (var mg in ViewBag.accountingstore)
+                                {
+                                    <option value="@mg.StoreCode">@mg.StoreDesc</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <label>Item Name</label>
+                    </div>
+                </div>
+
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6 col-lg-6 form-group">
+                            <p class="subheading"> @Localizer["Accounting Store"] </p>
+                            <hr class="left" />
+                            <table id="jqgAccountingStore" style="display:none"></table>
+                            <div id="jqpAccountingStore" style="display:none"></div>
+                        </div>
+                        <div class="col-sm-12 col-md-6 col-lg-6 form-group">
+                            <p class="subheading"> @Localizer["Custodian Store"] </p>
+                            <hr class="left" />
+                            <table id="jqgCustodianStore" style="display:none"></table>
+                            <div id="jqpCustodianStore" style="display:none"></div>
+                        </div>
+                        <div class="col-sm-12 col-md-6 col-lg-6 form-group">
+                            <p class="subheading"> @Localizer["Consumption Store"] </p>
+                            <hr class="left" />
+                            <table id="jqgConsumptionStore" style="display:none"></table>
+                            <div id="jqpConsumptionStore" style="display:none"></div>
+                        </div>
+
+
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                            <p class="subheading"> @Localizer["ItemParameter"] </p>
+                            <hr class="left" />
+                            @await Component.InvokeAsync("eSyaParameter", new { parameterType = "4" })
+                        </div>
+                    </div>
+
+                    <hr />
+
+                </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" id="btnICAdd" onclick="fnSaveItemCustodianStore()"><i class="fa fa-plus"></i>@Localizer["Add"] </button>
+
+                        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button" data-dismiss="modal" onclick="fnClearFields()"><i class="fa fa-times"></i>  @Localizer["Cancel"] </button>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

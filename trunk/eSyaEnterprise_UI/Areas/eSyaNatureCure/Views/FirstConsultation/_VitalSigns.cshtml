@@ -1,0 +1,65 @@
+﻿<link href="~/css/material.min.css" rel="stylesheet" />
+<link href="~/css/PatientManagement/clinicalForms.css" rel="stylesheet" />
+    <script src="~/js/eSyaNatureCure/VitalSigns.js"></script>
+    <script src="~/js/material.min.js"></script>
+
+<section>
+    <div class="row m-0">
+        <div class="col-lg-11">
+            <h1 class="ga-heading">Vital Signs</h1>
+        </div>
+        <div class="col-lg-1">
+            <div class="row mr-0">
+                <div id="floatButtons" class="col-xl-2 col-lg-12 text-right p-0">
+
+                    <button class="mdl-button" id="btnSaveForm" onclick="fnSaveTriage()"><i class="far fa-save c-green"></i> <span class="btntext">Save</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+    
+
+
+<div class="row" style="margin-right: 0px !important;">
+
+                    <div class="col-lg-12 col-md-12 col-sm-12 mb-2 divNursingCarePlan">
+                        <div id="dvTriageTemplate"></div>
+                    </div>
+                
+</div>
+
+
+<script>
+    function fnsideBarSetup() {
+        var docWidth = $(document).width();
+        var marginLeft = $("#navbar-example2").outerWidth(true);
+        var winH = $(window).outerHeight(true);
+        var divHeight = Math.floor($(".divFixedBar").outerHeight(true) + $("section.header").outerHeight(true)) - 1;
+        var maxH = ($(window).outerHeight(true) - ($("section.header").outerHeight(true) + $(".divFixedBar").outerHeight(true)))
+        const headerH = $('section.header').outerHeight(true);
+        const headerBannerH = headerH + $('.banner').outerHeight(true);
+        const headerBannerFixedBarH = headerBannerH + $('.divFixedBar').outerHeight(true);
+        const tabContentH = headerBannerFixedBarH;
+
+
+        //$('.tab-content').css('padding-top', tabContentH);
+        $("#mainContent").css({
+            "top": 0,
+            'max-height': winH - headerBannerH - 14,
+            'margin-left': marginLeft,
+            'overflow-y': 'auto'
+        });
+        $(".sidebar").css({
+            'top': divHeight,
+            'display': 'block',
+            'overflow-y': 'auto',
+            'max-height': maxH
+        });
+        // $('.pageSection').css('min-height', winH - tabContentH - 24);
+    }
+
+</script>

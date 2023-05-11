@@ -1,0 +1,251 @@
+﻿
+@{
+    ViewData["Title"] = "V_4532_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@*@section scripts{
+    <script src="~/js/eSyaPayrollExpat/ReleaseSalary.js"></script>
+        }*@
+
+<div class="row">
+    <div class="col-lg-5 col-md-5 col-sm-12 form-group">
+        <label>Business Key</label>
+        @await Component.InvokeAsync("UserBusinessLocation")
+    </div>
+</div>
+<div class="row form-group">
+    <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+        <label>Bank Name</label>
+        <select class="selectpicker" id="cboBanks" name="cboBanks"
+                asp-items="@ViewBag.l_Banks" onchange="fnRefreshGrid()">
+            <option selected>Select</option>
+            <option value="C">Cash</option>
+        </select>
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-12 form-group">
+        <label>Bank Date</label>
+        <input type="text" name="name" id="dtBankDate" value="" class="form-control datepicker" onchange="fnRefreshGrid()" />
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 form-group text-right padtop20">
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnExportToExcel" onclick="fnExportToExcel()">
+            Excel Download
+        </button>
+    </div>
+</div>
+
+<div class="row form-group">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <table id="jqgSalary"></table>
+        <div id="jqpSalary"></div>
+    </div>
+</div>
+
+
+<div>
+    <table id='pgrid3'></table>
+    <div id='ppager3'></div>
+</div>
+
+<script>
+
+    $(function () {
+        fnLoadSalaryGrid();
+    })
+
+    function fnBusinessLocation_onChange() {
+        fnRefreshGrid();
+    }
+
+    function fnRefreshGrid() {
+        $("#jqgSalary").jqGrid("setGridParam", { datatype: "json" })
+            .trigger("reloadGrid", [{ current: true }]);
+    }
+
+    function fnLoadSalaryGrid() {
+        $("#jqgSalary").jqGrid({
+            url: getBaseURL() + '/SalaryPayment/GetBankStatement',
+            datatype: "json",
+            // contenttype: "application/json; charset-utf-8",
+            mtype: 'GET',
+            postData: {
+                businessKey: function () { return $("#cboBusinessLocation").val(); },
+                orgBankCode: function () { return $("#cboBanks").val(); },
+                bankDate: function () { return getDate($("#dtBankDate")); },
+            },
+            jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+            colNames: ['EmployeeNumber', 'PayPeriod', 'SerialNumber', 'Employee Name', 'Account Holder Name', 'IFSC Code', 'Bank Account No', 'Amount In KSH '],
+            colModel: [
+                { name: "EmployeeNumber", width: '100', align: 'left', editable: false, hidden: true },
+                { name: "PayPeriod", index: 'PayPeriod', width: '50', align: 'left', editable: false, sortable: true, },
+                { name: "SerialNumber", index: 'SerialNumber', hidden: true },
+                { name: "EmployeeName", index: 'EmployeeName', width: '200', align: 'left', editable: false, sortable: true, },
+                { name: 'AccountHolderName', index: 'AccountHolderName', width: 120 },
+                { name: 'IFSCCode', index: 'IFSCCode', width: 120 },
+                { name: 'AccountNumber', index: 'AccountNumber', width: 120 },
+                { name: 'PayableAmount', index: 'PayableAmount', width: 80, align: "right", sorttype: "float", formatter: "number" },
+            ],
+            rowNum: 100000,
+            loadonce: true,
+            height: 'auto',
+            scroll: false,
+            width: '150',
+            autowidth: false,
+            shrinkToFit: false,
+            forceFit: false,
+            cellEdit: true,
+            editurl: 'url',
+            cellsubmit: 'clientArray',
+            loadComplete: function () {
+            },
+        });
+    }
+
+    function fnExportToExcel() {
+        JSONToCSVConvertor(JSON.stringify($('#jqgSalary').getGridParam('data')), 'RTGS - ' + $('#cboBanks option:selected').text(), true);
+    }
+
+    function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
+
+        //If JSONData is not an object then JSON.parse will parse the JSON string in an Object
+        var arrData = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData;
+
+        var CSV = '';
+        //Set Report title in first row or line
+
+        CSV += ReportTitle + '\r\n\n';
+
+        //This condition will generate the Label/Header
+        if (ShowLabel) {
+            var row = "";
+
+            //This loop will extract the label from 1st index of on array
+            for (var index in arrData[0]) {
+
+                //Now convert each value to string and comma-seprated
+                if (index != "EmployeeNumber" && index != "PayPeriod" && index != "SerialNumber" && index != "_id_") {
+                    if (index == "EmployeeName") {
+                        index = "Staff Name";
+                    }
+                    if (index == "AccountHolderName") {
+                        index = "Account Holder";
+                    }
+                    if (index == "IFSCCode") {
+                        index = "IFSC Code)";
+                    }
+                    if (index == "AccountNumber") {
+                        index = "Bank Account No";
+                    }
+                    if (index == "PayableAmount") {
+                        index = "Amount In KSH ";
+                    }
+                    row += index + ',';
+                }
+            }
+
+            row = row.slice(0, -1);
+
+            //append Label row with line break
+            CSV += row + '\r\n';
+        }
+
+        //1st loop is to extract each row
+        for (var i = 0; i < arrData.length; i++) {
+            var row = "";
+
+            //2nd loop will extract each column and convert it in string comma-seprated
+            for (var index in arrData[i]) {
+                if (index != "EmployeeNumber" && index != "PayPeriod" && index != "SerialNumber" && index != "_id_")
+                    row += '"' + arrData[i][index] + '",';
+            }
+
+            row.slice(0, row.length - 1);
+
+            //add a line break after each row
+            CSV += row + '\r\n';
+        }
+
+        if (CSV == '') {
+            alert("Invalid data");
+            return;
+        }
+        //Generate a file name
+        var fileName = "";
+        //this will remove the blank-spaces from the title and replace it with an underscore
+        fileName += ReportTitle.replace(/ /g, "_");
+        //Initialize file format you want csv or xls
+        var uri = 'data:text/csv;charset=utf-8,' + escape(CSV);
+        var link = document.createElement("a");
+        link.href = uri;
+        link.style = "visibility:hidden";
+        link.download = fileName + ".csv";
+        //this part will append the anchor tag and remove it after automatic click
+        console.log(document.body);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+
+    //jQuery(document).ready(function () {
+
+    //   var gData = {
+    //        "rows": [
+    //            {
+    //                "CategoryName": "Beverages",
+    //                "ProductName": "Steeleye Stout",
+    //                "Country": "UK",
+    //                "Price": "1008.0000",
+    //                "Quantity": "65"
+    //            }, {
+    //                "CategoryName": "Beverages",
+    //                "ProductName": "Laughing Lumberjack Lager",
+    //                "Country": "USA",
+    //                "Price": "140.0000",
+    //                "Quantity": "10"
+    //            },
+    //        ]
+    //    }
+
+    //    jQuery("#pgrid3").jqGrid('jqPivot',
+    //        gData,
+    //        // pivot options
+    //        {
+    //            xDimension: [
+    //                {
+    //                    dataName: 'CategoryName',
+    //                    width: 90
+    //                }, {
+    //                    dataName: 'ProductName'
+    //                }
+    //            ],
+    //            yDimension: [
+    //                {
+    //                    dataName: 'Country',
+    //                    converter: function (value, xData, yData) {
+    //                        return 'TotalCountry';
+    //                    }
+    //                }, {
+    //                    dataName: 'Country'
+    //                }
+    //            ],
+    //            aggregates: [
+    //                {
+    //                    member: 'Price',
+    //                    aggregator: 'sum',
+    //                    width: 50,
+    //                    formatter: 'number',
+    //                    align: 'right',
+    //                    summaryType: 'sum'
+    //                }
+    //            ]
+    //        },
+    //        // grid options
+    //        {
+    //            width: 700,
+    //            rowNum: 10,
+    //            pager: "#ppager3",
+    //            caption: "Columns groups"
+    //        });
+    //});
+
+</script>

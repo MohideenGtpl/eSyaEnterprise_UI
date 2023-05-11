@@ -1,0 +1,173 @@
+﻿$(document).ready(function () {
+    $('#cboBusinessKey').selectpicker('refresh');
+
+    $('#cbofinancialyear').selectpicker('refresh');
+
+    fnGridLoadCalendarDetails();
+});
+
+function fnLoadCboFinancialYear() {
+    $('#cbofinancialyear').selectpicker('refresh');
+
+    $.ajax({
+        url: getBaseURL() + '/DocumentControl/GetFinancialYearbyBusinessKey?Businesskey=' + $('#cboBusinessKey').val(),
+        datatype: 'json',
+        type: 'POST',
+        async: false,
+        contentType: 'application/json; charset=utf-8',
+        success: function (result) {
+
+            $('#cbofinancialyear').empty();
+            $("#cbofinancialyear").append($("<option value='0'>All</option>"));
+            if (result != null) {
+                for (var i = 0; i < result.length; i++) {
+
+                    $("#cbofinancialyear").append($("<option></option>").val(result[i]["FinancialYear"]).html(result[i]["FinancialYear"]));
+                }
+            }
+            $('#cbofinancialyear').val($("#cbofinancialyear option:first").val());
+            $('#cbofinancialyear').selectpicker('refresh');
+            fnGridLoadCalendarDetails();
+        }
+    });
+}
+
+function fnGridLoadCalendarDetails() {
+   
+    $("#jqgCalendarDetails").jqGrid('GridUnload');
+    var financialyear = $('#cbofinancialyear').val();
+    var businesskey = $('#cboBusinessKey').val();
+    $("#jqgCalendarDetails").jqGrid({
+        url: getBaseURL() + '/DocumentControl/GetCalendarDetailsbyBusinessKeyAndFinancialYear?Businesskey=' + businesskey + "&FinancialYear=" + financialyear,
+        mtype: 'Post',
+        datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["", "","", "Year and Month", "Month Description","Month Freeze HIS", "Month Freeze Finance", "Month Freeze HR", "Budget Month", "Patient ID Generation", "Patient ID Serial","", "Active Status"],
+        colModel: [
+            { name: "FinancialYear", width: 95, editable: true, align: 'left', hidden: true },
+            { name: "MonthId", width: 100, editable: true, align: 'left', hidden: true },
+            { name: "BusinessKey", width: 100, editable: true, align: 'left', hidden: true },
+            { name: "EditMonthId", width: 100, editable: false, align: 'left' },
+            { name: "MonthDescription", width: 120, editable: false, align: 'left', },
+            { name: "MonthFreezeHis", editable: true, width: 70, align: 'center !important', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            { name: "MonthFreezeFin", editable: true, width: 70, align: 'center !important', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            { name: "MonthFreezeHr", editable: true, width: 70, align: 'center !important', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            {
+                name: "BudgetMonth", width: 100, editable: true, editoptions: { size: "40", maxlength: "4" }, edittype: "text", editrules: {
+                    custom_func: ValidateBudgetMonth,
+                    custom: true,
+                }
+            },
+            { name: "PatientIdgen", width: 100, editable: false, align: 'left' },
+            {
+                name: "PatientIdserial", width: 100, editable: true, editoptions: { size: "40", maxlength: "1" }, edittype: "text", editrules: {
+                    custom_func: ValidatePatientIdserial,
+                    custom: true,
+                }
+            },
+            { name: "ActiveStatus", editable: true, hidden: true, width: 120, edittype: "select", align: 'left', formatter: 'select', editoptions: { value: "true:Active;false:Inactive" } },
+            { name: "ActiveStatus", editable: false, width: 120, edittype: "select", align: 'left', formatter: 'select', editoptions: { value: "true:Active;false:Inactive" } },
+
+        ],
+        rowNum: 12,
+        loadonce: true,
+        pager: "#jqpCalendarDetails",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0,
+
+        editurl: getBaseURL() + '/DocumentControl/UpdateCalendardetails',
+
+        ajaxRowOptions: {
+            type: "POST",
+            contentType: "application/json",
+            dataType: "json"
+        },
+        serializeRowData: function (postData) {
+            return JSON.stringify(postData);
+        },
+
+        beforeSubmit: function (postdata, formid) {
+
+            return [success, message];
+        },
+        ondblClickRow: function (rowid) {
+            $("#jqgCalendarDetails").trigger('click');
+        },
+
+    }).jqGrid('navGrid', '#jqpCalendarDetails', { add: false, edit: false, search: false, del: false, refresh: false })
+    $("#jqgCalendarDetails").jqGrid('inlineNav', '#jqpCalendarDetails',
+        {
+            edit: true,
+            editicon: " fa fa-pen",
+            edittext: " Edit",
+            add: false,
+            addicon: "fa fa-plus",
+            addtext: " Add",
+            save: true,
+            savetext: " Save",
+            saveicon: "fa fa-save",
+            cancelicon: "fa fa-ban",
+            canceltext: " Cancel",
+            editParams: {
+                keys: false,
+                url: null,
+                successfunc: function (result) {
+                    var resp = JSON.parse(result.responseText);
+                    if (resp.Status === true) {
+                        toastr.success(resp.Message);
+                        RefreshCalendarDetailsGrid();
+                        return true;
+                    }
+
+                    if (resp.Status == false) {
+
+                        toastr.error(resp.Message);
+                        RefreshCalendarDetailsGrid();
+                        return false;
+                    }
+                },
+                aftersavefun: null,
+                errorfun: null,
+                afterrestorefun: null,
+                restoreAfterError: true,
+                mtype: "POST",
+            },
+
+        });
+    $("#jqgCalendarDetails").jqGrid('setLabel', 'MonthFreezeHis', '', 'text-center');
+}
+function ValidateBudgetMonth(value, BudgetMonth) {
+    if (value == "" || value == null) {
+        toastr.warning("Please Enter Budget Month");
+
+        return [false, "Please Enter Budget Month"];
+
+    }
+    else {
+        return [true, ""];
+    }
+
+}
+function ValidatePatientIdserial(value, PatientIdserial) {
+    if (value == "" || value == null) {
+        toastr.warning("Please Enter Patient serial Id");
+
+        return [false, "Please Enter Patient serial Id"];
+
+    }
+    else {
+        return [true, ""];
+    }
+
+}
+function RefreshCalendarDetailsGrid() {
+    $("#jqgCalendarDetails").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}

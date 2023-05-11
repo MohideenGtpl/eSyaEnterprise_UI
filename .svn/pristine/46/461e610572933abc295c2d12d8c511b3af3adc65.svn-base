@@ -1,0 +1,226 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
+using eSyaEnterprise_UI.Areas.Config.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using eSyaEnterprise_UI.Areas.Config.Data;
+namespace eSyaEnterprise_UI.Areas.Config.Controllers
+{
+    public class ApplicationRulesController : Controller
+    {
+        private readonly IeSyaConfigAPIServices _eSyaConfigAPIServices;
+        public ApplicationRulesController(IeSyaConfigAPIServices eSyaConfigAPIServices)
+        {
+            _eSyaConfigAPIServices = eSyaConfigAPIServices;
+        }
+        [Area("Config")]
+        public IActionResult V_17_00()
+        {
+            
+            try
+            {
+                return View();
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+
+        }
+
+        public JsonResult GetProcessMaster()
+        {
+            try
+            {
+                var serviceResponse = _eSyaConfigAPIServices.HttpClientServices.GetAsync<List<DO_ProcessMaster>>("ProcessMaster/GetProcessMaster").Result;
+                return Json(serviceResponse.Data);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public JsonResult GetProcessRule()
+        {
+            try
+            {
+                var serviceResponse = _eSyaConfigAPIServices.HttpClientServices.GetAsync<List<DO_ProcessRule>>("ProcessMaster/GetProcessRule").Result;
+                return Json(serviceResponse.Data);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        #region Application Rules
+        /// <summary>
+        /// Process Rule
+        /// </summary>
+        /// 
+        [Area("Config")]
+        public IActionResult V_20_01()
+        {
+            ViewBag.formName = "Application Rules";
+            try
+            {
+                var serviceResponse = _eSyaConfigAPIServices.HttpClientServices.GetAsync<List<DO_ProcessMaster>>("ProcessMaster/GetActiveProcessMaster").Result;
+                ViewBag.ProcessControl = serviceResponse.Data;
+                return View();
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+
+        }
+        /// <summary>
+        ///Get Application Rules by ProcessId
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetApplicationRulesByProcessId(int ProcessId)
+        {
+
+            try
+            {
+                var serviceResponse = _eSyaConfigAPIServices.HttpClientServices.GetAsync<List<DO_ProcessRule>>("ProcessMaster/GetProcessRuleByProcessId?ProcessId=" + ProcessId).Result;
+                return Json(serviceResponse.Data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+
+        }
+
+        /// <summary>
+        /// Insert Process Rule
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertApplicationRule(DO_ProcessRule obj)
+        {
+
+            try
+            {
+                var serviceResponse = _eSyaConfigAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("ProcessMaster/InsertIntoProcessRule", obj).Result;
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+
+        /// <summary>
+        /// Update Process Rule
+        /// </summary>
+        [HttpPost]
+        public JsonResult UpdateApplicationRule(DO_ProcessRule obj)
+        {
+
+            try
+            {
+                var serviceResponse = _eSyaConfigAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("ProcessMaster/UpdateProcessRule", obj).Result;
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+
+        #endregion
+
+        #region Process Rules
+        /// <summary>
+        /// Process Rule
+        /// </summary>
+        /// <returns></returns>
+        [Area("Config")]
+        public IActionResult V_21_00()
+        {
+            ViewBag.formName = "Process Rules";
+            return View();
+        }
+
+        /// <summary>
+        /// Getting Process Rule List for Grid
+        /// </summary>
+
+        [HttpPost]
+        public JsonResult GetProcessRules()
+        {
+            try
+            {
+                var serviceResponse = _eSyaConfigAPIServices.HttpClientServices.GetAsync<List<DO_ProcessMaster>>("ProcessMaster/GetProcessMaster").Result;
+                return Json(serviceResponse.Data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Insert Process Rule
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertProcessMaster(DO_ProcessMaster obj)
+        {
+
+            try
+            {
+                var serviceResponse = _eSyaConfigAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("ProcessMaster/InsertIntoProcessMaster", obj).Result;
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+
+        /// <summary>
+        /// Update Process Rule
+        /// </summary>
+        [HttpPost]
+        public JsonResult UpdateProcessMaster(DO_ProcessMaster obj)
+        {
+
+            try
+            {
+                var serviceResponse = _eSyaConfigAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("ProcessMaster/UpdateProcessMaster", obj).Result;
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+        #endregion
+
+        
+    }
+}

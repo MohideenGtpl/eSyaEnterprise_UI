@@ -1,0 +1,230 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.ActionFilter;
+using eSyaEnterprise_UI.Areas.PatientManagement.Data;
+using eSyaEnterprise_UI.Areas.PatientManagement.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using eSyaEnterprise_UI.Models;
+
+namespace eSyaEnterprise_UI.Areas.PatientManagement.Controllers
+{
+    [SessionTimeout]
+    public class CareCardRatesController : Controller
+    {
+        private readonly IPatientManagementAPIServices _patientManagementAPIServices;
+        private readonly ILogger<CareCardRatesController> _logger;
+
+        public CareCardRatesController(IPatientManagementAPIServices patientManagementAPIServices, ILogger<CareCardRatesController> logger)
+        {
+            _patientManagementAPIServices = patientManagementAPIServices;
+            _logger = logger;
+        }
+        #region CareCardRates
+        [Area("PatientManagement")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public IActionResult EPS_04_00()
+        {
+            try
+            {
+                var response = _patientManagementAPIServices.HttpClientServices.GetAsync<List<DO_CurrencyMaster>>("Master/GetActiveCurrencies").Result;
+                if (response.Status)
+                {
+                    ViewBag.Curriencies = response.Data.Select(a => new SelectListItem
+                    {
+                        Value = a.CurrencyCode.ToString(),
+                        Text = a.CurrencyName
+                    });
+
+                }
+                else
+                {
+                    _logger.LogError(new Exception(response.Message), "UD:GetActiveCurrencies");
+                }
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetActiveCurrencies");
+                return Json(new DO_ResponseParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Patient Type by Business Key
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetPatientTypebyBusinesskey(int businesskey)
+        {
+            try
+            {
+                var parameter = "?businesskey=" + businesskey;
+                var serviceResponse = await _patientManagementAPIServices.HttpClientServices.GetAsync<List<DO_PatientCategoryTypeBusinessLink>>("CareCardRates/GetPatientTypebyBusinesskey" + parameter);
+
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetPatientTypebyBusinesskey:For businessKey ", businesskey);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetPatientTypebyBusinesskey:For businesskey ", businesskey);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Patient Category by Business Key And Patient Type
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetPatientCategoriesbyBusinesskeyAndPatientType(int businesskey, int PatientTypeId)
+        {
+            try
+            {
+                var parameter = "?businesskey=" + businesskey + "&PatientTypeId=" + PatientTypeId ;
+                var serviceResponse = await _patientManagementAPIServices.HttpClientServices.GetAsync<List<DO_PatientCategoryTypeBusinessLink>>("CareCardRates/GetPatientCategoriesbyBusinesskeyAndPatientType" + parameter);
+
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetPatientCategoriesbyBusinesskeyAndPatientType:For businessKey ", businesskey);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetPatientCategoriesbyBusinesskeyAndPatientType:For businesskey ", businesskey);
+                throw ex;
+            }
+        }
+        /// <summary>
+        /// Care Card Rates by Business Key
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetCareCardRates(int businesskey, int PatientTypeId, int PatientCategoryId,bool previous)
+        {
+            try
+            {
+
+                var parameter = "?businesskey=" + businesskey + "&PatientTypeId=" + PatientTypeId + "&PatientCategoryId=" + PatientCategoryId;
+                if (previous)
+                {
+                    var serviceResponse = await _patientManagementAPIServices.HttpClientServices.GetAsync<List<DO_CareCardRates>>("CareCardRates/GetPreviousCareCardRates" + parameter);
+                    if (serviceResponse.Status)
+                    {
+                        return Json(serviceResponse.Data);
+
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetCareCardRates:For businessKey ", businesskey);
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    var serviceResponse = await _patientManagementAPIServices.HttpClientServices.GetAsync<List<DO_CareCardRates>>("CareCardRates/GetCareCardRates" + parameter);
+                    if (serviceResponse.Status)
+                    {
+                        return Json(serviceResponse.Data);
+
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetCareCardRates:For businessKey ", businesskey);
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+
+                
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetCareCardRates:For businesskey ", businesskey);
+                throw ex;
+            }
+        }
+        /// <summary>
+        /// Insert Into Care Card
+        /// </summary>
+        //[HttpPost]
+        //public async Task<JsonResult> InsertOrUpdateCareCardRates(bool isInsert, DO_CareCardRates obj)
+        //{
+        //    try
+        //    {
+        //        obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+        //        obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+        //        obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+        //        if (isInsert)
+        //        {
+        //            var serviceResponse = await _patientManagementAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("CareCardRates/InsertIntoCareCardRates", obj);
+        //            if (serviceResponse.Status)
+        //                return Json(serviceResponse.Data);
+        //            else
+        //                return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+        //        }
+        //        else
+        //        {
+        //            var serviceResponse = await _patientManagementAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("CareCardRates/UpdateIntoCareCardRates", obj);
+        //            if (serviceResponse.Status)
+        //                return Json(serviceResponse.Data);
+        //            else
+        //                return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(ex, "UD:InsertOrUpdateCareCardRates:params:" + JsonConvert.SerializeObject(obj));
+        //        throw ex;
+        //    }
+        //}
+
+        [HttpPost]
+        public async Task<JsonResult> InsertOrUpdateCareCardRates(bool isInsert, DO_CareCardRates obj)
+        {
+            try
+            {
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                if (isInsert)
+                {
+                    var serviceResponse = await _patientManagementAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("CareCardRates/InsertOrUpdateCareCardRates", obj);
+                    if (serviceResponse.Status)
+                        return Json(serviceResponse.Data);
+                    else
+                        return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+                else
+                {
+                    var serviceResponse = await _patientManagementAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("CareCardRates/InsertOrUpdateCareCardRates", obj);
+                    if (serviceResponse.Status)
+                        return Json(serviceResponse.Data);
+                    else
+                        return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertOrUpdateCareCardRates:params:" + JsonConvert.SerializeObject(obj));
+                throw ex;
+            }
+        }
+        #endregion
+    }
+}

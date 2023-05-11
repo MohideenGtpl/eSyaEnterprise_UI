@@ -1,0 +1,230 @@
+﻿var actiontype = "";
+$(document).ready(function () {
+    fnGridLoadStatutoryCode();
+});
+function fnGridLoadStatutoryCode() {
+    $("#jqgStatutoryCode").jqGrid('GridUnload');
+    $("#jqgStatutoryCode").jqGrid({
+        url: getBaseURL() + '/Country/GetStatutoryCodesbyIsdcode?Isdcode=' + $('#cboIsdcode').val(),
+        datatype: 'json',
+        mtype: 'Post',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["ISD Code", "Statutory Code", localization.StatShortCode, localization.StatutoryDescription, localization.StatPattern, localization.Active, localization.Actions],
+
+        colModel: [
+
+            { name: "Isdcode", width: 10, editable: true, align: 'left', editoptions: { maxlength: 10 }, hidden: true },
+            {
+                name: "StatutoryCode", width: 150, editable: true, editoptions: { maxlength: 10 }, hidden: true
+            },
+            {
+                name: "StatShortCode", width: 150, editable: true, editoptions: { size: "40", maxlength: "10" }, edittype: "text"
+            },
+            {
+                name: "StatutoryDescription", width: 150, editable: true, editoptions: { size: "40", maxlength: "50" }, edittype: "text"
+            },
+            {
+                name: "StatPattern", width: 150, editable: true, editoptions: { size: "40", maxlength: "15" }, edittype: "text"
+            },
+            { name: "ActiveStatus", editable: false, width: 25, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+
+            {
+                name: 'action', search: false, align: 'left', width: 150, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit", onclick="return fnEditStatShortCodes(event,\'edit\')"><i class="fas fa-pencil-alt"></i> ' + localization.Edit + ' </button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnEditStatShortCodes(event,\'view\')"><i class="far fa-eye"></i> ' + localization.View + ' </button>'
+                }
+            }
+
+        ],
+        rowNum: 10,
+        rowList: [10, 20, 30, 50, 100],
+        emptyrecords: "No records to Veiw",
+        pager: "#jqpStatutoryCode",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        width: 'auto',
+        scroll: false,
+        autowidth: false,
+        shrinkToFit: false,
+        forceFit: false,
+        loadonce: true,
+        loadComplete: function (data) {
+            SetGridControlByAction();
+        },
+    }).jqGrid('navGrid', '#jqpStatutoryCode', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpStatutoryCode', {
+        caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: RefreshStatutoryGrid
+        }).jqGrid('navButtonAdd', '#jqpStatutoryCode', {
+        caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddStatutoryCodes
+    });
+}
+
+function fnAddStatutoryCodes() {
+    fnClearFields();
+    var id = $("#cboIsdcode").val();
+    if (id === 0 || id === "0") {
+        toastr.warning("Please select any Isd Code to Add");
+    }
+    else {
+        $("#PopupStatutoryCode").modal('show');
+        $('#PopupStatutoryCode').find('.modal-title').text(localization.AddStatutoryCode);
+        $("input[type=checkbox]").attr('disabled', false);
+        $("#btnSaveStatutoryCode").html(localization.Save);
+        $("#PopupStatutoryCode").on('hidden.bs.modal', function () {
+            $("input[type=checkbox]").attr('disabled', true);
+        });
+    }
+}
+
+function fnEditStatShortCodes(e, actiontype) {
+    
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgStatutoryCode').jqGrid('getRowData', rowid);
+    $('#txtStatutoryCode').val(rowData.StatutoryCode);
+    $("#txtStatShortCode").val(rowData.StatShortCode);
+    $("#txtStatutoryDescription").val(rowData.StatutoryDescription);
+    $("#txtStatPattern").val(rowData.StatPattern);
+    if (rowData.ActiveStatus === "true") {
+        $("#chkActiveStatus").parent().addClass("is-checked");
+    }
+    else { $("#chkActiveStatus").parent().removeClass("is-checked"); }
+    eSyaParams.ClearValue();
+
+    $.ajax({
+        async: false,
+        url: getBaseURL() + '/Country/GetStatutoryCodesParameterList?IsdCode=' + $("#cboIsdcode").val() + "&StatutoryCode=" + $("#txtStatutoryCode").val(),
+        type: 'POST',
+        datatype: 'json',
+        success: function (result) {
+           
+            if (result != null) {
+                eSyaParams.SetJSONValue(result);
+            }
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+
+        }
+    });
+
+    $('#PopupStatutoryCode').modal('show');
+    if (actiontype.trim() == "edit") {
+        $("input[type=checkbox]").attr('disabled', false);
+        $('#PopupStatutoryCode').find('.modal-title').text(localization.EditStatutoryCode);
+        $("#btnSaveStatutoryCode").html(localization.Update);
+        $("#PopupStatutoryCode").on('hidden.bs.modal', function () {
+            $("input[type=checkbox]").attr('disabled', true);
+        });
+    }
+
+    if (actiontype.trim() == "view") {
+        $('#PopupStatutoryCode').find('.modal-title').text(localization.ViewStatutoryCode);
+        $("#btnSaveStatutoryCode").hide();
+        $("input,textarea").attr('readonly', true);
+        $("select").next().attr('disabled', true);
+        $("input[type=checkbox]").attr('disabled', true);
+        $("#PopupStatutoryCode").on('hidden.bs.modal', function () {
+            $("#btnSaveStatutoryCode").show();
+            $("input,textarea").attr('readonly', false);
+            $("select").next().attr('disabled', false);
+            //$("input[type=checkbox]").attr('disabled', false);
+        });
+    }
+}
+
+function fnSaveStatutoryCodes() {
+    if (validateStatutoryCodes() === false) {
+        return;
+    }
+
+    $("#btnSaveStatutoryCode").attr('disabled', true);
+
+    obj = {
+        Isdcode: $("#cboIsdcode").val(),
+        StatutoryCode: $("#txtStatutoryCode").val() === '' ? 0 : $("#txtStatutoryCode").val(),
+        StatShortCode: $("#txtStatShortCode").val(),
+        StatutoryDescription: $("#txtStatutoryDescription").val(),
+        StatPattern: $("#txtStatPattern").val(),
+        ActiveStatus: $("#chkActiveStatus").parent().hasClass("is-checked")
+    };
+
+    var fmParams = eSyaParams.GetJSONValue();
+    obj.l_FormParameter = fmParams;
+
+    $.ajax({
+        url: getBaseURL() + '/Country/InsertOrUpdateStatutoryCodes',
+        type: 'POST',
+        datatype: 'json',
+        data: { obj },
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                RefreshStatutoryGrid();
+                $("#PopupStatutoryCode").modal('hide');
+
+            }
+            else {
+                toastr.error(response.Message);
+            }
+            $("#btnSaveStatutoryCode").attr('disabled', false);
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnSaveStatutoryCode").attr("disabled", false);
+        }
+    });
+}
+
+function validateStatutoryCodes() {
+    
+    if (IsStringNullorEmpty($("#txtStatShortCode").val())) {
+        toastr.warning("Please Enter Short Code");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtStatutoryDescription").val())) {
+        toastr.warning("Please Enter Description");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtStatPattern").val())) {
+        toastr.warning("Please Enter Pattern");
+        return false;
+    }
+}
+
+function RefreshStatutoryGrid() {
+    $("#jqgStatutoryCode").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+
+}
+
+function fnClearFields() {
+    $("#txtStatutoryCode").val("");
+    $("#txtStatShortCode").val("");
+    $("#txtStatutoryDescription").val("");
+    $("#txtStatPattern").val("");
+    $("#chkActiveStatus").parent().addClass("is-checked");
+    eSyaParams.ClearValue();
+}
+
+function SetGridControlByAction() {
+    $('#jqgAdd').removeClass('ui-state-disabled');
+    var eleEditEbnable = document.querySelectorAll('#jqgEdit');
+
+    for (var i = 0; i < eleEditEbnable.length; i++) {
+        eleEditEbnable[i].disabled = false;
+    }
+    if (_userFormRole.IsInsert === false) {
+        $('#jqgAdd').addClass('ui-state-disabled');
+    }
+    if (_userFormRole.IsEdit === false) {
+        var eleEditDisable = document.querySelectorAll('#jqgEdit');
+        for (var i = 0; i < eleEditDisable.length; i++) {
+            eleEditDisable[i].disabled = true;
+            eleEditDisable[i].className = "ui-state-disabled";
+        }
+    }
+   
+}
+

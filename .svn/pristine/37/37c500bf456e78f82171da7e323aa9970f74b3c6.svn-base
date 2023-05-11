@@ -1,0 +1,121 @@
+﻿$(document).ready(function () {
+    fnBusinessKeyChanges();
+    fnGridLoadDrugReorderLevel();
+});
+
+function fnBusinessKeyChanges() {
+    $("#cboStore").empty().selectpicker('refresh');
+
+    $.ajax({
+        url: getBaseURL() + '/DrugInventory/GetStoreListByBusinessKey?BusinessKey=' + $('#cboBusinessKey').val(),
+        datatype: 'json',
+        type: 'POST',
+        async: false,
+        contentType: 'application/json; charset=utf-8',
+        success: function (result) {
+            //$('#cboFormulation').empty();
+            $("#cboStore").append($("<option value='0'>Select</option>"));
+            if (result != null) {
+                for (var i = 0; i < result.length; i++) {
+                    $("#cboStore").append($("<option></option>").val(result[i]["StoreCode"]).html(result[i]["StoreDesc"]));
+                }
+            }
+            $('#cboStore').val($("#cboStore option:first").val());
+            $('#cboStore').selectpicker('refresh');
+        }
+    });
+}
+
+function fnGridLoadDrugReorderLevel() {
+    $("#jqgDrugReorderLevel").jqGrid('GridUnload');
+    $("#jqgDrugReorderLevel").jqGrid({
+        url: getBaseURL() + '/DrugInventory/GetDrugReorderLevel?BusinessKey=' + $("#cboBusinessKey").val() + '&StoreCode=' + $("#cboStore").val(),
+        datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Business Key", "Drug Code", "Drug Brand", "Store Code", "Maximum Stock Level", "Reorder Level", "Safety Stock Level", "Minimum Stock Level", "Active"],//, "Actions"],
+        colModel: [
+            { name: "BusinessKey", width: 50, editable: false, align: 'left', hidden: true },
+            { name: "DrugCode", width: 50, editable: false, align: 'left', hidden: true },
+            { name: "DrugBrand", width: 300, editable: false, align: 'left', hidden: false },
+            { name: "StoreCode", width: 50, editable: false, align: 'left', hidden: true },
+            { name: "MaximumStockLevel", width: 50, editable: true, align: 'right', sorttype: 'float', formatter: 'number', hidden: false },
+            { name: "ReorderLevel", width: 50, editable: true, align: 'right', sorttype: 'float', formatter: 'number', hidden: false },
+            { name: "SafetyStockLevel", width: 50, editable: true, align: 'right', sorttype: 'float', formatter: 'number', hidden: false },
+            { name: "MinimumStockLevel", width: 50, editable: true, align: 'right', sorttype: 'float', formatter: 'number', hidden: false },
+            { name: "ActiveStatus", width: 35, editable: false, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+        ],
+        rowNum: 50,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        pager: "#jqpDrugReorderLevel",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0,
+        cellEdit: true,
+        cellsubmit: 'clientArray',
+        onSelectRow: function (id) {
+            if (id) { $('#jqgDrugReorderLevel').jqGrid('editRow', id, true); }
+        },
+    }).jqGrid('navGrid', '#jqgDrugReorderLevel', { add: false, edit: false, search: false, del: false, refresh: false });
+}
+
+function fnSaveDrugReorderLevel() {
+    if (IsStringNullorEmpty($("#cboBusinessKey").val()) || $("#cboBusinessKey").val() == 0) {
+        toastr.warning("Please Select Business Location");
+        return false;
+    }
+
+    var obj = [];
+    var gvT = $('#jqgDrugReorderLevel').jqGrid('getRowData');
+    for (var i = 0; i < gvT.length; ++i) {
+        if (!IsStringNullorEmpty(gvT[i]['DrugBrand'])) {
+            var bu_bd = {
+                BusinessKey: $('#cboBusinessKey').val(),
+                StoreCode: $('#cboStore').val(),
+                DrugCode: gvT[i]['DrugCode'],
+                DrugBrand: gvT[i]['DrugBrand'],
+                MaximumStockLevel: gvT[i]['MaximumStockLevel'],
+                ReorderLevel: gvT[i]['ReorderLevel'],
+                SafetyStockLevel: gvT[i]['SafetyStockLevel'],
+                MinimumStockLevel: gvT[i]['MinimumStockLevel'],
+                ActiveStatus: gvT[i]['ActiveStatus']
+            }
+            obj.push(bu_bd);
+        }
+    }
+
+    $("#btnDrugReorderLevel").attr('disabled', true);
+
+    $.ajax({
+        url: getBaseURL() + '/DrugInventory/InsertOrUpdateDrugReorderLevel',
+        type: 'POST',
+        datatype: 'json',
+        data: { bu_bd: obj },
+        success: function (response) {
+            if (response.Status === true) {
+                toastr.success(response.Message);
+                fnGridRefreshDrugReorderLevel();
+            }
+            else {
+                toastr.error(response.Message);
+            }
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnDrugReorderLevel").attr("disabled", false);
+        }
+    });
+
+    $("#btnDrugReorderLevel").attr("disabled", false);
+}
+
+function fnGridRefreshDrugReorderLevel() {
+    $("#jqgDrugReorderLevel").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid')
+}

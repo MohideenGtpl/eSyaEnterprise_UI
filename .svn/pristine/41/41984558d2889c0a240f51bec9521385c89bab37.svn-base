@@ -1,0 +1,164 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
+using eSyaEnterprise_UI.Areas.Config.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using eSyaEnterprise_UI.Areas.Config.Data;
+
+namespace eSyaEnterprise_UI.Areas.Config.Controllers
+{
+    public class CurrencyController : Controller
+    {
+        private readonly IeSyaConfigAPIServices _eSyaConfigAPIServices;
+        public CurrencyController(IeSyaConfigAPIServices eSyaConfigAPIServices)
+        {
+            _eSyaConfigAPIServices = eSyaConfigAPIServices;
+        }
+
+        #region Currency Master
+        /// <summary>
+        /// Currency Master
+        /// </summary>
+        /// <returns></returns>
+         
+        [Area("Config")]
+        public IActionResult V_71_00()
+        {
+            ViewBag.formName = "Currency Master";
+            return View();
+        }
+
+        /// <summary>
+        ///Get Currency for Grid
+        /// </summary>
+        [HttpGet]
+        public JsonResult GetCurrencyMaster()
+        {
+
+            try
+            {
+                var serviceResponse = _eSyaConfigAPIServices.HttpClientServices.GetAsync<List<DO_CurrencyMaster>>("CurrencyMaster/GetCurrencyMaster").Result;
+                return Json(serviceResponse.Data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+
+        }
+
+        /// <summary>
+        /// Insert Currency Master
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertIntoCurrencyMaster(DO_CurrencyMaster currency)
+        {
+
+            try
+            {
+                currency.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                currency.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                currency.FormId = AppSessionVariables.GetSessionFormID(HttpContext).ToString();
+                var serviceResponse = _eSyaConfigAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("CurrencyMaster/InsertIntoCurrencyMaster", currency).Result;
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        /// <summary>
+        /// Update Currency Master
+        /// </summary>
+        [HttpPost]
+        public JsonResult UpdateCurrencyMaster(DO_CurrencyMaster currency)
+        {
+
+            try
+            {
+                currency.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                currency.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                currency.FormId = AppSessionVariables.GetSessionFormID(HttpContext).ToString();
+                var serviceResponse = _eSyaConfigAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("CurrencyMaster/UpdateCurrencyMaster", currency).Result;
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+        /// <summary>
+        ///Get Currency DenominationInfo By Currency Code for Grid
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetCurrencyDenominationInfoByCurrencyCode(string CurrencyCode)
+        {
+            try
+            {
+                var parameter = "?currencyCode=" + CurrencyCode;
+                var serviceResponse = _eSyaConfigAPIServices.HttpClientServices.GetAsync<List<DO_CurrencyDenominationInformation>>("CurrencyMaster/GetCurrencyDenominationInfoByCurrencyCode" + parameter).Result;
+                return Json(serviceResponse.Data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        ///Insert Or Update Currency DenominationInfo
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertUpdateCurrencyDenominationInformation(DO_CurrencyDenominationInformation postData)
+        {
+            try
+            {
+                postData.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                postData.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                postData.FormId = AppSessionVariables.GetSessionFormID(HttpContext).ToString();
+                var serviceResponse = _eSyaConfigAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("CurrencyMaster/InsertOrUpdateCurrencyDenominationInformation", postData).Result;
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+        /// <summary>
+        ///Insert Or Update Currency DenominationInfo
+        /// </summary>
+        [HttpPost]
+        public JsonResult DeleteCurrencyDenominationInformation(string currencyCode, decimal denomination)
+        {
+            try
+            {
+                var parameter = "?currencyCode=" + currencyCode + "&denomination=" + denomination;
+                var serviceResponse = _eSyaConfigAPIServices.HttpClientServices.GetAsync<DO_ReturnParameter>("CurrencyMaster/DeleteCurrencyDenominationInformation" + parameter).Result;
+                return Json(serviceResponse.Data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+        #endregion
+    }
+}

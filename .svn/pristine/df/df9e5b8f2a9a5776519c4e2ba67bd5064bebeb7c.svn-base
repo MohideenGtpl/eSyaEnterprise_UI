@@ -1,0 +1,29 @@
+﻿@font-face {
+    font-family: 'helvetica';
+    src: url('../fonts/Helvetica.ttf') format('truetype'),url('../fonts/Helvetica.woff') format('woff');
+    /*src: url('../fonts/roboto-regular-webfont.ttf') format('truetype'),url('../fonts/Roboto-Regular-webfont.eot') format('embedded-opentype'),url('../fonts/Roboto-Regular-webfont.svg') format('svg');*/
+}
+@font-face {
+    font-family: 'roboto';
+    src: url('../fonts/esyaFonts/Roboto/Roboto-Regular.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'roboto_bold';
+    src: url('../fonts/esyaFonts/Roboto/Roboto-Bold.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'roboto_light';
+    src: url('../fonts/esyaFonts/Roboto/Roboto-Light.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'cairo';
+    src: url('../fonts/esyaFonts/Cairo/Cairo-Regular.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'cairo_bold';
+    src: url('../fonts/esyaFonts/Cairo/Cairo-Bold.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'cairo_light';
+    src: url('../fonts/esyaFonts/Cairo/Cairo-Light.ttf') format('truetype');
+}

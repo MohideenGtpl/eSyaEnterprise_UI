@@ -1,0 +1,97 @@
+﻿
+@{
+    ViewData["Title"] = "EFM_08_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+
+    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 form-group">
+        <div class="form-group">
+            <label class="lable-color"> Location</label>
+            @await Component.InvokeAsync("UserBusinessLocation")
+        </div>
+    </div>
+
+
+    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+        <div class="form-group">
+            <label>Schedule From Date </label>
+            <input type="text" class="form-control" id="dtfromdate" autocomplete="off" onkeydown="return false" />
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+        <div class="form-group">
+            <label>Schedule To Date</label>
+            <input id="dttodate" class="form-control" type="text" autocomplete="off" onkeydown="return false" />
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+        <div class="form-group">
+            <label>Specialty</label>
+            <select class="selectpicker" data-live-search="true" title="" id="cboDoctorScheduleSpecialty" onchange="fnLoadScheduleClinic()"></select>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+        <div class="form-group">
+            <label>Clinic</label>
+            <select class="selectpicker" data-live-search="true" title="" id="cboDoctorClinic" onchange="fnLoadScheduleConsultationType()"></select>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+        <div class="form-group">
+            <label>ConsultationType</label>
+            <select class="selectpicker" data-live-search="true" title="" id="cboScheduleConsultationType"></select>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+        <div class="form-group">
+            <label>Doctor</label>
+            <select class="selectpicker" data-live-search="true" title="" id="cboDoctor"></select>
+        </div>
+    </div>
+
+
+    <div class="col-md-3 col-sm-4 col-lg-3">
+        <div class="form-group">
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button mr-10" id="btnExportToExcel" onclick="fnGridLoadGuestBookingDetails()"><i class="fa fa-search"></i> Search </button>
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnExportToExcel" onclick="fnClearFields()"><i class="fas fa-file-export"></i> ClearFields </button>
+
+        </div>
+
+    </div>
+
+   
+
+</div>
+
+<div class="row padbot10">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <table id="jqgGuestBookingDetail"></table>
+        <div id="jqpGuestBookingDetail"></div>
+    </div>
+</div>
+
+<script>
+
+    $(function () {
+        var todaydt = new Date();
+        $("#dtfromdate").datepicker({
+            autoclose: true,
+            dateFormat: _cnfDateFormat,
+            endDate: todaydt,
+            onSelect: function (date) {
+                //Get selected date
+                var date2 = $('#dtfromdate').datepicker('getDate');
+                //sets minDate to txtTillDate
+                $('#dttodate').datepicker('option', 'minDate', date2);
+            }
+        });
+        $('#dttodate').datepicker({
+            dateFormat: _cnfDateFormat,
+
+        });
+    });
+</script>

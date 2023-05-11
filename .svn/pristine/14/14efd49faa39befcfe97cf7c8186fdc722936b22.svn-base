@@ -1,0 +1,199 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.Areas.eSyaMCServices.Data;
+using eSyaEnterprise_UI.Areas.eSyaMCServices.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Mvc;
+
+namespace eSyaEnterprise_UI.Areas.eSyaMCServices.Controllers
+{
+    public class ServiceManagementController : Controller
+    {
+        private readonly IeSyaMCServicesAPIServices _eSyaMCServicesAPIServices;
+        public ServiceManagementController(IeSyaMCServicesAPIServices eSyaMCServicesAPIServices)
+        {
+            _eSyaMCServicesAPIServices = eSyaMCServicesAPIServices;
+
+        }
+
+        /// <summary>
+        /// Service Type
+        /// </summary>
+        /// <returns></returns>
+
+        [Area("eSyaMCServices")]
+        public IActionResult V_1501_00()
+        {
+            ViewBag.formName = "Service Type";
+            return View();
+        }
+
+        /// <summary>
+        /// Service Group
+        /// </summary>
+        /// <returns></returns>
+
+        [Area("eSyaMCServices")]
+        public IActionResult V_1502_00()
+        {
+            ViewBag.formName = "Service Group";
+            return View();
+        }
+
+
+
+
+        #region ServiceType
+        [Produces("application/json")]
+        [HttpGet]
+        public ActionResult GetServiceTypes()
+        {
+            try
+            {
+                List<jsTreeObject> treeView = new List<jsTreeObject>();
+
+                jsTreeObject jsObj = new jsTreeObject();
+                jsObj.id = "ST";
+                jsObj.parent = "#";
+                jsObj.text = "Service Types";
+                jsObj.icon = "/images/jsTree/foldergroupicon.png";
+                jsObj.state = new stateObject { opened = true, selected = false };
+                treeView.Add(jsObj);
+
+                var serviceResponse = _eSyaMCServicesAPIServices.HttpClientServices.GetAsync<List<DO_ServiceType>>("ServiceManagement/GetServiceTypes").Result;
+                var st_list = serviceResponse.Data;
+                if (st_list != null)
+                {
+                    foreach (var ig in st_list)
+                    {
+                        jsObj = new jsTreeObject();
+                        jsObj.id = ig.ServiceTypeId.ToString();
+                        jsObj.text = ig.ServiceTypeDesc;
+                        jsObj.icon = "/images/jsTree/openfolder.png";
+                        jsObj.parent = "ST";
+                        treeView.Add(jsObj);
+                    }
+                }
+                return Json(treeView);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public ActionResult GetServiceTypeByID(int ServiceTypeID)
+        {
+            try
+            {
+                var serviceResponse = _eSyaMCServicesAPIServices.HttpClientServices.GetAsync<DO_ServiceType>("ServiceManagement/GetServiceTypeByID?ServiceTypeID=" + ServiceTypeID).Result;
+                var data = serviceResponse.Data;
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+        public ActionResult AddOrUpdateServiceType(DO_ServiceType obj)
+        {
+            try
+            {
+                //obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                obj.FormID = "V_1501_00";
+                obj.CreatedOn = DateTime.Now;
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                var serviceResponse = _eSyaMCServicesAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("ServiceManagement/AddOrUpdateServiceType", obj).Result;
+                if (serviceResponse.Status == true)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+        #endregion
+
+        #region ServiceGroup
+        public ActionResult GetServiceGroups()
+        {
+            List<jsTreeObject> treeView = new List<jsTreeObject>();
+            jsTreeObject jsObj = new jsTreeObject();
+
+            var serviceResponse = _eSyaMCServicesAPIServices.HttpClientServices.GetAsync<List<DO_ServiceType>>("ServiceManagement/GetServiceTypes").Result;
+            var st_list = serviceResponse.Data;
+            var serviceResponse1 = _eSyaMCServicesAPIServices.HttpClientServices.GetAsync<List<DO_ServiceGroup>>("ServiceManagement/GetServiceGroups").Result;
+            var sg_list = serviceResponse1.Data;
+            foreach (var st in st_list)
+            {
+                jsObj = new jsTreeObject();
+                jsObj.id = st.ServiceTypeId.ToString();
+                jsObj.text = st.ServiceTypeDesc;
+                jsObj.icon = "/images/jsTree/openfolder.png";
+                jsObj.parent = "#";
+                jsObj.state = new stateObject { opened = false, selected = false };
+                treeView.Add(jsObj);
+
+                foreach (var sg in sg_list)
+                {
+                    if (st.ServiceTypeId == sg.ServiceTypeId)
+                    {
+                        jsObj = new jsTreeObject();
+                        jsObj.id = "G" + sg.ServiceGroupId.ToString();
+                        jsObj.text = sg.ServiceGroupDesc;
+                        jsObj.icon = "/images/jsTree/fileIcon.png";
+                        jsObj.parent = st.ServiceTypeId.ToString();
+                        treeView.Add(jsObj);
+                    }
+                }
+
+            }
+
+            return Json(treeView);
+
+        }
+        public ActionResult GetServiceGroupByID(int ServiceGroupID)
+        {
+            try
+            {
+                var serviceResponse = _eSyaMCServicesAPIServices.HttpClientServices.GetAsync<DO_ServiceGroup>("ServiceManagement/GetServiceGroupByID?ServiceGroupID=" + ServiceGroupID).Result;
+                var data = serviceResponse.Data;
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+        public ActionResult AddOrUpdateServiceGroup(DO_ServiceGroup obj)
+        {
+            try
+            {
+                //obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                obj.FormId = "V_1502_00";
+                obj.CreatedOn = DateTime.Now;
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                var serviceResponse = _eSyaMCServicesAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("ServiceManagement/AddOrUpdateServiceGroup", obj).Result;
+                if (serviceResponse.Status == true)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+        #endregion
+    }
+}

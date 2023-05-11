@@ -1,0 +1,65 @@
+﻿
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<script>
+    var localization = {
+        PreparedOn: '@Localizer["PreparedOn"]',
+        PreparedBy: '@Localizer["PreparedBy"]',
+        PreparedBy: '@Localizer["Action"]'
+ }
+</script>
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-12">
+        <h1>Document</h1>
+        <table id="jqgDocumentUpload"></table>
+        <div id="jqpDocumentUpload"></div>
+    </div>
+</div>
+<script>
+    $(function(){
+
+   
+    $("#jqgDocumentUpload").jqGrid(
+        {
+            //url: getBaseURL() + '',
+            datatype: "local",
+            contentType: "application/json; charset-utf-8",
+            //mtype: 'GET',
+            ajaxGridOptions: { contentType: 'application/json; charset=utf-8', async: true },
+            colNames: [localization.PreparedOn, localization.PreparedBy, localization.Action],
+            colModel: [
+                { name: "PreparedOn", width: 60, editable: true, align: 'left', hidden: false },
+                { name: "PreparedBy", width: 60, editable: true, align: 'left', hidden: false },
+                { name: "Action", width: 60, editable: true, align: 'left', hidden: false }
+              ],
+            rowNum: 100000,
+            viewrecords: true,
+            colnumwidth: 50,
+            gridview: true,
+            rownumbers: true,
+            scroll: false,
+            loadonce: true,
+            width: 'auto',
+            height: 'auto',
+            autowidth: true,
+            shrinkToFit: true,
+            forceFit: false,
+            pager: "#jqpDocumentUpload",
+            onSelectRow: function (rowid) {
+
+            },
+            loadComplete: function (data) {
+                fnJqgridSmallScreen('jqgDocumentUpload');
+                var rows = jQuery("#jqgDocumentUpload").getDataIDs();
+                //for (a = 0; a < rows.length; a++) {
+                //    row = jQuery("#jqgDocumentUpload").getRowData(rows[a]);
+                //    $("#btnEMR_" + rows[a]).hide();
+                //    if (row['UHID'] > 0) {
+                //        $("#btnEMR_" + rows[a]).show();
+                //    }
+                //}
+
+            }
+        });
+     })
+</script>

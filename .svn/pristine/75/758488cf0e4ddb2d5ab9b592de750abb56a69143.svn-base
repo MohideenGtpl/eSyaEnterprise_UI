@@ -1,0 +1,124 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.Areas.eSyaPayroll.Data;
+using eSyaEnterprise_UI.Areas.eSyaPayroll.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
+
+namespace eSyaEnterprise_UI.Areas.eSyaPayroll.Controllers
+{
+    public class EmployeeController : Controller
+    {
+        private readonly IeSyaPayrollAPIServices _eSyaPayrollAPIServices;
+        private readonly ILogger<EmployeeController> _logger;
+
+        public EmployeeController(IeSyaPayrollAPIServices eSyaPayrollAPIServices, ILogger<EmployeeController> logger)
+        {
+            _eSyaPayrollAPIServices = eSyaPayrollAPIServices;
+            _logger = logger;
+        }
+        [Area("eSyaPayroll")]
+        public async Task<IActionResult> V_4000_00()
+        {
+
+            try
+            {
+                //ViewBag.UserFormRoles = new DO_UserFormRole { IsInsert = true, IsEdit = true, IsDelete = true };
+                List<int> l_ac = new List<int>();
+                l_ac.Add(CodeTypeValues.EmployeeClass);
+                l_ac.Add(CodeTypeValues.EmployeeGroup);
+
+                var response = await _eSyaPayrollAPIServices.HttpClientServices.PostAsJsonAsync<List<DO_ApplicationCodes>>("CommonData/GetApplicationCodesByCodeTypeList", l_ac);
+                var bkey_response = await _eSyaPayrollAPIServices.HttpClientServices.GetAsync<List<DO_BusinessLocation>>("CommonData/GetBusinessKeys");
+
+                if (response.Status && bkey_response.Status)
+                {
+                    if (response.Data != null && bkey_response.Data != null)
+                    {
+                        List<DO_ApplicationCodes> app_codes = response.Data;
+
+                        ViewBag.EmployeeClass = app_codes.Where(w => w.CodeType == CodeTypeValues.EmployeeClass).Select(b => new SelectListItem
+                        {
+                            Value = b.ApplicationCode.ToString(),
+                            Text = b.CodeDesc,
+                        }).ToList();
+
+                        ViewBag.EmployeeGroup = app_codes.Where(w => w.CodeType == CodeTypeValues.EmployeeGroup).Select(b => new SelectListItem
+                        {
+                            Value = b.ApplicationCode.ToString(),
+                            Text = b.CodeDesc,
+                        }).ToList();
+
+                        ViewBag.BusinessKey = bkey_response.Data.Select(b => new SelectListItem
+                        {
+                            Value = b.BusinessKey.ToString(),
+                            Text = b.LocationDescription.ToString() + '-' + b.LocationDescription,
+                        }).ToList();
+
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(response.Message), "UD:GetApplicationCodesByCodeTypeList");
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(response.Message), "UD:GetApplicationCodesByCodeTypeList");
+                }
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetApplicationCodesByCodeTypeList");
+                throw ex;
+            }
+        }
+
+        [Area("eSyaPayroll")]
+        public IActionResult _EmployeeDetails()
+        {
+            return View();
+        }
+        [Area("eSyaPayroll")]
+        public IActionResult _PersonalInformation()
+        {
+            return View();
+        }
+        [Area("eSyaPayroll")]
+        public IActionResult _SalaryInfo()
+        {
+            return View();
+        }
+        [Area("eSyaPayroll")]
+        public IActionResult _FamilyInfo()
+        {
+            return View();
+        }
+
+        [Area("eSyaPayroll")]
+        public IActionResult _EducationInfo()
+        {
+            return View();
+        }
+
+        [Area("eSyaPayroll")]
+        public IActionResult _PreviousJobs()
+        {
+            return View();
+        }
+        [Area("eSyaPayroll")]
+        public IActionResult _CurrentJob()
+        {
+            return View();
+        }
+        [Area("eSyaPayroll")]
+        public IActionResult _FixedDeduction()
+        {
+            return View();
+        }
+    }
+}

@@ -1,0 +1,33 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Warning"
+    }
+  },
+  "Localization": {
+    "Culture": "ar-YE",
+    "UICulture": "ar-YE"
+  },
+  "AllowedHosts": "*",
+
+  "eSyaGateway_API": "https://product.esyahealth.com/eSyaENTGateway_WebAPI/api/",
+  "eSyaConfig_API": "https://product.esyahealth.com/eSyaENTConfig_WebAPI/api/",
+  "eSyaUserMgmt_API": "https://product.esyahealth.com/eSyaENTUser_WebAPI/api/",
+  "eSyaFA_API": "https://product.esyahealth.com/eSyaENTFixedAssets_WebAPI/api/",
+  "eSyaMaterial_API": "https://product.esyahealth.com/eSyaENTConfig_WebAPI/api/",
+  "eSyaVendor_API": "https://product.esyahealth.com/eSyaENTVendor_WebAPI/api/",
+  "eSyaCustomer_API": "https://product.esyahealth.com/eSyaENTCustomer_WebAPI/api/",
+  "eSyaClinicalSevices_API": "https://product.esyahealth.com/eSyaENTClinicalSevices_WebAPI/api/",
+  "eSyaMCSevices_API": "https://product.esyahealth.com/eSyaENTMCSevices_WebAPI/api/",
+  "eSyaSevices_API": "https://product.esyahealth.com/eSyaENTSevices_WebAPI/api/",
+
+  "dbContextType": "dev",
+
+  "Apikey": "1",
+
+  "ConnectionStrings": {
+    "dbConn_eSyaEnterprise": "Server=103.227.97.123,1433;Database=eSyaEnterprise_Prod;user id=esya;password=Gt@pl#20;"
+  }
+
+}
+ 

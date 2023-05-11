@@ -1,0 +1,229 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.Areas.eSyaPayrollExpat.Data;
+using eSyaEnterprise_UI.Areas.eSyaPayrollExpat.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+
+namespace eSyaEnterprise_UI.Areas.eSyaPayrollExpat.Controllers
+{
+    public class VariableEntryController : Controller
+    {
+        private readonly IeSyaPayrollExpatAPIServices _eSyaPayrollExpatAPIServices;
+        private readonly ILogger<VariableEntryController> _logger;
+
+        public VariableEntryController(IeSyaPayrollExpatAPIServices eSyaPayrollExpatAPIServices, ILogger<VariableEntryController> logger)
+        {
+            _eSyaPayrollExpatAPIServices = eSyaPayrollExpatAPIServices;
+            _logger = logger;
+        }
+        #region Salary Advance
+        [Area("eSyaPayrollExpat")]
+        public  IActionResult V_4522_00()
+        {
+           return View();
+        }
+
+        /// <summary>
+        ///Get Pay Period by Business Key for Drp down
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetPayPeriodbyBusinessKey(int Businesskey)
+        {
+            try
+            {
+                var parameter = "?Businesskey=" + Businesskey;
+                var serviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.GetAsync<List<DO_PayPeriod>>("AttendanceProcess/GetPayPeriodbyBusinessKey" + parameter);
+
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetPayPeriodbyBusinessKey:params:" + JsonConvert.SerializeObject(new { Businesskey }));
+
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetPayPeriodbyBusinessKey:params:" + JsonConvert.SerializeObject(new { Businesskey }));
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        ///Get Employees by Business Key for Drp down
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetEmployeesbyBusinessKey(int Businesskey)
+        {
+            try
+            {
+                var parameter = "?Businesskey=" + Businesskey;
+                var serviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.GetAsync<List<DO_EmployeeMaster>>("VariableEntry/GetEmployeesbyBusinessKey" + parameter);
+
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetEmployeesbyBusinessKey:params:" + JsonConvert.SerializeObject(new { Businesskey }));
+
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetEmployeesbyBusinessKey:params:" + JsonConvert.SerializeObject(new { Businesskey }));
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        ///Get Advance Salaries by Business Key and PayPeriod for Grid
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetSalariesbyBusinessKeyAndPayPeriod(int Businesskey, int Payperiod)
+        {
+            try
+            {
+                var parameter = "?Businesskey=" + Businesskey + "&Payperiod=" + Payperiod;
+                var serviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.GetAsync<List<DO_AdvanceSalary>>("VariableEntry/GetSalariesbyBusinessKeyAndPayPeriod" + parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetSalariesbyBusinessKeyAndPayPeriod:params:" + JsonConvert.SerializeObject(new { Businesskey , Payperiod }));
+
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetSalariesbyBusinessKeyAndPayPeriod:params:" + JsonConvert.SerializeObject(new { Businesskey ,Payperiod }));
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Insert or Update Variable Entry
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> InsertOrUpdateAdvanceSalary(bool isInsert, DO_AdvanceSalary obj)
+        {
+            try
+            {
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                obj.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                if (isInsert)
+                {
+                    var serviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("VariableEntry/InsertAdvanceSalary", obj);
+                    if (serviceResponse.Status)
+                        return Json(serviceResponse.Data);
+                    else
+                        return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+                else
+                {
+                    var serviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("VariableEntry/UpdateAdvanceSalary", obj);
+                    if (serviceResponse.Status)
+                        return Json(serviceResponse.Data);
+                    else
+                        return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertOrUpdateAdvanceSalary:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+        #endregion Salary Advance
+
+        #region Variable Incentive
+
+        [Area("eSyaPayrollExpat")]
+        public IActionResult V_4523_00()
+        {
+           return View();
+
+        }
+
+        /// <summary>
+        ///Get Variable Incenties by Business Key and Pay Period for Grid
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetIncentiesbyBusinessKeyAndPayPeriod(int Businesskey,int Payperiod)
+        {
+            try
+            {
+                var parameter = "?Businesskey=" + Businesskey + "&Payperiod=" + Payperiod;
+                var serviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.GetAsync<List<DO_VariableIncentive>>("VariableEntry/GetIncentiesbyBusinessKeyAndPayPeriod" + parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetIncentiesbyBusinessKeyAndPayPeriod:params:" + JsonConvert.SerializeObject(new { Businesskey , Payperiod }));
+
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetIncentiesbyBusinessKeyAndPayPeriod:params:" + JsonConvert.SerializeObject(new { Businesskey, Payperiod }));
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Insert or Update Variable Incentive
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> InsertOrUpdateVariableIncentive(bool isInsert, DO_VariableIncentive obj)
+        {
+            try
+            {
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                obj.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                if (isInsert)
+                {
+                    var serviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("VariableEntry/InsertVariableIncentive", obj);
+                    if (serviceResponse.Status)
+                        return Json(serviceResponse.Data);
+                    else
+                        return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+                else
+                {
+                    var serviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("VariableEntry/UpdateVariableIncentive", obj);
+                    if (serviceResponse.Status)
+                        return Json(serviceResponse.Data);
+                    else
+                        return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertOrUpdateVariableIncentive:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        #endregion Variable Incentive
+    }
+}

@@ -1,0 +1,268 @@
+﻿
+@{
+    ViewData["Title"] = "V_72_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts{
+<script src="~/js/Config/CurrencyRate.js"></script>
+}
+<section id="divGrid">
+    <div class="row">
+        <div class="col-lg-4 col-md-4 col-sm-6 itemblur">
+            <div class="form-group">
+                <label class="lable-color"> Business Location</label>
+                <select class="selectpicker" data-live-search="true" id="cboBusinesskey" title="" data-size="8" onchange="LoadCurrencyRateGrid()"
+                        asp-items="@ViewBag.Businesskey"></select>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-6 itemblur">
+            <div class="form-group ">
+                <label> Currency Code </label>
+                <input id="txtEntityDescription" class=" form-control" maxlength="10" type="text" />
+            </div>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-lg-12 col-md-12">
+            <table id="jqgCurrencyRate"></table>
+                <div id="jqpCurrencyRate"></div>
+        </div>
+    </div>
+</section>
+<section id="divCurrencyRateForm" style="display:none">
+    <div class="row">
+        <div class="col-sm-12" style="display:none">
+            <div class="form-group">
+                <label for="txtCurrencyCode">Currency Code </label>
+                <input class="form-control" type="text" id="txtCurrencyCode"/>
+            </div>
+        </div>
+    </div>
+    <div class="row padbot4">
+        <div class="col-lg-2  col-md-3 col-sm-12 col-xs-12">
+            <div class="form-group">
+                <label for="txtDateOfExchange"> Date of Exchange</label>
+                <input id="txtDateOfExchange" class="form-control datepicker" maxlength="50" type="text" />
+            </div>
+        </div>
+        <div class="col-lg-2  col-md-3 col-sm-12 col-xs-12">
+            <div class="form-group">
+                <label for="txtStandardRate"> Standard Rate</label>
+                <input id="txtStandardRate" class="form-control" maxlength="50" type="text" />
+            </div>
+        </div>
+        <div class="col-lg-2  col-md-3 col-sm-12 col-xs-12">
+            <div class="form-group">
+                <label for="txtSellingRate"> Selling Rate</label>
+                <input id="txtSellingRate" class="form-control" maxlength="50" type="text" />
+            </div>
+        </div>
+        <div class="col-lg-2  col-md-3 col-sm-12 col-xs-12">
+            <div class="form-group">
+                <label for="txtSellingDate"> Selling Date</label>
+                <input id="txtSellingDate" class="form-control datepicker" maxlength="50" type="text" />
+            </div>
+        </div>
+        <div class="col-lg-2  col-md-3 col-sm-12 col-xs-12">
+            <div class="form-group">
+                <label for="txtBuyingRate"> Buying Rate</label>
+                <input id="txtBuyingRate" class="form-control" maxlength="50" type="text" />
+            </div>
+        </div>
+        <div class="col-lg-2  col-md-3 col-sm-12 col-xs-12">
+            <div class="form-group">
+                <label for="txtBuyingDate"> Buying Date</label>
+                <input id="txtBuyingDate" class="form-control datepicker" maxlength="50" type="text" />
+            </div>
+        </div>
+
+        <div class="col-lg-2  col-md-3 col-sm-12 col-xs-12">
+            <div class="default-checkbox separate">
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActiveStatus">
+                    <input type="checkbox" id="chkActiveStatus" class="mdl-checkbox__input">
+                    <span class="mdl-checkbox__label">Active</span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <hr />
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button m-r-15" id="btnSaveCurrencyRate" onclick="fnSaveCurrencyRate();">
+                Save
+            </button>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" onclick="fnBackToGrid()">Cancel</button>
+        </div>
+    </div>
+</section>
+
+<script>
+    $(document).ready(function () {
+        LoadCurrencyRateGrid();
+    });
+    function validateEffectiveDate(value, DateOfExchangeRate) {
+
+        if (IsStringNullorEmpty(value)) {
+            toastr.warning("Please Enter EffectiveDate");
+            return [false, "Please Enter EffectiveDate"];
+
+        }
+        else {
+            return [true, ""];
+        }
+
+    }
+    function custFormat(cellvalue) {
+        if (cellvalue != undefined) {
+            return g_getIndDateM(cellvalue);
+        }
+        else {
+            return "";
+        }
+    }
+    function LoadCurrencyRateGrid() {
+        var v_grid = $("#listER");
+        var v_pager = $("#pagerER");
+
+      
+
+        v_grid.jqGrid({
+            url: getBaseURL() + '/Currency/GetCurrencyExchangeRate?Businesskey=' + $("#cboBusinesskey").val(),
+            mtype: 'post',
+            datatype: 'json',
+            ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+            jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+            colNames: ["Code", "Date of Exchange", "Standard Rate", "Date", "Rate", "Date", "Rate", "Active Status"],
+            colModel: [
+                { name: "CurrencyCode", width: 100, editable: true, key: true },
+
+                {
+                    name: 'DateOfExchangeRate', index: 'DateOfExchangeRate', width: 150, formatter: "date", formatoptions:
+                        { newformat: _cnfjqgDateFormat },
+                    editable: true, editoptions: {
+                        size: 20,
+                        dataInit: function (el) {
+                            $(el).datepicker({ dateFormat: _cnfDateFormat });
+                        }
+                    },
+                    //editrules: {
+                    //    custom_func: validateEffectiveDate,
+                    //    custom: true
+                    //}
+                },
+
+                { name: "StandardRate", width: 100, editable: true, align: 'right' },
+
+
+                {
+                    name: 'SellingLastVoucherDate', index: 'SellingLastVoucherDate', width: 150, formatter: "date", formatoptions:
+                        { newformat: _cnfjqgDateFormat },
+                    editable: true, editoptions: {
+                        size: 20,
+                        dataInit: function (el) {
+                            $(el).datepicker({ dateFormat: _cnfDateFormat });
+                        }
+                    },
+                    //editrules: {
+                    //    custom_func: validateEffectiveDate,
+                    //    custom: true
+                    //}
+                },
+
+                { name: "SellingRate", width: 100, editable: true, align: 'right' },
+
+
+                {
+                    name: 'BuyingLastVoucherDate', index: 'BuyingLastVoucherDate', width: 150, formatter: "date", formatoptions:
+                        { newformat: _cnfjqgDateFormat },
+                    editable: true, editoptions: {
+                        size: 20,
+                        dataInit: function (el) {
+                            $(el).datepicker({ dateFormat: _cnfDateFormat });
+                        }
+                    },
+                    //editrules: {
+                    //    custom_func: validateEffectiveDate,
+                    //    custom: true
+                    //}
+                },
+
+                { name: "BuyingRate", width: 100, editable: true, align: 'right' },
+                { name: "ActiveStatus", editable: true, width: 80, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: InActive" } },
+            ],
+            rowNum: 10,
+            rowList: [10, 20, 40],
+            pager: "#pagerER",
+            viewrecords: true,
+            gridview: true,
+            rownumbers: true,
+            height: 'auto',
+            width: 'auto',
+            autowidth: true,
+            shrinkToFit: true,
+            forceFit: false,
+            //onSelectRow: function (rowid) {
+            //    custOnSelectRow(rowid);
+            //},
+            loadComplete: function (data) {
+                $("#jqgh_listER_DateOfExchangeRate, #jqgh_listER_StandardRate, #jqgh_listER_SellingLastVoucherDate, #jqgh_listER_SellingRate, #jqgh_listER_BuyingLastVoucherDate, #jqgh_listER_BuyingRate").css({ 'text-align': 'right' });
+                //custLoadComplete("listER", "pagerER");
+            },
+        })
+            .jqGrid('navGrid', '#pagerER', { add: false, edittext: 'Edit', del: false, refreshtext: 'Refresh', search: false },
+                {
+                    editCaption: 'Edit Exchange Rate',
+                    url: getBaseURL() + "/Currency/InsertOrUpdateCurrencyExchangeRate",
+                    closeAfterEdit: true,
+                    reloadAfterSubmit: true,
+                    beforeShowForm: function (formid) {
+                        $("#tr_CurrencyCode, #tr_CurrencyDesc, #tr_SellingLastVoucherDate, #tr_BuyingLastVoucherDate").css({ 'display': 'none' });
+
+                        $("#tr_SellingRate").find(".CaptionTD")[0].innerHTML = "Selling Rate";
+                        $("#tr_BuyingRate").find(".CaptionTD")[0].innerHTML = "Buying Rate";
+
+                        $("#editmodlistER").css({
+                            'width': Math.round(v_grid.width() / 2.5) + "px",
+                            'height': 'auto'
+                        });
+                        $("#FrmGrid_listER").css({
+                            'width': Math.round(v_grid.width() / 2.5) + "px",
+                            'height': 'auto'
+                        });
+                    },
+                    afterShowForm: function (formid) {
+                        $("#DateOfExchangeRate").datepicker("hide");
+                        $("#StandardRate").focus();
+                    },
+                    beforeSubmit: function (postdata, formid) {
+                        var message = '';
+                        if (message != '') {
+                            return [false, message]
+                        }
+                        else {
+                            return [true, '']
+                        }
+                    },
+                    afterSubmit: function (response, postdata) {
+                        $("#fa").hide();
+                        if (response.responseText == "") {
+                            return [true, '']
+                        }
+                        else {
+                            return [false, response.responseText]
+                        }
+                    }
+                }, {});
+
+        v_grid.jqGrid('setGroupHeaders', {
+            useColSpanStyle: true,
+            groupHeaders: [
+                { startColumnName: 'SellingLastVoucherDate', numberOfColumns: 2, titleText: '<div class="custH">Selling</div>' },
+                { startColumnName: 'BuyingLastVoucherDate', numberOfColumns: 2, titleText: '<div class="custH">Buying</div>' }
+            ]
+        });
+    }
+ 
+</script>
+ 

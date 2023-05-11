@@ -1,0 +1,190 @@
+﻿
+@{
+    ViewData["Title"] = "V_9004_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts{
+<script src="~/js/eSyaPharma/DrugBrands.js"></script>
+}
+<section id="divGridSection">
+    <div class="row form-group" id="divAlphabets">
+        <div class="col-lg-10 col-md-10 col-sm-10">
+            <label>Choose Customer by alphabets</label>
+            <span class="filter-char">A</span>
+            <span class="filter-char">B</span>
+            <span class="filter-char">C</span>
+            <span class="filter-char">D</span>
+            <span class="filter-char">E</span>
+            <span class="filter-char">F</span>
+            <span class="filter-char">G</span>
+            <span class="filter-char">H</span>
+            <span class="filter-char">I</span>
+            <span class="filter-char">J</span>
+            <span class="filter-char">K</span>
+            <span class="filter-char">L</span>
+            <span class="filter-char">M</span>
+            <span class="filter-char">N</span>
+            <span class="filter-char">O</span>
+            <span class="filter-char">P</span>
+            <span class="filter-char">Q</span>
+            <span class="filter-char">R</span>
+            <span class="filter-char">S</span>
+            <span class="filter-char">T</span>
+            <span class="filter-char">U</span>
+            <span class="filter-char">V</span>
+            <span class="filter-char">W</span>
+            <span class="filter-char">X</span>
+            <span class="filter-char">Y</span>
+            <span class="filter-char">Z</span>
+            <span class="filter-char">0-9</span>
+            <span class="filter-char">All</span>
+        </div>
+    </div>
+    <div class="row form-group" style="display:none" id="divSearch">
+        <div class="col-lg-12 col-xl-12 col-sm-4 pad0">
+            <span id="lblBackToAlphabets">
+                <i class="fa fa-chevron-left"></i> Drugs  A to Z
+            </span>
+                <p class="d-inline-b mar0">
+              Drugs:<span id="lblSelectedAlphabets"></span> <i class="fas fa-long-arrow-alt-right"></i> </p>
+            <div class="filter-div d-inline-b"></div>
+        </div>
+    </div>
+
+    <div class="row padbot10">
+        <div class="col-lg-4 col-md-4 col-sm-6">
+            <div class="form-group">
+                <label class="lable-color"> ISD Code</label>
+                <select class="selectpicker" data-live-search="true" id="cboISDCode" title="Select" asp-items="@ViewBag.ISDCodeList">
+                    <option value="0">Select</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-6">
+            <div class="form-group">
+                <label class="lable-color"> Generics</label>
+                <select class="selectpicker" data-live-search="true" id="cboGenerics" title="Select" asp-items="@ViewBag.DrugCategoryList" onchange="fnDrugCategoryChanges()">
+                    <option value="0">Select</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-6">
+            <div class="form-group">
+                <label class="lable-color"> Formulation</label>
+                <select class="selectpicker" data-live-search="true" id="cboFormulation" title="Select" onchange="fnDrugFormulationChanges()">
+                    <option value="0">Select</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-4 col-sm-6">
+            <div class="form-group">
+                <label class="lable-color"> Dosage</label>
+                <input type="text" id="txtDosage" class="form-control" readonly>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-6">
+            <div class="form-group">
+                <label class="lable-color" for="txtDrugBrand"> Drug Form</label>
+                <input id="txtDrugForm" type="text" class="form-control" readonly />
+            </div>
+        </div>
+
+        @*<div class="col-sm-12 col-md-12 col-lg-12 form-group">
+            @await Component.InvokeAsync("eSyaParameter", new { parameterType = "2" })
+        </div>*@
+        <div class="col-lg-12 col-md-12 col-sm-12" id="divGrid">
+            <table id="jqgDrugBrands"></table>
+            <div id="jqpDrugBrands"></div>
+        </div>
+    </div>
+</section>
+
+
+<section id="divDrugBrandsForm" style="display:none">
+    <div class="row">
+        <div class="col-lg-8 col-md-8 col-sm-8">
+            <div class="row">
+                <div class="col-sm-12">
+                    <input type="text" class="form-control" id="txtDrugCode" style="display:none">
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label class="lable-color" for="txtDrugBrand"> Drug Brand</label>
+                        <input id="txtDrugBrand" type="text" class="form-control" maxlength="100" />
+                    </div>
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label class="lable-color"> Manufacturer</label>
+                        <select class="selectpicker" data-live-search="false" id="cboManufacturer" title="Select" asp-items="@ViewBag.ManufacturerList">
+                            <option value="0">Select</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-6">
+                    <div class="form-group">
+                        <label for="txtPackSize"> Pack Size</label>
+                        <input id="txtPackSize" class="form-control integerFormat" autocomplete="off" maxlength="4" value="1" />
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-6">
+                    <div class="form-group">
+                        <label class="lable-color">Packing</label>
+                        <select class="selectpicker" data-live-search="false" id="cboPacking" title="Select" asp-items="@ViewBag.PackingList">
+                            <option value="0">Select</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-4 col-sm-6">
+                    <div class="form-group">
+                        <label for="txtDrugVolume"> Drug Volume</label>
+                        <input id="txtDrugVolume" type="text" class="form-control" maxlength="15" />
+                    </div>
+                </div>
+                <div class="col-lg-8 col-md-8 col-sm-12">
+                    <div class="form-group">
+                        <label for="txtPrintDesc"> Print Description</label>
+                        <input id="txtPrintDesc" type="text" class="form-control" maxlength="150" />
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-6">
+                    <div class="form-group">
+                        <label for="txtBarCodeID"> Barcode ID</label>
+                        <input id="txtBarCodeID" type="text" class="form-control" maxlength="20" />
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                    <div class="default-checkbox">
+                        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActiveStatus">
+                            <input type="checkbox" id="chkActiveStatus" class="mdl-checkbox__input">
+                            <span class="mdl-checkbox__label"> Active</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*<div class="col-sm-12 col-md-12 col-lg-12 form-group">
+            @await Component.InvokeAsync("eSyaParameter", new { parameterType = "10" })
+        </div>*@
+        <div class="col-lg-4 col-md-4 col-sm-12">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <table id="jqgDrugParameters"></table>
+                    <div id="jqpDrugParameters"></div>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 form-group text-center">
+            <hr />
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button m-r-15" id="btnAddDrugBrand" onclick="fnSaveDrugBrand()">
+                Save
+            </button>
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button" id="btnCancel" onclick="fnBackToGrid()"> Cancel</button>
+
+        </div>
+    </div>
+</section>
+

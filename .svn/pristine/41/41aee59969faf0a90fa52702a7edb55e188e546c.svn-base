@@ -1,0 +1,58 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.Areas.PatientManagement.Data;
+using eSyaEnterprise_UI.Areas.PatientManagement.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+
+namespace eSyaEnterprise_UI.Areas.PatientManagement.Controllers
+{
+    public class OpBillingController : Controller
+    {
+        private readonly IPatientManagementAPIServices _patientManagementAPIServices;
+        private readonly ILogger<OpBillingController> _logger;
+
+        public OpBillingController(IPatientManagementAPIServices patientManagementAPIServices, ILogger<OpBillingController> logger)
+        {
+            _patientManagementAPIServices = patientManagementAPIServices;
+            _logger = logger;
+        }
+
+        [Area("PatientManagement")]
+        public IActionResult EPM_11_00()
+        {
+            return View();
+        }
+
+        [Area("PatientManagement")]
+        public IActionResult EPM_12_00()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> GetClinictype()
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                var serviceResponse = await _patientManagementAPIServices.HttpClientServices.GetAsync<List<DO_ClinicType>>("OpClinicDetails/GetClinicTypes" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetClinicTypes");
+                    return Json(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetClinicTypes");
+                throw ex;
+            }
+        }
+
+    }
+}

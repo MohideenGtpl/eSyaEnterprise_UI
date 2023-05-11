@@ -1,0 +1,50 @@
+﻿$(document).ready(function () {
+    fnGridLoadAssetRegisterEdit();
+     
+});
+
+$("#btnSaveAssetRegisterEdit").click(function () {
+    $("#PopupAssetRegister").modal('show');
+})
+
+
+function fnGridLoadAssetRegisterEdit() {
+
+    $("#jqgAssetRegisterEdit").jqGrid('GridUnload');
+    $("#jqgAssetRegisterEdit").jqGrid({
+        //url: URL,
+        mtype: 'Post',
+        datatype: 'local',
+        //data: [{ InternalAssetNumber: '1000', SerialNumber: 'True', UnitAcquisitionValue: 'True', UnitOriginalCost: '100', AssetDescription: 'This is Test Description', AssetStatusPending: true, Actions: '' }],
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Asset Group", "Sub Category", "Asset Description", "Quantity","Actions"],
+        colModel: [
+            { name: "AssetGroup", width: 40, editable: true, align: 'left', hidden: false },
+            { name: "SubCategory", width: 70, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "AssetDescription", width: 70, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            { name: "Quantity", editable: true, width: 45, align: 'center', resizable: false },
+            {
+                name: 'Actions', search: false, align: 'left', width: 125, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Add" onclick="return fnGridAddAssetRegister(event)"><i class="fa fa-plus"></i> Add </button><button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" onclick="return fnEditAssetRegister(event)"><i class="fa fa-edit"></i> Edit </button><button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnViewAssetRegister(event)"><i class="fa fa-file"></i> View </button>'
+
+                }
+            },
+        ],
+        rowNum: 10,
+        loadonce: false,
+        pager: "#jqpAssetRegisterEdit",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0
+    }).jqGrid('navGrid', '#jqpAssetRegisterEdit', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpAssetRegisterEdit', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshAssetRegister
+    });
+}

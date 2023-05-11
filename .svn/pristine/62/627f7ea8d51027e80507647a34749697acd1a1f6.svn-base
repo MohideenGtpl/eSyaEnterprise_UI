@@ -1,0 +1,106 @@
+﻿$(document).ready(function () {
+    fnGridLoadRoomLocation();
+    $.contextMenu({
+        selector: "#btnRoomLocation",
+        trigger: 'left',
+        items: {
+            jqgEdit: { name: localization.Edit, icon: "edit", callback: function (key, opt) { fnEditRoomLocation(event, 'edit') } },
+            jqgView: { name: localization.View, icon: "view", callback: function (key, opt) { fnEditRoomLocation(event, 'view') } },
+            jqgDelete: { name: localization.Delete, icon: "delete", callback: function (key, opt) { fnEditRoomLocation(event, 'delete') } },
+        }
+    });
+    $(".context-menu-icon-edit").html("<span class='icon-contextMenu'><i class='fa fa-pen'></i>" + localization.Edit + " </span>");
+    $(".context-menu-icon-view").html("<span class='icon-contextMenu'><i class='fa fa-eye'></i>" + localization.View + " </span>");
+    $(".context-menu-icon-delete").html("<span class='icon-contextMenu'><i class='fa fa-trash'></i>" + localization.Delete + " </span>");
+});
+var actiontype = "";
+function fnGridLoadRoomLocation() {
+
+
+    $("#jqgRoomLocation").jqGrid('GridUnload');
+    $("#jqgRoomLocation").jqGrid({
+        url: '',
+        mtype: 'Post',
+        datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: [localization.BusinessKey, localization.LocationId, localization.LocationDesc, localization.MobileNumber, localization.StoreCode, localization.Active, localization.Actions],
+        colModel: [
+            { name: "BusinessKey", width: 50, editable: true, align: 'left', hidden: true },
+            { name: "LocationId", width: 50, editable: true, align: 'left', hidden: true },
+            { name: "LocationDesc", width: 50, editable: true, align: 'left', hidden: false },
+            { name: "MobileNumber", width: 50, editable: true, align: 'left', hidden: false },
+            { name: "StoreCode", width: 70, editable: false, align: 'left', hidden: false, },
+            { name: "ActiveStatus", width: 35, editable: false, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+            {
+                name: 'edit', search: false, align: 'left', width: 35, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="mr-1 btn btn-outline" id="btnRoomLocation"><i class="fa fa-ellipsis-v"></i></button>'
+                }
+            },
+        ],
+        pager: "#jqpRoomLocation",
+        rowNum: 10000,
+        rownumWidth: '55',
+        pgtext: null,
+        pgbuttons: null,
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: true,
+        shrinkToFit: true,
+        forceFit: true,
+        scrollOffset: 0, caption: 'Room Location',
+        loadComplete: function (data) {
+            SetGridControlByAction();
+            fnJqgridSmallScreen("jqgRoomLocation");
+        },
+    }).jqGrid('navGrid', '#jqpRoomLocation', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpRoomLocation', {
+        caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshRoomLocation
+    }).jqGrid('navButtonAdd', '#jqpRoomLocation', {
+        caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddRoomLocation
+    });
+    fnAddGridSerialNoHeading();
+}
+function fnAddRoomLocation() {
+    fnClearFields();
+    $('#PopupRoomLocation').modal('show');
+    $('#PopupRoomLocation').modal({ backdrop: 'static', keyboard: false });
+    $('#PopupRoomLocation').find('.modal-title').text(localization.AddRoomLocation);
+}
+function fnEditRoomLocation(e, actiontype) {
+    var rowid = $("#jqgRoomLocation").jqGrid('getGridParam', 'selrow');
+    var rowData = $('#jqgRoomLocation').jqGrid('getRowData', rowid);
+
+    $('#txtWardShortDesc').val(rowData.WardShortDesc);
+    $('#txtWardDescription').val(rowData.WardDesc);
+    if (rowData.ActiveStatus == 'true') {
+        $("#chkActiveStatus").parent().addClass("is-checked");
+    }
+    else {
+        $("#chkActiveStatus").parent().removeClass("is-checked");
+    }
+    $("#btnSaveApplicationCode").attr('disabled', false);
+
+    if (actiontype.trim() == "edit") {
+        $('#PopupRoomLocation').modal('show');
+        $('#PopupRoomLocation').find('.modal-title').text(localization.UpdateRoomLocation);
+    }
+    if (actiontype.trim() == "view") {
+        $('#PopupRoomLocation').modal('show');
+        $('#PopupRoomLocation').find('.modal-title').text(localization.ViewRoomLocation);
+    }
+}
+function fnGridRefreshRoomLocation() {
+    $("#jqgRoomLocation").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+function fnClearFields() {
+    $("#txtWardShortDesc").val("");
+    $("#txtWardDescription").val("");
+    $("#chkActiveStatus").prop('disabled', false);
+    $("#btnSaveRoomLocation").attr('disabled', false);
+}

@@ -1,0 +1,245 @@
+﻿
+$(document).ready(function () {
+    fnGridLoadTaxStructure();
+    //fnGridLoadTaxCodeRules();
+    $(".taxCodeRulesContainer").hide();
+});
+var actiontype = "";
+function fnGridLoadTaxStructure() {
+    var ISDCode = $("#cboCountryCode").val();
+    var URL = getBaseURL() + '/Country/GetTaxStructureByISDCode?ISDCode=' + ISDCode;
+
+    $("#jqgTaxStructure").jqGrid('GridUnload');
+    $("#jqgTaxStructure").jqGrid({
+        url: URL,
+        mtype: 'Post',  
+        datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["ISD Code", "Tax Code", "Tax Short Code","Tax Description","Slab or Precentage","Is Split Applicable", "Status", "Actions"],
+        colModel: [
+            { name: "ISDCode", width: 70, editable: false, align: 'left', hidden: true },
+            { name: "TaxCode", width: 30, editable: false, align: 'left', resizable: true, hidden: true },
+            { name: "TaxShortCode", width: 30, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            { name: "TaxDescription", editable: true, width: 120, align: 'left', resizable: false },
+            { name: "SlabOrPerc", editable: true, width: 45, align: 'left', resizable: false },
+            { name: "IsSplitApplicable", editable: false, width: 30, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            { name: "ActiveStatus", editable: false, width: 30, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+             {
+                name: 'edit', search: false, align: 'left', width: 50, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditTaxStructure(event,\'edit\')"><i class="fas fa-pencil-alt"></i> Edit </button>'
+                        +'<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title ="View" onclick="return fnEditTaxStructure(event,\'view\')"> <i class="far fa-file-alt"></i> View </button>'
+
+                }
+            },
+
+        ],
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        pager: "#jqpTaxStructure",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0,
+
+        loadComplete: function (data) {
+            SetGridControlByAction();
+            
+        },
+
+    }).jqGrid('navGrid', '#jqpTaxStructure', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpTaxStructure', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshTaxStructure
+    }).jqGrid('navButtonAdd', '#jqpTaxStructure', {
+        caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddTaxStructure
+    });
+}
+
+function SetGridControlByAction() {
+    //$("#btnEdit").attr("disabled", _userFormRole.IsEdit === false);
+    if (_userFormRole.IsInsert === false) {
+        $('#jqgAdd').addClass('ui-state-disabled');
+    }
+    if (_userFormRole.IsEdit === false) {
+        var eleDisable = document.querySelectorAll('#jqgEdit');
+        for (var i = 0; i < eleDisable.length; i++) {
+            eleDisable[i].disabled = true;
+            eleDisable[i].className = "ui-state-disabled";
+        }
+    }
+}
+
+function fnAddTaxStructure() {
+    fnClearFields();
+    var id = $("#cboCountryCode").val();
+    if (id == 0) {
+        toastr.warning("Please select ISD Code to add");
+    }
+    else {
+        $('#PopupTaxStructure').modal('show');
+        $('#PopupTaxStructure').modal({ backdrop: 'static', keyboard: false });
+        $('#PopupTaxStructure').find('.modal-title').text("Add Tax Code");
+        $("input[type=checkbox]").attr('disabled', false);
+        fnClearFields();
+        $("#btnSaveTaxStructure").html(' Save');
+        $("#PopupTaxStructure").on('hidden.bs.modal', function () {
+            $("input[type=checkbox]").attr('disabled', true);
+        });
+
+    }
+}
+
+function fnEditTaxStructure(e,actiontype) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgTaxStructure').jqGrid('getRowData', rowid);
+
+    $('#PopupTaxStructure').modal('show');
+    
+    $('#txtTaxCode').val(rowData.TaxCode);
+    $("#txtTaxShortCode").val(rowData.TaxShortCode);
+    $("#txtTaxDescription").val(rowData.TaxDescription);
+    $("#cboSlaborPercentage").val(rowData.SlabOrPerc.substring(0, 1));
+    $("#cboSlaborPercentage").selectpicker('refresh');
+    if (rowData.IsSplitApplicable === "true") {
+        $("#chkIsSplitApplicable").parent().addClass("is-checked");
+    }
+    else { $("#chkIsSplitApplicable").parent().removeClass("is-checked"); }
+    if (rowData.ActiveStatus === "true") {
+        $("#chkActiveStatus").parent().addClass("is-checked");
+    }
+    else { $("#chkActiveStatus").parent().removeClass("is-checked"); }
+    $("#btnSaveTaxStructure").attr('disabled', false);
+    if (actiontype.trim() == "edit") {
+        $('#PopupTaxStructure').find('.modal-title').text("Edit Tax Code");
+        $("#btnSaveTaxStructure").html(' Update');
+        $("input[type=checkbox]").attr('disabled', false);
+
+        $("#PopupTaxStructure").on('hidden.bs.modal', function () {
+            $("input[type=checkbox]").attr('disabled', true);
+        });
+}
+    if (actiontype.trim() == "view") {
+        $("#btnSaveTaxStructure").hide();
+        $("input,textarea").attr('readonly', true);
+        $("select").next().attr('disabled', true);
+        $("#PopupTaxStructure").on('hidden.bs.modal', function () {
+            $("#btnSaveTaxStructure").show();
+            $("input,textarea").attr('readonly', false);
+            $("select").next().attr('disabled', false);
+            //$("input[type=checkbox]").attr('disabled', false);
+        })
+    }
+}
+
+function fnViewTaxStructure(e) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgTaxStructure').jqGrid('getRowData', rowid);
+
+    $('#PopupTaxStructure').modal('show');
+    $('#PopupTaxStructure').find('.modal-title').text("View Tax Code");
+    $("#btnSaveTaxStructure").html(' Update');
+
+    $('#txtTaxCode').val(rowData.TaxCode);
+    $("#txtTaxShortCode").val(rowData.TaxShortCode);
+    $("#txtTaxDescription").val(rowData.TaxDescription);
+    $("#cboSlaborPercentage").val(rowData.SlabOrPerc);
+    $("#cboSlaborPercentage").selectpicker('refresh');
+
+    if (rowData.IsSplitApplicable === "true") {
+        $("#chkIsSplitApplicable").parent().addClass("is-checked");
+    }
+    else { $("#chkIsSplitApplicable").parent().removeClass("is-checked"); }
+
+    if (rowData.ActiveStatus === "true") {
+        $("#chkActiveStatus").parent().addClass("is-checked");
+    }
+    else { $("#chkActiveStatus").parent().removeClass("is-checked"); }
+
+    $("#btnSaveTaxStructure").attr('disabled', false);
+
+}
+
+function fnSaveTaxStructure() {
+    //debugger;
+    if (validateTaxStructure() === false) {
+        return;
+    }
+
+    $("#btnSaveTaxStructure").attr('disabled', true);
+
+    var tax_Struc = {
+        ISDCode: $("#cboCountryCode").val(),
+        TaxCode: $("#txtTaxCode").val() === '' ? 0 : $("#txtTaxCode").val(),
+        TaxShortCode: $("#txtTaxShortCode").val(),
+        TaxDescription: $("#txtTaxDescription").val(),
+        SlabOrPerc: $("#cboSlaborPercentage").val(),
+        IsSplitApplicable: $("#chkIsSplitApplicable").parent().hasClass("is-checked"),
+        ActiveStatus: $("#chkActiveStatus").parent().hasClass("is-checked")
+        }
+    
+    $.ajax({
+        url: getBaseURL() + '/Country/InsertOrUpdateTaxStructure',
+        type: 'POST',
+        datatype: 'json',
+        data: { tax_Struc },
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                $("#btnSaveTaxStructure").html('<i class="fa fa-spinner fa-spin"></i> wait');
+                fnGridRefreshTaxStructure();
+                $("#PopupTaxStructure").modal('hide');
+               
+            }
+            else {
+                toastr.error(response.Message);
+                $("#btnSaveTaxStructure").attr('disabled', false);
+            }
+
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnSaveTaxStructure").attr("disabled", false);
+        }
+    });
+}
+
+function validateTaxStructure() {
+
+    if (IsStringNullorEmpty($("#txtTaxShortCode").val())) {
+        toastr.warning("Please Enter Tax Short Code");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtTaxDescription").val())) {
+        toastr.warning("Please Enter Tax Description");
+        return false;
+    }
+    
+}
+
+function fnGridRefreshTaxStructure() {
+    $("#jqgTaxStructure").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+function fnClearFields() {
+    $("#txtTaxCode").val("");
+    $("#txtTaxShortCode").val("");
+    $("#txtTaxDescription").val("");
+    $("#cboSlaborPercentage").val("P").selectpicker('refresh');
+    $('#chkIsSplitApplicable').prop('checked', false);
+    $("#chkActiveStatus").parent().addClass("is-checked");
+    $("#btnSaveTaxStructure").attr('disabled', false);
+}
+
+
+
+
+
+
+
+ 

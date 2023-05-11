@@ -1,0 +1,213 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = "EFM_10_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts{ 
+<script src="~/js/Facilities/ReferralDoctor.js"></script>
+}
+<script>
+    var localization = {
+        Active: '@Localizer["Active"]',
+        Actions: '@Localizer["Actions"]',
+        DoctorShortName: '@Localizer["DoctorShortName"]',
+        Qualification:'@Localizer["Qualification"]',
+        Gender: '@Localizer["Gender"]',
+        DoctorShortName: '@Localizer["DoctorShortName"]',
+        DoctorName: '@Localizer["DoctorName"]',
+        Gender: '@Localizer["Gender"]',
+        Qualification: '@Localizer["Qualification"]',
+        RegistrationNo: '@Localizer["RegistrationNo"]',
+        MobileNumber: '@Localizer["MobileNumber"]',
+        PAN: '@Localizer["PAN"]',
+        Address: '@Localizer["Address"]',
+        Pin: '@Localizer["Pin"]',
+        Area: '@Localizer["Area"]',
+        City: '@Localizer["City"]',
+        State: '@Localizer["State"]',
+        Country: '@Localizer["Country"]',
+        AssocciatedWith: '@Localizer["AssocciatedWith"]',
+        MarketingExecutive: '@Localizer["MarketingExecutive"]'
+      }
+
+</script>
+
+
+<section id="divGridDrugManufacturers">
+    <div class="row form-group">
+        <div class="col-lg-12 col-xl-12 col-sm-12">
+            <label>Choose Doctor Name</label>
+            <span class="dot">A</span>
+            <span class="dot">B</span>
+            <span class="dot">C</span>
+            <span class="dot">D</span>
+            <span class="dot">E</span>
+            <span class="dot">F</span>
+            <span class="dot">G</span>
+            <span class="dot">H</span>
+            <span class="dot">I</span>
+            <span class="dot">J</span>
+            <span class="dot">K</span>
+            <span class="dot">L</span>
+            <span class="dot">M</span>
+            <span class="dot">N</span>
+            <span class="dot">O</span>
+            <span class="dot">P</span>
+            <span class="dot">Q</span>
+            <span class="dot">R</span>
+            <span class="dot">S</span>
+            <span class="dot">T</span>
+            <span class="dot">U</span>
+            <span class="dot">V</span>
+            <span class="dot">W</span>
+            <span class="dot">X</span>
+            <span class="dot">Y</span>
+            <span class="dot">Z</span>
+            <span class="dot">All</span>
+        </div>
+    </div>
+
+    <div class="row padbot10">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <table id="jqgReferralDoctor"></table>
+            <div id="jqpReferralDoctor"></div>
+        </div>
+    </div>
+</section>
+ 
+
+
+
+<div class="modal fade in" id="PopupReferralDoctor" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content ">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">@Localizer["AddReferralDoctor"]</h4>
+            </div>
+
+            <div class="modal-body">
+                 
+                <div class="row padbot4">
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label for="txtDoctorShortName"> @Localizer["DoctorShortName"]</label>
+                            <input id="txtDoctorShortName" class="form-control" maxlength="50" type="text" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label for="txtDoctorName">@Localizer["DoctorName"] </label>
+                            <input id="txtDoctorName" class="form-control" maxlength="50" type="text" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label for="txtGender">@Localizer["Gender"]  </label>
+                            <select id="txtGender" class="selectpicker w-100">
+                                <option>Select</option>
+                                <option>Male</option>
+                                <option>Female</option>
+                                <option>Transgender</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label for="txtQualification">@Localizer["Qualification"] </label>
+                            <input id="txtQualification" class="form-control" maxlength="50" type="text" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label for="txtRegistrationNo">@Localizer["RegistrationNo"] </label>
+                            <input id="txtRegistrationNo" class="form-control" maxlength="50" type="text" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label> @Localizer["MobileNumber"] </label>
+                            @await Component.InvokeAsync("IsdMobileInput", new { id = "MobileNo" })
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label for="txtPAN">@Localizer["PAN"] </label>
+                            <input id="txtPAN" class="form-control"  type="text" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label for="txtAddress">@Localizer["Address"] </label>
+                            <input id="txtAddress" class="form-control" type="text" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label for="txtPin">@Localizer["Pin"] </label>
+                            <input id="txtPin" class="form-control" type="text" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label for="txtArea">@Localizer["Area"] </label>
+                            <input id="txtArea" class="form-control"  type="text" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label for="txtCity">@Localizer["City"] </label>
+                            <input id="txtCity" class="form-control" type="text" />
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label for="txtState">@Localizer["State"] </label>
+                            <input id="txtState" class="form-control"  type="text" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label for="txtCountry">@Localizer["Country"] </label>
+                            <input id="txtCountry" class="form-control"  type="text" />
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label for="txtAssociatedWith">@Localizer["AssociatedWith"] </label>
+                            <input id="txtAssociatedWith" class="form-control" type="text" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label for="txtMarketingExecutive">@Localizer["MarketingExecutive"] </label>
+                            <input id="txtMarketingExecutive" class="form-control" type="text" />
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3  col-md-3 col-sm-12 col-xs-12 form-group">
+                           <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActiveStatus">
+                                <input type="checkbox" id="chkActiveStatus" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">@Localizer["Active"]</span>
+                            </label>
+                     </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveCodeType" onclick="fnSaveCodeType();">
+                            <i class="fa fa-save"></i> @Localizer["Save"]
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="btnCancelCodeType"><i class="fa fa-times"></i> @Localizer["Cancel"] </button>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

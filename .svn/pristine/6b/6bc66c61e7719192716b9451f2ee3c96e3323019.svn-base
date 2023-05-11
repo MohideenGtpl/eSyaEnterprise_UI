@@ -1,0 +1,194 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using eSyaEnterprise_UI.Areas.Facilities.Data;
+using eSyaEnterprise_UI.Areas.Facilities.Models;
+using eSyaEnterprise_UI.Utility;
+using eSyaEnterprise_UI.ActionFilter;
+
+namespace eSyaEnterprise_UI.Areas.Facilities.Controllers
+{
+     [SessionTimeout]
+    public class DocterServiceRateController : Controller
+    {
+        private readonly IFacilityAPIServices _facilityAPIServices;
+        private readonly ILogger<DocterServiceRateController> _logger;
+
+        public DocterServiceRateController(IFacilityAPIServices facilityAPIServices, ILogger<DocterServiceRateController> logger)
+        {
+            _facilityAPIServices = facilityAPIServices;
+            _logger = logger;
+        }
+        #region docter service rate
+
+        [Area("Facilities")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+
+        public async Task<IActionResult> EFM_10_00()
+        {
+            var serviceResponse=await _facilityAPIServices.HttpClientServices.GetAsync<List<DO_BusinessLocation>>("CommonMethod/GetBusinessKey");
+            if (serviceResponse.Status)
+            {
+                if (serviceResponse.Data != null)
+                {
+                    ViewBag.BusinessKey = serviceResponse.Data.Select(b => new SelectListItem
+                    {
+                        Value = b.BusinessKey.ToString(),
+                        Text = b.LocationDescription,
+                    }).ToList();
+                }
+
+            }
+            else
+            {
+                _logger.LogError(new Exception(serviceResponse.Message), "UD:V_1518_00:GetBusinessKey");
+            }
+
+            var serviceResponse1 = await _facilityAPIServices.HttpClientServices.GetAsync<List<DO_ServiceCode>>("ClinicServices/GetServicesPerformedByDoctor");
+            if (serviceResponse1.Status)
+            {
+                if (serviceResponse1.Data != null)
+                {
+                    ViewBag.Services = serviceResponse1.Data.Select(s => new SelectListItem
+                    {
+                        Value = s.ServiceId.ToString(),
+                        Text = s.ServiceDesc,
+                    }).ToList();
+                }
+            }
+            else
+            {
+                _logger.LogError(new Exception(serviceResponse1.Message), "UD:V_1517_00:GetServicesPerformedByDoctor");
+            }
+
+            var serviceResponse2 = await _facilityAPIServices.HttpClientServices.GetAsync<List<DO_ApplicationCode>>("CommonMethod/GetApplicationCodesByCodeType?codetype=62");
+            if (serviceResponse2.Status)
+            {
+                if(serviceResponse2.Data != null)
+                {
+                    ViewBag.RateType = serviceResponse2.Data.Select(r => new SelectListItem
+                    {
+                        Value = r.ApplicationCode.ToString(),
+                        Text = r.CodeDesc,
+                    }).ToList();
+                }
+            }
+            else
+            {
+                _logger.LogError(new Exception(serviceResponse1.Message), "UD:V_1518_00:GetApplicationCodesByCodeType: CodeType {0} 62");
+            }
+
+            var serviceResponse3 = await _facilityAPIServices.HttpClientServices.GetAsync<List<DO_CurrencyCode>>("CommonMethod/GetCurrencyCodes");
+            if (serviceResponse3.Status)
+            {
+                if (serviceResponse3.Data != null)
+                {
+                    ViewBag.CurrencyCode = serviceResponse3.Data.Select(c => new SelectListItem
+                    {
+                        Value = c.CurrencyCode.ToString(),
+                        Text  = c.CurrencyName,
+                    }).ToList();
+                }
+
+            }
+            else
+            {
+                _logger.LogError(new Exception(serviceResponse1.Message), "UD:V_1518_00:GetApplicationCodesByCodeType: CodeType {0} 62");
+            }
+
+
+            return View();
+        }
+        #endregion
+
+        #region speciality service rate
+
+        [Area("Facilities")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+
+        public async Task<IActionResult> EFM_11_00()
+        {
+            var serviceResponse = await _facilityAPIServices.HttpClientServices.GetAsync<List<DO_BusinessLocation>>("CommonMethod/GetBusinessKey");
+            if (serviceResponse.Status)
+            {
+                if (serviceResponse.Data != null)
+                {
+                    ViewBag.BusinessKey = serviceResponse.Data.Select(b => new SelectListItem
+                    {
+                        Value = b.BusinessKey.ToString(),
+                        Text = b.LocationDescription,
+                    }).ToList();
+                }
+
+            }
+            else
+            {
+                _logger.LogError(new Exception(serviceResponse.Message), "UD:V_1518_00:GetBusinessKey");
+            }
+
+            var serviceResponse1 = await _facilityAPIServices.HttpClientServices.GetAsync<List<DO_ServiceCode>>("ClinicServices/GetServicesPerformedByDoctor");
+            if (serviceResponse1.Status)
+            {
+                if (serviceResponse1.Data != null)
+                {
+                    ViewBag.Services = serviceResponse1.Data.Select(s => new SelectListItem
+                    {
+                        Value = s.ServiceId.ToString(),
+                        Text = s.ServiceDesc,
+                    }).ToList();
+                }
+            }
+            else
+            {
+                _logger.LogError(new Exception(serviceResponse1.Message), "UD:V_1517_00:GetServicesPerformedByDoctor");
+            }
+
+            var serviceResponse2 = await _facilityAPIServices.HttpClientServices.GetAsync<List<DO_ApplicationCode>>("CommonMethod/GetApplicationCodesByCodeType?codetype=62");
+            if (serviceResponse2.Status)
+            {
+                if (serviceResponse2.Data != null)
+                {
+                    ViewBag.RateType = serviceResponse2.Data.Select(r => new SelectListItem
+                    {
+                        Value = r.ApplicationCode.ToString(),
+                        Text = r.CodeDesc,
+                    }).ToList();
+                }
+            }
+            else
+            {
+                _logger.LogError(new Exception(serviceResponse1.Message), "UD:V_1518_00:GetApplicationCodesByCodeType: CodeType {0} 62");
+            }
+
+            var serviceResponse3 = await _facilityAPIServices.HttpClientServices.GetAsync<List<DO_CurrencyCode>>("CommonMethod/GetCurrencyCodes");
+            if (serviceResponse3.Status)
+            {
+                if (serviceResponse3.Data != null)
+                {
+                    ViewBag.CurrencyCode = serviceResponse3.Data.Select(c => new SelectListItem
+                    {
+                        Value = c.CurrencyCode.ToString(),
+                        Text = c.CurrencyName,
+                    }).ToList();
+                }
+
+            }
+            else
+            {
+                _logger.LogError(new Exception(serviceResponse1.Message), "UD:V_1518_00:GetApplicationCodesByCodeType: CodeType {0} 62");
+            }
+
+
+            return View();
+        }
+
+
+       #endregion
+
+    }
+}

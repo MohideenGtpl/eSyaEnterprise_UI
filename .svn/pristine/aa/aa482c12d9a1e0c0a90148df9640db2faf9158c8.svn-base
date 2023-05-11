@@ -1,0 +1,150 @@
+﻿var customerNamePrefix ;
+
+$(function () {
+    fnGridDrugBrands();
+
+     //Single Character alphabet Selection
+    $(".filter-char").click(function () {
+        $('.filter-div').empty();
+        $('.filter-char').removeClass('active');
+        customerNamePrefix = $(this).text();
+        $("#lblSelectedAlphabets").text(customerNamePrefix);
+        $("#divAlphabets").hide(100);
+        $(this).addClass('active');
+        $("#divSearch").show(500);
+
+        var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");        
+        var numbers = "0123456789".split("");
+        // From Single char to double char 
+        if (customerNamePrefix == "0-9") {
+            $.each(numbers, function (letter) {
+                $('.filter-div').addClass("animated fadeIn").append($('<span class="filter-chars">'  + numbers[letter] + '</span>'));
+            });
+        }
+        else if (customerNamePrefix == "All") {
+            $.each(alphabet, function (letter) {
+                $('.filter-div').addClass("animated fadeIn").append($('<span class="filter-chars">' + alphabet[letter]+ '</span>'));
+            });
+        }
+        else {
+            $.each(alphabet, function (letter) {
+                $('.filter-div').addClass("animated fadeIn").append($('<span class="filter-chars">' + customerNamePrefix + alphabet[letter].toLowerCase() + '</span>'));
+            });
+        }
+
+        //Two Character alphabets Selection
+        $(".filter-chars").click(function () {
+            $(".filter-chars").removeClass('active');
+            $(this).addClass('active');
+           // console.log($(this).text()); Active two character alphabets.
+        })
+       
+    });
+    //Going Back to the A to Z Selection
+    $("#lblBackToAlphabets").click(function () {
+        $("#divSearch").hide(500);
+        $('.filter-div').empty();
+        $("#divAlphabets").show(500);
+        $('.filter-char').removeClass('active');
+        $("#divDrugBrandsForm").css("display", "none");
+        $("#divGrid").show();
+    })
+})
+
+function fnGridDrugBrands(customerNamePrefix) {
+    $("#jqgDrugBrands").jqGrid('GridUnload');
+    $("#jqgDrugBrands").jqGrid({
+        // url: getBaseURL() + '' + customerNamePrefix,
+        datatype: 'json',
+        // mtype: 'Post',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Drug Brand","Manufacturer","Bar Code","Dosage", "Pack Size","Packing","Volume","Ref MRP","Status","Actions"],
+        colModel: [
+            { name: "DrugBrand", width: 135, editable: true, align: 'left', hidden: false },
+            { name: "Manufacturer", width: 135, editable: true, align: 'left', hidden: false },
+            { name: "BarCode", width: 50, editable: true, align: 'left', hidden: true },
+            { name: "Dosage", width: 50, editable: true, align: 'left', hidden: true },
+            { name: "PackSize", width: 40, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "Packing", width: 40, editable: true, align: 'left', hidden: false },
+            { name: "Volume", width: 50, editable: true, align: 'left', hidden: false },
+            { name: "RefMRP", width: 50, editable: true, align: 'left', hidden: false },
+            { name: "ActiveStatus", editable: true, width: 38, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: Inactive" } },
+            {
+                name: 'Action', search: false, align: 'left', width: 74, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditDrugBrands(event,\'edit\')"><i class="fa fa-edit"></i> Edit </button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnEditDrugBrands(event,\'view\')"><i class="far fa-eye"></i> View </button>'
+
+                }
+            },
+        ],
+        pager: "#jqpDrugBrands",
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0,
+        loadComplete: function (data) {
+            SetGridControlByAction();
+        },
+    }).jqGrid('navGrid', '#jqpDrugBrands', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpDrugBrands', {
+        caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshDrugBrands
+    }).jqGrid('navButtonAdd', '#jqpDrugBrands', {
+        caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnGridAddDrugBrands
+    });
+}
+
+
+function fnDrugParameters() {
+    $("#jqgDrugParameters").jqGrid({
+        data: [{ DrugParameter: 'Is Banned', ActiveStatus: true }, { DrugParameter: 'Is Narcotic', ActiveStatus: false }],
+        datatype: 'local',
+        colNames: ["Drug Parameter", "Active"],
+        colModel: [
+            { name: "DrugParameter", width: 140, editable: true, align: 'left', hidden: false },
+            { name: "ActiveStatus", editable: true, width: 45, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: false } },
+        ],
+        rowNum: 100000,
+        pgtext: null,
+        pgbuttons: false,
+        loadonce: true,
+        rownumWidth: 25,
+        viewrecords: false,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+         
+    }).jqGrid('navGrid', '#jqpDrugParameters', { add: false, edit: false, search: false, del: false, refresh: false });
+}
+
+function fnGridAddDrugBrands() {
+    $("#divGrid").hide();
+    $("#divDrugBrandsForm").css("display", "block");
+    $("#divAlphabets,#divSearch").hide(500);
+    fnDrugParameters()
+}
+function fnEditDrugBrands(e,actiontype) {}
+
+function fnGridRefreshDrugBrands() {
+
+}
+function fnBackToGrid() {
+    $("#divGrid").show();
+    $("#divDrugBrandsForm").css("display", "none");
+    $("#divSearch").hide(500);
+    $('.filter-div').empty();
+    $("#divAlphabets").show(500);
+    $('.filter-char').removeClass('active');
+}

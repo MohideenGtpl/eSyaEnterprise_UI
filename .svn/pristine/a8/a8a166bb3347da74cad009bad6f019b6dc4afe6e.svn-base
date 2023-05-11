@@ -1,0 +1,159 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.Areas.eSyaPayrollExpat.Data;
+using eSyaEnterprise_UI.Areas.eSyaPayrollExpat.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
+using eSyaEnterprise_UI.Models;
+using Newtonsoft.Json;
+
+namespace eSyaEnterprise_UI.Areas.eSyaPayrollExpat.Controllers
+{
+    public class SalaryPaymentController : Controller
+    {
+        private readonly IeSyaPayrollExpatAPIServices _eSyaPayrollExpatAPIServices;
+        private readonly ILogger<SalaryPaymentController> _logger;
+
+        public SalaryPaymentController(IeSyaPayrollExpatAPIServices eSyaPayrollExpatAPIServices, ILogger<SalaryPaymentController> logger)
+        {
+            _eSyaPayrollExpatAPIServices = eSyaPayrollExpatAPIServices;
+            _logger = logger;
+        }
+
+        [Area("eSyaPayrollExpat")]
+        public async Task<IActionResult> V_4532_00()
+        {
+            var serviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.GetAsync<List<DO_BankMaster>>("SalaryPayment/GetPaymentBankMaster");
+            ViewBag.l_Banks = serviceResponse.Data
+                .Select(b => new SelectListItem
+                {
+                    Value = b.BankCode,
+                    Text = b.BankName,
+                }).ToList();
+            return View();
+        }
+
+
+        public async Task<JsonResult> GetBankCurrency(string bankCode)
+        {
+            try
+            {
+                string parameter = "?bankCode="+bankCode;
+                var serviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.GetAsync<List<DO_Currency>>("SalaryPayment/GetBankCurrency"+parameter);
+
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetBankCurrency");
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetBankCurrency");
+                throw ex;
+            }
+        }
+
+        public async Task<JsonResult> GetSalaryDetailForPayment(int businessKey, string currency, string bankRemittance)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + businessKey;
+                parameter += "&currency=" + currency;
+                parameter += "&bankRemittance=" + bankRemittance;
+                var serviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.GetAsync<List<DO_SalaryBankDetail>>("SalaryPayment/GetSalaryDetailForPayment"+parameter);
+
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetSalaryDetailForPayment");
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetSalaryDetailForPayment");
+                throw ex;
+            }
+        }
+
+        [HttpPost]
+        public JsonResult UpdateSalaryPaymentBank(List<DO_SalaryBankDetail> obj)
+        {
+            try
+            {
+                obj.All(c =>
+                {
+                    c.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                    c.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                    c.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                    return true;
+                });
+
+                var serviceResponse = _eSyaPayrollExpatAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("SalaryPayment/UpdateSalaryPaymentBank", obj).Result;
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:InsertIntoPayrollProcess:params:" + JsonConvert.SerializeObject(obj));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertIntoPayrollProcess:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        [Area("eSyaPayrollExpat")]
+        public async Task<IActionResult> V_4533_00()
+        {
+            var serviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.GetAsync<List<DO_BankMaster>>("SalaryPayment/GetPaymentBankMaster");
+            ViewBag.l_Banks = serviceResponse.Data
+                .Select(b => new SelectListItem
+                {
+                    Value = b.BankCode,
+                    Text = b.BankName,
+                }).ToList();
+            return View();
+        }
+
+        public async Task<JsonResult> GetBankStatement(int businessKey, string orgBankCode, DateTime bankDate)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + businessKey;
+                parameter += "&orgBankCode=" + orgBankCode;
+                parameter += "&bankDate=" + bankDate.ToString("dd-MMM-yyyy");
+                var serviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.GetAsync<List<DO_SalaryBankDetail>>("SalaryPayment/GetBankStatement" + parameter);
+
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetBankStatement");
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetBankStatement");
+                throw ex;
+            }
+        }
+    }
+}

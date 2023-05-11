@@ -1,0 +1,266 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using eSyaEnterprise_UI.Utility;
+using eSyaEnterprise_UI.Areas.eSyaConfig.Models;
+using eSyaEnterprise_UI.Areas.Config.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Areas.eSyaConfig;
+using eSyaEnterprise_UI.Areas.Config.Data;
+using eSyaEnterprise_UI.ActionFilter;
+using Microsoft.Extensions.Logging;
+
+namespace eSyaEnterprise_UI.Areas.eSyaConfig.Controllers
+{
+    [SessionTimeout]
+    public class DepartmentCodesController : Controller
+    {
+        private readonly IeSyaConfigAPIServices _eSyaConfigAPIServices;
+        private readonly ILogger<DepartmentCodesController> _logger;
+        public DepartmentCodesController(IeSyaConfigAPIServices eSyaConfigAPIServices, ILogger<DepartmentCodesController> logger)
+        {
+            _eSyaConfigAPIServices = eSyaConfigAPIServices;
+            _logger = logger;
+        }
+        #region Department Codes
+        /// <summary>
+        /// Department Codes
+        /// </summary>
+        /// <returns></returns>
+
+        [Area("eSyaConfig")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public IActionResult V_222_00()
+        {
+            ViewBag.formName = "Department Codes";
+            return View();
+        }
+
+        /// <summary>
+        /// Insert Department Codes
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertIntoDepartmentCodes(DO_DepartmentCodes obj)
+        {
+
+            try
+            {
+
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                obj.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+
+                var result = _eSyaConfigAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("Department/InsertIntoDepartmentCodes", obj).Result;
+                return Json(result.Data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        /// <summary>
+        /// Insert Department Codes
+        /// </summary>
+        [HttpPost]
+        public JsonResult UpdateDepartmentCodes(DO_DepartmentCodes obj)
+        {
+
+            try
+            {
+
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                obj.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+
+                var result = _eSyaConfigAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("Department/UpdateDepartmentCodes", obj).Result;
+                return Json(result.Data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        /// <summary>
+        /// Get Department Codes
+        /// </summary>
+        public JsonResult GetDepartmentCodes()
+        {
+            try
+            {
+                var response = _eSyaConfigAPIServices.HttpClientServices.GetAsync<List<DO_DepartmentCodes>>("Department/GetDepartmentCodes").Result;
+                if (response.Status)
+                {
+                    return Json(response.Data);
+                }
+                else
+                {
+                    return Json(new DO_ReturnParameter()
+                    {
+                        Status = false,
+                        StatusCode = response.StatusCode.ToString()
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Activate or De Activate Department Codes
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> ActiveOrDeActiveDepartmentCodes(bool status, int deptId)
+        {
+
+            try
+            {
+
+                var parameter = "?status=" + status + "&deptId=" + deptId;
+                var serviceResponse = await _eSyaConfigAPIServices.HttpClientServices.GetAsync<DO_ReturnParameter>("Department/ActiveOrDeActiveDepartmentCodes" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:ActiveOrDeActiveDepartmentCodes:For deptId {0} ", deptId);
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+        #endregion Department Codes
+
+        #region Department Location Link
+        /// <summary>
+        /// Department Location Link
+        /// </summary>
+        /// <returns></returns>
+        [Area("eSyaConfig")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public IActionResult V_223_00()
+        {
+            var response = _eSyaConfigAPIServices.HttpClientServices.GetAsync<List<DO_DepartmentCodes>>("Department/GetDepartmentCodes").Result;
+            if (response.Status)
+            {
+                List<DO_DepartmentCodes> dc = response.Data.Where(w => w.ActiveStatus).ToList();
+                ViewBag.DepartmentCodesList = dc.Select(a => new SelectListItem
+                {
+                    Text = a.DepartmentDesc,
+                    Value = a.DepartmentID.ToString()
+                });
+            }
+            else { 
+                ViewBag.DepartmentCodesList = "";
+            }
+            ViewBag.formName = "Department Location Link";
+            return View();
+          
+        }
+
+        /// <summary>
+        /// Insert Department Location Link
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertIntoDepartmentLocationLink(DO_DepartmentLocation obj)
+        {
+
+            try
+            {
+
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                obj.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+
+                var result = _eSyaConfigAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("Department/InsertIntoDepartmentLocationLink", obj).Result;
+                return Json(result.Data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        /// <summary>
+        /// Update Department Location Link
+        /// </summary>
+        [HttpPost]
+        public JsonResult UpdateDepartmentLocationLink(DO_DepartmentLocation obj)
+        {
+
+            try
+            {
+
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                obj.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+
+                var result = _eSyaConfigAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("Department/UpdateDepartmentLocationLink", obj).Result;
+                return Json(result.Data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        /// <summary>
+        /// Get Department Location
+        /// </summary>
+        public JsonResult GetDepartmentLocation(int businessKey, int departmentId)
+        {
+            try
+            {
+                var response = _eSyaConfigAPIServices.HttpClientServices.GetAsync<List<DO_DepartmentLocation>>("Department/GetDepartmentLocation?businessKey="+ businessKey + "&departmentId="+ departmentId).Result;
+                if (response.Status)
+                {
+                    return Json(response.Data);
+                }
+                else
+                {
+                    return Json(new DO_ReturnParameter()
+                    {
+                        Status = false,
+                        StatusCode = response.StatusCode.ToString()
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+        /// <summary>
+        /// Activate or De Activate Department Location Link
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> ActiveOrDeActiveDepartmentLocationLink(bool status, int deptId,int deptlocId, int Businesskey)
+        {
+
+            try
+            {
+
+                var parameter = "?status=" + status + "&deptId=" + deptId + "&deptlocId=" + deptlocId + "&Businesskey=" + Businesskey;
+                var serviceResponse = await _eSyaConfigAPIServices.HttpClientServices.GetAsync<DO_ReturnParameter>("Department/ActiveOrDeActiveDepartmentLocationLink" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:ActiveOrDeActiveDepartmentLocationLink:For deptlocId {0} ", deptlocId);
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+        #endregion Department Location Link
+    }
+}

@@ -1,0 +1,558 @@
+﻿
+var _isSubCategoryApplicable = 0;
+
+$(document).ready(function () {
+    _isSubCategoryApplicable = 0;
+    fnGridLoadItemMaster();
+});
+
+function fnGetItemDetails() {
+    $('#cboItemGroup').val('');
+    $('#cboItemGroup').selectpicker('refresh');
+    $('#cboItemCategory').val('');
+    $('#cboItemCategory').selectpicker('refresh');
+    $('#cboItemSubCategory').val('');
+    $('#cboItemSubCategory').selectpicker('refresh');
+
+    var ItemCode = $("#cboItemDesc").val();
+
+    var URL = getBaseURL() + '/ItemManagement/GetItemDetails?ItemCode=' + ItemCode
+    $.ajax({
+        type: 'POST',
+        url: URL,
+        success: function (result) {
+            //$('#cboItemGroup').empty();
+            //$("#cboItemGroup").append($("<option value='0'>Choose Item Category</option>"));
+            if (result != null) {
+                $("#cboItemGroup").val(result[0]["ItemGroup"]);
+                $("#cboItemGroup").selectpicker('refresh');
+
+                fnGetItemCategoryByItem(result[0]["ItemCategory"]);
+
+                fnGetItemSubCategoryByItem(result[0]["ItemCategory"], result[0]["ItemSubCategory"]);
+
+                $("#jqgItemMaster").jqGrid('GridUnload');
+                $("#jqgItemMaster").jqGrid({
+                    url: URL,
+                    mtype: 'Post',
+                    datatype: 'json',
+                    ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+                    jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+                    colNames: ["Item Code", "Item Description", "Unit Of Measure", "Pack Unit", "Pack Unit","Pack Size", "Inventory class", "Item Class", "Item Source", "Item Criticality", "Barcode ID", "Active Status", "Action"],
+                    colModel: [
+                        { name: "ItemCode", width: 70, editable: true, align: 'left', hidden: true },
+                        { name: "ItemDescription", width: 70, editable: true, align: 'left', hidden: false },
+                        { name: "UnitOfMeasure", width: 40, editable: false, hidden: true, align: 'left', resizable: true },
+                        { name: "PackUnit", width: 40, editable: false, hidden: true, align: 'left', resizable: true },
+                        { name: "PackUnitDesc", width: 40, editable: false, hidden: false, align: 'left', resizable: true },
+                        { name: "PackSize", width: 40, editable: true, align: 'left', hidden: false },
+                        { name: "InventoryClass", width: 40, editable: false, hidden: false, align: 'left', resizable: true },
+                        { name: "ItemClass", width: 40, editable: true, align: 'left', hidden: false },
+                        { name: "ItemSource", width: 40, editable: false, hidden: false, align: 'left', resizable: true },
+                        { name: "ItemCriticality", width: 40, editable: false, hidden: false, align: 'left', resizable: true },
+                        { name: "BarCodeID", width: 40, editable: false, hidden: true, align: 'left', resizable: true },
+                        { name: "ActiveStatus", editable: true, width: 28, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: Inactive" } },
+                        {
+                            name: 'Action', search: false, align: 'left', width: 54, sortable: false, resizable: false,
+                            formatter: function (cellValue, options, rowdata, action) {
+                                return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditItemMaster(event)"><i class="fa fa-edit"></i> Edit </button><button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnViewItemMaster(event)"><i class="fa fa-file"></i> View </button>'
+
+                            }
+                        },
+                    ],
+                    pager: "#jqpItemMaster",
+                    rowNum: 10,
+                    rowList: [10, 20, 50, 100],
+                    loadonce: true,
+                    viewrecords: true,
+                    gridview: true,
+                    rownumbers: true,
+                    height: 'auto',
+                    align: "left",
+                    width: 'auto',
+                    autowidth: false,
+                    shrinkToFit: false,
+                    scrollOffset: 0,
+                    loadComplete: function (data) {
+                        SetGridControlByAction();
+                    },
+                }).jqGrid('navGrid', '#jqpItemMaster', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpItemMaster', {
+                    caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshItemMaster
+                }).jqGrid('navButtonAdd', '#jqpItemMaster', {
+                    caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnGridAddItemMaster
+                });
+            }
+        }
+    });
+}
+
+function fnGetItemCategoryByItem(ItemCategory) {
+    $('#cboItemCategory').val('');
+    $('#cboItemCategory').selectpicker('refresh');
+    $('#cboItemSubCategory').val('');
+    $('#cboItemSubCategory').selectpicker('refresh');
+    _isSubCategoryApplicable = 0;
+    var ItemGroup = $("#cboItemGroup").val();
+    $.ajax({
+        type: 'POST',
+        url: getBaseURL() + '/ItemManagement/GetItemCategory?ItemGroup=' + ItemGroup,
+        success: function (result) {
+            $('#cboItemCategory').empty();
+            $("#cboItemCategory").append($("<option value='0'>Choose Item Category</option>"));
+            if (result != null) {
+                for (var i = 0; i < result.length; i++) {
+                    $("#cboItemCategory").append($("<option></option>").val(result[i]["ItemCategory"]).html(result[i]["ItemCategoryDesc"]));
+                }
+            }
+            $("#cboItemCategory").val(ItemCategory);
+            $("#cboItemCategory").selectpicker('refresh');
+            //$('#cboItemCategory').val($("#cboItemCategory option:first").val());
+            //$('#cboItemCategory').selectpicker('refresh');
+        }
+    });
+}
+
+function fnGetItemSubCategoryByItem(ItemCategory, ItemSubCategory) {
+    $('#cboItemSubCategory').val('');
+    $('#cboItemSubCategory').selectpicker('refresh');
+    _isSubCategoryApplicable = 0;
+    
+    $.ajax({
+        type: 'POST',
+        url: getBaseURL() + '/ItemManagement/GetItemSubCategory?ItemCategory=' + ItemCategory,
+        success: function (result) {
+            $('#cboItemSubCategory').empty();
+            $("#cboItemSubCategory").append($("<option value='0'>Choose Item Category</option>"));
+            if (result != null) {
+                for (var i = 0; i < result.length; i++) {
+                   
+                    $("#cboItemSubCategory").append($("<option></option>").val(result[i]["ItemSubCategory"]).html(result[i]["ItemSubCategoryDesc"]));
+                }
+                _isSubCategoryApplicable = 1;
+
+                
+            }
+            $("#cboItemSubCategory").val(ItemSubCategory);
+            $("#cboItemSubCategory").selectpicker('refresh');
+        }
+    });
+}
+
+function fnGetItemCategory() {
+    $('#cboItemDesc').val(0);
+    $('#cboItemDesc').selectpicker('refresh');
+    $("#jqgItemMaster").jqGrid("clearGridData");
+
+    $('#cboItemCategory').val('');
+    $('#cboItemCategory').selectpicker('refresh');
+    $('#cboItemSubCategory').val('');
+    $('#cboItemSubCategory').selectpicker('refresh');
+    _isSubCategoryApplicable = 0;
+    var ItemGroup = $("#cboItemGroup").val();
+    $.ajax({
+        type: 'POST',
+        url: getBaseURL() + '/ItemManagement/GetItemCategory?ItemGroup=' + ItemGroup,
+        success: function (result) {
+            $('#cboItemCategory').empty();
+            $("#cboItemCategory").append($("<option value='0'>Choose Item Category</option>"));
+            if (result != null) {
+                for (var i = 0; i < result.length; i++) {
+                    $("#cboItemCategory").append($("<option></option>").val(result[i]["ItemCategory"]).html(result[i]["ItemCategoryDesc"]));
+                }
+            }
+            $('#cboItemCategory').val($("#cboItemCategory option:first").val());
+            $('#cboItemCategory').selectpicker('refresh');
+        }
+    });
+}
+
+function fnGetItemSubCategory() {
+    $('#cboItemSubCategory').val('');
+    $('#cboItemSubCategory').selectpicker('refresh');
+    _isSubCategoryApplicable = 0;
+    var ItemCategory = $("#cboItemCategory").val();
+    $.ajax({
+        type: 'POST',
+        url: getBaseURL() + '/ItemManagement/GetItemSubCategory?ItemCategory=' + ItemCategory,
+        success: function (result) {
+            $('#cboItemSubCategory').empty();
+            $("#cboItemSubCategory").append($("<option value='0'>Choose Item Category</option>"));
+            if (result != null) {
+                for (var i = 0; i < result.length; i++) {
+
+                    $("#cboItemSubCategory").append($("<option></option>").val(result[i]["ItemSubCategory"]).html(result[i]["ItemSubCategoryDesc"]));
+                }
+                _isSubCategoryApplicable = 1;
+            }
+            $('#cboItemSubCategory').val($("#cboItemSubCategory option:first").val());
+            $('#cboItemSubCategory').selectpicker('refresh');
+        }
+    });
+
+    if (_isSubCategoryApplicable == 0) {
+        fnGridLoadItemMaster();
+    }
+}
+
+function fnItemSubCategoryOnChanges() {
+    fnGridLoadItemMaster();
+}
+
+function fnGridLoadItemMaster() {
+    var ItemGroup = $("#cboItemGroup").val();
+    var ItemCategory = $("#cboItemCategory").val();
+    var ItemSubCategory = $("#cboItemSubCategory").val();
+    var URL = getBaseURL() + '/ItemManagement/GetItemMaster?ItemGroup=' + ItemGroup + '&ItemCategory=' + ItemCategory + '&ItemSubCategory=' + ItemSubCategory;
+    $("#jqgItemMaster").jqGrid('GridUnload');
+    $("#jqgItemMaster").jqGrid({
+        url: URL,
+        mtype: 'Post',
+        datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Item Code", "Item Description", "Unit Of Measure", "Pack Unit", "Pack Unit",  "Pack Size", "Inventory class", "Item Class", "Item Source", "Item Criticality","Barcode ID", "Active Status","Action"],
+        colModel: [
+            { name: "ItemCode", width: 70, editable: true, align: 'left', hidden: true },
+            { name: "ItemDescription", width: 70, editable: true, align: 'left', hidden: false },
+            { name: "UnitOfMeasure", width: 40, editable: false, hidden: true, align: 'left', resizable: true },
+            { name: "PackUnit", width: 40, editable: false, hidden: true, align: 'left', resizable: true },
+            { name: "PackUnitDesc", width: 40, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "PackSize", width: 40, editable: true, align: 'left', hidden: false },
+            { name: "InventoryClass", width: 40, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "ItemClass", width: 40, editable: true, align: 'left', hidden: false },
+            { name: "ItemSource", width: 40, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "ItemCriticality", width: 40, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "BarCodeID", width: 40, editable: false, hidden: true, align: 'left', resizable: true },
+            { name: "ActiveStatus", editable: true, width: 28, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: Inactive" } },
+            {
+                name: 'Action', search: false, align: 'left', width: 54, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditItemMaster(event)"><i class="fa fa-edit"></i> Edit </button><button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnViewItemMaster(event)"><i class="fa fa-file"></i> View </button>'
+
+                }
+            },
+        ],
+        pager: "#jqpItemMaster",
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0,
+
+        loadComplete: function (data) {
+            SetGridControlByAction();
+        },
+    }).jqGrid('navGrid', '#jqpItemMaster', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpItemMaster', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshItemMaster
+    }).jqGrid('navButtonAdd', '#jqpItemMaster', {
+        caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnGridAddItemMaster
+    });
+}
+
+function SetGridControlByAction() {
+    if (_userFormRole.IsInsert === false) {
+        $('#jqgAdd').addClass('ui-state-disabled');
+    }
+    if (_userFormRole.IsEdit === false) {
+        var eleDisable = document.querySelectorAll('#jqgEdit');
+        for (var i = 0; i < eleDisable.length; i++) {
+            eleDisable[i].disabled = true;
+            eleDisable[i].className = "ui-state-disabled";
+        }
+    }
+}
+
+function fnGridAddItemMaster() {
+    fnClearFields();
+
+    if ($("#cboItemGroup").val() === "0" || $("#cboItemGroup").val() === "") {
+        toastr.warning("Please Select Item Group");
+        $('#cboItemGroup').focus();
+        return false;
+    }
+    if ($("#cboItemCategory").val() === "0" || $("#cboItemCategory").val() === "") {
+        toastr.warning("Please Select Item Category");
+        $('#cboItemCategory').focus();
+        return false;
+    }
+    if (_isSubCategoryApplicable == 1 && ($("#cboItemSubCategory").val() === "0" || $("#cboItemSubCategory").val() === "")) {
+        toastr.warning("Please Select Item Sub Category");
+        $('#cboItemSubCategory').focus();
+        return false;
+    }
+
+    $("#btnSaveItem").html(' Save');
+    $('#PopupItemMaster').modal('show');
+    $('#PopupItemMaster').find('.modal-title').text("Add Item");
+}
+
+function fnGridRefreshItemMaster() {
+    $("#jqgItemMaster").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+function fnEditItemMaster(e) {
+    eSyaParams.ClearValue();
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgItemMaster').jqGrid('getRowData', rowid);
+
+    $("#btnSaveItem").html(' Update');
+    $('#PopupItemMaster').find('.modal-title').text("Edit Item");
+    $('#PopupItemMaster').modal('show');
+
+    $('#txtItemCode').val(rowData.ItemCode);
+    $('#txtItemDescription').val(rowData.ItemDescription);
+    $("#cboUnitOfMeasure").val(rowData.UnitOfMeasure);
+    $("#cboUnitOfMeasure").selectpicker('refresh');
+    $("#cboPackUnit").val(rowData.PackUnit);
+    $("#cboPackUnit").selectpicker('refresh');
+    $('#txtPackSize').val(rowData.PackSize);
+    $("#cboInventoryClass").val(rowData.InventoryClass);
+    $("#cboInventoryClass").selectpicker('refresh');
+    $("#cboItemClass").val(rowData.ItemClass);
+    $("#cboItemClass").selectpicker('refresh');
+    $("#cboItemSource").val(rowData.ItemSource);
+    $("#cboItemSource").selectpicker('refresh');
+    $("#cboItemCriticality").val(rowData.ItemCriticality);
+    $("#cboItemCriticality").selectpicker('refresh');
+    $('#txtBarCodeID').val(rowData.BarCodeID);
+    $("#cboActiveStatus").val(rowData.ActiveStatus);
+    $("#cboActiveStatus").selectpicker('refresh');
+
+    $.ajax({
+        url: getBaseURL() + '/ItemManagement/GetItemParameterList?ItemCode=' + $('#txtItemCode').val(),
+        type: 'POST',
+        datatype: 'json',
+        success: function (response) {
+            if (response != null) {
+                if (response.length > 0)
+                    eSyaParams.SetValue(response);
+                else
+                    eSyaParams.ClearValue();
+            }
+            else {
+                eSyaParams.ClearValue();
+            }
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+
+        }
+    });
+
+    $("#btnSaveItem").attr('disabled', false);
+}
+
+function fnViewItemMaster(e) {
+    eSyaParams.ClearValue();
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgItemMaster').jqGrid('getRowData', rowid);
+
+    $('#PopupItemMaster').modal('show');
+    $('#PopupItemMaster').find('.modal-title').text("View Item");
+
+    $("#btnSaveItem").html(' Update');
+    $('#PopupItemMaster').find('.modal-title').text("Edit Item");
+    $('#PopupItemMaster').modal('show');
+
+    $('#txtItemCode').val(rowData.ItemCode);
+    $('#txtItemDescription').val(rowData.ItemDescription);
+    $("#cboUnitOfMeasure").val(rowData.UnitOfMeasure);
+    $("#cboUnitOfMeasure").selectpicker('refresh');
+    $("#cboPackUnit").val(rowData.PackUnit);
+    $("#cboPackUnit").selectpicker('refresh');
+    $('#txtPackSize').val(rowData.PackSize);
+    $("#cboInventoryClass").val(rowData.InventoryClass);
+    $("#cboInventoryClass").selectpicker('refresh');
+    $("#cboItemClass").val(rowData.ItemClass);
+    $("#cboItemClass").selectpicker('refresh');
+    $("#cboItemSource").val(rowData.ItemSource);
+    $("#cboItemSource").selectpicker('refresh');
+    $("#cboItemCriticality").val(rowData.ItemCriticality);
+    $("#cboItemCriticality").selectpicker('refresh');
+    $('#txtBarCodeID').val(rowData.BarCodeID);
+    $("#cboActiveStatus").val(rowData.ActiveStatus);
+    $("#cboActiveStatus").selectpicker('refresh');
+
+    $.ajax({
+        url: getBaseURL() + '/ItemManagement/GetItemParameterList?ItemCode=' + $('#txtItemCode').val(),
+        type: 'POST',
+        datatype: 'json',
+        success: function (response) {
+            if (response != null) {
+                if (response.length > 0)
+                    eSyaParams.SetValue(response);
+                else
+                    eSyaParams.ClearValue();
+            }
+            else {
+                eSyaParams.ClearValue();
+            }
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+
+        }
+    });
+
+    $("#btnSaveItem").hide();
+    $("input,textarea").attr('readonly', true);
+    $("select").next().attr('disabled', true);
+    $("input[type=checkbox]").attr('disabled', true);
+    $("#PopupItemMaster").on('hidden.bs.modal', function () {
+        $("#btnSaveItem").show();
+        $("input,textarea").attr('readonly', false);
+        $("select").next().attr('disabled', false);
+        $("input[type=checkbox]").attr('disabled', false);
+    })
+}
+
+function fnSaveItemCreation() {
+
+    if (validateItemMaster() === false) {
+        return;
+    }
+
+    var ItemCodes;
+    
+    $("#btnSaveItem").attr('disabled', true);
+
+    var itemCode = $("#txtItemCode").val();
+
+    if (itemCode == null || itemCode == "") {
+        ItemCodes = {
+            ItemCode: 0,
+            ItemGroup: $("#cboItemGroup").val(),
+            ItemCategory: $("#cboItemCategory").val(),
+            ItemSubCategory: $("#cboItemSubCategory").val(),
+            ItemDescription: $("#txtItemDescription").val(),
+            UnitOfMeasure: $("#cboUnitOfMeasure").val(),
+            PackUnit: $("#cboPackUnit").val(),
+            PackSize: $("#txtPackSize").val(),
+            InventoryClass: $("#cboInventoryClass").val(),
+            ItemClass: $("#cboItemClass").val(),
+            ItemSource: $("#cboItemSource").val(),
+            ItemCriticality: $("#cboItemCriticality").val(),
+            BarCodeID: $("#txtBarCodeID").val(),
+            ActiveStatus: $("#cboActiveStatus").val(),
+        }
+    }
+    else {
+        ItemCodes = {
+            ItemCode: itemCode,
+            ItemGroup: $("#cboItemGroup").val(),
+            ItemCategory: $("#cboItemCategory").val(),
+            ItemSubCategory: $("#cboItemSubCategory").val(),
+            ItemDescription: $("#txtItemDescription").val(),
+            UnitOfMeasure: $("#cboUnitOfMeasure").val(),
+            PackUnit: $("#cboPackUnit").val(),
+            PackSize: $("#txtPackSize").val(),
+            InventoryClass: $("#cboInventoryClass").val(),
+            ItemClass: $("#cboItemClass").val(),
+            ItemSource: $("#cboItemSource").val(),
+            ItemCriticality: $("#cboItemCriticality").val(),
+            BarCodeID: $("#txtBarCodeID").val(),
+            ActiveStatus: $("#cboActiveStatus").val(),
+        }
+    }
+
+    var objPar = [];
+    objPar = eSyaParams.GetValue();
+
+    $.ajax({
+        //async: false,
+        url: getBaseURL() + '/ItemManagement/InsertOrUpdateItemCodes',
+        type: 'POST',
+        data: {
+            ItemCodes, objPar
+        },
+        datatype: 'json',
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                $("#btnSaveItem").attr('disabled', true);
+                $("#btnSaveItem").hide();
+                $("#PopupItemMaster").modal('hide');
+                fnGridRefreshItemMaster();
+                eSyaParams.ClearValue();
+            }
+            else {
+                toastr.error(response.Message);
+            }
+            $("#btnSaveItem").attr('disabled', false);
+            $("#btnSaveItem").show();
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnSaveItem").attr("disabled", false);
+        }
+    });
+}
+
+function fnClearFields() {
+    $('#txtItemCode').val('');
+    $('#txtItemDescription').val('');
+    $('#cboUnitOfMeasure').val('');
+    $('#cboUnitOfMeasure').selectpicker('refresh');
+    $('#cboPackUnit').val('');
+    $('#cboPackUnit').selectpicker('refresh');
+    $('#txtPackSize').val('');
+    $('#cboInventoryClass').val('');
+    $('#cboInventoryClass').selectpicker('refresh');
+    $('#cboItemClass').val('');
+    $('#cboItemClass').selectpicker('refresh');
+    $('#cboItemSource').val('');
+    $('#cboItemSource').selectpicker('refresh');
+    $('#cboItemCriticality').val('');
+    $('#cboItemCriticality').selectpicker('refresh');
+    $('#txtBarCodeID').val('');
+
+    eSyaParams.ClearValue();
+}
+
+function validateItemMaster() {
+
+    if ($("#txtItemDescription").val().trim().length <= 0) {
+        toastr.warning("Please Enter Item Description");
+        $('#txtItemDescription').focus();
+        return false;
+    }
+    if ($("#cboUnitOfMeasure").val().length <= 0) {
+        toastr.warning("Please Select Unit of Measure");
+        $('#cboUnitOfMeasure').focus();
+        return false;
+    }
+    if ($("#cboPackUnit").val().length <= 0) {
+        toastr.warning("Please Select Pack Unit");
+        $('#cboPackUnit').focus();
+        return false;
+    }
+    if ($("#cboInventoryClass").val().length <= 0) {
+        toastr.warning("Please Select Inventory Class");
+        $('#cboInventoryClass').focus();
+        return false;
+    }
+    if ($("#cboItemClass").val().length <= 0) {
+        toastr.warning("Please Select Item Class");
+        $('#cboItemClass').focus();
+        return false;
+    }
+    if ($("#cboItemSource").val().length <= 0) {
+        toastr.warning("Please Select Item Source");
+        $('#cboItemSource').focus();
+        return false;
+    }
+    if ($("#cboItemCriticality").val().length <= 0) {
+        toastr.warning("Please Select Item Criticality");
+        $('#cboItemCriticality').focus();
+        return false;
+    }
+}
+
+ 

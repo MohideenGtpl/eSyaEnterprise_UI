@@ -1,0 +1,349 @@
+﻿
+@{
+    ViewData["Title"] = "UserInfo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/guestPortal.css" rel="stylesheet" />
+<style>
+    #rs_mjqgAddOnServices, #rs_mjqgActivities {
+        display: none;
+    }
+</style>
+
+@*<section class="sidebar">
+       <div>
+           <div class="sidebar-content">
+               <ul>
+                   <li><a href="#"><i class="fa fa-home"></i> <span class="text-navlink">Home</span></a> </li>
+                   <li><a href="#"><i class="fa fa-users"></i> <span class="text-navlink">Clients</span></a> </li>
+                   <li><a href="#"><i class="fa fa-home"></i> <span class="text-navlink">Households</span></a> </li>
+                   <li><a href="#"><i class="fa fa-home"></i> <span class="text-navlink">Feed</span></a> </li>
+                   <li><a href="#"><i class="fa fa-shuffle"></i> <span class="text-navlink">Tasks</span></a> </li>
+                   <li><a href="#"><i class="fa fa-calendar"></i> <span class="text-navlink">Calendar</span></a> </li>
+                   <li><a href="#"><i class="fa fa-pen"></i> <span class="text-navlink">Notes</span></a> </li>
+                   <li><a href="#"><i class="fa fa-file"></i> <span class="text-navlink">Files</span></a> </li>
+                   <li><a href="#"><i class="fa fa-home"></i> <span class="text-navlink">Dashboard</span></a> </li>
+                   <li><a href="#"><i class="fa fa-chart"></i> <span class="text-navlink">Reports</span></a> </li>
+                   <li><a href="#"><i class="fa fa-home"></i> <span class="text-navlink">Opportunities</span></a> </li>
+                   <li><a href="#"><i class="fa fa-home"></i> <span class="text-navlink">Campaigns</span></a> </li>
+               </ul>
+           </div>
+       </div>
+    </section>*@
+
+<section class="main-content box-shadow-1">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 pt-3">
+                <h5 class="border-bottom pb-1"><span class="px-2 py-1 bg-light mr-2 border"><i class="fa fa-user"></i></span> <span>Suresh Kumar </span></h5>
+            </div>
+            <div class="col-lg-2 col-sm-6 col-6 form-group">
+                <label class="d-block">Mobile Number</label>
+                <span class="text-content">+91 8998677645</span>
+            </div>
+            <div class="col-lg-2 col-sm-6 col-6 form-group">
+                <label class="d-block">Room Number</label>
+                <span class="text-content">SP002B</span>
+            </div>
+            <div class="col-lg-2 col-sm-6 col-6 form-group">
+                <label class="d-block">Room Type</label>
+                <span class="text-content">Special</span>
+            </div>
+            <div class="col-lg-2 col-sm-6 col-6 form-group">
+                <label class="d-block">Check-In date</label>
+                <span class="text-content">01/04/2022</span>
+            </div>
+            <div class="col-lg-2 col-sm-6 col-6 form-group">
+                <label class="d-block">Check-Out date</label>
+                <span class="text-content">07/04/2022</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="tab-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <ul class="nav nav-pills border-bottom" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="personalInfo-tab" data-toggle="tab" href="#tab_personalInfo" role="tab" aria-controls="home" aria-selected="true">Personal Information</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="addonservices-tab" data-toggle="tab" href="#tab_addonservices" role="tab" aria-controls="profile" aria-selected="false" onclick="fnLoadAddOnServices()">Addon Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="activities-tab" data-toggle="tab" href="#tab_activities" role="tab" aria-controls="profile" aria-selected="false" onclick="fnLoadActivities()">Activities</a>
+                    </li>
+
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="tab_personalInfo" role="tabpanel" aria-labelledby="personalinfo-tab">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+                                <label>First Name</label>
+                                <input type="text" class="form-control" name="first name" value="" />
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+                                <label>Last Name</label>
+                                <input type="text" class="form-control" name="last name" value="" />
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+                                <label>Mobile Number</label>
+                                <input type="text" class="form-control" name="first name" value="" />
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+                                <label>Email ID</label>
+                                <input type="text" class="form-control" name="first name" value="" />
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                                <label>Address</label>
+                                <input type="text" class="form-control" name="last name" value="" />
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+                                <label>City</label>
+                                <input type="text" class="form-control" name="first name" value="" />
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+                                <label>State</label>
+                                <input type="text" class="form-control" name="first name" value="" />
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+                                <label>Pincode</label>
+                                <input type="text" class="form-control" name="first name" value="" />
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+                                <hr />
+                                <button type="button" class="btn btn-primary mr-2"><i class="fa fa-check"></i> Submit</button>
+                                <button type="button" class="btn btn-primary"><i class="fa fa-times"></i> Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab_addonservices" role="tabpanel" aria-labelledby="addonservices-tab">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                                <table id="jqgAddOnServices"></table>
+                                <div id="jqpAddOnServices"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab_activities" role="tabpanel" aria-labelledby="activities-tab">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                                <table id="jqgActivities"></table>
+                                <div id="jqpActivities"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="modalAddOnServices" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modaltitle">Add on Services</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fa fa-times"></i></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-4 col-sm-6 col-6 form-group">
+                        <label class="d-block">Guest Name</label>
+                        <input type="text" name="name" value="" class="form-control" />
+                    </div>
+                    <div class="col-lg-6 col-sm-6 col-6 form-group">
+                        <label class="d-block">Service Name</label>
+                        <input type="text" name="name" value="" class="form-control" />
+                    </div>
+                    <div class="col-lg-2 col-sm-6 col-6 form-group">
+                        <label class="d-block text-right">Service Cost</label>
+                        <input type="text" name="name" value="" class="form-control text-right" />
+                    </div>
+                    <div class="col-lg-4 col-sm-6 col-6 form-group">
+                        <label class="d-block">Mobile Number</label>
+                        <input type="text" name="name" value="" class="form-control" />
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary mr-2" id="btnAddOnServices"><i class="fa fa-check"></i> Done</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalActivities" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modaltitle">Add Activities</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fa fa-times"></i></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-4 col-sm-6 col-6 form-group">
+                        <label class="d-block">Guest Name</label>
+                        <input type="text" name="name" value="" class="form-control" />
+                    </div>
+                    <div class="col-lg-8 col-sm-8 col-6 form-group">
+                        <label class="d-block">Activity</label>
+                        <input type="text" name="name" value="" class="form-control" />
+                    </div>
+
+                    <div class="col-lg-4 col-sm-6 col-6 form-group">
+                        <label class="d-block">Mobile Number</label>
+                        <input type="text" name="name" value="" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary mr-2" id="btnAddOnServices"><i class="fa fa-check"></i> Done</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@*<script src="~/js/jquery-3.6.0.min.js"></script>
+    <script src="~/js/jquery-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="~/js/i18n/grid.locale-en.js"></script>
+    <script src="~/js/jquery.jqGrid.min.js"></script>
+    <script type="text/javascript" src="~/js/all.min.js"></script>
+    <script src="~/js/toastr.min.js"></script>*@
+<script>
+        $(function () {
+            $("#alertmod_jqgActivities,#alertmod_jqgAddOnServices").css('display', 'none');
+        });
+        function fnLoadAddOnServices() {
+            $("#alertmod_jqgAddOnServices").css('display', 'none');
+            var grid_id = "jqgAddOnServices";
+            var hideLoading = function () {
+                jQuery("#lui_" + grid_id).hide();
+                jQuery("#load_" + grid_id).hide();
+            }
+            var gridData = [{ SNo: '01', GuestName: 'Karthick', ServiceName: 'Music Threaphy', ServiceCost: '<i class="fa fa-rupee-sign"></i> 15,000', MobileNumber: '8978675645', edit: '' }];
+            $("#jqgAddOnServices").jqGrid({
+                // url: getBaseURL() + '/ApplicationCodes/GetCodeTypes',
+                //mtype: 'POST',
+                datatype: 'local',
+                data: gridData,
+                contentType: 'application/json; charset=utf-8',
+                ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+                colNames: ["S.No", "Guest Name", "Service Name", "Service Cost", "Mobile Number", "Action"],
+                colModel: [
+                    { name: "SNo", width: 50, align: 'left', editable: true, resizable: false, hidden: false },
+                    { name: "GuestName", width: 50, align: 'left', editable: true, editoptions: { maxlength: 6 }, resizable: false, hidden: false },
+                    { name: "ServiceName", width: 50, align: 'left', editable: true, editoptions: { maxlength: 6 }, resizable: false, hidden: false },
+                    { name: "ServiceCost", width: 50, align: 'left', editable: true, editoptions: { maxlength: 6 }, resizable: false, hidden: false },
+                    { name: "MobileNumber", width: 50, align: 'left', editable: true, editoptions: { maxlength: 6 }, resizable: false, hidden: false },
+                    {name: 'edit', search: false, align: 'left', width: 88, sortable: false, resizable: false,
+                        formatter: function (cellValue, options, rowdata, action) {
+                            return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" onclick="fnAddEditAddOnServices()" title="Checkout" id="jqgEdit"><i class="fa fa-pen"></i> Edit</button>'
+                        }
+                    },
+                ],
+                pager: "#jqpAddOnServices",
+                rowNum: 10,
+                rowList: [10, 20, 50, 100],
+                rownumWidth: '55',
+                loadonce: false,
+                viewrecords: true,
+                gridview: false,
+                rownumbers: true,
+                height: 'auto',
+                scroll: false,
+                width: 'auto',
+                autowidth: true,
+                shrinkToFit: true,
+                forceFit: true,
+                loadComplete: function () {
+                    hideLoading();
+                    $("#jqgAddOnServices").jqGrid('setGridWidth', $('.tab-pane').width());
+                },
+                loadError: function () {
+                    hideLoading();
+                }
+
+            }).jqGrid('navGrid', '#jqpAddOnServices', { add: false, edit: false, search: false, del: false, refresh: false, refreshtext: 'Reload' }).jqGrid('navButtonAdd', '#jqpAddOnServices', {
+                caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first"
+            }).jqGrid('navButtonAdd', '#jqpAddOnServices', {
+                caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddEditAddOnServices
+            });
+        }
+
+        function fnLoadActivities() {
+            $("#alertmod_jqgActivities").css('display', 'none');
+            var grid_id = "jqgActivities";
+            var hideLoading = function () {
+                jQuery("#lui_" + grid_id).hide();
+                jQuery("#load_" + grid_id).hide();
+            }
+             var gridData = [{ SNo: '01', GuestName: 'Karthick', Activity: 'Music Threaphy', MobileNumber: '8978675645', edit: '' }];
+            $("#jqgActivities").jqGrid({
+                // url: getBaseURL() + '/ApplicationCodes/GetCodeTypes',
+                //mtype: 'POST',
+                datatype: 'local',
+                data: gridData,
+                contentType: 'application/json; charset=utf-8',
+                ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+                colNames: ["S.No", "Guest Name", "Activity", "Mobile Number", "Action"],
+                colModel: [
+                    {name: "SNo", width: 50, align: 'left', editable: true, resizable: false, hidden: false },
+                    {name: "GuestName", width: 50, align: 'left', editable: true, editoptions: { maxlength: 6 }, resizable: false, hidden: false },
+                    {name: "Activity", width: 50, align: 'left', editable: true, editoptions: { maxlength: 6 }, resizable: false, hidden: false },
+                    {name: "MobileNumber", width: 50, align: 'left', editable: true, editoptions: { maxlength: 6 }, resizable: false, hidden: false },
+                    {name: 'edit', search: false, align: 'left', width: 88, sortable: false, resizable: false,
+                        formatter: function (cellValue, options, rowdata, action) {
+                            return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" onclick="fnAddActivities()" title="Checkout" id="jqgEdit"><i class="fa fa-pen"></i>  Edit</button>'
+                     }
+                    },
+                ],
+                pager: "#jqpActivities",
+                rowNum: 10,
+                rowList: [10, 20, 50, 100],
+                rownumWidth: '55',
+                loadonce: false,
+                viewrecords: true,
+                gridview: false,
+                rownumbers: true,
+                height: 'auto',
+                scroll: false,
+                width: 'auto',
+                autowidth: true,
+                shrinkToFit: true,
+                forceFit: true,
+                loadComplete: function () {
+                    hideLoading();
+                    $("#jqgActivities").jqGrid('setGridWidth', $('.tab-pane').width() - 30);
+                },
+                loadError: function () {
+                    hideLoading();
+                }
+            }).jqGrid('navGrid', '#jqpActivities', { add: false, edit: false, search: false, del: false, refresh: false, refreshtext: 'Reload' }).jqGrid('navButtonAdd', '#jqpActivities', {
+                caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first"
+                }).jqGrid('navButtonAdd', '#jqpActivities', {
+                    caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddActivities
+                });
+        }
+        function fnAddEditAddOnServices() {
+            $("#modalAddOnServices").modal('show');
+        }
+        function fnAddActivities() {
+            $("#modalActivities").modal('show');
+         }
+</script>
+
+

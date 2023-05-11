@@ -1,0 +1,753 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = "Business Location";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    var userFormRole = (eSyaEnterprise_UI.Models.DO_UserFormRole)ViewBag.UserFormRole;
+}
+<script>
+    var _userFormRole = JSON.parse('@Html.Raw(Json.Serialize(userFormRole))');
+
+    var localization = {
+        AddBusinessLocation: '@Localizer["AddBusinessLocation"]',
+        BusinessLocation: '@Localizer["BusinessLocation"]',
+        EditBusinessLocation: '@Localizer["EditBusinessLocation"]',
+        ViewBusinessLocation: '@Localizer["ViewBusinessLocation"]',
+        Save: '@Localizer["Save"]',
+        Update: '@Localizer["Update"]',
+        Currency: '@Localizer["Currency"]',
+        Status: '@Localizer["Status"]',
+    };
+</script>
+<style>
+    .BSCurrencyContainer [class*="ui-jqgrid"]{
+        width: 100% !important;
+    }
+   
+</style>
+
+<link href="~/css/jsTree.css" rel="stylesheet" />
+@section scripts{
+    <script src="~/js/jsTree.js"></script>
+}
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-6" id="divJstBusinessLocation">
+        <div id="jstBusinessLocation"></div>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6">
+        <div class="demo-card-square mdl-card mdl-shadow--2dp" id="pnlMainMenu" style="width: 100%; display:none">
+            <div id="pnlMainModuleHeading" class="mdl-card__title mdl-card--expand padleft0 padtop0 h-60 d-block">
+                <h5 class="mdl-card__title-text">Add Business Location</h5>
+            </div>
+            <div class="mdl-card__supporting-text fullwidth pad0">
+
+                <div class="row padbot4 mar0">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group collapse">
+                            <label for="txtBusinessEntityId">Busienss Entity Id</label>
+                            <input id="txtBusinessEntityId" class="form-control" maxlength="10" type="text" data-inputmask="'mask': '9', 'repeat': 10, 'greedy' : false" />
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group collapse">
+                            <label for="txtBusinessSegmentId">Segment Id</label>
+                            <input id="txtBusinessSegmentId" class="form-control" maxlength="10" type="text" data-inputmask="'mask': '9', 'repeat': 10, 'greedy' : false" />
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group collapse">
+                            <label for="txtBusinessLocationId">Location Id</label>
+                            <input id="txtBusinessLocationId" class="form-control" maxlength="10" type="text" data-inputmask="'mask': '9', 'repeat': 10, 'greedy' : false" />
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group">
+                            <label> @Localizer["LocationCode"] </label>
+                            <input id="txtLocationcode" class="form-control" maxlength="6" type="text" />
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group">
+                            <label> @Localizer["LocationDescription"] </label>
+                            <input id="txtLocationDescription" class="form-control" maxlength="100" type="text" />
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group">
+                            <label> @Localizer["BusinessName"] </label>
+                            <input id="txtBusinessName" class="form-control" maxlength="100" type="text" />
+                        </div>
+                    </div>
+
+
+                    <div id="dvTaxIdentification" class="col-lg-4  col-md-6 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label> @Localizer["TaxIdentification"] </label>
+                            <div>
+                                <select class="selectpicker" data-live-search="true" id="cboTaxIdentification" title="Select" data-size="8">
+                                    <option value="0">Select</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-6 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label> @Localizer["LicenseType"] </label>
+                            <div>
+                                <select class="selectpicker" data-live-search="false" id="cboLicenseType" title="Select">
+                                    <option value="0">Select</option>
+                                    <option value="P">Perpetual</option>
+                                    <option value="S">Subscription</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group lbl-right">
+                            <label> @Localizer["UserLicenses"] </label>
+                            <input type="text" id="txtUserLicenses" name="name" value="" class="form-control integerFormat" maxlength="5" />
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row padbot4 mar0">
+                    <div class="col-lg-3  col-md-6 col-sm-12 col-xs-12">
+                        <div class="default-checkbox checkbox-group">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkToLocalCurrency">
+                                <input type="checkbox" id="chkToLocalCurrency" class="mdl-checkbox__input" onchange="fnToLocalCurrency(this)">
+                                <span class="mdl-checkbox__label">@Localizer["ToLocalCurrency"]</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-3  col-md-3 col-sm-12 col-xs-12 ">
+                        <div class="default-checkbox checkbox-group">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkToCurrCurrency">
+                                <input type="checkbox" id="chkToCurrCurrency" class="mdl-checkbox__input" onchange="fnToCurrCurrency(this)">
+                                <span class="mdl-checkbox__label">@Localizer["ToCurrConversion"]</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3  col-md-6 col-sm-12 col-xs-12">
+                        <div class="default-checkbox checkbox-group">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkToRealCurrency">
+                                <input type="checkbox" id="chkToRealCurrency" class="mdl-checkbox__input" onchange="fnToRealCurrency(this)">
+                                <span class="mdl-checkbox__label">@Localizer["ToRealCurrency"]</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3  col-md-6 col-sm-12 col-xs-12">
+                        <div class="default-checkbox checkbox-group">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActiveStatus">
+                                <input type="checkbox" id="chkActiveStatus" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">@Localizer["Active"]</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12 col-md-12 col-sm-12 padbot10">
+                        <div class="BSCurrencyContainer">
+                            <table id="jqgBSCurrency"></table>
+                            <div id="jqpBSCurrency"></div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 col-md-12 col-lg-12 form-group">
+                        @await Component.InvokeAsync("eSyaParameter", new { parameterType = "2" })
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="mdl-card__actions mdl-card--border" style="text-align: center;">
+                <button class="mdl-button mdl-js-button mdl-button--raised primary-button" id="btnAddBusinessLocation" onclick="fnSaveBusinessLocation()">
+                    @Localizer["Save"]
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-6">
+        <div>
+            <h5>Action</h5>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 btn_pdnTop">
+                <button class="mdl-button mdl-js-button mdl-button--raised cancel-button btn_wdth" id="btnDeleteNode" onclick="fnDeleteNode()">
+                    <i class="fa fa-times"></i>      @Localizer["DeleteNode"]
+                </button>
+            </div>
+
+            <div class="col-lg-12 btn_pdnTop">
+                <button class="mdl-button mdl-js-button mdl-button--raised primary-button btn_wdth" id="btnExpandAll" onclick="fnExpandAll()">
+                    <i class="fas fa-expand"></i>   @Localizer["ExpandAll"]
+                </button>
+            </div>
+            <div class="col-lg-12 btn_pdnTop">
+                <button class="mdl-button mdl-js-button mdl-button--raised primary-button btn_wdth" id="btnCollapseAll" onclick="fnCollapseAll()">
+                    <i class="fas fa-compress"></i>   @Localizer["CollapseAll"]
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script>
+    var NodeID;
+    var prevSelectedID;
+    var TaxId;
+    $(document).ready(function () {
+        $("#pnlMainMenu").hide();
+        LoadBusinessLocationTree();
+        $("#btnDeleteNode").attr("disabled", _userFormRole.IsDelete === false);
+    });
+
+    function LoadBusinessLocationTree() {
+        $.ajax({
+            url: getBaseURL() + '/BusinessStructure/GetBusinessLocationforTreeView',
+            success: function (result) {
+                fnGetBusinessLocation_Success(result);
+            },
+            error: function (error) {
+                toastr.error(error.status);
+            }
+        });
+    }
+
+    var editRow = false;
+    function fnGetBusinessLocation_Success(dataArray) {
+        $("#jstBusinessLocation").jstree({
+            "state": { "checkbox_disabled": true },
+            "checkbox": {
+                "keep_selected_style": false
+            },
+            core: { 'data': dataArray, 'check_callback': true, 'multiple': true }
+
+        });
+
+        $("#jstBusinessLocation").on('loaded.jstree', function () {
+
+            $("#jstBusinessLocation").jstree('open_all');
+            $("#jstBusinessLocation").jstree()._open_to(prevSelectedID);
+            $('#jstBusinessLocation').jstree().select_node(prevSelectedID);
+
+        });
+
+        $('#jstBusinessLocation').on("changed.jstree", function (e, data) {
+
+            if (data.node != undefined) {
+                if (prevSelectedID != data.node.id) {
+                    prevSelectedID = data.node.id;
+
+                    if (data.node.id == "0") {
+                        fnClearFields();
+                        $("#pnlMainMenu").hide();
+                    }
+                    else {
+                        TaxId = 0;
+                        $('#View').remove();
+                        $('#Edit').remove();
+                        $('#Add').remove();
+
+                        $("#pnlMainMenu").hide();
+
+                        if (data.node.parent == "MM") {
+                            fnClearFields();
+                            $("#pnlMainMenu").hide();
+                        }
+                        else if (data.node.id.startsWith("SM")) {
+                            $('#' + data.node.id + "_anchor").html($('#' + data.node.id + "_anchor").html() + '<span id="Add" style="padding-left:10px;padding-right:10px">&nbsp;<i class="fa fa-plus" style="color:#337ab7"aria-hidden="true"></i></span>')
+                            
+                            $('#Add').on('click', function () {
+                                if (_userFormRole.IsInsert === false) {
+                                    $('#pnlMainMenu').hide();
+                                    toastr.warning(errorMsgCS["E003"]);
+                                    return;
+                                }
+
+                                var IsMultiLocation = true;
+                                $.ajax({
+                                    url: getBaseURL() + '/BusinessStructure/IsAllowMultiLocation?BusinessId=' + data.node.id.substring(2).split("_")[0] + "&SegmentId=" + data.node.id.substring(2).split("_")[1],
+                                    datatype: 'json',
+                                    type: 'POST',
+                                    async: false,
+                                    contentType: 'application/json; charset=utf-8',
+                                    success: function (result) {
+                                        if (result != null) {
+                                            IsMultiLocation = result.IsAllowMultiLocation;
+                                        }
+                                    }
+                                });
+
+
+                                if (IsMultiLocation === false) {
+                                    $('#pnlMainMenu').hide();
+                                    toastr.warning("Selected Segment Allowed only one Location.");
+                                    return;
+                                }
+
+                                editRow = true;
+                                $("#pnlMainMenu").show();
+                                $(".mdl-card__title-text").text(localization.AddBusinessLocation);
+                                fnClearFields();
+
+                                $('#txtBusinessEntityId').val(data.node.id.substring(2).split("_")[0]);
+                                $('#txtBusinessSegmentId').val(data.node.id.substring(2).split("_")[1]);
+
+                                fnFillComboTaxIdentification();
+
+                                $('.BSCurrencyContainer').hide();
+                                fnGridBSCurrency();
+
+                                
+
+                                $("#btnAddBusinessLocation").show();
+                                $("input,textarea").attr('readonly', false);
+                                $("input[type=checkbox]").attr('disabled', false);
+                                $("#chkActiveStatus").attr('disabled', true); 
+                                $("#btnAddBusinessLocation").html('<i class="fa fa-plus"></i> ' + localization.Save);
+                            });
+                        }
+                        else if (data.node.id.startsWith("FM")) {
+
+                            NodeID = 0;
+                            NodeID = data.node.id.substring(2).split("_")[2];
+
+                            $('#' + data.node.id + "_anchor").html($('#' + data.node.id + "_anchor").html() + '<span id="View" style="padding-left:10px">&nbsp;<i class="fa fa-eye" style="color:#337ab7"aria-hidden="true"></i></span>')
+                            $('#' + data.node.id + "_anchor").html($('#' + data.node.id + "_anchor").html() + '<span id="Edit" style="padding-left:10px">&nbsp;<i class="fa fa-pen" style="color:#337ab7"aria-hidden="true"></i></span>')
+
+                            $('#View').on('click', function () {
+
+                                if (_userFormRole.IsView === false) {
+                                    $('#pnlMainMenu').hide();
+                                    toastr.warning(errorMsgCS["E001"]);
+                                    return;
+                                }
+                                editRow = false;
+                                $("#pnlMainMenu").show();
+                                $(".mdl-card__title-text").text(localization.ViewBusinessLocation);
+                                $('#txtBusinessLocationId').val(NodeID);
+                                $('#txtBusinessEntityId').val(data.node.id.substring(2).split("_")[0]);
+                                $('#txtBusinessSegmentId').val(data.node.id.substring(2).split("_")[1]);
+                                fnFillComboTaxIdentification();
+                                fnFillBusinessLocationInfo();
+
+                                $("#btnAddBusinessLocation").hide();
+                                $("input,textarea").attr('readonly', true);
+                                $("input[type=checkbox]").attr('disabled', true);
+                                $("#chkActiveStatus").attr('disabled', true);
+                            });
+
+                            $('#Edit').on('click', function () {
+                                if (_userFormRole.IsEdit === false) {
+                                    $('#pnlMainMenu').hide();
+                                    toastr.warning(errorMsgCS["E002"]);
+                                    return;
+                                }
+                                editRow = true;
+                                $("#pnlMainMenu").show();
+                                $(".mdl-card__title-text").text(localization.EditBusinessLocation);
+                                $('#txtBusinessLocationId').val(NodeID);
+                                $('#txtBusinessEntityId').val(data.node.id.substring(2).split("_")[0]);
+                                $('#txtBusinessSegmentId').val(data.node.id.substring(2).split("_")[1]);
+                                fnFillComboTaxIdentification();
+                                fnFillBusinessLocationInfo();
+
+                                $("#btnAddBusinessLocation").show();
+                                $("input,textarea").attr('readonly', false);
+                                $("input[type=checkbox]").attr('disabled', false);
+                                $("#chkActiveStatus").attr('disabled', true);
+                                $("#btnAddBusinessLocation").html('<i class="fa fa-sync"></i> ' + localization.Update);
+                            });
+                        }
+                        else {
+                            fnClearFields();
+                            $("#pnlMainMenu").hide();
+                        }
+                    }
+                }
+            }
+        });
+
+        $('#jstBusinessLocation').on("close_node.jstree", function (node) {
+            var closingNode = node.handleObj.handler.arguments[1].node;
+            $('#jstBusinessLocation').jstree().deselect_node(closingNode.children);
+        });
+        fnTreeSize("#divJstBusinessLocation");
+    };
+
+    function fnFillComboTaxIdentification() {
+        $("#cboTaxIdentification").empty();
+        $.ajax({
+            type: 'POST',
+            url: getBaseURL() + "/BusinessStructure/GetTaxIdentificationByBSeg?BusinessId=" + $("#txtBusinessEntityId").val() + "&SegmentId=" + $("#txtBusinessSegmentId").val(),
+            success: function (result) {
+                $("#cboTaxIdentification").append($("<option value='0'>Select</option>"));
+                if (result.length > 0)
+                    $("#dvTaxIdentification").show();
+                else
+                    $("#dvTaxIdentification").hide();
+                if (result != null) {
+                    for (var i = 0; i < result.length; i++) {
+                        $('#cboTaxIdentification').append('<option value="' + result[i]["TaxIdentificationId"] + '">' + result[i]["TaxIdentificationDesc"] + '</option>');
+                        //$("#cboTaxIdentification").append($("<option></option>").val(result[i]["TaxIdentificationId"]).html(result[i]["TaxIdentificationDesc"]));
+                    }
+                }
+                $('#cboTaxIdentification').val(TaxId);
+                $("#cboTaxIdentification").selectpicker('refresh');
+            }
+        });
+        $('#cboTaxIdentification').val(TaxId);
+        $("#cboTaxIdentification").selectpicker('refresh');
+    }
+
+    function fnFillBusinessLocationInfo() {
+        if ($("#txtBusinessLocationId").val() != '' && $("#txtBusinessLocationId").val() != undefined) {
+            $.ajax({
+                async: false,
+                url: getBaseURL() + "/BusinessStructure/GetBusinessLocationInfo?BusinessId=" + $("#txtBusinessEntityId").val() + "&SegmentId=" + $("#txtBusinessSegmentId").val() + "&LocationId=" + $("#txtBusinessLocationId").val(),
+                type: 'post',
+                datatype: 'json',
+                contentType: 'application/json; charset=utf-8',
+                success: function (result) {
+                    $('#txtLocationcode').val(result.LocationCode);
+                    $('#txtLocationDescription').val(result.LocationDescription);
+                    $('#txtBusinessName').val(result.BusinessName);
+                    $('#cboTaxIdentification').val(result.TaxIdentification);
+                    $('#cboTaxIdentification').selectpicker('refresh');
+                    TaxId = result.TaxIdentification;
+                    $('#cboLicenseType').val(result.LicenseType);
+                    $('#cboLicenseType').selectpicker('refresh');
+                    $('#txtUserLicenses').val(result.UserLicenses);
+
+                    $('.BSCurrencyContainer').hide();
+
+                    if (result.ToLocalCurrency == 1) {
+                        $("#chkToLocalCurrency").parent().addClass("is-checked");
+
+                        $(".BSCurrencyContainer").hide();
+                    }
+                    else { $('#chkToLocalCurrency').parent().removeClass("is-checked"); }
+
+                    if (result.ToCurrCurrency == 1) {
+                        $("#chkToCurrCurrency").parent().addClass("is-checked");
+
+                        $('.BSCurrencyContainer').show();
+                    }
+                    else { $('#chkToCurrCurrency').parent().removeClass("is-checked"); }
+
+                    if (result.ToRealCurrency == 1) {
+                        $("#chkToRealCurrency").parent().addClass("is-checked");
+
+                        $('.BSCurrencyContainer').show();
+                    }
+                    else { $('#chkToRealCurrency').parent().removeClass("is-checked"); }
+
+                    fnGridBSCurrency();
+
+                    if (result.ActiveStatus == 1) {
+                        $("#chkActiveStatus").parent().addClass("is-checked");
+                    }
+                    else { $('#chkActiveStatus').parent().removeClass("is-checked"); }
+
+                    eSyaParams.ClearValue();
+                    eSyaParams.SetJSONValue(result.l_FormParameter);
+                }
+            });
+        }
+    }
+
+    function fnGridBSCurrency() {
+        var URL = getBaseURL() + "/BusinessStructure/GetBSCurrency?BusinessId=" + $("#txtBusinessEntityId").val() + "&SegmentId=" + $("#txtBusinessSegmentId").val() + "&LocationId=" + $("#txtBusinessLocationId").val();
+
+        $("#jqgBSCurrency").jqGrid('GridUnload');
+        $("#jqgBSCurrency").jqGrid({
+            url: URL,
+            mtype: 'Post',
+            datatype: 'json',
+            ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+            colNames: ["Currency Code", localization.Currency, localization.Status],
+            colModel: [
+                { name: "CurrencyCode", width: 120, editable: false, align: 'left', hidden: true },
+                { name: "CurrencyName", editable: false, width: 180, align: 'left', resizable: false },
+                { name: "ActiveStatus", editable: true, width: 70, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } }
+            ],
+            caption: "",
+            height: 'auto',
+            width: 'auto',
+            rowNum: 15,
+            rownumbers: true,
+            viewrecords: true,
+            gridview: true,
+            autowidth: true,
+            shrinkToFit: true,
+            forceFit: true,
+            cellEdit: true,
+            loadonce: true,
+            //onSelectRow: function (id) {
+            //    if (id) { $('#jqgBSCurrency').jqGrid('editRow', id, true); }
+            //},
+            loadComplete: function () {
+                var ids = $('#jqgBSCurrency').jqGrid('getDataIDs');
+                var i = 0;
+                if (editRow) {
+                    for (i = 0; i < ids.length; i++) {
+                        if (ids[i])
+                            $('#jqgBSCurrency').jqGrid('editRow', ids[i]);
+                    }
+                }
+            }
+
+        });
+    }
+
+    function validationBusinessSegment() {
+        if (IsStringNullorEmpty($("#txtBusinessEntityId").val())) {
+            toastr.warning("Please Select Business Entity");
+            return false;
+        }
+        if (IsStringNullorEmpty($("#txtBusinessSegmentId").val())) {
+            toastr.warning("Please Select Business Segment");
+            return false;
+        }
+        if (IsStringNullorEmpty($("#txtLocationcode").val())) {
+            toastr.warning("Please Select Location Code");
+            return false;
+        }
+        if (IsStringNullorEmpty($("#txtLocationDescription").val())) {
+            toastr.warning("Please Enter Location Description");
+            return false;
+        }
+        if (IsStringNullorEmpty($("#txtBusinessName").val())) {
+            toastr.warning("Please Enter Business Name");
+            return false;
+        }
+
+        if ($("#cboTaxIdentification").is(":visible")) {
+            if ($("#cboTaxIdentification").val() === "0" || $("#cboTaxIdentification").val() === "") {
+                toastr.warning("Please Select Tax Identification");
+                return false;
+            }
+        }
+    }
+
+    function fnSaveBusinessLocation() {
+
+        if (validationBusinessSegment() === false) {
+            return;
+        }
+        $("#btnAddBusinessLocation").attr('disabled', true);
+        var LocationId = $("#txtBusinessLocationId").val();
+
+        var BusinessLocation;
+        if (LocationId == null || LocationId == "") {
+            BusinessLocation = {
+                BusinessId: $("#txtBusinessEntityId").val(),
+                SegmentId: $("#txtBusinessSegmentId").val(),
+                LocationId: 0,
+                LocationCode: $("#txtLocationcode").val(),
+                LocationDescription: $("#txtLocationDescription").val(),
+                BusinessName: $("#txtBusinessName").val(),
+                TaxIdentification: $("#cboTaxIdentification").val(),
+                LicenseType: $("#cboLicenseType").val(),
+                UserLicenses: $("#txtUserLicenses").val(),
+                ToLocalCurrency: $("#chkToLocalCurrency").parent().hasClass("is-checked"),
+                ToCurrCurrency: $("#chkToCurrCurrency").parent().hasClass("is-checked"),
+                ToRealCurrency: $("#chkToRealCurrency").parent().hasClass("is-checked"),
+                ActiveStatus: $("#chkActiveStatus").parent().hasClass("is-checked")
+            };
+
+        }
+        else {
+            BusinessLocation = {
+                BusinessId: $("#txtBusinessEntityId").val(),
+                SegmentId: $("#txtBusinessSegmentId").val(),
+                LocationId: $("#txtBusinessLocationId").val(),
+                LocationCode: $("#txtLocationcode").val(),
+                LocationDescription: $("#txtLocationDescription").val(),
+                BusinessName: $("#txtBusinessName").val(),
+                TaxIdentification: $("#cboTaxIdentification").val(),
+                LicenseType: $("#cboLicenseType").val(),
+                UserLicenses: $("#txtUserLicenses").val(),
+                ToLocalCurrency: $("#chkToLocalCurrency").parent().hasClass("is-checked"),
+                ToCurrCurrency: $("#chkToCurrCurrency").parent().hasClass("is-checked"),
+                ToRealCurrency: $("#chkToRealCurrency").parent().hasClass("is-checked"),
+                ActiveStatus: $("#chkActiveStatus").parent().hasClass("is-checked")
+            };
+        }
+
+        var bsCurrency = [];
+        var jqgBSCurrency = jQuery("#jqgBSCurrency").jqGrid('getRowData');
+
+        for (var i = 0; i < jqgBSCurrency.length; ++i) {
+            if (parseFloat(jqgBSCurrency[i]["CurrencyCode"]) != '') {
+                bsCurrency.push({
+                    CurrencyCode: jqgBSCurrency[i]["CurrencyCode"],
+                    ActiveStatus: jqgBSCurrency[i]["ActiveStatus"]
+                });
+            }
+        }
+        
+        BusinessLocation.l_BSCurrency = bsCurrency;
+
+        var fmParams = eSyaParams.GetJSONValue();
+        BusinessLocation.l_FormParameter = fmParams;
+
+        $.ajax({
+            url: getBaseURL() + '/BusinessStructure/InsertOrUpdateBusinessLocation',
+            type: 'POST',
+            datatype: 'json',
+            data: { BusinessLocation },
+            success: function (response) {
+                if (response.Status) {
+                    toastr.success(response.Message);
+                    location.reload();
+                    return true;
+                }
+                else {
+                    toastr.error(response.Message);
+                    $("#btnAddBusinessLocation").attr('disabled', false);
+                    return false;
+                }
+            },
+            error: function (error) {
+                $("#btnAddBusinessLocation").attr('disabled', false);
+                toastr.error(error.statusText);
+            }
+        });
+    }
+
+    function validationBusinessSegmentOnDelete() {
+
+        if (IsStringNullorEmpty($("#txtBusinessEntityId").val())) {
+            toastr.warning("Please Select Business Entity");
+            return false;
+        }
+        if (IsStringNullorEmpty($("#txtBusinessSegmentId").val())) {
+            toastr.warning("Please Select Business Segment");
+            return false;
+        }
+        if (IsStringNullorEmpty($("#txtBusinessLocationId").val())) {
+            toastr.warning("Please Select Business Location");
+            return false;
+        }
+        if (IsStringNullorEmpty($("#txtLocationDescription").val())) {
+            toastr.warning("Please Enter Location Description");
+            return false;
+        }
+        //if ($("#cboTaxIdentification").val() === "0" || $("#cboTaxIdentification").val() === "") {
+        //    toastr.warning("Please Select Tax Identification");
+        //    return false;
+        //}
+        if ($("#cboLicenseType").val() === "0" || $("#cboLicenseType").val() === "") {
+            toastr.warning("Please Select License Type");
+            return false;
+        }
+    }
+
+    function fnClearFields() {
+        $("#txtBusinessEntityId").val('');
+        $("#txtBusinessSegmentId").val('');
+        $("#txtBusinessLocationId").val('');
+        $("#txtLocationcode").val('');
+        $("#txtLocationDescription").val('');
+        $("#txtBusinessName").val('');
+        $("#cboTaxIdentification").val('0');
+        $("#cboTaxIdentification").selectpicker('refresh');
+        $("#cboLicenseType").val('0');
+        $("#cboLicenseType").selectpicker('refresh');
+        $("#txtUserLicenses").val('0');
+        $("#chkToRealCurrency").parent().removeClass("is-checked");
+        $("#chkToCurrCurrency").parent().removeClass("is-checked");
+        $("#chkToLocalCurrency").parent().removeClass("is-checked");
+        $("#chkActiveStatus").parent().addClass("is-checked");
+    }
+    
+    function fnDeleteNode() {
+
+        if (validationBusinessSegmentOnDelete() === false) {
+            return;
+        }
+        $("#btnDeleteNode").attr('disabled', true);
+        $.ajax({
+            url: getBaseURL() + '/BusinessStructure/DeleteBusinessLocation?BusinessId=' + $("#txtBusinessEntityId").val() + "&SegmentId=" + $("#txtBusinessSegmentId").val() + "&LocationId=" + $("#txtBusinessLocationId").val(),
+            type: 'POST',
+            datatype: 'json',
+            success: function (response) {
+                if (response.Status) {
+                    toastr.success(response.Message);
+                    location.reload();
+                    return true;
+                }
+                else {
+                    toastr.error(response.Message);
+                    return false;
+                }
+
+            },
+            error: function (error) {
+                toastr.error(error.statusText);
+            }
+        });
+    }
+
+    function fnExpandAll() {
+        $('#jstBusinessLocation').jstree('open_all');
+    }
+    function fnCollapseAll() {
+        fnClearFields();
+        $("#pnlMainMenu").hide();
+        $('#jstBusinessLocation').jstree('close_all');
+    }
+    function fnTreeSize() {
+        $("#jstBusinessLocation").css({
+            'height': $(window).innerHeight() - 136,
+            'overflow': 'auto'
+        });
+    }
+
+    function fnToLocalCurrency(elem) {
+        if (elem.checked) {
+            $("#chkToLocalCurrency").parent().addClass("is-checked");
+            //$('#chkToCurrCurrency').parent().removeClass("is-checked");
+            //$('#chkToRealCurrency').parent().removeClass("is-checked");
+            //$(".BSCurrencyContainer").hide();
+        }
+    }
+
+    function fnToCurrCurrency(elem) {
+        if (elem.checked) {
+            $("#chkToCurrCurrency").parent().addClass("is-checked");
+            //$('#chkToLocalCurrency').parent().removeClass("is-checked");
+            $('#chkToRealCurrency').parent().removeClass("is-checked");
+            $('.BSCurrencyContainer').show();
+        }
+        else {
+            $('.BSCurrencyContainer').hide();
+        }
+    }
+
+    function fnToRealCurrency(elem) {
+        if (elem.checked) {
+            $("#chkToRealCurrency").parent().addClass("is-checked");
+            //$('#chkToLocalCurrency').parent().removeClass("is-checked");
+            $('#chkToCurrCurrency').parent().removeClass("is-checked");
+            $('.BSCurrencyContainer').show();
+        }
+        else {
+            $('.BSCurrencyContainer').hide();
+        }
+    }
+
+</script>
+
+

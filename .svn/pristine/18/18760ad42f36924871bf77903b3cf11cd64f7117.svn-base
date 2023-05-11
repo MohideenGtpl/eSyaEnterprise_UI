@@ -1,0 +1,70 @@
+﻿
+
+$(document).ready(function () {
+    fnGridLoadCountryCode();
+});
+
+function fnGridLoadCountryCode() {
+
+
+    $("#jqgCountryCode").jqGrid('GridUnload');
+    $("#jqgCountryCode").jqGrid({
+        //url: URL,
+        mtype: 'Post',
+        datatype: 'json',
+
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["ISD Code", "Country Code", "Country Name", "Currency", "Flag", "Active Status", ""],
+        colModel: [
+            { name: "ISDCode", width: 70, editable: true, align: 'left', hidden: false },
+            { name: "CountryCode", width: 70, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "CountryName", width: 70, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "Currency", width: 70, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "Flag", width: 70, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "ActiveStatus", editable: true, width: 95, hidden: false, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: Inactive" } },
+             {
+                name: 'edit', search: false, align: 'center', width: 50, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all" style="padding: 2px 4px; background: #0b76bc!important; color: #fff!important; margin: 3px; " title="Edit" onclick="return fnEditCountryCode(event)"><i class="fa fa-edit"></i> Edit </button>'
+
+                }
+            },
+        ],
+        rowNum: 10,
+        loadonce: false,
+        pager: "#jqpCountryCode",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0
+    }).jqGrid('navGrid', '#jqpCountryCode', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpCountryCode', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshCountryCode
+    }).jqGrid('navButtonAdd', '#jqpCountryCode', {
+        caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Add', buttonicon: 'none', id: 'custAdd', position: 'first', onClickButton: fnGridAddCountryCode
+    });
+}
+
+function fnGridAddCountryCode() {
+    $('#PopupCountryCode').modal('show');
+    $('#PopupCountryCode').modal({ backdrop: 'static', keyboard: false });
+    $('#PopupCountryCode').find('.modal-title').text("Add Country");
+    fnClearFields();
+    $("#btnSaveCountryCode").html(' Save');
+}
+function fnGridRefreshCountryCode() {
+
+}
+function fnEditCountryCode(e) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgCountryCode').jqGrid('getRowData', rowid);
+
+    $('#PopupCountryCode').modal('show');
+    $('#PopupCountryCode').find('.modal-title').text("Update Country");
+    $("#btnSaveCountryCode").html(' Update');
+}

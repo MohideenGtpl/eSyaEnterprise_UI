@@ -1,0 +1,68 @@
+﻿
+@{
+    ViewData["Title"] = "Vendor Drug Link";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts{
+<script src="~/js/eSyaPharma/VendorDrugLink.js"></script>
+}
+
+<section id="divVendorDrugLinkGrid">
+    <div class="row">
+        <div class="col-lg-3 col-md-3 col-sm-4 form-group">
+            <label>Vendor Code</label>
+            <select class="form-control selectpicker">
+                <option value="value">Select</option>
+            </select>
+        </div>
+        
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <table id="jqgVendorDrugLink"></table>
+            <div id="jqpVendorDrugLink"></div>
+        </div>
+    </div>
+</section>
+
+<section id="divVendorDrugLinkForm" style="display:none;">
+    <div class="row">
+        <div class="col-lg-2 col-md-3 col-sm-3 form-group">
+            <label>Drug Code</label>
+            <input type="text" name="DrugCode" class="form-control" value="" readonly />
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+            <label>Drug Name</label>
+            <input type="text" name="DrugName" class="form-control" value="" readonly />
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-3 form-group">
+            <label>Business Share</label>
+            <input type="text" name="BusinessShare" class="form-control" value="" />
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-3 form-group">
+            <label>Minimum Supply Quantity</label>
+            <input type="text" name="MinimumSupplyQuantity" class="form-control" value="" />
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-3 form-group">
+            <label>Rate Type</label>
+            <select class="form-control selectpicker">
+                <option value="value">Select</option>
+            </select>
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-3 form-group">
+            <label>Rate</label>
+            <input type="text" name="Rate" class="form-control" value="" />
+        </div>
+
+        <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+            <hr />
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent btn-back mr-10 c-white" onclick="fnCloseVendorDrugLink()"><i class="fas fa-chevron-left"></i> Back</button>
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button mr-10" id="btnSaveVendorDrugLink">
+                <i class="fa fa-save"></i>   Save
+            </button>
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button" id="btnCancel" onclick="fnCloseVendorDrugLink()"><i class="fa fa-redo"></i> Cancel</button>
+
+        </div>
+    </div>
+</section>
+

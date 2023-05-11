@@ -1,0 +1,83 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.Areas.eSyaNatureCure.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Areas.eSyaNatureCure.Data;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using eSyaEnterprise_UI.Utility;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using eSyaEnterprise_UI.DataServices;
+using eSyaEnterprise_UI.ActionFilter;
+
+namespace eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers
+{
+    [SessionTimeout]
+    public class RefundRequestApprovalController : Controller
+    {
+        private readonly IeSyaNatureCureAPIServices _eSyaNatureCureAPIServices;
+        private readonly ILogger<RefundRequestApprovalController> _logger;
+
+        public RefundRequestApprovalController(IeSyaNatureCureAPIServices eSyaNatureCureAPIServices, ILogger<RefundRequestApprovalController> logger)
+            
+        {
+            _eSyaNatureCureAPIServices = eSyaNatureCureAPIServices;
+            _logger = logger;
+        }
+       
+        [Area("eSyaNatureCure")]
+        public IActionResult ENC_06_00()
+        {
+           
+            return View();
+        }
+        [HttpGet]
+        public async Task<JsonResult> GetRefundRequestApprovals()
+        {
+            try
+            {
+                var businesskey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.GetAsync<List<DO_GuestRefundRequestApprovals>>("GuestPayment/GetRefundRequestApprovals?businesskey=" + businesskey);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetRefundRequestApprovals:params:bookingKey:{0}:businesskey{1}", businesskey);
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetRefundRequestApprovals:params:bookingKey:{0}:businesskey{1}");
+                throw ex;
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> UpdateRefundRequestApproval(DO_GuestPaymentReceiptDetails obj)
+        {
+            try
+            {
+                obj.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                var serviceResponse = await _eSyaNatureCureAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("GuestPayment/UpdateRefundRequestApproval", obj);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:UpdateRefundRequestApproval:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Warning = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+    }
+}

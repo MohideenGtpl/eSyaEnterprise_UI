@@ -1,0 +1,43 @@
+﻿
+@{
+    ViewData["Title"] = "V_15_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts{ 
+<script src="~/js/Config/BusinessStatutoryDetails.js"></script>
+}
+
+<div class="row">
+     
+    <div class="col-lg-3  col-md-3 col-sm-12 col-xs-12">
+        <div class="form-group">
+            <label class="lable-color"> Business Location</label>
+            <div>
+                <select class="selectpicker" data-live-search="true" id="cboBusinessKey" title="" data-size="8" onchange="fnGridBusinessStatutoryCodes()">
+                    <option value="0"> Choose Business Key</option>
+                    @if (ViewBag.BusinessKeys != null)
+                    {
+                        foreach (var bkey in ViewBag.BusinessKeys)
+                        {
+                            <option value="@bkey.BusinessKey">@bkey.LocationDescription</option>
+                        }
+
+                    }
+         
+     
+                </select>
+            </div>
+        </div>
+    </div>
+     
+</div>
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <table id="jqgBusinessStatutoryDetails"></table>
+        <div id="jqpBusinessStatutoryDetails"></div>
+    </div>
+</div>
+
+<script>
+    @*var StatutoryCodes = (@Html.Raw(Json.Serialize(ViewBag.StatCodes)));*@
+</script>

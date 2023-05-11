@@ -1,0 +1,171 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using eSyaEnterprise_UI.Areas.eSyaMaterial.Data;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Areas.eSyaMaterial.Models;
+using eSyaEnterprise_UI.Utility;
+using eSyaEnterprise_UI.Areas.Config.Models;
+
+namespace eSyaEnterprise_UI.Areas.eSyaMaterial.Controllers
+{
+    public class ItemManagementController : Controller
+    {
+        private readonly IeSyaMaterialAPIServices _eSyaMMAPIServices;
+        public ItemManagementController(IeSyaMaterialAPIServices eSyaMMAPIServices)
+        {
+            _eSyaMMAPIServices = eSyaMMAPIServices;
+
+        }
+
+        [Area("eSyaMaterial")]
+        /// <summary>
+        /// Item Creation
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult V_1010_00()
+        {
+            int pu_ctype = CodeTypeValues.PackUnit;
+            var pu_serviceResponse = _eSyaMMAPIServices.HttpClientServices.GetAsync<List<DO_ApplicationCodes>>("Common/GetApplicationCodesByCodeType?codeType=" + pu_ctype).Result;
+            ViewBag.PUappcodes = pu_serviceResponse.Data;
+
+            var Um_serviceResponse = _eSyaMMAPIServices.HttpClientServices.GetAsync<List<DO_UnitofMeasure>>("Common/GetUnitofMeasure").Result;
+            ViewBag.UMappcodes = Um_serviceResponse.Data;
+
+            var Ig_serviceResponse = _eSyaMMAPIServices.HttpClientServices.GetAsync<List<DO_ItemGroup>>("Common/GetItemGroup").Result;
+            ViewBag.IGappcodes = Ig_serviceResponse.Data;
+            
+            return View();
+        }
+
+        /// <summary>
+        ///Get Item Category
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetItemCategory(int ItemGroup)
+        {
+            try
+            {
+                var parameter = "?ItemGroup=" + ItemGroup;
+                var serviceResponse = _eSyaMMAPIServices.HttpClientServices.GetAsync<List<DO_ItemCategory>>("Common/GetItemCategory" + parameter).Result;
+                return Json(serviceResponse.Data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        ///Get Item Category
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetItemSubCategory(int ItemCategory)
+        {
+            try
+            {
+                var parameter = "?ItemCategory=" + ItemCategory;
+                var serviceResponse = _eSyaMMAPIServices.HttpClientServices.GetAsync<List<DO_ItemSubCategory>>("Common/GetItemSubCategory" + parameter).Result;
+                return Json(serviceResponse.Data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        ///Get User Master for Grid
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetItemMaster(int ItemGroup, int ItemCategory, int ItemSubCategory)
+        {
+            try
+            {
+                var parameter = "?ItemGroup=" + ItemGroup + "&ItemCategory=" + ItemCategory + "&ItemSubCategory=" + ItemSubCategory;
+                var serviceResponse = _eSyaMMAPIServices.HttpClientServices.GetAsync<List<DO_ItemCodes>>("ItemCodes/GetItemMaster" + parameter).Result;
+                return Json(serviceResponse.Data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        ///Get Item Codes Details
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetItemCodesInfo(int ItemCode)
+        {
+
+            try
+            {
+                var parameter = "?ItemCode=" + ItemCode;
+                var serviceResponse = _eSyaMMAPIServices.HttpClientServices.GetAsync<DO_ItemCodes>("ItemCodes/GetItemCodesInfo" + parameter).Result;
+                return Json(serviceResponse.Data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+
+        }
+
+        /// <summary>
+        /// Insert or Update Item Codes
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertOrUpdateItemCodes(DO_ItemCodes ItemCodes)
+        {
+
+            try
+            {
+                ItemCodes.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                ItemCodes.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                ItemCodes.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                if (ItemCodes.ItemCode == 0)
+                {
+                    var serviceResponse = _eSyaMMAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("ItemCodes/InsertItemCodes", ItemCodes).Result;
+                    if (serviceResponse.Status)
+                        return Json(serviceResponse.Data);
+                    else
+                        return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+                else
+                {
+                    var serviceResponse = _eSyaMMAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("ItemCodes/UpdateItemCodes", ItemCodes).Result;
+                    if (serviceResponse.Status)
+                        return Json(serviceResponse.Data);
+                    else
+                        return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+
+        [Area("eSyaMaterial")]
+        public IActionResult V_1012_00()
+        {
+            ViewBag.formName = "Item Custodian";
+            return View();
+        }
+
+        [Area("eSyaMaterial")]
+        public IActionResult V_1013_00()
+        {
+            ViewBag.formName = "Item Store";
+            return View();
+        }
+
+    }
+}

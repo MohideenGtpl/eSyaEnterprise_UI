@@ -1,0 +1,29 @@
+﻿
+@{
+    ViewData["Title"] = "V_14_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts{ 
+<script src="~/js/Config/BusinessStores.js"></script>
+}
+
+<div class="row">
+
+    <div class="col-lg-3  col-md-3 col-sm-12 col-xs-12">
+        <div class="form-group">
+            <label class="lable-color">Business Segment</label>
+            <div>
+                <select class="selectpicker" data-live-search="false" id="" title="">
+                    <option value="0">Choose Business Segment</option>
+
+                </select>
+            </div>
+        </div>
+    </div>
+ 
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <table id="jqgBusinessStores"></table>
+        <div id="jqpBusinessStores"></div>
+    </div>
+</div>
+

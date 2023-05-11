@@ -1,0 +1,573 @@
+﻿
+@{
+    ViewData["Title"] = "V_274_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-lg-4 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> Business Key</label>
+            <select class="selectpicker" data-live-search="true" id="cboBusinessKey" title="Select" asp-items="@ViewBag.BusinessLocation" onchange="fnGridLoadPatientCategory()"></select>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> Patient Category</label>
+            <select class="selectpicker" data-live-search="true" id="cboPatientCategory" title="Select" asp-items="@ViewBag.PatientCategory" onchange="fnGridLoadPatientCategory()"></select>
+        </div>
+    </div>
+    <div class="col-lg-1 col-md-2 col-sm-6 padtop0">
+        <label>Discount for</label>
+        <div class="radio" style="margin:0px;">
+            <label style="font-size:16px !important;color:#797172 !important">
+                <input type="radio" name="rdoDiscountFor" id="rdoIsOutPatient" value="O" /> OP
+            </label>
+        </div>
+    </div>
+    <div class="col-lg-1 col-md-2 col-sm-6 padtop20">
+        <div class="radio" style="margin:0px;">
+            <label style="font-size:16px !important;color:#797172 !important">
+                <input type="radio" name="rdoDiscountFor" id="rdoIsInPatient" value="I" /> IP
+            </label>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-2 col-sm-6">
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> Discount at</label>
+            <select id="cboDiscountAt" class="selectpicker" data-live-search="true" onchange="fnGridLoadPatientCategory()">
+                <option value="C">Service Class</option>
+                <option value="S">Service Code</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-2 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> Service Group</label>
+            <select class="selectpicker" data-live-search="true" id="cboServiceGroup" title="Select" asp-items="@ViewBag.ServiceGroup" onchange="fnGridLoadPatientCategory()"></select>
+        </div>
+    </div>
+    <div class="col-lg-6 col-md-2 col-sm-6">
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <table id="jqgPatientCategoryDiscount"></table>
+        <div id="jqpPatientCategoryDiscount"></div>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+        <hr />
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button mr-10" id="btnSavePatientCategoryDisc" onclick="fnSavePatientCategoryDiscount()"> Save</button>
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button"> Cancel</button>
+    </div>
+</div>
+<script>
+    var data = new Array();
+    var newrowid;
+    var newrowids;
+
+    $(function () {
+
+        $("#rdoIsOutPatient").prop({ 'checked': true });
+        fnGridLoadPatientCategoryDiscClassWise();
+        $('[name="rdoDiscountFor"]').change(function () {
+            fnGridLoadPatientCategory();
+        });
+    })
+
+    function fnGridLoadPatientCategory() {
+
+        if (IsStringNullorEmpty($("#cboBusinessKey").val()) || IsStringNullorEmpty($("#cboPatientCategory").val())
+            || IsStringNullorEmpty($("#cboDiscountAt").val())|| IsStringNullorEmpty($("#cboServiceGroup").val())
+            || (!$('#rdoIsOutPatient').prop('checked') && !$('#rdoIsInPatient').prop('checked')))
+            return;
+
+        data = null;
+        if ($("#cboDiscountAt").val() == "C")
+            fnGridLoadPatientCategoryDiscClassWise();
+        else {
+
+            //fnGridLoadPatientCategoryDiscServiceWise();
+            //fnGridDataPatientCategoryDiscServiceWise();
+            fnGridLoadPatientCategoryDiscServiceWise();
+        }
+    }
+
+    function fnGridLoadPatientCategoryDiscClassWise() {
+
+        var paramGU = "?businessKey=" + (!IsStringNullorEmpty($("#cboBusinessKey").val) ? $("#cboBusinessKey").val() : 0) +
+            "&patientCategory=" + (!IsStringNullorEmpty($("#cboPatientCategory").val) ? $("#cboPatientCategory").val() : 0) +
+            "&serviceFor=" + ($('#rdoIsOutPatient').prop('checked') ? "O" : $('#rdoIsInPatient').prop('checked') ? "I" : null) +
+            "&serviceGroupId=" + (!IsStringNullorEmpty($("#cboServiceGroup").val) ? $("#cboServiceGroup").val() : 0);
+
+        $('#jqgPatientCategoryDiscount').jqGrid('GridUnload');
+        $("#jqgPatientCategoryDiscount").jqGrid({
+            url: getBaseURL() + '/CustomerAttributes/GetPatientCatDiscClassByBkPtCatSfSg' + paramGU,
+            mtype: 'Post',
+            datatype: 'json',
+            ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+            async: false,
+            jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+            colNames: ["", "Service Class", "Discount Rule", "Discount", "Status"],
+            colModel: [
+                { name: "ServiceClass", width: 10, editable: false, hidden: true, align: 'left', resizable: true },
+                { name: "ServiceClassDesc", width: 120, editable: false, align: 'left', hidden: false },
+                { name: "DiscountRule", width: 25, editable: true, align: 'left', hidden: false, edittype: "select", formatter: 'select', editoptions: { value: "F: Fixed;E: Entered;V: Varriable" } },
+                { name: "DiscountPercent", width: 20, editable: true, align: 'right', resizable: false, editoption: { 'text-align': 'right', maxlength: 5 }, sorttype: "float", formatter: "number" },
+                { name: "ActiveStatus", editable: true, width: 20, edittype: "checkbox", align: 'center', formatter: 'checkbox', editoptions: { value: "true:false" } }
+            ],
+            rowNum: 10,
+            rowList: [10, 20, 50, 100],
+            loadonce: true,
+            pager: "#jqpPatientCategoryDiscount",
+            viewrecords: true,
+            gridview: true,
+            rownumbers: true,
+            height: 'auto',
+            align: "left",
+            width: 'auto',
+            autowidth: true,
+            shrinkToFit: false,
+            cellEdit: true,
+            cellsubmit: 'clientArray',
+            onSelectRow: function (id) {
+                if (id) { $('#jqgPatientCategoryDiscount').jqGrid('editRow', id, true); }
+            },
+        }).jqGrid('navGrid', '#jqpPatientCategoryDiscount', { add: false, edit: false, search: false, del: false, refresh: false });
+
+        fnAddGridSerialNoHeading();
+
+        $("#jqgPatientCategoryDiscount").sortGrid('ServiceClassDesc', false, 'asc');
+    }
+
+    function fnGridLoadPatientCategoryDiscServiceWise_Old() {
+
+        $('#jqgPatientCategoryDiscount').jqGrid('GridUnload');
+        $("#jqgPatientCategoryDiscount").jqGrid({
+            url: getBaseURL() + '/CustomerAttributes/GetServiceClassBySrGroupId?serviceGroupId=' + (!IsStringNullorEmpty($("#cboServiceGroup").val) ? $("#cboServiceGroup").val() : 0),
+            datatype: "json",
+            contenttype: "application/json; charset-utf-8",
+            mtype: 'GET',
+            jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+            colNames: ["Service Class Id", "Service Class"],
+            colModel: [
+                { name: "ServiceClassId", width: 80, editable: false, align: 'left', hidden: true },
+                { name: "ServiceClassDesc", width: 300, editable: false, align: 'left', hidden: false }
+            ],
+            rowNum: 10,
+            loadonce: true,
+            rowList: [10, 20, 50, 100],
+            pager: "#jqpPatientCategoryDiscount",
+            viewrecords: true,
+            gridview: true,
+            rownumbers: true,
+            height: 'auto',
+            align: "left",
+            width: 'auto',
+            autowidth: true,
+            onSelectRow: function (rowid) {
+
+                if (newrowid != undefined) {
+                    $("#jqgPatientCategoryDiscount #" + newrowid + ":first").css({ background: '' });
+                }
+                newrowid = rowid;
+            },
+            loadComplete: function (data) {
+
+                //SetGridControlByAction("gvProcessRule");
+                //$("#jqgPatientCategoryDiscount").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+
+            },
+            subGrid: true,
+            subGridRowExpanded: function (subId, rowId) {
+                var selArray = new Array();
+                //var subRowId;
+                function returnData() {
+
+                    var serviceClassId = $("#jqgPatientCategoryDiscount").getRowData(rowId).ServiceClassId;
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].ServiceClass == serviceClassId) {
+                            selArray.push(data[i]);
+                        }
+                    }
+                    return selArray;
+                }
+                var subData = {
+                    page: 1,
+                    rows: returnData(),
+                    records: selArray.length,
+                };
+                var subGridTableId;
+                var subGridDivId;
+                var subGridWidth = $("#jqgPatientCategoryDiscount").width() - 51;
+                subGridTableId = subId + "_t";
+                subGridIdGlobal = subGridTableId;
+                subGridDivId = subId + "_d";
+                $("#" + subId).html("<table id='" + subGridTableId + "'></table><div id='" + subGridDivId + "'></div>");
+                $("#" + subGridTableId).jqGrid({
+
+                    colNames: ["Service Class Id", "Service Code", "Service Description", "Discount Rule", "Discount", "Status"],
+                    colModel: [
+                        { name: "ServiceClass", hidden: true },
+                        { name: "ServiceCode", width: 30, editable: false, hidden: true, align: 'left', resizable: true },
+                        { name: "ServiceDesc", width: 70, editable: false, align: 'left', hidden: false },
+                        { name: "DiscountRule", width: 20, editable: true, align: 'left', hidden: false, edittype: "select", formatter: 'select', editoptions: { value: "F: Fixed;E: Entered;V: Varriable" } },
+                        { name: "DiscountPercent", width: 20, editable: true, align: 'right', resizable: false, editoption: { 'text-align': 'right', maxlength: 5 }, sorttype: "float", formatter: "number" },
+                        { name: "ActiveStatus", editable: true, width: 20, edittype: "checkbox", align: 'center', formatter: 'checkbox', editoptions: { value: "true:false" } }
+                    ],
+                    pager: "#" + subGridDivId,
+                    rowNum: 20,
+                    rowList: [20, 40],
+                    viewrecords: true,
+                    recordtext: "Showing records {0} to {1} of {2}",
+                    gridview: true,
+                    rownumbers: true,
+                    datatype: 'local',
+                    height: 'auto',
+                    width: subGridWidth,
+                    cellEdit: true,
+                    cellsubmit: 'clientArray',
+                    onSelectRow: function (rowids) {
+                        subRowId = rowids;
+
+                        if (newrowids != undefined) {
+                            $("#" + subGridTableId + " #" + newrowids).css({ background: '' });
+                        }
+
+                        $("#" + subGridTableId + " #" + rowids).css({ background: '#F9D953 url("images/ui-bg_flat_55_fbec88_40x100.png") 50% 50% repeat-x', color: '#000' });
+                        newrowids = rowids;
+                    },
+                    loadComplete: function () {
+                        //$("#" + subGridTableId).setGridParam({ datatype: 'local', data: returnData(), page: 1 }).trigger('reloadGrid');
+                    },
+                }).jqGrid('navGrid', '#' + subGridDivId, { add: false, edit: false, search: false, del: false, refresh: false });
+                $("#" + subGridTableId)[0].addJSONData(subData);
+                //SetSubGridControlByAction(subGridTableId);
+            }
+
+        }).jqGrid('navGrid', "#jqgPatientCategoryDiscount", { add: false, edit: false, search: false, del: false, refresh: false });
+    }
+
+    function fnGridDataPatientCategoryDiscServiceWise() {
+
+        var paramGU = "?businessKey=" + (!IsStringNullorEmpty($("#cboBusinessKey").val) ? $("#cboBusinessKey").val() : 0) +
+            "&patientCategory=" + (!IsStringNullorEmpty($("#cboPatientCategory").val) ? $("#cboPatientCategory").val() : 0) +
+            "&serviceFor=" + ($('#rdoIsOutPatient').prop('checked') ? "O" : $('#rdoIsInPatient').prop('checked') ? "I" : null) +
+            "&serviceGroupId=" + (!IsStringNullorEmpty($("#cboServiceGroup").val) ? $("#cboServiceGroup").val() : 0);
+
+        $.ajax({
+            url: getBaseURL() + "/CustomerAttributes/GetPatientCatDiscServiceByBkPtCatSfSc" + paramGU,
+            type: 'post',
+            datatype: 'json',
+            async: false,
+            success: function (result) {
+                console.log(result);
+                data = result;
+            },
+            error: function (error) { alert(error.status) }
+        });
+    }
+
+    function fnGridLoadPatientCategoryDiscServiceWise() {
+        var paramGU = "?businessKey=" + (!IsStringNullorEmpty($("#cboBusinessKey").val) ? $("#cboBusinessKey").val() : 0) +
+            "&patientCategory=" + (!IsStringNullorEmpty($("#cboPatientCategory").val) ? $("#cboPatientCategory").val() : 0) +
+            "&serviceFor=" + ($('#rdoIsOutPatient').prop('checked') ? "O" : $('#rdoIsInPatient').prop('checked') ? "I" : null) +
+            "&serviceGroupId=" + (!IsStringNullorEmpty($("#cboServiceGroup").val) ? $("#cboServiceGroup").val() : 0);
+
+        var prevCellVal = { cellId: undefined, value: undefined };
+
+        $('#jqgPatientCategoryDiscount').jqGrid('GridUnload');
+        $("#jqgPatientCategoryDiscount").jqGrid({
+            url: getBaseURL() + '/CustomerAttributes/GetPatientCatDiscServiceByBkPtCatSfSc' + paramGU,
+            mtype: 'Post',
+            datatype: 'json',
+            ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+            async: false,
+            jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+            colNames: ["Service Class", "Service Class Id", "Service Code", "Service Description", "Discount Rule", "Discount", "Status"],
+            colModel: [
+                {
+                    name: "ServiceClassDesc", width: 70, editable: false, align: 'left', hidden: false,
+                    cellattr: function (rowId, val, rawObject, cm, rdata) {
+                        var result;
+                        var cellId = this.id + '_row_' + rawObject["ServiceClass"] + $('#jqgPatientCategoryDiscount').getGridParam('page');
+
+                        if (prevCellVal.cellId == cellId) {
+                            result = ' style="display: none" rowspanid="' + prevCellVal.cellId + '"';
+                        }
+                        else {
+
+                            result = ' rowspan="1" id="' + cellId + '"';
+                            prevCellVal = { cellId: cellId, value: val };
+                        }
+
+                        return result;
+                    }
+                },
+                { name: "ServiceClass", hidden: true },
+                { name: "ServiceCode", width: 30, editable: false, hidden: true, align: 'left', resizable: true },
+                { name: "ServiceDesc", width: 70, editable: false, align: 'left', hidden: false },
+                { name: "DiscountRule", width: 20, editable: true, align: 'left', hidden: false, edittype: "select", formatter: 'select', editoptions: { value: "F: Fixed;E: Entered;V: Varriable" } },
+                { name: "DiscountPercent", width: 20, editable: true, align: 'right', resizable: false, editoption: { 'text-align': 'right', maxlength: 5 }, sorttype: "float", formatter: "number" },
+                { name: "ActiveStatus", editable: true, width: 20, edittype: "checkbox", align: 'center', formatter: 'checkbox', editoptions: { value: "true:false" } }
+            ],
+            rowNum: 10,
+            rowList: [10, 20, 50, 100],
+            loadonce: true,
+            pager: "#jqpPatientCategoryDiscount",
+            viewrecords: true,
+            gridview: true,
+            rownumbers: true,
+            height: 'auto',
+            align: "left",
+            width: 'auto',
+            autowidth: true,
+            shrinkToFit: false,
+            cellEdit: true,
+            cellsubmit: 'clientArray',
+            onSelectRow: function (id) {
+                if (id) { $('#jqgPatientCategoryDiscount').jqGrid('editRow', id, true); }
+            },
+            gridComplete: function () {
+                var grid = this;
+
+                $('td[rowspan="1"]', grid).each(function () {
+                    var spans = $('td[rowspanid="' + this.id + '"]', grid).length + 1;
+
+                    if (spans > 1) {
+                        $(this).attr('rowspan', spans);
+                    }
+                });
+            },
+        }).jqGrid('navGrid', '#jqpPatientCategoryDiscount', { add: false, edit: false, search: false, del: false, refresh: false });
+
+        fnAddGridSerialNoHeading();
+    }
+
+    function fnSavePatientCategoryDiscount() {
+
+        if ($("#cboDiscountAt").val() == "C")
+            fnSavePatientCategoryServiceClassWise();
+        else {
+
+            fnSavePatientCategoryServiceWise();
+        }
+    }
+
+    function fnSavePatientCategoryServiceWise_Old() {
+
+        $("#" + subGridIdGlobal).jqGrid('editCell', 0, 0, false);
+
+        if (IsStringNullorEmpty($("#cboBusinessKey").val()) || $("#cboBusinessKey").val() == 0) {
+            toastr.warning("Please Select Business Location");
+            return false;
+        }
+        if (IsStringNullorEmpty($("#cboPatientCategory").val()) || $("#cboPatientCategory").val() == 0) {
+            toastr.warning("Please Select Patient Category");
+            return false;
+        }
+        if (IsStringNullorEmpty($("#cboDiscountAt").val()) || $("#cboDiscountAt").val() == 0) {
+            toastr.warning("Please Select Discount At");
+            return false;
+        }
+        if (IsStringNullorEmpty($("#cboServiceGroup").val()) || $("#cboServiceGroup").val() == 0) {
+            toastr.warning("Please Select Service Group");
+            return false;
+        }
+
+        if (!$("#chkIsOutPatient").parent().hasClass("is-checked") && !$("#chkIsInPatient").parent().hasClass("is-checked")) {
+            toastr.warning("Please Select Discount For");
+            return false;
+        }
+
+        $("#btnSavePatientCategoryDisc").attr("disabled", true);
+
+        var obj = [];
+        var gvT = $("#" + subGridIdGlobal).getRowData();
+        for (var i = 0; i < gvT.length; ++i) {
+            if (!IsStringNullorEmpty(gvT[i]['ServiceCode'])) {
+                var pc_ds = {
+                    BusinessKey: $('#cboBusinessKey').val(),
+                    PatientCategory: $('#cboPatientCategory').val(),
+                    ServiceFor: $("#chkIsOutPatient").parent().hasClass("is-checked") ? "O" : "I",
+                    ServiceCode: gvT[i]['ServiceCode'],
+                    DiscountRule: gvT[i]['DiscountRule'].substr(0, 1),
+                    DiscountPercent: gvT[i]['DiscountPercent'],
+                    ActiveStatus: gvT[i]['ActiveStatus']
+                }
+                obj.push(pc_ds);
+            }
+        }
+        $.ajax({
+            url: getBaseURL() + '/CustomerAttributes/InsertOrUpdatePatientCatDiscService',
+            type: 'POST',
+            datatype: 'json',
+            data: { pc_ds: obj },
+            success: function (response) {
+                if (response.Status === true) {
+
+                    fnGridDataPatientCategoryDiscServiceWise();
+                    setTimeout(function () {
+                        $("#jqgPatientCategoryDiscount").collapseSubGridRow(newrowids);
+                        $("#jqgPatientCategoryDiscount").expandSubGridRow(newrowids);
+                    }, 1000);
+                    toastr.success(response.Message);
+                }
+                else {
+                    toastr.error(response.Message);
+                }
+                $("#btnSavePatientCategoryDisc").attr("disabled", false);
+            },
+            error: function (error) {
+                toastr.error(error.statusText);
+                $("#btnSavePatientCategoryDisc").attr("disabled", false);
+            }
+        });
+
+        $("#btnSavePatientCategoryDisc").attr("disabled", false);
+    }
+
+    function fnSavePatientCategoryServiceWise() {
+
+        $("#jqgPatientCategoryDiscount").jqGrid('editCell', 0, 0, false);
+
+        if (IsStringNullorEmpty($("#cboBusinessKey").val()) || $("#cboBusinessKey").val() == 0) {
+            toastr.warning("Please Select Business Location");
+            return false;
+        }
+        if (IsStringNullorEmpty($("#cboPatientCategory").val()) || $("#cboPatientCategory").val() == 0) {
+            toastr.warning("Please Select Patient Category");
+            return false;
+        }
+        if (IsStringNullorEmpty($("#cboDiscountAt").val()) || $("#cboDiscountAt").val() == 0) {
+            toastr.warning("Please Select Discount At");
+            return false;
+        }
+        if (IsStringNullorEmpty($("#cboServiceGroup").val()) || $("#cboServiceGroup").val() == 0) {
+            toastr.warning("Please Select Service Group");
+            return false;
+        }
+
+        if (!$('#rdoIsOutPatient').prop('checked') && !$('#rdoIsInPatient').prop('checked')) {
+            toastr.warning("Please Select Discount For");
+            return false;
+        }
+
+        $("#btnSavePatientCategoryDisc").attr("disabled", true);
+
+        var obj = [];
+        var gvT = $("#jqgPatientCategoryDiscount").getRowData();
+        for (var i = 0; i < gvT.length; ++i) {
+            if (!IsStringNullorEmpty(gvT[i]['ServiceCode'])) {
+                var pc_ds = {
+                    BusinessKey: $('#cboBusinessKey').val(),
+                    PatientCategory: $('#cboPatientCategory').val(),
+                    ServiceFor: $('#rdoIsOutPatient').prop('checked') ? "O" : "I",
+                    ServiceCode: gvT[i]['ServiceCode'],
+                    DiscountRule: gvT[i]['DiscountRule'].substr(0, 1),
+                    DiscountPercent: gvT[i]['DiscountPercent'],
+                    ActiveStatus: gvT[i]['ActiveStatus']
+                }
+                obj.push(pc_ds);
+            }
+        }
+        $.ajax({
+            url: getBaseURL() + '/CustomerAttributes/InsertOrUpdatePatientCatDiscService',
+            type: 'POST',
+            datatype: 'json',
+            data: { pc_ds: obj },
+            success: function (response) {
+                if (response.Status === true) {
+
+                    fnGridRefreshPatientCategoryServiceClassWise();
+                    toastr.success(response.Message);
+                }
+                else {
+                    toastr.error(response.Message);
+                }
+                $("#btnSavePatientCategoryDisc").attr("disabled", false);
+            },
+            error: function (error) {
+                toastr.error(error.statusText);
+                $("#btnSavePatientCategoryDisc").attr("disabled", false);
+            }
+        });
+
+        $("#btnSavePatientCategoryDisc").attr("disabled", false);
+    }
+
+    function fnSavePatientCategoryServiceClassWise() {
+
+        $("#jqgPatientCategoryDiscount").jqGrid('editCell', 0, 0, false);
+
+        if (IsStringNullorEmpty($("#cboBusinessKey").val()) || $("#cboBusinessKey").val() == 0) {
+            toastr.warning("Please Select Business Location");
+            return false;
+        }
+        if (IsStringNullorEmpty($("#cboPatientCategory").val()) || $("#cboPatientCategory").val() == 0) {
+            toastr.warning("Please Select Patient Category");
+            return false;
+        }
+        if (IsStringNullorEmpty($("#cboDiscountAt").val()) || $("#cboDiscountAt").val() == 0) {
+            toastr.warning("Please Select Discount At");
+            return false;
+        }
+        if (IsStringNullorEmpty($("#cboServiceGroup").val()) || $("#cboServiceGroup").val() == 0) {
+            toastr.warning("Please Select Service Group");
+            return false;
+        }
+
+        if (!$('#rdoIsOutPatient').prop('checked') && !$('#rdoIsInPatient').prop('checked')) {
+            toastr.warning("Please Select Discount For");
+            return false;
+        }
+
+        $("#btnSavePatientCategoryDisc").attr("disabled", true);
+
+        var obj = [];
+        var gvT = $('#jqgPatientCategoryDiscount').jqGrid('getRowData');
+        for (var i = 0; i < gvT.length; ++i) {
+            if (!IsStringNullorEmpty(gvT[i]['ServiceClass'])) {
+                var pc_dc = {
+                    BusinessKey: $('#cboBusinessKey').val(),
+                    PatientCategory: $('#cboPatientCategory').val(),
+                    ServiceFor: $('#rdoIsOutPatient').prop('checked') ? "O" : "I",
+                    ServiceClass: gvT[i]['ServiceClass'],
+                    DiscountRule: gvT[i]['DiscountRule'].substr(0, 1),
+                    DiscountPercent: gvT[i]['DiscountPercent'],
+                    ActiveStatus: gvT[i]['ActiveStatus']
+                }
+                obj.push(pc_dc);
+            }
+        }
+        $.ajax({
+            url: getBaseURL() + '/CustomerAttributes/InsertOrUpdatePatientCatDiscClass',
+            type: 'POST',
+            datatype: 'json',
+            data: { pc_dc: obj },
+            success: function (response) {
+                if (response.Status === true) {
+
+                    fnGridRefreshPatientCategoryServiceClassWise();
+                    toastr.success(response.Message);
+                }
+                else {
+                    toastr.error(response.Message);
+                }
+                $("#btnSavePatientCategoryDisc").attr("disabled", false);
+            },
+            error: function (error) {
+                toastr.error(error.statusText);
+                $("#btnSavePatientCategoryDisc").attr("disabled", false);
+            }
+        });
+
+        $("#btnSavePatientCategoryDisc").attr("disabled", false);
+    }
+
+    function fnGridRefreshPatientCategoryServiceClassWise() {
+        $("#jqgPatientCategoryDiscount").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid')
+    }
+
+</script>
+

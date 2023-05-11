@@ -1,0 +1,111 @@
+﻿$(document).ready(function () {
+     
+        fnLoadGridBankMaster()
+  
+});
+
+function fnLoadGridBankMaster() {
+    $("#jqgBankMaster").jqGrid({
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Bank Name", "Bank Account No", "Branch name ", "Branch Address", "Bank Charges","Active Status", ""],
+        colModel: [
+            { name: "BankName", width: 150, align: 'left', editable: true, editoptions: { maxlength: 6 }, resizable: false, hidden: false },
+            { name: "BankAccountNo", width: 110, align: 'left', editable: true, editoptions: { maxlength: 6 }, resizable: false, hidden: false },
+            { name: "BranchName", width: 110, align: 'left', editable: true, editoptions: { maxlength: 50 }, resizable: false, hidden: false },
+            { name: "BranchAddress", width: 120, align: 'left', editable: true, editoptions: { maxlength: 50 }, resizable: false },
+            { name: "BranchCharges", width: 80, align: 'left', editable: true, editoptions: { maxlength: 50 }, resizable: false },
+            { name: "ActiveStatus", width: 65, editable: true, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            {
+                name: 'edit', search: false, align: 'left', width: 88, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditEmpDetails(event,\'edit\');"><i class="fa fa-edit"></i>' + 'Edit' + '</button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnEditEmpDetails(event,\'view\');"><i class="far fa-eye"></i>' + 'View' + '</button>'
+                }
+            },
+        ],
+        pager: "#jqpBankMaster",
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        scroll: false,
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        forceFit: false,
+
+    }).jqGrid('navGrid', '#jqpBankMaster', { add: false, edit: false, search: false, del: false, refresh: false, refreshtext: 'Reload' }).jqGrid('navButtonAdd', '#jqpBankMaster', {
+        caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshBankMaster
+    }).jqGrid('navButtonAdd', '#jqpBankMaster', {
+        caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddBankMaster
+    });
+
+     
+    fnAddGridSerialNoHeading();
+
+}
+
+function fnAddBankMaster() {
+    fnLoadGridBankCurrentDetail();
+    $("#PopupBankMaster").modal('show');
+}
+
+
+function fnGridRefreshBankMaster() {
+    $("#jqgBankMaster").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+
+
+function fnLoadGridBankCurrentDetail() {
+    $("#jqgBankCurrentDetail").jqGrid({
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Bank ID","Currency","Active Status"],
+        colModel: [
+            { name: "BankID", width: '150', align: 'left', editable: true, editoptions: { maxlength: 6 }, resizable: false, hidden: true},
+            { name: "Currency",width: '150', align: 'left', editable: true, editoptions: { maxlength: 6 }, resizable: false, hidden: false },
+            { name: "ActiveStatus", width: '150', editable: true, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+             
+        ],
+        pager: "#jqpBankCurrentDetail",
+        rowNum: 100000,
+        pgbuttons: null,
+        pgtext: null,
+        loadonce: true,
+        viewrecords: false,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        scroll: false,
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        forceFit: false,
+
+    }).jqGrid('navGrid', '#jqpBankCurrentDetail', { add: false, edit: false, search: false, del: false, refresh: false, refreshtext: 'Reload' }) 
+    $("#jqgBankCurrentDetail").jqGrid('inlineNav', '#jqpBankCurrentDetail',{
+        edit: true,
+        edittext: "Edit",
+        add: true,
+        addicon: 'fa fa-plus',
+        addtext: 'Add',
+        deltext: 'Delete',
+        editicon: 'fa fa-pen',
+        del: false,
+        search: false,
+        searchicon: 'fa fa-search',
+        save: true,
+        saveicon: 'fa fa-save',
+        savetext: 'Save',
+        cancel: true,
+        canceltext: 'Cancel',
+        cancelicon: 'fa fa-times'
+    });
+
+
+    fnAddGridSerialNoHeading();
+
+}

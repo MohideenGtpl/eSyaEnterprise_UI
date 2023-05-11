@@ -1,0 +1,129 @@
+﻿
+@{
+    ViewData["Title"] = "V_41_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts{
+<script src="~/js/Config/StoreMaster.js"></script>
+}
+
+
+<div class="row padbot10">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <table id="jqgStoreMaster"></table>
+        <div id="jqpStoreMaster"></div>
+    </div>
+</div>
+
+<div class="modal fade in" id="PopupStoreMaster">
+    <div class="modal-dialog modal-lg  " role="document" style="box-shadow:none;">
+        <div class="modal-content ">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Add Store</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <input type="text" class="form-control" id="txtCodeType" style="display:none">
+                    </div>
+                </div>
+                <div class="row padbot4">
+                    <div class="col-lg-3  col-md-3 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            <label class="lable-color"> Store Type</label>
+                            <select class="selectpicker" data-live-search="false" id="" title="Choose Store Type"></select>
+                        </div>
+                    </div>
+                    <div class="col-lg-9 col-md-9 col-sm-6">
+                        <div class="form-group">
+                            <label for="txtStoreDescription">Store Description</label>
+                            <input id="txtStoreDescription" class="form-control" maxlength="50" type="text" />
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12">
+                        <p class="subheading">Parameters</p>
+                        <hr class="left" />
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                        <div class="default-checkbox pad0">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsMaterial">
+                                <input type="checkbox" id="chkIsMaterial" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">Is Material ?</span>
+                            </label>
+                        </div>
+                        <div class="default-checkbox pad0">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsPharmacy">
+                                <input type="checkbox" id="chkIsPharmacy" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">Is Pharmacy ?</span>
+                            </label>
+                        </div>
+                        <div class="default-checkbox pad0">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsCafeteria">
+                                <input type="checkbox" id="chkIsCafeteria" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">Is Cafeteria ?</span>
+                            </label>
+                        </div>
+                        <div class="default-checkbox pad0">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsFandB">
+                                <input type="checkbox" id="chkIsFandB" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">Is F and B ?</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                        <div class="default-checkbox pad0">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsCustodian">
+                                <input type="checkbox" id="chkIsCustodian" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">Is Custodian ?</span>
+                            </label>
+                        </div>
+                        <div class="default-checkbox pad0">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsAccountingStore">
+                                <input type="checkbox" id="chkIsAccountingStore" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">Is Accounting Store ?</span>
+                            </label>
+                        </div>
+                        <div class="default-checkbox pad0">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsConsumptionStore">
+                                <input type="checkbox" id="chkIsConsumptionStore" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">Is Consumption Store ?</span>
+                            </label>
+                        </div>
+                        <div class="default-checkbox pad0">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsStationary">
+                                <input type="checkbox" id="chkIsStationary" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">Is Stationary ?</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12"></div>
+                    <div class="col-lg-2  col-md-3 col-sm-12 col-xs-12 padtop15">
+                        <div class="form-group">
+                            <label class="lable-color">Status</label>
+
+                            <select class="selectpicker" data-live-search="false" id="cboActiveStatus" title="">
+                                <option value="true">Active</option>
+                                <option value="false">Inactive</option>
+                            </select>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveStoreMaster">
+                            Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal"> Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

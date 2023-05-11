@@ -1,0 +1,555 @@
+﻿body {
+}
+div[class*='col']{
+    padding-right:0.5rem !important;
+    padding-left:0.5rem !important;
+}
+.default_checkbox_inline {
+    display: inline-flex;
+    align-items: end;
+}
+.default_checkbox_inline label{display:inline; padding-right:10px; width:100px;}
+
+.wrapByBox {
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0px 0px 2px rgba(0,0,0,0.2);
+    margin: 4px 0px 0px 0px;
+    margin-bottom: 0px;
+    padding: 5px 10px;
+    box-shadow: rgba(0, 0, 0, 0.18) 0px 2px 4px;
+}
+.wrapByRow {
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0px 0px 2px rgba(0,0,0,0.2);
+    margin: 4px 15px 0px 15px;
+    margin-bottom: 0px;
+    padding: 5px 10px;
+    box-shadow: rgba(0, 0, 0, 0.18) 0px 2px 4px;
+}
+hr.left {
+    border-radius: 0px;
+    height: 2px;
+    background-color: #fbd427;
+    width: 75px;
+    margin: 2px 0px !important;
+}
+.divFixedBar .labelname {
+    font-size: 11px;
+    font-weight: 400;
+    color: #a49f9f;
+ }
+.table-borderless input[type="checkbox"], .table-borderless  div{
+    display: inline;
+}
+.table-borderless tbody + tbody, .table-borderless td, .table-borderless th, .table-borderless thead th{
+    padding:2.5px 5px;
+}
+.pageSection{
+    margin-bottom:15px;
+}
+#mainContent {
+   scroll-behavior: smooth;
+   background: #fff;
+   position: relative;
+   right: 0px;
+   overflow-y: auto;
+   overflow-x: hidden;
+   z-index: 1;
+   padding: 0px 15px 0px 15px;
+   display: block;
+   margin-right: 68px;
+   width:100%;
+}
+#floatButtons{
+    position:absolute;
+    right:0px;
+  }
+#floatButtons .btntext {
+    font-size: 11px !important;
+}
+#floatButtons button {
+    display: block;
+    height: 65px !important;
+    text-align: center;
+    font-size: 12px !important;
+    border-bottom: 1px solid #e8e8e8;
+    margin: 0px 2px 10px 0px;
+    width: 65px;
+    padding: 0px 0px;
+    border-radius: 0px;
+    white-space: nowrap;
+}
+#floatButtons button svg {
+    display: block;
+    font-size: 22px;
+    margin: auto;
+    color:#505050 !important
+}
+.divFixedBar {
+position: fixed;
+top: 107px;
+height: auto;
+border-bottom: 1px solid #ccc;
+width: 100%;
+margin: 0px -15px;
+}
+.divFixedBar p:not(span) {
+    margin: 0px 0px;
+    display: block;
+    padding: 0px 0px 0px;
+}
+.pageSection h4 {
+    color: #5d5d5d;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin:0px;
+}
+
+@media only screen and (min-width:299px) and (max-width:767px) {
+    .wrapByBox label, td, th, .mdl-radio__label {
+        font-size: 11px !important;
+    }
+    
+    [id^="lbl"] {
+        color: #626262;
+        font-weight: 600;
+        letter-spacing: 0.75px;
+        font-size: 11px;
+    }
+    .sidebar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        z-index: 100;
+        padding: 0px 0 0;
+        border-right: 1px solid #fafafa;
+        border-radius: 0px 0px;
+        background: #fafafa;
+       
+    }
+    .flex-column{
+        flex-direction:row !important;
+    }
+    .sidebar .nav-link {
+        font-weight: 600;
+        color: #797172;
+        letter-spacing: 1px;
+        padding: 5px 15px 5px 0px;
+        border-right: 4px solid transparent;
+        font-size: 11px;
+    }
+    .sidebar .nav-link.active,
+    .sidebar .nav-link:hover {
+        color: #fbd626;
+        border-right: 0px solid #fbd227;
+        background: transparent;
+    }
+}
+@media only screen and (min-width:768px) {
+    .default_checkbox_inline label {
+        width: 80px;
+    
+        padding: 5px 0px;
+        margin: 0px 20px 0px 0px;
+    }
+
+            .divFixedBar p:not(span) {
+                font-size: 12px;
+            }
+
+            [id^="lbl"] {
+                color: #626262;
+                font-weight: 600;
+                letter-spacing: 0.75px;
+                font-size: 11px;
+            }
+
+            .buttonSection {
+                margin-right: 15px !important;
+                position: relative;
+                display: inline-block;
+                position: absolute;
+                right: 0px;
+                cursor: pointer;
+            }
+
+            .buttonSection .fa-save {
+                color: green;
+            }
+
+            .sidebar-sticky .svg-inline--fa {
+                width: 16px;
+                height: 16px;
+                vertical-align: text-bottom;
+                color: #999;
+                transition: 0.3s ease-in-out;
+            }
+
+            .sidebar-sticky .nav-link:hover .svg-inline--fa {
+                color: black;
+            }
+            /** Sidebar */
+            ul {
+                font-size: 12px;
+            }
+
+            .sidebar {
+                width: 220px;
+                position: fixed;
+                top: 143px;
+                bottom: 0;
+                left: 0;
+                z-index: 100; /* Behind the navbar */
+                padding: 0px 0 0; /* Height of navbar */
+                border-right: 1px solid #fafafa;
+                border-radius: 0px 0px;
+                background: #fafafa;
+            }
+
+            .sidebar-sticky {
+                position: relative;
+                top: 0;
+                height: calc(100vh - 48px);
+                padding-top: 0rem;
+                overflow-x: hidden;
+                overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+            }
+
+            @supports ((position: -webkit-sticky) or (position: sticky)) {
+                .sidebar-sticky {
+                    position: -webkit-sticky;
+                    position: sticky;
+                }
+            }
+
+            .sidebar .nav-item {
+                margin-left: 0px;
+            }
+
+            .sidebar .nav-link {
+                font-weight: 600;
+                color: #797172;
+                letter-spacing: 1px;
+                padding-left: 7px;
+                border-right: 4px solid transparent;
+            }
+
+            .sidebar .nav-link .feather {
+                margin-right: 4px;
+                color: #999;
+            }
+
+            .sidebar .nav-link.active, .sidebar .nav-link:hover {
+                color: #4d4d4d;
+                border-right: 4px solid #fbd227;
+                background: linear-gradient(to left,#fff6c9,#fffefb);
+            }
+
+            .sidebar .nav-link:hover .feather,
+            .sidebar .nav-link.active .feather {
+                color: inherit;
+            }
+
+            .sidebar-heading {
+                font-size: .75rem;
+                text-transform: uppercase;
+            }
+
+            /** Content*/
+
+            [role="main"] {
+                padding-top: 48px; /* Space for fixed navbar */
+            }
+
+        /** Navbar*/
+
+        .navbar .form-control {
+            padding: .75rem 1rem;
+            border-width: 0;
+            border-radius: 0;
+        }
+
+        .form-control-dark {
+            color: #fff;
+            background-color: rgba(255, 255, 255, .1);
+            border-color: rgba(255, 255, 255, .1);
+        }
+
+        .form-control-dark:focus {
+            border-color: transparent;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
+        }
+    }
+
+@media only screen and (min-width:992px) {
+    .default_checkbox_inline label {
+        width: 90px;
+        padding: 5px 0px;
+        margin: 0px 20px 0px 0px;
+    }
+
+        [id^="lbl"] {
+            color: #626262;
+            font-weight: 600;
+            letter-spacing: 0.75px;
+            font-size: 11px;
+        }
+
+        .buttonSection {
+            margin-right: 15px !important;
+            position: relative;
+            display: inline-block;
+            position: absolute;
+            right: 0px;
+            cursor: pointer;
+        }
+
+        .buttonSection .fa-save {
+            color: green;
+        }
+
+        .sidebar-sticky .svg-inline--fa {
+            width: 16px;
+            height: 16px;
+            vertical-align: text-bottom;
+            color: #999;
+            transition: 0.3s ease-in-out;
+        }
+
+        .sidebar-sticky .nav-link:hover .svg-inline--fa {
+            color: black;
+        }
+        /*
+ * Sidebar
+ */
+        ul {
+            font-size: 12px;
+        }
+
+        .sidebar {
+            width: 220px;
+            position: fixed;
+            top: 330px;
+            bottom: 0;
+            left: 0;
+            z-index: 100; /* Behind the navbar */
+            padding: 0px 0 0; /* Height of navbar */
+            border-right: 0px solid #fafafa;
+            border-radius: 0px 0px;
+            background: #fafafa;
+        }
+
+        .sidebar-sticky {
+            position: relative;
+            top: 0;
+            height: calc(100vh - 48px);
+            padding-top: .5rem;
+            overflow-x: hidden;
+            overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+        }
+
+        @supports ((position: -webkit-sticky) or (position: sticky)) {
+            .sidebar-sticky {
+                position: -webkit-sticky;
+                position: sticky;
+            }
+        }
+
+        .sidebar .nav-item {
+            margin-left: 0px;
+        }
+
+        .sidebar .nav-link {
+            font-weight: 600;
+            color: #797172;
+            letter-spacing: 1px;
+            padding-left: 7px;
+            border-right: 4px solid transparent;
+        }
+
+            .sidebar .nav-link .feather {
+                margin-right: 4px;
+                color: #999;
+            }
+
+            .sidebar .nav-link.active, .sidebar .nav-link:hover {
+                color: #4d4d4d;
+                border-right: 4px solid #fbd227;
+                background: linear-gradient(to left,#fff6c9,#fffefb);
+            }
+
+                .sidebar .nav-link:hover .feather,
+                .sidebar .nav-link.active .feather {
+                    color: inherit;
+                }
+
+        .sidebar-heading {
+            font-size: .75rem;
+            text-transform: uppercase;
+        }
+
+        /*
+ * Content
+ */
+
+        [role="main"] {
+            padding-top: 48px; /* Space for fixed navbar */
+        }
+
+        /*
+ * Navbar
+ */
+  
+        .navbar .form-control {
+            padding: .75rem 1rem;
+            border-width: 0;
+            border-radius: 0;
+        }
+
+        .form-control-dark {
+            color: #fff;
+            background-color: rgba(255, 255, 255, .1);
+            border-color: rgba(255, 255, 255, .1);
+        }
+
+            .form-control-dark:focus {
+                border-color: transparent;
+                box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
+            }
+    }
+
+    @media only screen and (min-width:1200px) {
+
+
+        [id^="lbl"] {
+            color: #626262;
+            font-weight: 600;
+            letter-spacing: 0.75px;
+            font-size: 11px;
+        }
+
+        .buttonSection {
+            margin-right: 15px !important;
+            position: relative;
+            display: inline-block;
+            position: absolute;
+            right: 0px;
+            cursor: pointer;
+        }
+
+        .buttonSection .fa-save {
+            color: green;
+        }
+
+        .sidebar-sticky .svg-inline--fa {
+            width: 16px;
+            height: 16px;
+            vertical-align: text-bottom;
+            color: #999;
+            transition: 0.3s ease-in-out;
+        }
+
+        .sidebar-sticky .nav-link:hover .svg-inline--fa {
+            color: black;
+        }
+
+        /** Sidebar*/
+
+        .sidebar {
+            position: fixed;
+            top: 143px;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            /* Behind the navbar */
+            padding: 0px 0 0;
+            /* Height of navbar */
+            border-right: 0px solid #fafafa;
+            width: 220px;
+            background: #fafafa;
+            border-radius: 0px 0px;
+        }
+
+        .sidebar-sticky {
+            position: relative;
+            top: 0;
+            height: calc(100vh - 48px);
+            padding-top: 0rem;
+            overflow-x: hidden;
+            overflow-y: auto;
+            /* Scrollable contents if viewport is shorter than content. */
+        }
+
+        @supports ((position: -webkit-sticky) or (position: sticky)) {
+            .sidebar-sticky {
+                position: -webkit-sticky;
+                position: sticky;
+            }
+        }
+
+        .sidebar .nav-item {
+            margin-left: 0px;
+        }
+
+        .sidebar .nav-link {
+            font-weight: 600;
+            color: #797172;
+            letter-spacing: 1px;
+            padding-left: 15px;
+            border-right: 4px solid transparent;
+        }
+
+        .sidebar .nav-link .feather {
+            margin-right: 4px;
+            color: #999;
+        }
+
+        .sidebar .nav-link.active,
+        .sidebar .nav-link:hover {
+            color: #fbd626;
+            border-right: 4px solid #fbd227;
+            background: transparent;
+        }
+
+        .sidebar .nav-link:hover .feather,
+        .sidebar .nav-link.active .feather {
+            color: inherit;
+        }
+
+        .sidebar-heading {
+            font-size: .75rem;
+            text-transform: uppercase;
+        }
+
+
+        /** Content*/
+
+        [role="main"] {
+            padding-top: 48px;
+            /* Space for fixed navbar */
+        }
+
+
+        /** Navbar*/
+
+         
+        .navbar .form-control {
+            padding: .75rem 1rem;
+            border-width: 0;
+            border-radius: 0;
+        }
+
+        .form-control-dark {
+            color: #fff;
+            background-color: rgba(255, 255, 255, .1);
+            border-color: rgba(255, 255, 255, .1);
+        }
+
+        .form-control-dark:focus {
+            border-color: transparent;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
+        }
+    }

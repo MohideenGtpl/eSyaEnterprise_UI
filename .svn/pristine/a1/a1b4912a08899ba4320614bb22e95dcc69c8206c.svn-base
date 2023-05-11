@@ -1,0 +1,65 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+<style>
+    #PopupUserAction .modal-dialog {
+        margin: 70px auto !important;
+        width: 300px !important;
+    }
+</style>
+
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-6">
+        <div id="jstUserGroup"></div>
+    </div>
+    <div id="dvForm" class="col-lg-4 col-md-4 col-sm-6">
+
+        <div class="demo-card-square mdl-card mdl-shadow--2dp marbot15 fullwidth" id="pnlAddForms">
+            <div class="mdl-card__title mdl-card--expand padleft0 padtop0 h-60 d-block">
+                <h5 class="mdl-card__title-text" id="UserActionTitle"> User Action </h5>
+            </div>
+            <div class="mdl-card__supporting-text fullwidth">
+
+                <div id="dvFormAction">
+                    <div class="col-lg-12 col-md-12 col-sm-12 pad0 padbot10">
+                        <table id="jqgFormAction"></table>
+                        <div id="jqpFormAction"></div>
+                    </div>
+                    <hr />
+                    <div class="mdl-card__actions text-center pad0">
+                        <button type="button" class="btn btn-primary marbot15" id="btnSaveFormAction"> <i class="fa fa-save"></i> Save Action </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="PopupUserAction">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close" onclick="fnCloseUserAction()"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title" id="Popupmodaltitle"></h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row padbot4">
+
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <table id="jqgFormAction"></table>
+                        <div id="jqpFormAction"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveUserAction">
+                    Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

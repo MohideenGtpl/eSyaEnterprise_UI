@@ -1,0 +1,117 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="google" content="notranslate">
+    <title>diaDoctorProfile</title>
+    <style>
+        body {
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            margin:0px;                                                                                                      
+        }
+
+        section {
+            padding: 20px;
+            background: #f4f9ff;
+        }
+
+        p {
+            text-align: justify;
+            line-height: 1.5;
+            margin:20px 0px;
+            background:#fff;
+            padding:15px;
+        }
+
+        .heading {
+            color: #003f67;
+            font-weight: 600;
+            margin: 20px 0px 0px 0px;
+            text-align: center;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background: #fff;
+            position: relative;
+            bottom: 29px;
+            margin: auto;
+            width: 85%;
+            border-radius: 10px;
+            box-shadow: 0px 2px 2px rgba(0,0,0,0.2);
+        }
+        .doctorDiv img {
+            display: flex;
+            flex: 0 0 100%;
+            border-radius: 5px;
+            padding: 4px;
+            margin: auto;
+        }
+        .div-img img {
+            margin: 0px auto;
+            display: inline;
+            height: 150px;
+            box-shadow: 0px 2px 2px rgba(0,0,0,0.2);
+            background: #fff;
+            border-radius: 20px;
+        }
+        figure{
+            display:inline-block;
+            margin:0 auto;
+            width:48%;
+        }
+        figure img{
+            max-width:100%;
+            border-radius:10%;
+        }
+        figcaption{
+            font-size:11px;
+        }
+        .div-img {
+            position: relative;
+            width: 49.1%;
+            display: inline-block;
+            margin: auto;
+        }
+            .div-img p {
+                font-size: 12px;
+                display: block;
+                padding:5px 0px 5px 15px;
+                margin: 4px 0px;
+            }
+        .doctorDiv {
+            background: #2daba3;
+        }
+    </style>
+</head>
+<body>
+    <section>
+        <div class="doctorDiv">
+            <img src="~/images/diaClinic/doctorDIAPhoto.png" alt="Dr.Dia's Photo" />
+        </div>
+        <h1 class="heading">Dr. Diaa's Profile</h1>
+        <p>Professor Mohamed Diaa Sarhan is recognized for his reputation which ranks him among the best bariatric surgeons in Egypt. </p>
+        <p>Professor of bariatric and respiratory system surgeries at the faculty of medicine El Kasr El Ainy. </p>
+        <p>Fellowship of the royal surgeon’s faculty in the United Kingdom. </p>
+        <p>Member of the international federation of bariatric surgeons.</p>
+        <p>Member of the scientific committee of the Baralink organization that is specialized in surgical supervision.</p>
+        <p>Certified as a master surgeon from the SRC organization in the United States after passing various quality standards and measures. Dr Mohamed Diaa Sarhan has done more than 17,000 surgeries with a 0.001% as a maximum of percentage of setbacks. He’s the first and only bariatric surgeon in Egypt that uses Local anesthesia. He’s also the first and only bariatric surgeon in Egypt that does Robotic surgeries. There’s an ongoing partnership with ABC hospital that is considered to be an international certified independent hospital specializing in bariatric and plastic surgeries in Egypt, Africa and the Middle East.</p>
+
+        <figure>
+            <img src="~/images/diaClinic/fruitabtdiahosp.png" class="img-fruits" />
+            <figcaption>Diet and weight Loss</figcaption>
+        </figure>
+        <figure>
+            <img src="~/images/diaClinic/weightcheckup-abtdiahosp.png" class="img-checkup" />
+            <figcaption>Losing Inches in a Healthy Way</figcaption>
+        </figure>
+
+    </section>
+</body>
+</html>

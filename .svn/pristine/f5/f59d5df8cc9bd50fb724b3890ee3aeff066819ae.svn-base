@@ -1,0 +1,895 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "EPM_03_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script>
+    var localization = {
+        Save: '@Localizer["Save"]',
+        Cancel: '@Localizer["Cancel"]',
+    }
+</script>
+
+
+<link href="~/css/jquery.steps.css" rel="stylesheet" />
+<script src="~/js/jquery.steps.min.js"></script>
+<link href="~/css/PatientManagement/patientRegistration.css" rel="stylesheet" />
+<script src="~/js/PatientManagement/emergency.js"></script>
+<script src="~/js/jquery.repeater.js"></script>
+<script src="~/js/PatientManagement/patient-profile.js"></script>
+<script src="~/js/PatientManagement/op-regn-clinicinfo.js"></script>
+
+<script src="~/js/PatientManagement/op-regn-transaction.js"></script>
+<script src="~/js/PatientManagement/op-billing.js"></script>
+
+<div id="divOPRegistration" style="display:none">
+    <h3>@Localizer["VisitDetails"] </h3>
+    <section>
+        <div class="filters">
+            <div class="row">
+                <div class="col-lg-12">
+                    <p class="subheading">@Localizer["VisitDetails"] </p>
+                    <hr class="left" />
+                </div>
+            </div>
+            <div class="row bg-light">
+                <div class="col-lg-2 col-md-4 col-sm-4">
+                    <div class="form-group">
+                        <label>@Localizer["RegistrationFor"] </label>
+                        <select class="form-control" id="cboRegistrationType" data-container="body" onchange="fnRegistrationType_onChange()">
+                            <option value="value">Select</option>
+                            <option value="C" selected>Outpatient Consultation</option>
+                            <option value="P">Preventive Health</option>
+                            <option value="O">Other Services</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="">@Localizer["MobileNumber"] </label>
+                        <input id="txtPatientMobileNumber" type="text" class="form-control" autofocus maxlength="10" onblur="fnPatientMobileNumber_onLeave()" />
+                        <span class="spinner-border" role="status"></span>
+                    </div>
+                </div>
+                <div id="dvPatientFODesk" class="col-lg-9 col-md-7 col-sm-7" style="display:none">
+
+                    <div class="row">
+                        <div class="col-lg-4 col-12">
+                            <div class="list-card">
+                                <div class="card-header">
+                                    <p class="m-0"> @Localizer["AppointmentBooking"] </p>
+                                </div>
+                                <div>
+                                    <ul id="dvAppointmentList" class="list-group list-group-flush"></ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-12">
+                            <div class="list-card">
+                                <div class="card-header">
+                                    @Localizer["RegisteredPatient"]
+                                </div>
+                                <ul id="dvRegisteredPatientList" class="list-group list-group-flush"></ul>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-12">
+                            <div class="list-card">
+                                <div class="card-header">
+                                    @Localizer["PreRegistration"]
+                                </div>
+                                <ul id="dvPreRegisteredList" class="list-group list-group-flush"></ul>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-lg-1 col-6">
+                    <button type="button" class="mdl-button d-inline-block h-50" id="btnPatientFODesc"><i class="fa fa-chevron-right"></i></button>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-2 col-sm-4 d-none">
+                <label class="d-block"> @Localizer["VisitClass"] </label>
+                <label class="d-inline mr-10"> <input type="radio" name="typeofvisit" value="Walk-in" checked />@Localizer["WalkIn"] </label>
+                <label class="d-inline mr-10"> <input type="radio" name="typeofvisit" value="Booked" />@Localizer["Booked"] </label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3 col-md-2 col-sm-4">
+
+            </div>
+        </div>
+
+        <section class="sub-section">
+            <div class="section-clinicInfo" style="display:none">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <p class="subheading">@Localizer["ClinicInfo"]</p>
+                        <hr class="left" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label>@Localizer["Clinic"] </label>
+                            <select id="cboClinicType" class="form-control " data-container="body" onchange="populateDoctors();">
+                                <option value="value">Select</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label>@Localizer["Specialty"]</label>
+                            <select id="cboSpecialty" class="form-control " data-container="body" onchange="populateDoctors();">
+                                <option value="value">Select</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label>@Localizer["Doctor"]</label>
+                            <select id="cboDoctors" class="form-control " data-container="body">
+                                <option value="value">Select</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-passporttDetails" style="display:none">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <p class="subheading">@Localizer["PassportDetails"] </p>
+                        <hr class="left" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 col-md-4 col-sm-4 col-9">
+                        <div class="form-group">
+                            <label for="cboNationality">@Localizer["Nationality"] </label>
+                            <select id="cboNationality" class="form-control " data-container="body" onchange="populateState();">
+                                <option value="value">select</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-1 col-md-1 col-sm-4 col-2 d-flex align-items-end form-group">
+                        <button type="button" class="mdl-button d-inline-block h-50" id="btnPassportDetails" data-target="#PopupPassportDetails" data-toggle="modal"><i class="fa fa-search"></i></button>
+                    </div>
+                    <div class="col-lg-2 col-md-3 col-sm-4 d-flex align-items-end">
+                        <div class="form-group">
+                            <label for="txtNationalityID">@Localizer["NationalityID"] </label>
+                            <input id="txtNationalityID" type="text" class="form-control d-inline-block" />
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-3 col-md-3 col-sm-4 d-flex align-items-end">
+                        <div class="form-group">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsPPScanned">
+                                <input type="checkbox" id="chkIsVIP" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">@Localizer["IsVIP"]</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="section-patientInfo" style="display:none">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <p class="subheading">@Localizer["PatientDemographic"] </p>
+                        <hr class="left" />
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label for="txtFirstName">@Localizer["FirstName"]</label>
+                            <input id="txtFirstName" type="text" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label for="txtMiddleName">@Localizer["MiddleName"] </label>
+                            <input id="txtMiddleName" type="text" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label for="txtLastName">@Localizer["LastName"] </label>
+                            <input id="txtLastName" type="text" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="row">
+                            <div class="col-lg-5 col-md-5 col-sm-6 pr-0">
+                                <div class="form-group">
+                                    <label for="txtDateOfBirth">@Localizer["DOB"] <span class="lblInfo">@Localizer["DDMMYYYY"] </span></label>
+                                    <input id="txtDateOfBirth" type="text" class="form-control datepicker" />
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-md-1 col-sm-1  padtop20 pl-lg-0 pl-md-0 pr-0">
+                                <label>(or)</label>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 pl-lg-0 pl-md-0">
+                                <div class="form-group">
+                                    <label class="d-block">@Localizer["Age"] <span class="lblInfo">@Localizer["YYMMDD"]</span></label>
+                                    <input id="txtDateOfBirthYY" type="text" class="form-control d-inline-block  w-25" placeholder="YY" />
+                                    <input id="txtDateOfBirthMM" type="text" class="form-control d-inline-block w-25" placeholder="MM" />
+                                    <input id="txtDateOfBirthDD" type="text" class="form-control d-inline-block w-25" placeholder="DD" />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label for="">@Localizer["Gender"]</label>
+                            <select class="form-control " id="cboGender" data-container="body">
+                                <option value="0">Select</option>
+                                <option value="M">Male</option>
+                                <option value="F">Female</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-2 col-sm-4">
+                        <div class="form-group">
+                            <label for="">@Localizer["EmailID"]</label>
+                            <input id="txtEmail" type="text" class="form-control" />
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="section-address" style="display:none">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <p class="subheading">@Localizer["PatientAddress"] </p>
+                        <hr class="left" />
+                    </div>
+                </div>
+
+                @await Html.PartialAsync("~/Areas/PatientManagement/Views/PatientPartialAttribute/_address.cshtml")
+
+            </div>
+
+            <div class="section-patientCategory" style="display:none">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <p class="subheading">@Localizer["PatientProfile"] </p>
+                        <hr class="left" />
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group d-flex flex-column">
+                            <label for="">@Localizer["PatientType"] </label>
+                            <select class="form-control " id="cboPatientType" onchange="populatePatientCategory()" data-container="body"></select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6 d-flex align-items-end">
+                        <div class="form-group w-100">
+                            <label for="">@Localizer["PatientCategory"] </label>
+                            <select class="form-control" id="cboPatientCategory" onchange="fnPatientCategoryChange()" data-container="body">
+                                <option value="value">Select</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6 d-flex align-items-end">
+                        <div class="form-group w-100">
+                            <label for="txtRatePlan">@Localizer["RatePlan"] </label>
+                            <input id="txtRatePlan" type="text" class="form-control" />
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </div>
+
+            <div class="section-payer" style="display:none">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <p class="subheading">@Localizer["PayerInfo"] </p>
+                        <hr class="left" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 form-group">
+                        <div class="repeater" id="divInsuranceType">
+                            <div data-repeater-list="group-a">
+                                <div class="row" data-repeater-item>
+                                    <div class="col-lg-11 col-md-11 col-sm-11">
+                                        <div class="row">
+                                            <div class="col-lg-3 col-md-3 col-sm-6">
+                                                <div class="form-group">
+                                                    <label for="">@Localizer["Payer"]</label>
+                                                    <select class="form-control">
+                                                        <option value="value">Select</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-md-3 col-sm-6">
+                                                <div class="form-group">
+                                                    <label for="">@Localizer["RatePlan"] </label>
+                                                    <input type="text" name="name" value="" class="form-control" />
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-md-3 col-sm-6">
+                                                <div class="form-group">
+                                                    <label for="">@Localizer["SchemePlan"] </label>
+                                                    <select class="form-control">
+                                                        <option value="value">Select</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-1 col-md-1 col-sm-6">
+                                                <div class="form-group">
+                                                    <label for="">@Localizer["CoPay"] </label>
+                                                    <input type="text" name="name" value="" class="form-control" />
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-1 col-md-1">
+                                        <button data-repeater-delete type="button" class="mdl-button mw-30"><i class="fa fa-times"></i></button>
+                                    </div>
+
+
+                                </div>
+
+                            </div>
+                            <button data-repeater-create type="button" value="Add" class="mdl-button mw-30"><i class="fa fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </section>
+    @*<h3>Additional Info</h3>
+        <section></section>*@
+    <h3>@Localizer["BillInfo"]</h3>
+    <section class="">
+
+        <div class="row bg-white m-0 py-2 mt-2">
+            <div class="col-12 col-lg-12 col-md-12 col-sm-12 p-0">
+                <table id="jgvServiceBill"></table>
+                <div id="jpgServiceBill"></div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-lg-9 col-md-9 col-sm-9 form-group">
+                @await Html.PartialAsync("~/Areas/PatientManagement/Views/PaymentMode/_PaymentDetail.cshtml")
+            </div>
+
+            <div class="col-lg-3 col-md-4 col-sm-6 bg-white pb-2">
+                <div class="total-box h-220 shadow-sm p-2">
+                    <h5 class="total-cash-heading bg-light py-2"><i class="fa fa-file-invoice"></i>@Localizer[" NetBillAmount "] </h5>
+                    <div class="row m-0">
+                        <label class="col-lg-6 pl-0 fontsize-12">@Localizer["TotalBillAmount"] </label>
+                        <div class="col-lg-6 pad-x-10">
+                            <div class="fullwidth" style="padding-top:0px !important; padding-bottom:10px !important">
+                                <input type="text" id="txtTotalBillAmount" class="form-control   currencyFormat  text-right" readonly style="display:inline-block  ">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row m-0">
+                        <label class="col-lg-6 pl-0 fontsize-12">@Localizer["ConcessionAmount"] </label>
+                        <div class="col-lg-6 pad-x-10">
+                            <div class="fullwidth" style="padding-top:0px !important; padding-bottom:10px !important">
+                                <input type="text" id="txtTotalConcessionAmount" class="form-control currencyFormat  text-right" onkeypress="return OnlyNumeric(event);" onblur="fnConcesssionAmount_onLeave()">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row m-0">
+                        <label class="col-lg-6 pl-0 fontsize-12">@Localizer["NetBillAmount"]</label>
+                        <div class="col-lg-6 pad-x-10">
+                            <div class="fullwidth" style="padding-top:0px !important; padding-bottom:10px !important">
+                                <input type="text" id="txtNetBillAmount" class="form-control currencyFormat  text-right" readonly style="display:inline-block  ">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row m-0">
+                        <label class="col-lg-6 pl-0 fontsize-12">Collected Amount</label>
+                        <div class="col-lg-6 pad-x-10">
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label fullwidth" style="padding-top:0px !important; padding-bottom:10px !important">
+                                <input type="text" id="txtTotalCollectedAmount" class="form-control currencyFormat  text-right" readonly style="display:inline-block  ">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row m-0">
+                        <label class="col-lg-6 pl-0 fontsize-12">@Localizer["Narration"]</label>
+                        <div class="col-lg-12 pl-0">
+                            <textarea rows="1" id="txtNarration" maxlength="250" class="form-control"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+                <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+                    <button type="button" id="btnSaveOpReg" class="btn btn-primary mr-1" onclick="fnSubmitOPRegistration()"><i class="fa fa-save"></i> Save</button>
+                </div>
+            
+        </div>
+    </section>
+
+</div>
+
+
+
+<div class="modal fade in" id="PopupPassportDetails" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg  " role="document" style="box-shadow:none;">
+        <div class="modal-content ">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">@Localizer["AddPassportDetails"] </h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label for="txtPassportNumber">@Localizer["PassportNumber"] </label>
+                            <input id="txtPassportNumber" type="text" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label for="txtSurName">@Localizer["SurName"] </label>
+                            <input id="txtSurName" type="text" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label for="txtGivenName">@Localizer["GivenName"] </label>
+                            <input id="txtGivenName" type="text" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label for="txtDOBPP">@Localizer["DOB"]</label>
+                            <input id="txtDOBPP" type="text" class="form-control datepicker" />
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label for="txtDateOfIssue">@Localizer["DateofIssue"] </label>
+                            <input id="txtDateOfIssue" type="text" class="form-control datepicker" />
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label for="txtPlaceOfIssue">@Localizer["PlaceofIssue"] </label>
+                            <input id="txtPlaceOfIssue" type="text" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label for="">@Localizer["VisaType"] </label>
+                            <select class="form-control">
+                                <option value="value">Select</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label for="txtVisaIssueDate">@Localizer["VisaIssueDate"] </label>
+                            <input id="txtVisaIssueDate" type="text" class="form-control datepicker" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label for="txtVisaExpiryDate">@Localizer["VisaExpiryDate"] </label>
+                            <input id="txtVisaExpiryDate" type="text" class="form-control datepicker" />
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group">
+                            <label for="txtAddressAsPerPP">@Localizer["AddressAsperPassport"] </label>
+                            <input id="txtAddressAsPerPP" type="text" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSavePassportDetails">
+                            <i class="fa fa-save"></i>@Localizer["Save"] 
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="btnCancelPassportDetails"><i class="fa fa-times"></i>@Localizer["Cancel"]   </button>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<div class="modal fullscreen fade in" id="PopupPayment" data-keyboard="false" data-backdrop="static" style="top:0px;">
+        <div class="modal-dialog modal-lg  " role="document" style="box-shadow:none;">
+            <div class="modal-content ">
+                <div class="modal-header popupHeader">
+                    <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                    <h4 class="modal-title">Payment</h4>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row bg-white shadowLite m-0 py-2 mb-3">
+                        <div class="col-lg-3">
+                            <label>Patient Name</label>
+                            <label></label>
+                        </div>
+                        <div class="col-lg-3">
+                            <label>Gender</label>
+                            <label></label>
+                        </div>
+                        <div class="col-lg-3">
+                            <label>Mobile number</label>
+                            <label></label>
+                        </div>
+                    </div>
+
+                    <div class="row bg-white m-0 py-2 mt-2">
+                        <div class="col-12 col-lg-12 col-md-12 col-sm-12">
+                            <table id="jqgPaymentDetails"></table>
+                            <div id="jqpPaymentDetails"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSavePayment">
+                                <i class="fa fa-save"></i> Save
+                            </button>
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="btnCancelPayment"><i class="fa fa-times"></i> Cancel </button>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>*@
+
+
+
+<script>
+    $(function () {
+        fnProcessLoading(true, "Loading");
+        $("#divOPRegistration").steps({
+            headerTag: "h3",
+            bodyTag: "section",
+            transitionEffect: "slideLeft",
+            autoFocus: true
+        });
+        $("#divOPRegistration").show();
+
+        fnProcessLoading(false, '')
+
+    });
+    function fnLoadSteps() {
+
+    }
+    $(function () {
+        var winH = $(window).height();
+        var docH = $(document).height();
+        var navbarH = $("#header_navbar").outerHeight(true);
+        var bannerH = $('.banner').outerHeight(true);
+        var stepsH = $('.steps').outerHeight(true);
+        var actionsH = $('.actions').outerHeight(true);
+        var newH = '';
+        newH = ((winH) - (navbarH + bannerH + stepsH + actionsH - 0.8));
+        $('.content').css('height', newH);
+        var _ss = $(".sub-section").offset().top;
+        //$(".sub-section").css({ 'height': winH - _ss - 80, 'overflow-y': 'auto' });
+    });
+
+    $("#previous-step").click(function () {
+        $('#stepper-step-1 , #stepper-step-2').toggleClass('show active');
+        $("section[class^='section']").css('display', 'block');
+    })
+    $("#next").click(function () {
+        $('#stepper-step-1').removeClass('show active');
+        $('#stepper-step-2').addClass('show active');
+        $("section[class^='section']").css('display', 'block');
+    })
+
+    $(document).ready(function () {
+        $("div[class^='section']").css('display', 'none').removeClass('animated fadeIn');;
+        $('.section-repeater').css('display', 'none');
+
+
+
+        $('#PopupPayment').on('shown.bs.modal', function () {
+            $('#PopupPayment').css('top', '0px');
+        });
+
+        fnPaymentDetailsGrid();
+    });
+    $("input[id='txtMobileNumber']").on("keypress keyup", function (e) {
+        var myval = $("input[id='txtMobileNumber']").val();
+        $('.spinner-border').css('visibility', 'visible');
+        if (myval.length == 10) {
+            $("#dvPatientFODesk").css('display', 'flex').addClass('animated fadeIn');
+            $('.spinner-border').css('visibility', 'hidden');
+        }
+
+        if ((myval.length < 10) || (myval.length == 0)) {
+            $("#dvPatientFODesk").css('display', 'none').slideUp('500');
+            $('.spinner-border').css('visibility', 'hidden');
+            $("div[class^='section']").css('display', 'none').removeClass('animated fadeIn');
+            $("input[name='patientName']").removeAttr('checked');
+        }
+    });
+
+
+    function fnPatientName() {
+        if ($("input[name='patientName']:checked")) {
+            var valOFradioBtn = $("input[name='patientName']:checked").val()
+            $("#dvPatientFODesk").css('display', 'none').slideUp('500');
+            $("div[class^='section']").css('display', 'block').addClass('animated fadeIn');
+            $(".section-payer").css('display', 'none');
+        }
+    }
+
+
+    function fnPatientTypeForPayment() {
+        var patientType = $("#cboPatientType option:selected").text();
+        if (patientType == 'General') { $('.section-payer').css('display', 'none'); }
+        else if (patientType == 'Corporate') { $('.section-payer').css('display', 'block'); }
+        else { $('.section-repeater').css('display', 'none'); }
+    }
+
+
+    function fnPaymentDetailsGrid() {
+        $("#jgvServiceBill").jqGrid({
+            url: '',
+            mtype: 'Post',
+            datatype: 'json',
+            ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+            jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+            colNames: ["Service ID", "Service Name", "Service Rule", "Doctor Name", "Specialty", "Quantity", "Amount", "Discount", "Net Amount"],
+            colModel: [
+                { name: "ServiceId", width: 50, editable: true, align: 'left', hidden: true },
+                { name: "ServiceName", width: 300, editable: true, align: 'left', hidden: false },
+                { name: "ServiceRule", width: 50, editable: true, align: 'left', hidden: true },
+                { name: "DoctorName", width: 200, editable: true, align: 'left', hidden: false },
+                { name: "Specialty", width: 150, editable: true, align: 'left', hidden: false },
+                { name: "Quantity", index: 'Quantity', width: 80, align: "right", hidden: true, editable: true, formatter: 'integer', formatoptions: { decimalSeparator: ".", decimalPlaces: 0, thousandsSeparator: ',' } },
+                { name: "Rate", width: 170, editable: false, hidden: false, align: 'left', resizable: true },
+                { name: "DiscountAmount", width: 120, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+                { name: "TotalAmount", width: 150, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 15 } },
+
+
+            ],
+            pager: "#jpgServiceBill",
+            rowNum: 10000,
+            rownumWidth: '55',
+            pgtext: null,
+            pgbuttons: null,
+            loadonce: true,
+            viewrecords: true,
+            gridview: true,
+            rownumbers: true,
+            height: 'auto',
+            align: "left",
+            width: 'auto',
+            autowidth: true,
+            shrinkToFit: true,
+            forceFit: true,
+            scrollOffset: 0,
+            loadComplete: function (data) {
+                Calculate_gvTotalAmount();
+            },
+        }).jqGrid('navGrid', '#jpgServiceBill', { add: false, edit: false, search: false, del: false, refresh: false });
+    }
+    var selectedValue = "";
+    function fnPaymentType(selectedValue) {
+        debugger;
+        // $("#cboPayment").selectpicker("refresh");
+        // var selectedText = $("button[data-id='cboPayment'] .filter-option-inner").text();
+        console.log(selectedValue);
+        if (selectedValue.toLowerCase() == 'cash') {
+            $('#divCashDetails').css('display', 'flex');
+            $('#divCardDetails,#divElectronicFundTransfer,#divCheque,#divAcceptPaymentGateway').css('display', 'none');
+        }
+        if (selectedValue.toLowerCase() == 'credit card' || selectedText.toLowerCase() == 'debit card') {
+            $("#divCardDetails").css('display', 'flex');
+            $('#divCashDetails,#divElectronicFundTransfer,#divCheque,#divAcceptPaymentGateway').css('display', 'none');
+        }
+        if (selectedValue.toLowerCase() == 'electronic fund transfer') {
+            $('#divElectronicFundTransfer').css('display', 'flex');
+            $('#divCashDetails,#divCardDetails,#divCheque,#divAcceptPaymentGateway').css('display', 'none');
+        }
+        if (selectedValue.toLowerCase() == 'cheque') {
+            $("#divCheque").css('display', 'flex');
+            $('#divCashDetails,#divCardDetails,#divElectronicFundTransfer,#divAcceptPaymentGateway').css('display', 'none');
+        }
+        if (selectedValue.toLowerCase() == 'accept payment gateway') {
+            $("#divAcceptPaymentGateway").css('display', 'flex');
+            $('#divCashDetails,#divCardDetails,#divElectronicFundTransfer,#divCheque').css('display', 'none');
+        }
+    }
+</script>
+
+
+<script>
+
+    $(function () {
+        populateClinicType();
+        populateSpecialty();
+        populateNationality();
+        populateState();
+        populatePatientType();
+        // getPatientInfo(1);
+        var l_appointment = [];
+        var l_preregistered = [];
+        var l_registeredpatient = [];
+        var _uhid = 0;
+    });
+
+    function fnRegistrationType_onChange() {
+
+    }
+
+    function fnPatientMobileNumber_onLeave() {
+
+        $('.spinner-border').css('visibility', 'visible');
+
+        if ($('#txtPatientMobileNumber').val().length < 10 || $('#txtPatientMobileNumber').val().length == 0) {
+            $("#dvPatientFODesk").css('display', 'none').slideUp('500');
+            $('.spinner-border').css('visibility', 'hidden');
+            $("div[class^='section']").css('display', 'none').removeClass('animated fadeIn');
+            $("input[name='patientName']").removeAttr('checked');
+        }
+
+        var pnlAppointmentList = "";
+        var pnlPreRegisteredList = "";
+        var pnlRegisteredPatientList = "";
+        if ($('#txtPatientMobileNumber').val().length == 10) {
+            $.get(getBaseURL() + '/Registration/GetPatientFODeskListByMobile', {
+                mobileNumber: $('#txtPatientMobileNumber').val()
+            }, function (data, status) {
+
+                if (data != null) {
+                    l_appointment = data.L_Appointment;
+                    l_preregistered = data.L_PreRegistered;
+                    l_registeredpatient = data.L_RegisteredPatient;
+                    //console.log(l_appointment)
+                    //console.log(l_preregistered)
+                    //console.log(l_registeredpatient)
+                    $.each(data.L_Appointment, function (key, item) {
+                        pnlAppointmentList = "<li class='list-group-item'><div class='form-check'>";
+                        pnlAppointmentList += "<input class='form-check-input' type='radio' name='chkAppointment' value='" + item.AppointmentKey + "' onclick='fnAppointment_onSelection();'>";
+                        pnlAppointmentList += "<label class='form-check-label patientname'>" + item.PatientFirstName + " " + item.PatientLastName + "</label>";
+                        //pnlAppointmentList += "<label class='form-check-label tokennumber' for='chkTokenno1'>CW08195</label>";
+                        pnlAppointmentList += "</div></li>";
+                    });
+                    $.each(data.L_PreRegistered, function (key, item) {
+                        pnlPreRegisteredList = "<li class='list-group-item'><div class='form-check'>";
+                        pnlPreRegisteredList += "<input class='form-check-input' type='radio' name='chkPreRegistered' value='" + item.PRKey + "' onclick='fnPreRegistered_onSelection();'>";
+                        pnlPreRegisteredList += "<label class='form-check-label patientname'>" + item.PatientFirstName + " " + item.PatientLastName + "</label>";
+                        //pnlAppointmentList += "<label class='form-check-label tokennumber' for='chkTokenno1'>CW08195</label>";
+                        pnlPreRegisteredList += "</div></li>";
+                    });
+
+                    pnlRegisteredPatientList = "<li class='list-group-item'><div class='form-check'>";
+                    pnlRegisteredPatientList += "<input class='form-check-input' type='radio' name='chkRegisteredPatient' value='0' onclick='fnPatientFODesk_onSelection();'>";
+                    pnlRegisteredPatientList += "<label class='form-check-label patientname'>New Patient</label>";
+                    pnlRegisteredPatientList += "</div></li>";
+
+                    $.each(data.L_RegisteredPatient, function (key, item) {
+                        pnlRegisteredPatientList += "<li class='list-group-item'><div class='form-check'>";
+                        pnlRegisteredPatientList += "<input class='form-check-input' type='radio' name='chkRegisteredPatient' value='" + item.UHID + "' onclick='fnPatientFODesk_onSelection();'>";
+                        pnlRegisteredPatientList += "<label class='form-check-label patientname'>" + item.FirstName + " " + item.LastName + "</label>";
+                        pnlRegisteredPatientList += "<label class='form-check-label tokennumber'>" + item.UHID + "</label>";
+                        pnlRegisteredPatientList += "</div></li>";
+                    });
+
+                    $("#dvPatientFODesk").css('display', 'flex').addClass('animated fadeIn');
+                    $('.spinner-border').css('visibility', 'hidden');
+
+                    $('#dvAppointmentList').html(pnlAppointmentList);
+                    $('#dvPreRegisteredList').html(pnlPreRegisteredList);
+                    $('#dvRegisteredPatientList').html(pnlRegisteredPatientList);
+
+                }
+            });
+        }
+    }
+
+    function fnPatientFODesk_onSelection() {
+        _uhid = 0;
+        var chkRegisteredPatient = $("input[name='chkRegisteredPatient']:checked").val();
+        if (chkRegisteredPatient != "0") {
+            _uhid = chkRegisteredPatient;
+            $.each(l_registeredpatient, function (key, item) {
+                if (item.UHID == chkRegisteredPatient) {
+                    getPatientInfo(item.UHID);
+                }
+            });
+        }
+        $("#dvPatientFODesk").css('display', 'none').slideUp('500');
+        $("div[class^='section']").css('display', 'block').addClass('animated fadeIn');
+        $(".section-payer").css('display', 'none');
+
+    }
+
+    function fnAppointment_onSelection() {
+      
+        var chkAppointment = $("input[name='chkAppointment']:checked").val();
+        _uhid = 0;
+        $.each(l_appointment, function (key, item) {
+            if (item.AppointmentKey == chkAppointment) {
+                //if (item.UHID == null) {
+                //    _uhid = 0;
+                    getPatientbookingInfo(chkAppointment);
+                    $("#dvPatientFODesk").css('display', 'none').slideUp('500');
+                    $("div[class^='section']").css('display', 'block').addClass('animated fadeIn');
+                    $(".section-payer").css('display', 'none');
+                //}
+
+                //if (item.UHID > 0) {
+                //    _uhid = item.UHID;
+                //    getPatientInfo(item.UHID);
+                //    $("#dvPatientFODesk").css('display', 'none').slideUp('500');
+                //    $("div[class^='section']").css('display', 'block').addClass('animated fadeIn');
+                //    $(".section-payer").css('display', 'none');
+                //}
+            }
+        });
+
+    }
+    function fnPreRegistered_onSelection() {
+
+        var chkPreRegistered = $("input[name='chkPreRegistered']:checked").val();
+        _uhid = 0;
+        $.each(l_preregistered, function (key, item) {
+            if (item.PRKey == chkPreRegistered) {
+                $("#txtFirstName").val(item.PatientFirstName);
+                $("#txtMiddleName").val(item.PatientMiddleName);
+                $("#txtLastName").val(item.PatientLastName);
+                $("#cboGender").val(item.Gender);
+                $("#cboGender").selectpicker("refresh");
+                $("#txtDateOfBirth").val(item.DateOfBirth);
+                $("#txtDateOfBirthYY").val(item.AgeYY);
+                //$("#txtDateOfBirthMM").val(item.AgeMM);
+                //$("#txtDateOfBirthDD").val(item.AgeDD);
+                $("#txtEmail").val(item.EmailID);
+                $("#cboNationality").val(item.Nationality);
+                $("#cboNationality").selectpicker("refresh");
+                $("#txtAddress").val(item.Address);
+                $("#cboCity").val(item.City);
+                $("#cboCity").selectpicker("refresh");
+                $("#cboArea").val(item.AreaCode);
+                $("#cboArea").selectpicker("refresh");
+                $("#txtPincode").val(item.Pincode);
+
+            }
+        });
+
+    }
+
+    function fnClearPatientDetails() {
+
+    }
+
+</script>

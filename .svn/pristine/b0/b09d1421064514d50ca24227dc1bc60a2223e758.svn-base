@@ -1,0 +1,16 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+
+namespace eSyaEnterprise_UI.Areas.PatientManagement.Controllers
+{
+    public class RegistrationController : Controller
+    {
+        public IActionResult EPM_03_00()
+        {
+            return View();
+        }
+    }
+}

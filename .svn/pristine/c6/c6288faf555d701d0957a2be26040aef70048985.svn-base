@@ -1,0 +1,101 @@
+﻿$(document).ready(function () {
+    fnGetBusinessStoreLink_Success();
+    fnTreeSize();
+});
+
+function fnLoadBusinessStoreLink() {
+    //$.ajax({
+    //    url: getBaseURL() + '',
+    //    type: 'POST',
+    //    datatype: 'json',
+    //    success: function (result) {
+
+    //        fnGetBusinessStoreLink_Success(result);
+    //    },
+    //    error: function (error) {
+    //        toastr.error(error.status);
+    //    }
+    //});
+}
+
+function fnGetBusinessStoreLink_Success(dataArray) {
+    var dataArray = [
+        
+        { "id": "ajson2", "parent": "#", "text": "Store Business Link" },
+        { "id": "ajson3", "parent": "ajson2", "text": "Store 1" },
+        { "id": "ajson4", "parent": "ajson2", "text": "Store 2" },
+    ]
+    $("#jstStoreBusinessLink").jstree({
+        "state": { "checkbox_disabled": true },
+        "checkbox": {
+            "keep_selected_style": false
+        },
+        //"plugins": ["checkbox"],
+        core: { 'data': dataArray, 'check_callback': true, 'multiple': true }
+
+    });
+
+    $("#jstStoreBusinessLink").on('loaded.jstree', function () {
+        $("#jstStoreBusinessLink").jstree('open_all');
+        $("#jstStoreBusinessLink").jstree()._open_to(prevSelectedID);
+        $('#jstStoreBusinessLink').jstree().select_node(prevSelectedID);
+
+    });
+
+    $('#jstStoreBusinessLink').on("changed.jstree", function (e, data) {
+        if (data.node != undefined) {
+            //if (prevSelectedID != data.node.id) {
+            prevSelectedID = data.node.id;
+
+            if (data.node.id == "0") {
+                fnClearFields();
+                $("#pnlMainMenu").hide();
+            }
+            else {
+                if (data.node.parent == "#") {
+                    $("#pnlMainMenu").show();
+                    $(".mdl-card__title-text").text("Add Store Business Link");
+                    fnClearFields();
+                    $("#btnAddStoreBusinessLink").html('<i class="fa fa-plus"></i> Add');
+                    $("#btnAddStoreBusinessLink").attr("disabled", _userFormRole.IsInsert === false);
+                }
+                else if (data.node.id.startsWith("aj")) {
+
+                    NodeID = 0;
+                    NodeID = data.node.id.substring(2).split(".")[1];
+
+                    $("#pnlMainMenu").show();
+                    $(".mdl-card__title-text").text("Edit Store Business Link");
+                    $('#txtStoreDescription').val(NodeID);
+                    $("#btnAddStoreBusinessLink").html('<i class="fa fa-sync"></i> Update');
+                    
+                }
+                else {
+                    fnClearFields();
+                    $("#pnlMainMenu").hide();
+                }
+            }
+        }
+    });
+
+    $('#jstStoreBusinessLink').on("close_node.jstree", function (node) {
+        var closingNode = node.handleObj.handler.arguments[1].node;
+        $('#jstStoreBusinessLink').jstree().deselect_node(closingNode.children);
+    });
+
+};
+function fnClearFields() {
+    $('#txtStoreDescription').val("");
+}
+function fnExpandAll() {
+    $('#jstStoreBusinessLink').jstree('open_all');
+}
+function fnCollapseAll() {
+    $('#jstStoreBusinessLink').jstree('close_all');
+}
+function fnTreeSize() {
+    $("#jstStoreBusinessLink").css({
+        'height': $(window).innerHeight() - 136,
+        'overflow': 'auto'
+    });
+}

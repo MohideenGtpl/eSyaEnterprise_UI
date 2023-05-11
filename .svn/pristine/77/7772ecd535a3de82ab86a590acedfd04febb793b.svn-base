@@ -1,0 +1,164 @@
+﻿
+@{
+    ViewData["Title"] = "ETM_12_00";
+    Layout = "~/Views/Shared/_Layout_m.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="google" content="notranslate">
+    <title>ETM_12_00</title>
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/material.min.css" rel="stylesheet" />
+    <link href="~/css/all.min.css" rel="stylesheet" />
+    <link href="~/css/animate.css" rel="stylesheet" />
+    <link href="~/css/site.css" rel="stylesheet" />
+    <link href="~/css/master.css" rel="stylesheet" />
+    <link href="~/css/esyafonts.css" rel="stylesheet" />
+    <link href="~/css/esyaTheme.css" rel="stylesheet" />
+    <link href="~/css/TokenSystem/displaySystem.css" rel="stylesheet" />
+</head>
+
+
+
+<body>
+    <input type="hidden" id="hdBusinessKey" value=@ViewBag.BusinessKey />
+    <input type="hidden" id="hdCounters" value=@ViewBag.ArrayOfCounters />
+
+    <main>
+        <div class="container-fluid p-0">
+            <div class="row">
+                <div class="col-12 col-lg-12 col-md-12 p-0">
+                    <p class="text-center display_heading m-0">Now Serving</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6 col-lg-6 col-md-6">
+                    <div class="row">
+                        <div class="col-6 col-lg-6 col-md-6 display_tableHeader">
+                            <p class="display_subHead">Counter</p>
+                        </div>
+                        <div class="col-6 col-lg-6 col-md-6 display_tableHeader">
+                            <p class="display_subHead">
+                                Ticket
+                            </p>
+                        </div>
+
+                        @foreach (var counter in ViewBag.CounterList)
+                        {
+                        <div class="col-6 col-lg-6 col-md-6"><p class="display_subHead">@counter</p></div>
+                        <div class="col-6 col-lg-6 col-md-6">
+                            <p class="display_subHead">
+                                <span class='tokenNumberDisplay' id="lblTokenNumber_@counter.Replace(" ", "")"></span>
+
+                            </p>
+                        </div>
+                        }
+
+                       
+                    </div>
+                </div>
+                <div class="col-6 col-lg-6 col-md-6 div_img">
+                    <img src="~/images/e-logo.png" alt="Alternate Text" />
+                </div>
+            </div>
+        </div>
+    </main>
+
+    @*JavaScript files*@
+    <script src="~/lib/bootstrap/dist/js/jquery-3.2.1.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/popper.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/js/material.min.js"></script>
+    <script src="~/js/all.min.js"></script>
+    <script>
+        $(function () {
+            fnSetDisplayTable();
+        })
+
+        function fnSetDisplayTable() {
+            var _windowHeight = $(window).height();
+            var _windowWidth = $(window).width();
+            $('.display_heading,.display_subHead').css('height', (_windowHeight - 114) / ($('.display_subHead').length / 2));
+        }
+
+        $(window).on('resize', function () {
+            fnSetDisplayTable();
+        })
+
+
+        $(document).ready(function () {
+            fnDisplayingToken();
+            fnDisplayCallingToken();
+        });
+
+
+        var TokenList = [];
+        var lastCallingCounter = "";
+        var lastCallingToken = "";
+        var previousCallingToken = "";
+
+        function fnDisplayingToken() {
+
+            $("[id^=lblTokenNumber_]").text("");
+            lastCallingCounter = "";
+            lastCallingToken = "";
+
+            try {
+                $.ajax({
+                    type: "GET",
+                    url: getBaseURL() + '/DisplaySystem/GetTokenForCounterDisplay',
+                    data: {
+                        businessKey: $('#hdBusinessKey').val(),
+                        counterList: $('#hdCounters').val(),
+                    },
+                    cache: false,
+                    success: function (data) {
+                        console.log(data)
+                        $.each(data, function (key, value) {
+                            $("#lblTokenNumber_" + value.CallingCounter).html(value.TokenKey);
+                            lastCallingCounter = value.CallingCounter;
+                            lastCallingToken = value.TokenKey;
+
+                            TokenList.push({
+                                CallingCounter: value.CallingCounter,
+                                TokenCallingTime: value.TokenCallingTime,
+                                SRTokenKey: value.TokenKey
+                            });
+
+                        });
+
+                        fnDisplayCallingToken();
+                    }
+                });
+            }
+            catch (err) {
+                console.error(err);
+            }
+
+            window.setTimeout(fnDisplayingToken, 5000);
+
+        }
+        function fnDisplayCallingToken() {
+
+            $("#lblCallingCounter").html(lastCallingCounter);
+            $("#lblCallingTokenNumber").html(lastCallingToken);
+
+            if (lastCallingToken !== previousCallingToken) {
+                previousCallingToken = lastCallingToken
+
+            }
+
+        }
+
+
+
+    </script>
+</body>
+</html>

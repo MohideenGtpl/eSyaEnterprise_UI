@@ -1,0 +1,61 @@
+﻿$(function () {
+    fnLoadClinicRoomMaster();
+})
+
+function fnLoadClinicRoomMaster() {
+    $("#jqgClinicRoomMaster").GridUnload();
+    $("#jqgClinicRoomMaster").jqGrid({
+        //url: '',
+        datatype: "json",
+        contenttype: "application/json; charset-utf-8",
+        mtype: 'POST',
+        colNames: ["Room Number","Is Active"],
+        colModel: [
+            { name: "RoomNo", width: 180, editable: false, hidden: false, editoptions: { disabled: true }, align: 'left', edittype: 'text' },
+            { name: "IsActive", width: 150, editable: false, editoptions: { disabled: true }, align: 'center', edittype: 'checkbox', formatter:'checkbox' }         
+        ],
+        rowNum: 10000,
+        pager: "#jqpClinicRoomMaster",
+        pgtext: null,
+        pgbuttons: null,
+        viewrecords: false,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        width: 'auto',
+        autowidth: true,
+        shrinkToFit: false,
+        forceFit: false,
+        loadonce: true,
+        cellEdit: true,
+        //editurl: 'url',
+        cellsubmit: 'clientArray',
+        onSelectRow: function (id) {
+           
+            },
+        ondblClickRow: function (rowid) {
+        },
+        loadComplete: function (data) {
+            
+        }
+    }).jqGrid('navGrid', '#jqpClinicRoomMaster', { add: false, edit: false, search: false, del: false, refresh: false });
+    $("#jqgClinicRoomMaster").jqGrid('inlineNav', '#jqpClinicRoomMaster',
+        {
+            edit: true,
+            editicon: " fa fa-pen",
+            edittext: "Edit",
+            add: true,
+            addicon: "fa fa-plus",
+            addtext: "Add",
+            save: true,
+            savetext: "Save",
+            saveicon: "fa fa-save",
+            cancelicon: "fa fa-ban",
+            canceltext: "Cancel",
+            editParams: {
+                keys: false,
+                oneditfunc: function (formid) {
+                 },
+            }
+        });
+}

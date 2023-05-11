@@ -1,0 +1,115 @@
+﻿
+@{
+    ViewData["Title"] = "Bed Master";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts{ 
+<script src="~/js/eSyaInPatient/BedMaster.js"></script>
+}
+<div class="row">
+    <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> Business Location</label>
+            <select class="selectpicker" data-live-search="false" title="Select" id=""></select>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> Ward Type</label>
+            <select class="selectpicker" data-live-search="false" title="Select" id=""></select>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> Room Type</label>
+            <select class="selectpicker" data-live-search="false" title="Select" id=""></select>
+        </div>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <table id="jqgBedMaster"></table>
+        <div id="jqpBedMaster"></div>
+    </div>
+</div>
+
+<div class="modal fade in" id="PopupBedMaster" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content ">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Edit Bed Master</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <input type="text" class="form-control" id="" style="display:none">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label>Room Number </label>
+                            <input type="text" id=""  value="" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label>Bed Number </label>
+                            <input type="text" id="" value="" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label> Store Code  </label>
+                            <select class="selectpicker" data-live-search="false" title="Select"></select>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label> Location ID </label>
+                            <select class="selectpicker" data-live-search="false" title="Select"></select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label class="lable-color"> Gender</label>
+                            <select class="selectpicker" data-live-search="false" title="Choose Gender" id="cboGender">
+                                <option value="A">All</option>
+                                <option value="M">Male</option>
+                                <option value="F">Female</option>
+                                <option value="T">Transgender</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label> Bed Status</label>
+                            <input id="" class="form-control" maxlength="50" type="text" />
+
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group">
+                            <label> Remarks</label>
+                            <textarea rows="4" cols="75" class="form-control"></textarea>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveBedMaster" onclick="fnSaveUserBusinessLocation();">
+                           Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="#"> Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ 

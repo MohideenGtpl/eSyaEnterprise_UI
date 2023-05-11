@@ -1,0 +1,198 @@
+﻿$(document).ready(function () {
+    fnGridLoadLanguageController();
+});
+function fnGridLoadLanguageController() {
+    $('#jqgLanguageController').jqGrid('GridUnload');
+
+    $("#jqgLanguageController").jqGrid({
+       url: getBaseURL() + '/Localization/GetLanguageControllersbyResource?Resource=' + $('#cboResource').val(),
+        datatype: 'json',
+        mtype: 'POST',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+         colNames: ["", "Resource Name", "Key", "Value", "Active","Actions"],
+
+        colModel: [
+
+            { name: "ResourceId", width: '300', editable: true, align: 'left', hidden: true },
+            { name: "ResourceName", width: '80', editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left' } },
+            { name: "Key", width: '80', editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left' } },
+            { name: "Value", width: '80', editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left' } },
+           
+            { name: "ActiveStatus", width: 35, editable: false, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+            {
+                name: 'action', search: false, align: 'left', width: '70', sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit", onclick="return fnEditLanguageController(event,\'edit\')"><i class="fas fa-pencil-alt"></i> Edit </button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnEditLanguageController(event,\'view\')"><i class="far fa-file-alt"></i> View </button>'
+
+                }
+            },
+        ],
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        pager: "#jqpLanguageController",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0,
+        loadComplete: function (data) {
+            SetGridControlByAction();
+        },
+    }).jqGrid('navGrid', '#jqpLanguageController', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpLanguageController', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnRefreshLanguageControllerGrid
+        }).jqGrid('navButtonAdd', '#jqpLanguageController', {
+            caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddLanguageController
+    });
+
+}
+
+function fnAddLanguageController() {
+    fnClearFields();
+    if ($("#cboResource").val() === "" || $("#cboResource").val() === "All")
+    {
+        $('#cboPopupResource').val("0").selectpicker('refresh');
+        $("#PopupLanguageController").modal('show');
+        $('#PopupLanguageController').find('.modal-title').text("Add Language Controller");
+        $("#chkActiveStatus").parent().addClass("is-checked");
+        $("#btnSaveLanguageController").html(' Save'); 
+    }
+    else {
+
+       $('#cboPopupResource').val($("#cboResource").val()).selectpicker('refresh');
+       $("#PopupLanguageController").modal('show');
+        $('#PopupLanguageController').find('.modal-title').text("Add Language Controller");
+        $("#chkActiveStatus").parent().addClass("is-checked");
+       $("#btnSaveLanguageController").html(' Save'); 
+    }
+}
+
+function fnEditLanguageController(e, actiontype) {
+    fnClearFields();
+     $("#PopupLanguageController").modal('show');
+     var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+     var rowData = $('#jqgLanguageController').jqGrid('getRowData', rowid);
+     $('#txtResourceId').val(rowData.ResourceId);
+     $('#cboPopupResource').val(rowData.ResourceName).selectpicker('refresh');
+     $('#txtKey').val(rowData.Key);
+     $('#txtValue').val(rowData.Value);
+    if (rowData.ActiveStatus == 'true') {
+        $("#chkActiveStatus").parent().addClass("is-checked");
+    }
+    else {
+        $("#chkActiveStatus").parent().removeClass("is-checked");
+    }
+
+    if (actiontype.trim() == "edit") {
+            $("#chkActiveStatus").prop('disabled', false);
+            $('#PopupLanguageController').find('.modal-title').text("Update Language Controller");
+            $("#btnSaveLanguageController").html('Update');
+        }
+    if (actiontype.trim() == "view") {
+        $('#PopupLanguageController').find('.modal-title').text("View Language Controller");
+        $("#chkActiveStatus").prop('disabled', true);
+            $("#btnSaveLanguageController").hide();
+            $("input,textarea").attr('readonly', true);
+            $("select").next().attr('disabled', true);
+            $("input[type=checkbox]").attr('disabled', true);
+            $("#PopupLanguageController").on('hidden.bs.modal', function () {
+                $("#btnSaveLanguageController").show();
+                $("input,textarea").attr('readonly', false);
+                $("select").next().attr('disabled', false);
+                $("input[type=checkbox]").attr('disabled', false);
+            });
+        }
+}
+
+function fnSaveLanguageController() {
+
+    if (validateLanguageController() === false) {
+        return;
+    }
+  
+    lobj = {
+        ResourceId: $("#txtResourceId").val() === '' ? 0 : $("#txtResourceId").val(),
+        ResourceName: $("#cboPopupResource").val(),
+        Key: $("#txtKey").val(),
+        Value: $("#txtValue").val(),
+        ActiveStatus: $("#chkActiveStatus").parent().hasClass("is-checked")
+    }
+    $.ajax({
+        url: getBaseURL() + '/Localization/InsertOrUpdateLanguageController',
+        type: 'POST',
+        datatype: 'json',
+        data: { lobj },
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                $('#PopupLanguageController').modal('hide');
+                fnRefreshLanguageControllerGrid();
+            }
+            else {
+                toastr.error(response.Message);
+            }
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+           
+        }
+    });
+}
+
+function validateLanguageController() {
+
+    if ($("#cboPopupResource").val() === "0" || $("#cboformId").val() === '0') {
+        toastr.warning("Please Select Resource");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtKey").val())) {
+        toastr.warning("Please Enter Key");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtValue").val())) {
+        toastr.warning("Please Enter Value");
+        return false;
+    }
+}
+
+function fnRefreshLanguageControllerGrid() {
+    $("#jqgLanguageController").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+function AvoidSpace(event) {
+    var k = event ? event.which : window.event.keyCode;
+    if (k == 32) return false;
+}
+
+function fnClearFields() {
+    $('#txtResourceId').val('');
+    $("#cboPopupResource").val("0").selectpicker('refresh');
+    $("#txtKey").val('');
+    $("#txtValue").val('');
+    $("#chkActiveStatus").prop('disabled', false);
+}
+
+function SetGridControlByAction() {
+    $('#jqgAdd').removeClass('ui-state-disabled');
+    var eleEnable = document.querySelectorAll('#jqgEdit');
+
+    for (var i = 0; i < eleEnable.length; i++) {
+        eleEnable[i].disabled = false;
+    }
+    if (_userFormRole.IsInsert === false) {
+        $('#jqgAdd').addClass('ui-state-disabled');
+    }
+    if (_userFormRole.IsEdit === false) {
+        var eleDisable = document.querySelectorAll('#jqgEdit');
+        for (var i = 0; i < eleDisable.length; i++) {
+            eleDisable[i].disabled = true;
+            eleDisable[i].className = "ui-state-disabled";
+        }
+    }
+}

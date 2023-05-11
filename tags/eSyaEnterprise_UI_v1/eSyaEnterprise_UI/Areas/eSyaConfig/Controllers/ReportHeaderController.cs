@@ -1,0 +1,122 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
+using eSyaEnterprise_UI.Areas.Config.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using eSyaEnterprise_UI.Areas.Config.Data;
+using eSyaEnterprise_UI.ActionFilter;
+using Microsoft.Extensions.Logging;
+namespace eSyaEnterprise_UI.Areas.Config.Controllers
+{
+    [SessionTimeout]
+    public class ReportHeaderController : Controller
+    {
+        private readonly IeSyaConfigAPIServices _eSyaConfigAPIServices;
+        private readonly ILogger<ReportHeaderController> _logger;
+        public ReportHeaderController(IeSyaConfigAPIServices eSyaConfigAPIServices, ILogger<ReportHeaderController> logger)
+        {
+            _eSyaConfigAPIServices = eSyaConfigAPIServices;
+            _logger = logger;
+        }
+        /// <summary>
+        /// General Report Header
+        /// </summary>
+        /// <returns></returns>
+         
+        [Area("eSyaConfig")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public IActionResult V_5_00()
+        {
+           
+            return View();
+           
+        }
+        [HttpPost]
+        public async Task<JsonResult> GetReportHeaderList(int Businesskey)
+        {
+            try
+            {
+                var parameter = "?BusinessKey=" + Businesskey;
+                var serviceResponse =await _eSyaConfigAPIServices.HttpClientServices.GetAsync<List<DO_ReportHeader>>("ReportHeader/GetReportHeaderList"+ parameter);
+                if (serviceResponse.Status)
+                {
+                    
+                  return Json(serviceResponse.Data);
+                   
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetReportHeaderList:For Businesskey", Businesskey);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetReportHeaderList:For BusinessKey", Businesskey);
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<JsonResult> InsertOrUpdateReportHeader(DO_ReportHeader rpHeader)
+        {
+            try
+            {
+                rpHeader.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                rpHeader.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                rpHeader.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                var serviceResponse =await _eSyaConfigAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("ReportHeader/InsertOrUpdateReportHeader", rpHeader);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertOrUpdateReportHeader:params:" + JsonConvert.SerializeObject(rpHeader));
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+        /// <summary>
+        /// Activate or De Activate Report Header
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> ActiveOrDeActiveGeneralReport(bool status, int Businesskey, int ReportHeaderId)
+        {
+
+            try
+            {
+
+                var parameter = "?status=" + status + "&Businesskey=" + Businesskey + "&ReportHeaderId=" + ReportHeaderId;
+                var serviceResponse = await _eSyaConfigAPIServices.HttpClientServices.GetAsync<DO_ReturnParameter>("ReportHeader/ActiveOrDeActiveGeneralReport" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:ActiveOrDeActiveGeneralReport:For ReportHeaderId {0} ", ReportHeaderId);
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+        /// <summary>
+        /// Pharmacy Report Header
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult V_12_00()
+        {
+            return View();
+        }
+    }
+}

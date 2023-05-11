@@ -1,0 +1,55 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.ActionFilter;
+using eSyaEnterprise_UI.Areas.eSyaMCServices.Data;
+using eSyaEnterprise_UI.Areas.eSyaMCServices.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+namespace eSyaEnterprise_UI.Areas.eSyaMCServices.Controllers
+{
+    public class SpecialtyUnitsController : Controller
+    {
+        private readonly IeSyaMCServicesAPIServices _eSyaMCServicesAPIServices;
+        private readonly ILogger<SpecialtyUnitsController> _logger;
+        public SpecialtyUnitsController(IeSyaMCServicesAPIServices eSyaMCServicesAPIServices, ILogger<SpecialtyUnitsController> logger)
+        {
+            _eSyaMCServicesAPIServices = eSyaMCServicesAPIServices;
+            _logger = logger;
+        }
+        [Area("eSyaMCServices")]
+        public IActionResult V_1581_00()
+        {
+            ViewBag.formName = "Specialty Units";
+            try
+            {
+                var serviceResponse = _eSyaMCServicesAPIServices.HttpClientServices.GetAsync<List<DO_BusinessLocation>>("CommonData/GetBusinessKey").Result;
+                if (serviceResponse.Data != null)
+                {
+                    ViewBag.BusinessLocation = serviceResponse.Data.Select(a => new SelectListItem
+                    {
+                        Text = a.LocationDescription,
+                        Value = a.BusinessKey.ToString()
+                    });
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetBusinessLocation");
+                }
+                
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:V_1581_00");
+                throw ex;
+            }
+        }
+    }
+}

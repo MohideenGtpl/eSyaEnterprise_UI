@@ -1,0 +1,43 @@
+﻿using eSyaEnterprise_UI.DataServices;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace eSyaEnterprise_UI.ActionFilter
+{
+    public class ViewBagActionFilter : ActionFilterAttribute
+    {
+        private readonly IUserAccountServices _userAccountServices;
+        public ViewBagActionFilter(IUserAccountServices userAccountServices)
+        {
+            _userAccountServices = userAccountServices;
+        }
+        public override void OnResultExecuting(ResultExecutingContext context)
+        {
+            if (context.Controller is Controller)
+            {
+                var controller = context.Controller as Controller;
+                var userRole = _userAccountServices.GetFormActionByUser(1, 1, controller.ControllerContext.ActionDescriptor);
+                if (userRole != null)
+                {
+                    controller.ViewBag.UserFormRole = userRole;
+                    controller.ViewBag.formName = userRole.FormName;
+                    AppSessionVariables.SetSessionFormInternalID(context.HttpContext, userRole.FormIntID ?? "0");
+                }
+                else
+                {
+                    controller.ViewBag.UserFormRole = new DO_UserFormRole();
+                    controller.ViewBag.formName = "";
+                    AppSessionVariables.SetSessionFormInternalID(context.HttpContext, "0");
+                }
+            }
+
+            base.OnResultExecuting(context);
+        }
+    }
+}

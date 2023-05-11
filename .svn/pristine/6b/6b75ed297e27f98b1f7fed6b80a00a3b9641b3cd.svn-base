@@ -1,0 +1,75 @@
+﻿
+@{
+    ViewData["Title"] = "ETM_03_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .btn_wdth {
+        width: 100%;
+        margin-bottom: 0px;
+        text-align: left;
+        height: 35px !important;
+    }
+    li.add button {
+        width: 88px;
+    }
+    .addactionbutton {
+        position: absolute;
+        right: 15px;
+        top: 0px;
+    }
+
+</style>
+    
+    @*<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="overflow-y:scroll; height:500px; background:inherit">
+        <div class="row">
+            <button class="btn btn-info btn-rounded btn-lg" type="button">Abdul Rahiman</button>
+        </div>
+        <div class="row">
+            <button class="btn btn-info btn-rounded btn-lg" type="button">Abdul Rahiman</button>
+        </div>
+        <div class="row">
+            <button class="btn btn-info btn-rounded btn-lg" type="button">Abdul Rahiman</button>
+        </div>
+        <div class="row">
+            <button class="btn btn-info btn-rounded btn-lg" type="button">Abdul Rahiman</button>
+        </div>
+        <div class="row">
+            <button class="btn btn-info btn-rounded btn-lg" type="button">Abdul Rahiman</button>
+        </div>
+    </div>*@
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="overflow-y:scroll; height:500px; background:inherit">
+    <div class="row">
+        <div class="col-lg-2 btn_pdnTop">
+            <button class="btn btn-info btn-rounded btn-lg" onclick="fnDeleteNode()">
+                <i class="glyphicon glyphicon-arrow-right"></i> Token Description
+            </button>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-lg-2 btn_pdnTop">
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect cancel-button btn_wdth" onclick="fnDeleteNode()">
+                <i class="fa fa-times"></i> Token Description
+            </button>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-lg-2 btn_pdnTop">
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect cancel-button btn_wdth" onclick="fnDeleteNode()">
+                <i class="fa fa-times"></i> Token Description
+            </button>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-lg-2 btn_pdnTop">
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect cancel-button btn_wdth" onclick="fnDeleteNode()">
+                <i class="fa fa-times"></i> Token Description
+            </button>
+        </div>
+
+    </div>
+</div>

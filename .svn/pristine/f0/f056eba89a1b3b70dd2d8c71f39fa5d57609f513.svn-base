@@ -1,0 +1,209 @@
+﻿var isedit;
+
+$(document).ready(function () {
+    fnGridLoadBusinessSubscription();
+});
+var actiontype = "";
+
+function fnGridLoadBusinessSubscription() {
+    var BusinessKey = $("#cboBusinessLocation").val();
+    var URL = getBaseURL() + '/BusinessStructure/GetBusinessSubscription?BusinessKey=' + BusinessKey;
+
+    $("#jqgBusinessSubscription").jqGrid('GridUnload');
+    $("#jqgBusinessSubscription").jqGrid({
+        url: URL,
+        mtype: 'Post',
+        datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: [localization.SubscriptionFrom, localization.SubscriptionTill, localization.Active, localization.Actions],
+        colModel: [
+            //{ name: "SubscribedFrom", width: 150, editable: false, align: 'left', formatter: 'date' },
+            //{ name: "SubscribedTill", width: 150, editable: true, align: 'left', formatter: 'date'},
+
+            {
+                name: 'SubscribedFrom', index: 'SubscribedFrom', width: 90, sorttype: "date", formatter: "date", formatoptions:
+                    { newformat: _cnfjqgDateFormat },
+                //editable: true, editoptions: {
+                //    size: 20,
+                //    dataInit: function (el) {
+                //        $(el).datepicker({ dateFormat: _cnfDateFormat });
+                //    }
+                //}
+            },
+
+            {
+                name: 'SubscribedTill', index: 'SubscribedTill', width: 90, sorttype: "date", formatter: "date", formatoptions:
+                    { newformat: _cnfjqgDateFormat },
+                //editable: true, editoptions: {
+                //    size: 20,
+                //    dataInit: function (el) {
+                //        $(el).datepicker({ dateFormat: _cnfDateFormat });
+                //    }
+                //}
+            },
+            //{ name: "ActiveStatus", editable: true, width: 150, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: Inactive" } },
+            { name: "ActiveStatus", editable: false, width: 30, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            {
+                name: 'Action', search: false, align: 'left', width: 54, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditBusinessSubscription(event,\'edit\')"><i class="fas fa-pencil-alt"></i> ' + localization.Edit + ' </button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnEditBusinessSubscription(event,\'view\')"><i class="far fa-eye"></i> ' + localization.View + ' </button>'
+
+                }
+            }
+        ],
+        pager: "#jqpBusinessSubscription",
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0,
+        loadComplete: function (data) {
+            SetGridControlByAction();
+        },
+    }).jqGrid('navGrid', '#jqpBusinessSubscription', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpBusinessSubscription', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshBusinessSubscription
+        }).jqGrid('navButtonAdd', '#jqpBusinessSubscription', {
+            caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddBusinessSubscription
+    });
+    $("[id^='jqgh'][id$='_rn']").empty();
+    $("[id^='jqgh'][id$='_rn']").text("S.No").css("text-align", 'center');
+    $("[id^='gbox_']").parent().css('overflow', 'auto');
+}
+
+function SetGridControlByAction() {
+    
+    if (_userFormRole.IsInsert === false) {
+        $('#jqgAdd').addClass('ui-state-disabled');
+    }
+    if (_userFormRole.IsEdit === false) {
+        var eleDisable = document.querySelectorAll('#jqgEdit');
+        for (var i = 0; i < eleDisable.length; i++) {
+            eleDisable[i].disabled = true;
+            eleDisable[i].className = "ui-state-disabled";
+        }
+    }
+}
+
+function fnAddBusinessSubscription() {
+    fnClearFields();
+    isedit = 0;
+    $("#divBusinessSubscriptionGrid").hide();
+    $("#divBusinessSubsciptionForm").css("display", "block");
+    fnEnableInformationDetail(false);
+    $("#btnSaveBusinessSubscription").show();
+    $("#btnSaveBusinessSubscription").html(localization.Save);
+}
+
+function fnGridRefreshBusinessSubscription() {
+    $("#jqgBusinessSubscription").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+
+}
+
+function fnEditBusinessSubscription(e, actiontype) {
+    fnClearFields();
+    isedit = 1;
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgBusinessSubscription').jqGrid('getRowData', rowid);
+
+    $("#txtSubscribedFrom").val(rowData.SubscribedFrom);
+    $("#txtSubscribedTill").val(rowData.SubscribedTill);
+
+    if (rowData.ActiveStatus === "true") {
+        $("#chkActiveStatus").parent().addClass("is-checked");
+    }
+    else { $("#chkActiveStatus").parent().removeClass("is-checked"); }
+
+    $("#divBusinessSubscriptionGrid").hide();
+    $("#divBusinessSubsciptionForm").css("display", "block");
+    if (actiontype.trim() == "edit") {
+        $("#btnSaveBusinessSubscription").show();
+        fnEnableInformationDetail(false);
+        $("#btnSaveBusinessSubscription").html(localization.Update);
+    }
+    if (actiontype.trim() == "view") {
+        $("#btnSaveBusinessSubscription").hide();
+        fnEnableInformationDetail(true);
+    }
+}
+
+function fnEnableInformationDetail(val) {
+    $("input,textarea").attr('readonly', val);
+    $("#chkActiveStatus").attr('disabled', val);
+}
+
+function ValidateBusinessSubscription() {
+    if (IsStringNullorEmpty($("#txtSubscribedFrom").val())) {
+        toastr.warning("Please Subscribed From Date");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtSubscribedTill").val())) {
+        toastr.warning("Please Subscribed Till Date");
+        return false;
+    }
+}
+
+function fnSaveBusinessSubscription(){
+    if (ValidateBusinessSubscription() === false) {
+        return;
+    }
+    var busssubs = {
+        BusinessKey: $("#cboBusinessLocation").val(),
+        SubscribedFrom: $("#txtSubscribedFrom").val(),
+        SubscribedTill: $("#txtSubscribedTill").val(),
+        ActiveStatus: $("#chkActiveStatus").parent().hasClass("is-checked"),
+        isEdit: isedit
+    }
+    $("#btnSaveBusinessSubscription").attr('disabled', true);
+
+    $.ajax({
+        url: getBaseURL() + '/BusinessStructure/InsertOrUpdateBusinessSubscription',
+        type: 'POST',
+        data: { busssubs },
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                $("#btnSaveBusinessSubscription").attr('disabled', false);
+                fnCloseBusinessSubscription();
+                fnGridRefreshBusinessSubscription();
+                return true;
+            }
+            else {
+                toastr.error(response.Message);
+                $("#btnSaveBusinessSubscription").attr('disabled', false);
+                return false;
+            }
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnSaveBusinessSubscription").attr('disabled', false);
+        }
+    })
+}
+
+
+function fnCloseBusinessSubscription() {
+    $("#btnSaveBusinessSubscription").hide();
+    fnEnableInformationDetail(false);
+    $("#divBusinessSubscriptionGrid").show();
+    $("#divBusinessSubsciptionForm").css("display", "none");
+}
+
+function fnClearBusinessSubscription() {
+    fnClearFields();
+}
+
+function fnClearFields() {
+    $('#txtSubscribedFrom').val('');
+    $('#txtSubscribedTill').val('');
+    $("#chkActiveStatus").parent().addClass("is-checked");
+    $("#btnSaveBusinessSubscription").attr('disabled', false);
+}

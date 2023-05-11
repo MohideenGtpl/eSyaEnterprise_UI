@@ -1,0 +1,139 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.Areas.eSyaPayrollExpat.Data;
+using eSyaEnterprise_UI.Areas.eSyaPayrollExpat.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
+using eSyaEnterprise_UI.Models;
+using Newtonsoft.Json;
+
+namespace eSyaEnterprise_UI.Areas.eSyaPayrollExpat.Controllers
+{
+    public class AttendanceProcessController : Controller
+    {
+        private readonly IeSyaPayrollExpatAPIServices _eSyaPayrollExpatAPIServices;
+        private readonly ILogger<AttendanceProcessController> _logger;
+
+        public AttendanceProcessController(IeSyaPayrollExpatAPIServices eSyaPayrollExpatAPIServices, ILogger<AttendanceProcessController> logger)
+        {
+            _eSyaPayrollExpatAPIServices = eSyaPayrollExpatAPIServices;
+            _logger = logger;
+        }
+        [Area("eSyaPayrollExpat")]
+        public async Task<IActionResult> V_4521_00()
+        {
+            var Bk_response = await _eSyaPayrollExpatAPIServices.HttpClientServices.GetAsync<List<DO_BusinessLocation>>("CommonData/GetBusinessKey");
+            if (Bk_response.Status)
+            {
+                if (Bk_response.Data != null)
+                {
+                    ViewBag.BusinessKeyList = Bk_response.Data.Select(b => new SelectListItem
+                    {
+                        Value = b.BusinessKey.ToString(),
+                        Text = b.LocationDescription.ToString(),
+                    }).ToList();
+
+                }
+                else
+                {
+                    _logger.LogError(new Exception(Bk_response.Message), "UD:GetBusinessKey");
+                }
+
+            }
+            else
+            {
+                _logger.LogError(new Exception(Bk_response.Message), "UD:GetBusinessKey");
+            }
+            return View();
+        }
+        
+        /// <summary>
+        ///Get Pay Period for Drp down
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetPayPeriodbyBusinessKey(int Businesskey)
+        {
+            try
+            {
+                var parameter = "?Businesskey=" + Businesskey;
+                var serviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.GetAsync<List<DO_PayPeriod>>("AttendanceProcess/GetPayPeriodbyBusinessKey" + parameter);
+
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetPayPeriodbyBusinessKey:params:" + JsonConvert.SerializeObject(new { Businesskey }));
+
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetPayPeriodbyBusinessKey:params:" + JsonConvert.SerializeObject(new { Businesskey }));
+                throw ex;
+            }
+        }
+        /// <summary>
+        ///Get All Attandance Process for Grid
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetAttendanceProcessbyBusinessKey(int Businesskey,int Payperiod)
+        {
+            try
+            {
+                var parameter = "?Businesskey=" + Businesskey + "&Payperiod=" + Payperiod;
+                var serviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.GetAsync<List<DO_AttendanceProcess>>("AttendanceProcess/GetAttendanceProcessbyBusinessKey" + parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetAttendanceProcessbyBusinessKey:params:" + JsonConvert.SerializeObject(new { Businesskey }));
+
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetEmployeesbyBusinessKey:params:" + JsonConvert.SerializeObject(new { Businesskey }));
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Insert or Update Attandance Process
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> InsertOrUpdateAttandanceProcess(List<DO_AttendanceProcess> obj)
+        {
+            try
+            {
+                obj.All(c =>
+                {
+                    c.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                    c.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                    c.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                    return true;
+                });
+
+                var serviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("AttendanceProcess/InsertOrUpdateAttendanceProcess", obj);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertOrUpdateAttandanceProcess:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+    }
+}

@@ -1,0 +1,460 @@
+﻿
+@{
+    ViewData["Title"] = "Business Location";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    var userFormRole = (eSyaEnterprise_UI.Models.DO_UserFormRole)ViewBag.UserFormRole;
+}
+<script>
+    var _userFormRole = JSON.parse('@Html.Raw(Json.Serialize(userFormRole))');
+</script>
+
+<link href="~/css/jsTree.css" rel="stylesheet" />
+@section scripts{
+    <script src="~/js/jsTree.js"></script>
+}
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-6">
+        <div id="jstBusinessLocation"></div>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6">
+        <div class="demo-card-square mdl-card mdl-shadow--2dp" id="pnlMainMenu" style="width: 100%; display:none">
+            <div id="pnlMainModuleHeading" class="mdl-card__title mdl-card--expand padleft0 padtop0 h-60 d-block">
+                <h5 class="mdl-card__title-text">Add  Location</h5>
+            </div>
+            <div class="mdl-card__supporting-text fullwidth pad0">
+
+                <div class="row padbot4 mar0">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group collapse">
+                            <label for="txtBusinessEntityId">Busienss Entity Id</label>
+                            <input id="txtBusinessEntityId" class="form-control" maxlength="10" type="text" data-inputmask="'mask': '9', 'repeat': 10, 'greedy' : false" />
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group collapse">
+                            <label for="txtBusinessSegmentId">Segment Id</label>
+                            <input id="txtBusinessSegmentId" class="form-control" maxlength="10" type="text" data-inputmask="'mask': '9', 'repeat': 10, 'greedy' : false" />
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group collapse">
+                            <label for="txtBusinessLocationId">Location Id</label>
+                            <input id="txtBusinessLocationId" class="form-control" maxlength="10" type="text" data-inputmask="'mask': '9', 'repeat': 10, 'greedy' : false" />
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group">
+                            <label for="txtLocationcode">Location Code</label>
+                            <input id="txtLocationcode" class="form-control" maxlength="6" type="text" />
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group">
+                            <label for="txtLocationDescription">Location Description</label>
+                            <input id="txtLocationDescription" class="form-control" maxlength="100" type="text" />
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group">
+                            <label for="txtBusinessName">Business Name</label>
+                            <input id="txtBusinessName" class="form-control" maxlength="100" type="text" />
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 form-group">
+                        <div class="default-checkbox padtop0 ">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActiveStatus">
+                                <input type="checkbox" id="chkActiveStatus" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">Active</span>
+                            </label>
+                        </div>
+                    </div>
+
+
+                   
+                    <div class="col-sm-12 col-md-12 col-lg-12 form-group">
+                        @await Component.InvokeAsync("eSyaParameter", new { parameterType = "2" })
+                      
+                    </div>
+                </div>
+                </div>
+                
+            
+            <div class="mdl-card__actions mdl-card--border" style="text-align: center;">
+                <button class="mdl-button mdl-js-button mdl-button--raised primary-button" id="btnAddBusinessLocation" onclick="fnSaveBusinessLocation()">
+                    Add
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-6">
+        <div>
+            <h5>Action</h5>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 btn_pdnTop">
+                <button class="mdl-button mdl-js-button mdl-button--raised cancel-button btn_wdth" id="btnDeleteNode" onclick="fnDeleteNode()">
+                    <i class="fa fa-times" style="color:#fff !important"></i>     Delete Node
+                </button>
+            </div>
+
+            <div class="col-lg-12 btn_pdnTop">
+                <button class="mdl-button mdl-js-button mdl-button--raised primary-button btn_wdth" id="btnExpandAll" onclick="fnExpandAll()">
+                    <i class="fas fa-expand"></i>   Expand All
+                </button>
+            </div>
+            <div class="col-lg-12 btn_pdnTop">
+                <button class="mdl-button mdl-js-button mdl-button--raised primary-button btn_wdth" id="btnCollapseAll" onclick="fnCollapseAll()">
+                    <i class="fas fa-compress"></i>   Collapse All
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script>
+    var NodeID;
+    var prevSelectedID;
+
+    $(document).ready(function () {
+        $("#pnlMainMenu").hide();
+        fnTreeSize();
+        LoadBusinessLocationTree();
+        $("#btnDeleteNode").attr("disabled", _userFormRole.IsDelete === false);
+    });
+
+    function LoadBusinessLocationTree() {
+        $.ajax({
+            url: getBaseURL() + '/BusinessStructure/GetBusinessLocationforTreeView',
+            //type: 'POST',
+            //datatype: 'json',
+            success: function (result) {
+                fnGetBusinessLocation_Success(result);
+            },
+            error: function (error) {
+                toastr.error(error.status);
+            }
+        });
+    }
+
+    function fnGetBusinessLocation_Success(dataArray) {
+        $("#jstBusinessLocation").jstree({
+            "state": { "checkbox_disabled": true },
+            "checkbox": {
+                "keep_selected_style": false
+            },
+            //"plugins": ["checkbox"],
+            core: { 'data': dataArray, 'check_callback': true, 'multiple': true }
+
+        });
+
+        $("#jstBusinessLocation").on('loaded.jstree', function () {
+
+            $("#jstBusinessLocation").jstree('open_all');
+            $("#jstBusinessLocation").jstree()._open_to(prevSelectedID);
+            $('#jstBusinessLocation').jstree().select_node(prevSelectedID);
+
+        });
+
+        $('#jstBusinessLocation').on("changed.jstree", function (e, data) {
+
+            if (data.node != undefined) {
+                if (prevSelectedID != data.node.id) {
+                    prevSelectedID = data.node.id;
+
+                    if (data.node.id == "0") {
+                        fnClearFields();
+                        $("#pnlMainMenu").hide();
+                    }
+                    else {
+
+                        $('#View').remove();
+                        $('#Edit').remove();
+                        $('#Add').remove();
+
+                        $("#pnlMainMenu").hide();
+
+                        if (data.node.parent == "MM") {
+                            fnClearFields();
+                            $("#pnlMainMenu").hide();
+                        }
+                        else if (data.node.id.startsWith("SM")) {
+                            $('#' + data.node.id + "_anchor").html($('#' + data.node.id + "_anchor").html() + '<span id="Add" style="padding-left:10px;padding-right:10px">&nbsp;<i class="fa fa-plus" style="color:#337ab7"aria-hidden="true"></i></span>')
+
+                            $('#Add').on('click', function () {
+                                if (_userFormRole.IsInsert === false) {
+                                    $('#pnlMainMenu').hide();
+                                    toastr.warning(errorMsgCS["E003"]);
+                                    return;
+                                }
+
+
+                                $("#pnlMainMenu").show();
+                                $(".mdl-card__title-text").text("Add Business Location");
+                                fnClearFields();
+                                $('#txtBusinessEntityId').val(data.node.id.substring(2).split("_")[0]);
+                                $('#txtBusinessSegmentId').val(data.node.id.substring(2).split("_")[1]);
+                                $("#btnAddBusinessLocation").html('<i class="fa fa-plus"></i> Add');
+                                //$("#btnAddBusinessLocation").attr("disabled", _userFormRole.IsInsert === false);
+                            });
+                        }
+                        else if (data.node.id.startsWith("FM")) {
+
+                            NodeID = 0;
+                            NodeID = data.node.id.substring(2).split("_")[2];
+
+                            $('#' + data.node.id + "_anchor").html($('#' + data.node.id + "_anchor").html() + '<span id="View" style="padding-left:10px">&nbsp;<i class="fa fa-eye" style="color:#337ab7"aria-hidden="true"></i></span>')
+                            $('#' + data.node.id + "_anchor").html($('#' + data.node.id + "_anchor").html() + '<span id="Edit" style="padding-left:10px">&nbsp;<i class="fa fa-pen" style="color:#337ab7"aria-hidden="true"></i></span>')
+
+                            $('#View').on('click', function () {
+
+                                if (_userFormRole.IsView === false) {
+                                    $('#pnlMainMenu').hide();
+                                    toastr.warning(errorMsgCS["E001"]);
+                                    return;
+                                }
+
+                                $("#pnlMainMenu").show();
+                                $(".mdl-card__title-text").text("Edit Business Segment");
+                                $('#txtBusinessLocationId').val(NodeID);
+                                $('#txtBusinessEntityId').val(data.node.id.substring(2).split("_")[0]);
+                                $('#txtBusinessSegmentId').val(data.node.id.substring(2).split("_")[1]);
+
+                                fnFillBusinessLocationInfo();
+
+                                $("#btnAddBusinessLocation").hide();
+                                $("input,textarea").attr('readonly', true);
+                                $("input[type=checkbox]").attr('disabled', true);
+                                //$("#btnAddBusinessLocation").html('<i class="fa fa-sync"></i> Update');
+                                //$("#btnAddBusinessLocation").attr("disabled", _userFormRole.IsEdit === false);
+                            });
+
+                            $('#Edit').on('click', function () {
+                                if (_userFormRole.IsEdit === false) {
+                                    $('#pnlMainMenu').hide();
+                                    toastr.warning(errorMsgCS["E002"]);
+                                    return;
+                                }
+
+                                $("#pnlMainMenu").show();
+                                $(".mdl-card__title-text").text("Edit Business Segment");
+                                $('#txtBusinessLocationId').val(NodeID);
+                                $('#txtBusinessEntityId').val(data.node.id.substring(2).split("_")[0]);
+                                $('#txtBusinessSegmentId').val(data.node.id.substring(2).split("_")[1]);
+
+                                fnFillBusinessLocationInfo();
+
+                                $("input,textarea").attr('readonly', false);
+                                $("input[type=checkbox]").attr('disabled', false);
+                                $("#btnAddBusinessLocation").html('<i class="fa fa-sync"></i> Update');
+                                //$("#btnAddBusinessLocation").attr("disabled", _userFormRole.IsEdit === false);
+                            });
+
+                            
+                        }
+                        else {
+                            fnClearFields();
+                            $("#pnlMainMenu").hide();
+                        }
+                    }
+                }
+            }
+        });
+
+        $('#jstBusinessLocation').on("close_node.jstree", function (node) {
+            var closingNode = node.handleObj.handler.arguments[1].node;
+            $('#jstBusinessLocation').jstree().deselect_node(closingNode.children);
+        });
+
+    };
+
+    function fnFillBusinessLocationInfo() {
+        if ($("#txtBusinessLocationId").val() != '' && $("#txtBusinessLocationId").val() != undefined) {
+            $.ajax({
+                async: false,
+                url: getBaseURL() + "/BusinessStructure/GetBusinessLocationInfo?BusinessId=" + $("#txtBusinessEntityId").val() + "&SegmentId=" + $("#txtBusinessSegmentId").val() + "&LocationId=" + $("#txtBusinessLocationId").val(),
+                type: 'post',
+                datatype: 'json',
+                contentType: 'application/json; charset=utf-8',
+                success: function (result) {
+                    $('#txtLocationcode').val(result.LocationCode);
+                    $('#txtLocationDescription').val(result.LocationDescription);
+                    $('#txtBusinessName').val(result.BusinessName);
+                    if (result.ActiveStatus == 1) {
+                        $("#chkActiveStatus").parent().addClass("is-checked");
+                    }
+                    else { $('#chkActiveStatus').parent().removeClass("is-checked"); }
+
+                    eSyaParams.ClearValue();
+                    eSyaParams.SetJSONValue(result.l_FormParameter);
+                }
+            });
+        }
+    }
+    
+    function validationBusinessSegment() {
+        if (IsStringNullorEmpty($("#txtBusinessEntityId").val())) {
+            toastr.warning("Please Select Business Entity");
+            return false;
+        }
+        if (IsStringNullorEmpty($("#txtBusinessSegmentId").val())) {
+            toastr.warning("Please Select Business Segment");
+            return false;
+        }
+        if (IsStringNullorEmpty($("#txtLocationcode").val())) {
+            toastr.warning("Please Select Location Code");
+            return false;
+        }
+        if (IsStringNullorEmpty($("#txtLocationDescription").val())) {
+            toastr.warning("Please Enter Segment Description");
+            return false;
+        }
+        if (IsStringNullorEmpty($("#txtBusinessName").val())) {
+            toastr.warning("Please Enter Business Name");
+            return false;
+        }
+    }
+
+    function fnSaveBusinessLocation() {
+
+        if (validationBusinessSegment() === false) {
+            return;
+        }
+        $("#btnAddBusinessLocation").attr('disabled', true);
+        var LocationId = $("#txtBusinessLocationId").val();
+
+        var BusinessLocation;
+        if (LocationId == null || LocationId == "") {
+            BusinessLocation = {
+                BusinessId: $("#txtBusinessEntityId").val(),
+                SegmentId: $("#txtBusinessSegmentId").val(),
+                LocationId: 0,
+                LocationCode: $("#txtLocationcode").val(),
+                LocationDescription: $("#txtLocationDescription").val(),
+                BusinessName: $("#txtBusinessName").val(),
+                ActiveStatus: $("#chkActiveStatus").parent().hasClass("is-checked")
+            };
+
+        }
+        else {
+            BusinessLocation = {
+                BusinessId: $("#txtBusinessEntityId").val(),
+                SegmentId: $("#txtBusinessSegmentId").val(),
+                LocationId: $("#txtBusinessLocationId").val(),
+                LocationCode: $("#txtLocationcode").val(),
+                LocationDescription: $("#txtLocationDescription").val(),
+                BusinessName: $("#txtBusinessName").val(),
+                ActiveStatus: $("#chkActiveStatus").parent().hasClass("is-checked")
+            };
+        }
+
+        var fmParams = eSyaParams.GetJSONValue();
+        BusinessLocation.l_FormParameter = fmParams;
+      
+        $.ajax({
+            url: getBaseURL() + '/BusinessStructure/InsertOrUpdateBusinessLocation',
+            type: 'POST',
+            datatype: 'json',
+            data: { BusinessLocation },
+            success: function (response) {
+                if (response.Status) {
+                    toastr.success(response.Message);
+                    location.reload();
+                    return true;
+                }
+                else {
+                    toastr.error(response.Message);
+                    $("#btnAddBusinessLocation").attr('disabled', false);
+                    return false;
+                }
+            },
+            error: function (error) {
+                $("#btnAddBusinessLocation").attr('disabled', false);
+                toastr.error(error.statusText);
+            }
+        });
+    }
+
+    function fnClearFields() {
+        $("#txtBusinessEntityId").val('');
+        $("#txtBusinessSegmentId").val('');
+        $("#txtBusinessLocationId").val('');
+        $("#txtLocationcode").val('');
+        $("#txtLocationDescription").val('');
+        $("#txtBusinessName").val('');
+        $("#chkActiveStatus").parent().addClass("is-checked");
+    }
+
+    function validationBusinessSegmentOnDelete() {
+
+        if (IsStringNullorEmpty($("#txtBusinessEntityId").val())) {
+            toastr.warning("Please Select Business Entity");
+            return false;
+        }
+        if (IsStringNullorEmpty($("#txtBusinessSegmentId").val())) {
+            toastr.warning("Please Select Business Segment");
+            return false;
+        }
+        if (IsStringNullorEmpty($("#txtBusinessLocationId").val())) {
+            toastr.warning("Please Select Business Location");
+            return false;
+        }
+        if (IsStringNullorEmpty($("#txtLocationDescription").val())) {
+            toastr.warning("Please Enter Location Description");
+            return false;
+        }
+    }
+
+    function fnDeleteNode() {
+
+        if (validationBusinessSegmentOnDelete() === false) {
+            return;
+        }
+        $("#btnDeleteNode").attr('disabled', true);
+        $.ajax({
+            url: getBaseURL() + '/BusinessStructure/DeleteBusinessLocation?BusinessId=' + $("#txtBusinessEntityId").val() + "&SegmentId=" + $("#txtBusinessSegmentId").val() + "&LocationId=" + $("#txtBusinessLocationId").val(),
+            type: 'POST',
+            datatype: 'json',
+            success: function (response) {
+                if (response.Status) {
+                    toastr.success(response.Message);
+                    location.reload();
+                    return true;
+                }
+                else {
+                    toastr.error(response.Message);
+                    return false;
+                }
+
+            },
+            error: function (error) {
+                toastr.error(error.statusText);
+            }
+        });
+    }
+
+    function fnExpandAll() {
+        $('#jstBusinessLocation').jstree('open_all');
+    }
+    function fnCollapseAll() {
+        fnClearFields();
+        $("#pnlMainMenu").hide();
+        $('#jstBusinessLocation').jstree('close_all');
+    }
+    function fnTreeSize() {
+        $("#jstBusinessLocation").css({
+            'height': $(window).innerHeight() - 136,
+            'overflow': 'auto'
+        });
+    }
+
+
+</script>
+
+

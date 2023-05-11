@@ -1,0 +1,152 @@
+﻿
+
+$(document).ready(function () {
+    $('#chkDoctorLeaveActive').parent().addClass("is-checked");
+})
+function fnLoadDoctorLeaveGrid() {
+
+    $("#jqgDoctorLeave").GridUnload();
+
+    $("#jqgDoctorLeave").jqGrid({
+
+        url: getBaseURL() + '/Doctor/GetDoctorLeaveListAll?doctorId=' + $('#txtDoctorId').val(),
+        datatype: 'json',
+        mtype: 'POST',
+        colNames: ["", "Leave From", "Leave Till", "Number Of Days", "Status", ""],
+        colModel: [
+            { name: "DoctorId", width: 70, editable: true, align: 'left', hidden: true },
+            {
+                name: "OnLeaveFrom", editable: true, width: 160, align: 'left', formatter: 'date', formatoptions: { newformat: _cnfjqgDateFormat }
+
+            },
+            {
+                name: "OnLeaveTill", editable: true, width: 160, align: 'left', formatter: 'date', formatoptions: { newformat: _cnfjqgDateFormat }
+
+            },
+            { name: "NoOfDays", width: 150, editable: true, align: 'left' },
+            { name: "ActiveStatus", editable: true, width: 30, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+            {
+                name: 'edit', search: false, align: 'center', width: 50, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all" style="padding: 2px 4px; background: #0b76bc!important; color: #fff!important; margin: 3px; " title="Edit" onclick="return Fn_EditOnLeaveFromDoctor(event)"><i class="fa fa-edit"></i> Edit </button>'
+
+                }
+            },
+
+        ],
+        rowList: [10, 20, 30, 50, 100],
+        rowNum: 10,
+        loadonce: true,
+        pager: "#jqpDoctorLeave",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0,
+
+
+    }).jqGrid('navGrid', '#jqpDoctorLeave', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpDoctorLeave', {
+        caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: toRefresh
+        });
+    fnAddGridSerialNoHeading();
+}
+
+function toRefresh() {
+    $("#jqgDoctorLeave").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+function fnCalculateLeaveDays() {
+
+    if ($('#txtOnLeaveFromDoctor').val() != '' && $('#txtOnLeaveTillDoctor').val() != '') {
+
+        var start =new Date(getDate($('#txtOnLeaveFromDoctor')));
+        var end = new Date(getDate($('#txtOnLeaveTillDoctor')));
+        
+        var diff = new Date(end - start);
+        
+        var days = diff / (1000 * 60 * 60 * 24);
+        
+        days = Math.floor(days) + 1;
+        
+        return days;
+    }
+    else
+        return 0;
+}
+
+function fnSaveDoctorLeave() {
+
+    if ($('#txtOnLeaveFromDoctor').val() == '') {
+        toastr.warning("Leave From Date can't be blank.");
+        $('#txtOnLeaveFromDoctor').focus();
+        return;
+    }
+    if ($('#txtOnLeaveTillDoctor').val() == '') {
+        toastr.warning("Leave Till Date can't be blank.");
+        $('#txtOnLeaveTillDoctor').focus();
+        return;
+    }
+    if (new Date() > getDate($('#txtOnLeaveFromDoctor'))) {
+        toastr.warning("Leave From Date can't be less than Current Date.");
+        return;
+    }
+    if (getDate($('#txtOnLeaveTillDoctor')) < getDate($('#txtOnLeaveFromDoctor'))) {
+        toastr.warning("Leave Till Date can't be less than Leave From Date.");
+        return;
+    }
+
+    $("#btnSaveDoctorLeave").attr('disabled', true);
+
+    var obj = {
+
+        DoctorId: $('#txtDoctorId').val(),
+        OnLeaveFrom: getDate($('#txtOnLeaveFromDoctor')),
+        OnLeaveTill: getDate($('#txtOnLeaveTillDoctor')),
+        NoOfDays: fnCalculateLeaveDays(),
+        ActiveStatus: true
+    };
+
+    $.ajax({
+        url: getBaseURL() + '/Doctor/InsertDoctorLeave',
+        type: 'POST',
+        datatype: 'json',
+        data: { obj },
+        success: function (response) {
+            if (response != null) {
+                if (response.Status) {
+                    toastr.success(response.Message);
+                    fnClearDoctorLeave();
+                    fnLoadDoctorLeaveGrid();
+
+                    $("#btnSaveDoctorLeave").attr('disabled', false);
+                }
+                else {
+                    $("#btnSaveDoctorLeave").attr('disabled', false);
+                    toastr.error(response.Message);
+
+                }
+            }
+            else {
+                $("#btnSaveDoctorLeave").attr('disabled', false);
+                toastr.error(response.Message);
+
+            }
+        },
+        error: function (error) {
+            $("#btnSaveDoctorLeave").attr("disabled", false);
+            toastr.error(error.statusText);
+
+        }
+    });
+}
+
+function fnClearDoctorLeave() {
+
+    $('#txtOnLeaveFromDoctor').val('');
+    $('#txtOnLeaveTillDoctor').val('');
+    $('#chkDoctorLeaveActive').parent().addClass("is-checked");
+}

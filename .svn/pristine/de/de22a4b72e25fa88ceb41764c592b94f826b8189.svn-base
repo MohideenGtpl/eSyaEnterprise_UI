@@ -1,0 +1,431 @@
+﻿var Isadd = 0;
+var Postedimg;
+var postedImgName = 0;
+var imgName;
+var imgPath;
+var imgUrl;
+
+
+$(document).ready(function () {
+    fnGridLoadCountryCode();
+    fnGridLoadStatutoryCode();
+});
+
+function fnGridLoadCountryCode() {
+
+
+    $("#jqgCountryCode").jqGrid('GridUnload');
+    $("#jqgCountryCode").jqGrid({
+        url: getBaseURL() + '/Country/GetAllCountries',
+        mtype: 'Post',
+        datatype: 'json',
+
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["ISD Code", "Country Code", "Country Name", "Currency Code", "", "Flag","","","","","","","","","Active Status", ""],
+        colModel: [
+            { name: "Isdcode", width: 70, editable: true, align: 'left', hidden: false },
+            { name: "CountryCode", width: 70, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "CountryName", width: 70, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "CurrencyCode", width: 70, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "ShowCountryFlag", width: 70, editable: true, edittype: 'image', formatter: getImage, hidden: true, editrules: { edithidden: true }, sortable: false },
+            {
+                name: 'CountryFlag',
+                index: 'Isdcode',
+                sortable: false,
+                editable: true,
+                edittype: 'file',
+                hidden: false,
+                editoptions: {
+                    enctype: "multipart/form-data",
+
+                    dataEvents: [{
+                        type: 'change',
+                        fn: function (e) {
+                            var Filename = $('#ShowCountryFlag').attr('src').split('/').pop();
+                            imgName = Filename;
+                            var input = document.getElementById("CountryFlag");
+                            var fReader = new FileReader();
+                            fReader.readAsDataURL(input.files[0]);
+                            fReader.onloadend = function (event) {
+                                var img = document.getElementById("ShowCountryFlag");
+                                img.src = event.target.result;
+                            }
+                        }
+                    }]
+                },
+                width: 70,
+                align: 'center',
+                formatter: jgImageFormatter,
+                search: false
+            },
+
+            { name: "MobileNumberPattern", width: 70, editable: false, hidden: true, align: 'left', resizable: true },
+            { name: "Uidlabel", width: 70, editable: false, hidden: true, align: 'left', resizable: true },
+            { name: "Uidpattern", width: 70, editable: false, hidden: true, align: 'left', resizable: true },
+            { name: "Nationality", width: 70, editable: false, hidden: true, align: 'left', resizable: true },
+            { name: "IsPoboxApplicable", editable: true, hidden: true, width: 45, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            { name: "PoboxPattern", width: 70, editable: false, hidden: true, align: 'left', resizable: true },
+            { name: "IsPinapplicable", editable: true, hidden: true, width: 45, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            { name: "PincodePattern", width: 70, editable: false, hidden: true, align: 'left', resizable: true },
+            { name: "ActiveStatus", editable: true, width: 95, hidden: false, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: Inactive" } },
+             {
+                name: 'edit', search: false, align: 'center', width: 50, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all" style="padding: 2px 4px; background: #0b76bc!important; color: #fff!important; margin: 3px; " title="Edit" onclick="return fnEditCountryCode(event)"><i class="fa fa-edit"></i> Edit </button>'
+
+                }
+            },
+        ],
+        rowNum: 10,
+        loadonce: false,
+        pager: "#jqpCountryCode",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0,
+    }).jqGrid('navGrid', '#jqpCountryCode', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpCountryCode', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshCountryCode
+    }).jqGrid('navButtonAdd', '#jqpCountryCode', {
+        caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Add', buttonicon: 'none', id: 'custAdd', position: 'first', onClickButton: fnGridAddCountryCode
+    });
+}
+
+function jgImageFormatter(cellValue, options, rowObject) {
+    var imageHtml = "<img id='countryflagimg' src='" + cellValue + "' originalValue='" + cellValue + "' />"
+    return imageHtml;
+}
+
+
+function getImage(cellValue, options, rowObject) {
+    var imageHtml = "<img id='img" + options.rowId + "' src='" + rowObject.CountryFlag + "' originalValue='" + rowObject.CountryFlag + "'  />"
+    return imageHtml;
+}
+
+$("#imgFlag").on('change', function (e) {
+    
+    var input = document.getElementById("imgFlag");
+
+        var fReader = new FileReader();
+            fReader.readAsDataURL(input.files[0]);
+            fReader.onloadend = function (event) {
+            Postedimg = document.getElementById("imgPreview");
+            Postedimg.src = event.target.result;
+            var filename = $('#imgFlag').val().split('\\').pop();
+            postedImgName = e.target.files[0].name;
+            }
+});
+
+function fnGridAddCountryCode() {
+    fnClearFields();
+    Isadd = 1;
+    $('#PopupCountryCode').modal('show');
+    $('#PopupCountryCode').modal({ backdrop: 'static', keyboard: false });
+    $('#PopupCountryCode').find('.modal-title').text("Add Country");
+    $("#fnSaveCountryCode").html(' Save');
+}
+
+function fnGridRefreshCountryCode() {
+   $("#jqgCountryCode").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+function fnEditCountryCode(e) {
+   
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgCountryCode').jqGrid('getRowData', rowid);
+    Isadd = 0;
+    $('#txtIsdcode').val(rowData.Isdcode);
+    $("#txtIsdcode").attr('disabled', true);
+    $('#txtCountrycode').val(rowData.CountryCode);
+    imgUrl = $('#img' + rowid).attr('src');
+    $('#imgPreview').attr("src", imgUrl);
+    $('#txtCountryName').val(rowData.CountryName);
+    $('#cboCurrencycode').val(rowData.CurrencyCode);
+    $('#cboCurrencycode').selectpicker('refresh');  
+    $('#txtMobileNumberPattern').val(rowData.MobileNumberPattern);
+    $('#txtUIDlabel').val(rowData.Uidlabel);
+    $('#txtUIDPattern').val(rowData.Uidpattern);
+    $('#txtNationality').val(rowData.Nationality);
+    $('#cboActiveStatus').val(rowData.ActiveStatus);
+    $('#cboActiveStatus').selectpicker('refresh');
+    if (rowData.IsPoboxApplicable == 'true') {
+        $("#chkIsPOBoxAppllicable").parent().addClass("is-checked");
+    }
+    else {
+        $("#chkIsPOBoxAppllicable").parent().removeClass("is-checked");
+    }
+     
+    $('#txtPOBoxPattern').val(rowData.PoboxPattern);
+    if (rowData.IsPinapplicable == 'true') {
+        $("#chkIsPinApplicable").parent().addClass("is-checked");
+    }
+    else {
+        $("#chkIsPinApplicable").parent().removeClass("is-checked");
+    }
+    $('#txtPincodePattern').val(rowData.PincodePattern);
+    $('#PopupCountryCode').modal('show');
+    $('#PopupCountryCode').find('.modal-title').text("Update Country");
+    $("#fnSaveCountryCode").html(' Update');
+}
+
+function fnClearFields() {
+    $("#txtIsdcode").val('');
+    $("#txtIsdcode").attr('disabled', false);
+    $("#txtCountrycode").val('');
+    $('#imgPreview').attr('src', '');
+    $("#imgFlag").val('');
+    $("#txtCountryName").val('');
+    $("#cboCurrencycode").val('0');
+    $("#cboCurrencycode").selectpicker('refresh');
+    $("#txtMobileNumberPattern").val('');
+    $("#txtUIDlabel").val('');
+    $("#txtUIDPattern").val('');
+    $("#txtNationality").val('');
+    $("#cboActiveStatus").val('true');
+    $("#cboActiveStatus").selectpicker('refresh');
+    $("#chkIsPOBoxAppllicable").parent().removeClass("is-checked");
+    $("#txtPOBoxPattern").val('');
+    $("#chkIsPinApplicable").parent().removeClass("is-checked");
+    $("#txtPincodePattern").val('');
+
+}
+
+function fnSaveCountryCode() {
+   
+    if (validateCountryCode() === false) {
+        return;
+    }
+
+    var postedfile;
+    var imgName;
+    var imgPath;
+
+    var PoboxApplicable;
+    var chkPoboxApplicable = $("#chkIsPinApplicable").parent().hasClass("is-checked");
+    if (chkPoboxApplicable) {
+        PoboxApplicable = true;
+    }
+    else {
+        PoboxApplicable = false;
+    }
+
+    var Pinapplicable;
+    var chkPinapplicable = $("#chkIsPOBoxAppllicable").parent().hasClass("is-checked");
+    if (chkPinapplicable) {
+        Pinapplicable = true;
+    }
+    else {
+        Pinapplicable = false;
+    }
+
+    if (Isadd === 1) {
+
+        if (postedImgName != 0) {
+            imgName = postedImgName;
+        }
+        
+        var country = {
+            Isdcode: $('#txtIsdcode').val(),
+            CountryCode: $("#txtCountrycode").val(),
+            CountryName: $("#txtCountryName").val(),
+            CountryFlag: 'img',
+            CurrencyCode: $("#cboCurrencycode").val(),
+            MobileNumberPattern: $("#txtMobileNumberPattern").val().trim(),
+            Uidlabel: $("#txtUIDlabel").val(),
+            Uidpattern: $("#txtUIDPattern").val(),
+            Nationality: $("#txtNationality").val(),
+            IsPoboxApplicable: PoboxApplicable,
+            PoboxPattern: $("#txtPOBoxPattern").val(),
+            IsPinapplicable: Pinapplicable,
+            PincodePattern: $("#txtPincodePattern").val(),
+            ActiveStatus: $("#cboActiveStatus").val(),
+            postedfile: Postedimg.src,
+            imgName: imgName,
+            Isadd: 1
+        };
+
+
+    }
+    
+    if (Isadd === 0) {
+
+        if (Postedimg != null) {
+            postedfile = Postedimg.src;
+        }
+        else {
+            postedfile = null;
+        }
+        var Filename = imgUrl.replace('/Uploads/CountryFlagICons/', '');
+        var Filename = Filename.replace('/Uploads/CountryFlagICons/', '');
+        imgName = Filename;
+        if (postedImgName != 0) {
+            imgName = postedImgName;
+        }
+
+        imgPath = "/Uploads/CountryFlagICons/" + imgName;
+
+        var country = {
+            Isdcode: $('#txtIsdcode').val(),
+            CountryCode: $("#txtCountrycode").val(),
+            CountryName: $("#txtCountryName").val(),
+            CountryFlag: 'img',
+            CurrencyCode: $("#cboCurrencycode").val(),
+            MobileNumberPattern: $("#txtMobileNumberPattern").val().trim(),
+            Uidlabel: $("#txtUIDlabel").val(),
+            Uidpattern: $("#txtUIDPattern").val(),
+            Nationality: $("#txtNationality").val(),
+            IsPoboxApplicable: PoboxApplicable,
+            PoboxPattern: $("#txtPOBoxPattern").val(),
+            IsPinapplicable: Pinapplicable,
+            PincodePattern: $("#txtPincodePattern").val(),
+            ActiveStatus: $("#cboActiveStatus").val(),
+            postedfile: postedfile,
+            imgName: imgName,
+            imgPath: imgPath,
+            Isadd: 0
+        };
+    }
+
+
+    $.ajax({
+        url: getBaseURL() + '/Country/InsertOrUpdateCountry',
+        type: "post",
+        data: JSON.stringify(country),
+        contentType: "application/json",
+        success: function (response) {
+
+            if (response.Status === false) {
+                toastr.error(response.Message);
+                return false;
+            }
+
+            if (response.Status === true) {
+                toastr.success(response.Message);
+                fnClearFields();
+                $('#PopupCountryCode').modal('hide');
+                fnGridLoadCountryCode();
+                return true;
+            }
+
+
+        }
+    });
+}
+
+function validateCountryCode() {
+  
+    if ($("#txtIsdcode").val() === '' || $("#txtIsdcode").val() === null) {
+        toastr.warning("Please Enter ISD Code");
+        return false;
+    }
+    if ($("#txtCountrycode").val() === '' || $("#txtCountrycode").val() === null) {
+        toastr.warning("Please Enter Country Code");
+        return false;
+    }
+    var Image = $('#imgPreview').attr('src');
+    if (Image == null || Image == "") {
+        toastr.warning("Please Upload Country Flag");
+        return false;
+    }
+    if ($("#txtCountryName").val() === '' || $("#txtCountryName").val() === null) {
+        toastr.warning("Please Enter Country Name");
+        return false;
+    }
+    if ($("#cboCurrencycode").val() === "0" || $("#cboCurrencycode").val() === '0') {
+        toastr.warning("Please Select Currency");
+        return false;
+    }
+
+}
+
+function AllowOnlyNumbers(e) {
+    e = (e) ? e : window.event;
+    var clipboardData = e.clipboardData ? e.clipboardData : window.clipboardData;
+    var key = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
+    var str = (e.type && e.type == "paste") ? clipboardData.getData('Text') : String.fromCharCode(key);
+    return (/^\d+$/.test(str));
+}
+
+
+
+//Statutory Code
+function fnGridLoadStatutoryCode() {
+
+
+    $("#jqgStatutoryCode").jqGrid('GridUnload');
+    $("#jqgStatutoryCode").jqGrid({
+        //url: URL,
+        mtype: 'Post',
+        datatype: 'local',
+
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["ISD Code", "Statutory Code", "Stat Short Code", "Statutory Description", "Stat Pattern", "Active Status", "", "", "", "", "", "", ""],
+        colModel: [
+            { name: "ISDCode", width: 70, editable: true, align: 'left', hidden: true },
+            { name: "StatutoryCode", width: 70, editable: false, hidden: true, align: 'left', resizable: true },
+            { name: "StatShortCode", width: 70, editable: true, hidden: false, align: 'left', resizable: true, editoptions: { size: "20", maxlength: "500" }, edittype: "text" },
+            { name: "StatutoryDescription", width: 170, editable: true, hidden: false, align: 'left', resizable: true, editoptions: { size: "20", maxlength: "500" }, edittype: "text" },
+            { name: "StatPattern", width: 170, editable: true, hidden: false, align: 'left', resizable: true, editoptions: { size: "20", maxlength: "500" }, edittype: "text", },
+            { name: "ActiveStatus", editable: true, width: 45, hidden: false, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: Inactive" } },
+            { name: "FormID", width: 70, editable: false, hidden: true, align: 'left', resizable: true },
+            { name: "CreatedBy", width: 70, editable: false, hidden: true, align: 'left', resizable: true },
+            { name: "CreatedOn", width: 70, editable: false, hidden: true, align: 'left', resizable: true },
+            { name: "CreatedTerminal", width: 70, editable: false, hidden: true, align: 'left', resizable: true },
+            { name: "ModifiedBy", width: 70, editable: false, hidden: true, align: 'left', resizable: true },
+            { name: "ModifiedOn", width: 70, editable: false, hidden: true, align: 'left', resizable: true },
+            { name: "ModifiedOnTerminal", width: 70, editable: false, hidden: true, align: 'left', resizable: true },
+
+        ],
+        rowNum: 10,
+        loadonce: false,
+        pager: "#jqpStatutoryCode",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0,
+        editurl: "",
+    }).jqGrid('navGrid', '#jqpStatutoryCode', { add: false, edit: false, search: false, del: false, refresh: false })
+    $("#jqgStatutoryCode").jqGrid('inlineNav', '#jqpStatutoryCode',
+        {
+            edit: true,
+            editicon: " fa fa-pen",
+            edittext: " Edit ",
+            add: true,
+            addicon: "fa fa-plus",
+            addtext: " Add ",
+            save: true,
+            savetext: " Save ",
+            saveicon: "fa fa-save",
+            cancelicon: "fa fa-ban",
+            canceltext: " Cancel ",
+            editParams: {
+                keys: false,
+                url: null,
+
+                extraparam: {
+
+                },
+
+                successfunc: function (result) { },
+
+                aftersavefun: null,
+                errorfun: null,
+                afterrestorefun: null,
+                restoreAfterError: true,
+                mtype: "POST"
+            }
+        });
+
+}
+

@@ -1,0 +1,14 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace eSyaEnterprise_UI.Utility
+{
+    public class SMSTriggerEventValues
+    {
+        public const string MobileLoginOTP = "LOTP";
+        public const string ForgetUserIDOTP = "FUOTP";
+        public const string ForgetPasswordOTP = "FPOTP";
+    }
+}

@@ -1,0 +1,532 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using eSyaEnterprise_UI.Areas.eSyaMaterial.Data;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Areas.eSyaMaterial.Models;
+using eSyaEnterprise_UI.Utility;
+using eSyaEnterprise_UI.ActionFilter;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+
+namespace eSyaEnterprise_UI.Areas.eSyaMaterial.Controllers
+{
+    public class ItemManagementController : Controller
+    {
+        private readonly IeSyaMaterialAPIServices _eSyaMMAPIServices;
+        private readonly ILogger<ItemManagementController> _logger;
+
+        public ItemManagementController(IeSyaMaterialAPIServices eSyaMMAPIServices, ILogger<ItemManagementController> logger)
+        {
+            _eSyaMMAPIServices = eSyaMMAPIServices;
+            _logger = logger;
+        }
+
+        [Area("eSyaMaterial")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        #region Item Master
+        /// <summary>
+        /// Item Creation
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IActionResult> V_1011_00()
+        {
+            //ViewBag.UserFormRoles = new DO_UserFormRole { IsInsert = true, IsEdit = true, IsDelete = true };
+            try
+            {
+                int pu_ctype = CodeTypeValues.PackUnit;
+                var pu_serviceResponse = await _eSyaMMAPIServices.HttpClientServices.GetAsync<List<DO_ApplicationCodes>>("Common/GetApplicationCodesByCodeType?codeType=" + pu_ctype);
+                var Um_serviceResponse = await _eSyaMMAPIServices.HttpClientServices.GetAsync<List<DO_UnitofMeasure>>("Common/GetUnitofMeasure");
+                var Ig_serviceResponse = await _eSyaMMAPIServices.HttpClientServices.GetAsync<List<DO_ItemGroup>>("Common/GetItemGroup");
+                var Im_serviceResponse = await _eSyaMMAPIServices.HttpClientServices.GetAsync<List<DO_ItemCodes>>("ItemCodes/GetItemList");
+
+                if (pu_serviceResponse.Status && Um_serviceResponse.Status && Ig_serviceResponse.Status && Im_serviceResponse.Status)
+                {
+                    if (pu_serviceResponse.Data != null && Um_serviceResponse.Data != null && Ig_serviceResponse.Data != null && Im_serviceResponse.Data != null)
+                    {
+                        ViewBag.PackUnitList = pu_serviceResponse.Data.Select(b => new SelectListItem
+                        {
+                            Value = b.ApplicationCode.ToString(),
+                            Text = b.CodeDesc,
+                        }).ToList();
+
+                        ViewBag.UOMList = Um_serviceResponse.Data.Select(b => new SelectListItem
+                        {
+                            Value = b.UnitOfMeasure.ToString(),
+                            Text = b.Uompdesc,
+                        }).ToList();
+
+                        ViewBag.ItemGroupList = Ig_serviceResponse.Data.Select(b => new SelectListItem
+                        {
+                            Value = b.ItemGroupId.ToString(),
+                            Text = b.ItemGroupDesc,
+                        }).ToList();
+
+                        ViewBag.ItemList = Im_serviceResponse.Data.Select(b => new SelectListItem
+                        {
+                            Value = b.ItemCode.ToString(),
+                            Text = b.ItemDescription,
+                        }).ToList();
+                        return View();
+                        //return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(pu_serviceResponse.Message), "UD:ItemMaster");
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(pu_serviceResponse.Message), "UD:ItemMaster");
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD: ItemMaster");
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        ///Get Item Category
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetItemCategory(int ItemGroup)
+        {
+            try
+            {
+                var parameter = "?ItemGroup=" + ItemGroup;
+                var serviceResponse =await _eSyaMMAPIServices.HttpClientServices.GetAsync<List<DO_ItemCategory>>("Common/GetItemCategory" + parameter);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetItemCategory:For ItemGroup {0}", ItemGroup);
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetItemCategory:For ItemGroup {0}", ItemGroup);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetItemCategory:For ItemGroup {0}", ItemGroup);
+                throw ex;
+                //return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        ///Get Item Category
+        /// </summary>
+        [HttpPost]
+        public async Task<IActionResult> GetItemSubCategory(int ItemCategory)
+        {
+            try
+            {
+                var parameter = "?ItemCategory=" + ItemCategory;
+                var serviceResponse =await _eSyaMMAPIServices.HttpClientServices.GetAsync<List<DO_ItemSubCategory>>("Common/GetItemSubCategory" + parameter);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetItemSubCategory:For ItemCategory {0}", ItemCategory);
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetItemSubCategory:For ItemCategory {0}", ItemCategory);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetItemSubCategory:For ItemCategory {0}", ItemCategory);
+                throw ex;
+                //return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        ///Get Item Master List
+        /// </summary>
+        [HttpPost]
+        public async Task<IActionResult> GetItemMaster(int ItemGroup, int ItemCategory, int ItemSubCategory)
+        {
+            try
+            {
+                var parameter = "?ItemGroup=" + ItemGroup + "&ItemCategory=" + ItemCategory + "&ItemSubCategory=" + ItemSubCategory;
+                var serviceResponse =await _eSyaMMAPIServices.HttpClientServices.GetAsync<List<DO_ItemCodes>>("ItemCodes/GetItemMaster" + parameter);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetItemMaster:For ItemGroup {0} ItemCategory {1} With ItemSubCategory entered {2}", ItemGroup, ItemCategory, ItemSubCategory);
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetItemMaster:For ItemGroup {0} ItemCategory {1} With ItemSubCategory entered {2}", ItemGroup, ItemCategory, ItemSubCategory);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetItemMaster:For ItemGroup {0} ItemCategory {1} With ItemSubCategory entered {2}", ItemGroup, ItemCategory, ItemSubCategory);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        ///Get Item Codes Details
+        /// </summary>
+        [HttpPost]
+        public async Task<IActionResult> GetItemDetails(int ItemCode)
+        {
+            try
+            {
+                var parameter = "?ItemCode=" + ItemCode;
+                var serviceResponse =await _eSyaMMAPIServices.HttpClientServices.GetAsync<List<DO_ItemCodes>>("ItemCodes/GetItemDetails" + parameter);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetItemDetails:For ItemCode {0}", ItemCode);
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetItemDetails:For ItemCode {0}", ItemCode);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetItemDetails:For ItemCode {0}", ItemCode);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Get Item parameter
+        /// </summary>
+        [HttpPost]
+        public async Task<IActionResult> GetItemParameterList(int ItemCode)
+        {
+            try
+            {
+                var serviceResponse = await _eSyaMMAPIServices.HttpClientServices.GetAsync<DO_ItemCodes>("ItemCodes/GetItemParameterList?ItemCode=" + ItemCode);
+
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetItemParameterList:For ItemCode {0}", ItemCode);
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetItemParameterList:For ItemCode {0}", ItemCode);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetItemParameterList:For ItemCode {0}", ItemCode);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Insert or Update Item Codes
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> InsertOrUpdateItemCodes(DO_ItemCodes ItemCodes)
+        {
+            try
+            {
+                ItemCodes.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                ItemCodes.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                ItemCodes.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                if (ItemCodes.ItemCode == 0)
+                {
+                    var serviceResponse =await _eSyaMMAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("ItemCodes/InsertItemCodes", ItemCodes);
+                    if (serviceResponse.Status)
+                        return Json(serviceResponse.Data);
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:InsertOrUpdateItemCodes:params:" + JsonConvert.SerializeObject(ItemCodes));
+                        return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                    }
+                }
+                else
+                {
+                    var serviceResponse = _eSyaMMAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("ItemCodes/UpdateItemCodes", ItemCodes).Result;
+                    if (serviceResponse.Status)
+                        return Json(serviceResponse.Data);
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:InsertOrUpdateItemCodes:params:" + JsonConvert.SerializeObject(ItemCodes));
+                        return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertOrUpdateItemCodes:params:" + JsonConvert.SerializeObject(ItemCodes));
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+
+        #endregion Item Master
+
+        [Area("eSyaMaterial")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        #region Item Business Link
+        public async Task<IActionResult> V_1012_00()
+        {
+            try
+            {
+                var bk_serviceResponse =await _eSyaMMAPIServices.HttpClientServices.GetAsync<List<DO_BusinessLocation>>("Common/GetBusinessKey");
+                var as_serviceResponse =await _eSyaMMAPIServices.HttpClientServices.GetAsync<List<DO_StoreMaster>>("Common/GetAccountingStore");
+
+                if (bk_serviceResponse.Status && as_serviceResponse.Status)
+                {
+                    if (bk_serviceResponse.Data != null && as_serviceResponse.Data != null)
+                    {
+                        ViewBag.businessKey = bk_serviceResponse.Data;
+                        ViewBag.accountingstore = as_serviceResponse.Data;
+                        return View();
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(bk_serviceResponse.Message), "UD:ItemBusinessLink");
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(bk_serviceResponse.Message), "UD:ItemBusinessLink");
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:ItemBusinessLink");
+                throw ex;
+            }
+        }
+        
+        /// <summary>
+        ///Get Custodian Store
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetCustodianStoreList()
+        {
+            try
+            {
+                var serviceResponse =await _eSyaMMAPIServices.HttpClientServices.GetAsync<List<DO_StoreMaster>>("Common/GetCustodianStore");
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetCustodianStoreList");
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetCustodianStoreList");
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetCustodianStoreList");
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        ///Get Business Item Custodian Link
+        /// </summary>
+        [HttpPost]
+        public async Task<IActionResult> GetCustodianStore(int BusinessKey, int ItemCode)
+        {
+            try
+            {
+                var parameter = "?BusinessKey=" + BusinessKey + "&ItemCode=" + ItemCode;
+                var serviceResponse = await _eSyaMMAPIServices.HttpClientServices.GetAsync<List<DO_ItemBusinessLink>>("ItemCodes/GetCustodianStore" + parameter);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetCustodianStore:For BusinessKey {0} with ItemCode entered {1}", BusinessKey, ItemCode);
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetCustodianStore:For BusinessKey {0} with ItemCode entered {1}", BusinessKey, ItemCode);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetCustodianStore:For BusinessKey {0} with ItemCode entered {1}", BusinessKey, ItemCode);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        ///Get Item List for Tree View
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetItemTree()
+        {
+            try
+            {
+                List<jsTreeObject> jsTree = new List<jsTreeObject>();
+
+                jsTreeObject jsObj = new jsTreeObject
+                {
+                    id = "IG",
+                    parent = "#",
+                    text = "Item Group",
+                    state = new stateObject { opened = true, selected = false }
+                };
+                jsTree.Add(jsObj);
+
+                var serviceResponse =await _eSyaMMAPIServices.HttpClientServices.GetAsync<DO_ItemConfigurartion>("ItemCodes/GetItemTree");
+                var ItemConfig = serviceResponse.Data;
+                if (ItemConfig != null)
+                {
+                    foreach (var f in ItemConfig.l_ItemGroup.OrderBy(o => o.ItemGroupId))
+                    {
+                        jsObj = new jsTreeObject
+                        {
+                            id = "IG" + f.ItemGroupId.ToString(),
+                            text = f.ItemGroupDesc,
+                            GroupIndex = f.ItemGroupId.ToString(),
+                            parent = "IG",
+                            state = new stateObject { opened = true, selected = false }
+                        };
+                        jsTree.Add(jsObj);
+                    }
+
+                    foreach (var f in ItemConfig.l_ItemCategory.OrderBy(o => o.ItemCategory))
+                    {
+                        jsObj = new jsTreeObject
+                        {
+                            id = "IC" + f.ItemGroupId.ToString() + "_" + f.ItemCategory.ToString(),
+                            text = f.ItemCategoryDesc,
+                            GroupIndex = f.ItemGroupId.ToString(),
+                            parent = "IG" + f.ItemGroupId.ToString(),
+                            state = new stateObject { opened = true, selected = false }
+                        };
+                        jsTree.Add(jsObj);
+                    }
+
+                    foreach (var f in ItemConfig.l_ItemSubCategory.OrderBy(o => o.ItemSubCategory))
+                    {
+                        jsObj = new jsTreeObject
+                        {
+                            id = "IS" + f.ItemGroupId.ToString() + "_" + f.ItemCategory.ToString() + "_" + f.ItemSubCategory.ToString(),
+                            text = f.ItemSubCategoryDesc,
+                            GroupIndex = f.ItemGroupId.ToString(),
+                            parent = "IC" + f.ItemGroupId.ToString() + "_" + f.ItemCategory.ToString(),
+                            state = new stateObject { opened = true, selected = false }
+                        };
+                        jsTree.Add(jsObj);
+                    }
+
+                    foreach (var f in ItemConfig.l_ItemCodes.OrderBy(o => o.ItemCode))
+                    {
+                        if (f.ItemSubCategory == 0)
+                        {
+                            jsObj = new jsTreeObject
+                            {
+                                id = "IT" + f.ItemGroup.ToString() + "_" + f.ItemCategory.ToString() + "_" + f.ItemCode.ToString(),
+                                text = f.ItemDescription,
+                                GroupIndex = f.ItemGroup.ToString(),
+                                parent = "IC" + f.ItemGroup.ToString() + "_" + f.ItemCategory.ToString(),
+                                state = new stateObject { opened = true, selected = false }
+                            };
+                            jsTree.Add(jsObj);
+                        }
+                        else
+                        {
+                            jsObj = new jsTreeObject
+                            {
+
+                                id = "IT" + f.ItemGroup.ToString() + "_" + f.ItemCategory.ToString() + "_" + f.ItemSubCategory.ToString() + "_" + f.ItemCode.ToString(),
+                                text = f.ItemDescription,
+                                GroupIndex = f.ItemGroup.ToString(),
+                                parent = "IS" + f.ItemGroup.ToString() + "_" + f.ItemCategory.ToString() + "_" + f.ItemSubCategory.ToString(),
+                                state = new stateObject { opened = true, selected = false }
+                            };
+                            jsTree.Add(jsObj);
+                        }  
+                    }
+                }
+                return Json(jsTree);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetItemTree");
+                throw ex;
+            }
+
+        }
+        #endregion Item Business Link
+
+        [Area("eSyaMaterial")]
+        public IActionResult V_1013_00()
+        {
+            ViewBag.formName = "Item Store";
+            return View();
+        }
+
+    }
+}

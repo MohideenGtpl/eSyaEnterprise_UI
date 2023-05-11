@@ -1,0 +1,102 @@
+﻿
+var NodeID;
+var prevSelectedID;
+
+$(document).ready(function () {
+    $("#pnlMainMenu").hide();
+    fnTreeSize();
+    LoadRoomTypeTree();
+    $("#btnDeleteNode").attr("disabled", _userFormRole.IsDelete === false);
+});
+
+function LoadRoomTypeTree() {
+
+    $('#jstRoomType').jstree({
+        'core': {
+            'data': [
+                {
+                    'text': 'Room Type', 'state': { 'opened': true, 'selected': false }, 'children': [
+
+
+                        {
+                            'text': 'General',
+                            'state': {
+                                'opened': true,
+                                'selected': false
+                            },
+                            'children': [
+                                { 'text': 'General Male' },
+                                'General Female'
+                            ]
+                        }]
+                }
+            ]
+        }
+    });
+}
+$('#jstRoomType').on("changed.jstree", function (e, data) {
+    if (data.node != undefined) {
+        if (prevSelectedID != data.node.id) {
+            prevSelectedID = data.node.id;
+
+            if (data.node.id == "0") {
+                fnClearFields();
+                $("#pnlMainMenu").hide();
+            }
+            else {
+
+                $('#View').remove();
+                $('#Edit').remove();
+                $('#Add').remove();
+
+                $("#pnlMainMenu").hide();
+
+                if (data.node.parent == "#") {
+                    $('#' + data.node.id + "_anchor").html($('#' + data.node.id + "_anchor").html() + '<span id="Add" style="padding-left:10px;padding-right:10px">&nbsp;<i class="fa fa-plus" style="color:#337ab7"aria-hidden="true"></i></span>')
+
+                    $('#Add').on('click', function () {
+
+                        $("#pnlMainMenu").show();
+                        $(".mdl-card__title-text").text("Add Room Details");
+
+                        $("#btnSaveRoomType").show();
+                        $("input,textarea").attr('readonly', false);
+                        $("input[type=checkbox]").attr('disabled', false);
+                        $("#btnSaveRoomType").html('<i class="fa fa-save"></i> Save');
+                    });
+                }
+                else if (data.node.id.startsWith("j1")) {
+                    debugger;
+                    NodeID = 0;
+                    NodeID = data.node.id.substring(2).split("_")[1];
+
+                    $('#' + data.node.id + "_anchor").html($('#' + data.node.id + "_anchor").html() + '<span id="View" style="padding-left:10px">&nbsp;<i class="fa fa-eye" style="color:#337ab7"aria-hidden="true"></i></span>')
+                    $('#' + data.node.id + "_anchor").html($('#' + data.node.id + "_anchor").html() + '<span id="Edit" style="padding-left:10px">&nbsp;<i class="fa fa-pen" style="color:#337ab7"aria-hidden="true"></i></span>')
+
+
+
+                    $('#View').on('click', function () {
+                        $("#pnlMainMenu").show();
+                        $(".mdl-card__title-text").text("View Room Details");
+                        $("#btnSaveRoomType").hide();
+                        $("input,textarea").attr('readonly', true);
+                        $("input[type=checkbox]").attr('disabled', true);
+                    });
+
+                    $('#Edit').on('click', function () {
+                        $("#pnlMainMenu").show();
+                        $(".mdl-card__title-text").text("Edit Room Details");
+                        $("#btnSaveRoomType").show();
+                        $("input,textarea").attr('readonly', false);
+                        $("input[type=checkbox]").attr('disabled', false);
+                        $("#btnSaveRoomType").html('<i class="fa fa-sync"></i> Update');
+                    });
+                }
+                else {
+                    fnClearFields();
+                    $("#pnlMainMenu").hide();
+                }
+            }
+        }
+    }
+});

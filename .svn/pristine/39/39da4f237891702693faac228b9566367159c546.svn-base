@@ -1,0 +1,221 @@
+﻿
+var data_LocalizationLanguage = [];
+
+var lstLocalizationMaster = [];
+
+var lstFormMaster = [];
+
+$(document).ready(function () {
+
+    $.each(LocalizationTableMaster, function (i, data) { lstLocalizationMaster.push(data.TableCode + ':' + data.SchemaName); });
+    lstLocalizationMaster = lstLocalizationMaster.join(';');
+
+
+
+    $.each(FormMaster, function (i, data) { lstFormMaster.push(data.FormID + ':' + data.FormName); });
+    lstFormMaster = lstFormMaster.join(';');
+
+
+    fnBindLocalizationLanguageGrid();
+
+
+    $.ajaxSetup({
+        async: false
+    });
+
+
+});
+
+function fnBindLocalizationLanguageGrid() {
+
+    fnGetLocalizationLanguageData();
+    var Localization_Languages = [];
+
+    for (var i = 0; i < data_LocalizationLanguage.length; i++) {
+        Localization_Languages.push({ "LanguageCode": data_LocalizationLanguage[i].LanguageCode, "TableCode": data_LocalizationLanguage[i].TableCode, "FormID": data_LocalizationLanguage[i].FormID, "FieldDescLanguage": data_LocalizationLanguage[i].FieldDescLanguage,  "ActiveStatus": data_LocalizationLanguage[i].ActiveStatus });
+    }
+    $('#jqgLocalizationLanguage').jqGrid('GridUnload');
+    $("#jqgLocalizationLanguage").jqGrid({
+        datatype: 'json',
+        
+        colNames: ["Language Code", "Schema Name", "Form Name", "Field Description in Language", "Status"],
+
+        colModel: [
+            { name: "LanguageCode", width: 250, editable: true, resizable: false, edittype: 'select', resizable: false, formatter: 'select', editoptions: { value: "EG:English;AR:Arabic" } },
+
+            {
+                name: "TableCode", editable: true, width: 250, resizable: false, edittype: 'select', formatter: 'select', editoptions: {
+                    value: lstLocalizationMaster
+
+                }
+            },
+            {
+                name: "FormID", editable: true, width: 250, resizable: false, edittype: 'select', formatter: 'select', editoptions: {
+                    value: lstFormMaster
+
+                }
+            },
+
+
+            { name: "FieldDescLanguage", width: 200, editable: true, editoptions: { size: "20", maxlength: "500" }, edittype: "text", editrules: { custom: true, custom_func: checkLanguageFielddesc } },
+
+            { name: "ActiveStatus", editable: true, width: 85, edittype: "select", align: 'left', formatter: 'select', editoptions: { value: "true:Active;false:Inactive" } },
+
+        ],
+
+
+
+
+        datatype: "local",
+        data: Localization_Languages,
+        jsonReader: { repeatitems: false },
+        ignoreCase: true,
+        rownumWidth:40,
+        rowNum: 10,
+        rowList: [10, 20, 40],
+        emptyrecords: "No Records to View",
+        pager: "#jqpLocalizationLanguage",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+
+        loadonce: true,
+
+        editurl: getBaseURL() + '/Localization/InsertOrUpdateLocalizationLanguageMapping',
+
+        ajaxRowOptions: {
+            type: "POST",
+            contentType: "application/json",
+            dataType: "json"
+        },
+
+
+
+        serializeRowData: function (postData) {
+
+            return JSON.stringify(postData);
+
+
+        },
+
+        ondblClickRow: function (rowid) {
+            $("#jqtSpeciality_iledit").trigger('click');
+        },
+        loadComplete: function (data) {
+          
+
+        }
+    })
+        .jqGrid('navGrid', '#jqpLocalizationLanguage', { add: false, edit: false, search: false, del: false, refresh: false });
+
+    $("#jqgLocalizationLanguage").jqGrid('inlineNav', '#jqpLocalizationLanguage',
+        {
+            edit: true,
+            editicon: " fa fa-pen",
+            edittext: "Edit",
+            add: true,
+            addicon: "fa fa-plus",
+            addtext: "Add",
+            save: true,
+            savetext: "Save",
+            saveicon: "fa fa-save",
+            cancelicon: "fa fa-ban",
+            canceltext: "Cancel",
+            editParams: {
+                keys: false,
+                oneditfunc: function (formid) {
+                    
+                    $("#" + formid + "_LanguageCode").prop('disabled', true);
+                    $("#" + formid + "_TableCode").prop('disabled', true);
+                },
+
+                url: null,
+
+                extraparam: {
+
+                },
+
+
+                successfunc: function (result) {
+                    var resp = JSON.parse(result.responseText);
+                    if (resp.Status === true) {
+                        toastr.success(resp.Message);
+                        fnBindLocalizationLanguageGrid();
+                        return true;
+                    }
+                },
+
+                aftersavefun: null,
+                errorfun: null,
+                afterrestorefun: null,
+                restoreAfterError: true,
+                mtype: "POST"
+            },
+            addParams: {
+                useDefValues: true,
+                position: "last",
+                addRowParams: {
+                    keys: true,
+                    url: null,
+                    extraparam: {
+
+                    },
+
+                    oneditfunc: function (rowid) {
+                      
+                    },
+                    successfunc: function (result) {
+                        var resp = JSON.parse(result.responseText);
+                        if (resp.Status === true) {
+                            toastr.success(resp.Message);
+                            fnBindLocalizationLanguageGrid();
+                            return true;
+                        }
+                    }
+                }
+            }
+        });
+}
+
+function fnGetLocalizationLanguageData() {
+    data_LocalizationLanguage = [];
+    $.ajax({
+        type: 'POST',
+        async: false,
+        url: getBaseURL() + '/Localization/GetLocalizationLanguageMapping',
+        success: function (response) {
+          
+            if (response) {
+                for (var i = 0; i < response.length; i++) {
+                    data_LocalizationLanguage.push({ "LanguageCode": response[i].LanguageCode, "TableCode": response[i].TableCode, "FormID": response[i].FormID, "FieldDescLanguage": response[i].FieldDescLanguage,"ActiveStatus": response[i].ActiveStatus });
+
+
+                }
+
+            }
+        },
+        error: function (response) {
+
+
+        }
+    });
+}
+
+
+function checkLanguageFielddesc(value, FieldDescLanguage) {
+   
+    if (value == "") {
+        toastr.warning("Please Enter Field Language Description");
+       
+        
+        return [false, "Please Enter Field Language Description"]
+    }
+    else {
+        return [true, ""]
+    }
+}
+

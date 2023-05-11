@@ -1,0 +1,129 @@
+﻿
+@{
+    ViewData["Title"] = "V_1581_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/jsTree.css" rel="stylesheet" />
+@section scripts{
+    <script src="~/js/jsTree.js"></script>
+    <script src="~/js/eSyaMCServices/SpecialtyUnits.js"></script>
+}
+    <div class="row padbot10">
+        <div class="col-lg-3">
+            <div class="form-group">
+                <label class="lable-color">Business Segment</label>
+                <select class="selectpicker" data-live-search="false" id="" title="Choose Business Segment"></select>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-4 col-md-4 col-sm-6">
+            <div id="jstMCSpecialtyUnit"></div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6">
+
+            <div class="demo-card-square mdl-card mdl-shadow--2dp" id="pnlrdoAddItem" style="width: 100%; display:none;min-height:unset;">
+                <div class="row" style="padding:15px 10px 15px 15px; background:#fff!important">
+                    <div class="col-sm-3 col-6">
+                        <div class="radio" style="margin:0px;"><label style="font-size:16px !important;color:#797172 !important"><input type="radio" name="rdoAddItem" id="rdoAddUnits" value="SM" /> Add Units</label></div>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="demo-card-square mdl-card mdl-shadow--2dp" id="pnlMainMenu" style="width: 100%; display:none">
+
+                <div id="pnlMainModuleHeading" class="mdl-card__title mdl-card--expand padleft0 padtop0 h-60 d-block">
+                    <h5 class="mdl-card__title-text">Add Units</h5>
+                </div>
+                <div class="mdl-card__supporting-text fullwidth">
+                    <div class="row  padbot10 mar0">
+                        <input type="text" id="txtBusinessEntityId" style="display:none" />
+
+                    </div>
+                    <div class="row" style="margin:0px">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <label class="lable-color">Description</label>
+                                <input type="text" name="description" value="" class="form-control" />
+                            </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label class="lable-color">No of Units</label>
+                                    <input type="text" name="name" value="" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6">
+                                <div class="form-group">
+                                    <label class="lable-color">Effective From</label>
+                                    <input type="text" name="name" value="" class="datepicker form-control" />
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6">
+                                <div class="form-group">
+                                    <label class="lable-color">Effective Till</label>
+                                    <input type="text" name="name" value="" class="datepicker form-control" />
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6">
+                                <div class="form-group">
+                                    <label class="lable-color">New Patients</label>
+                                    <input type="text" name="name" value="" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6">
+                                <div class="form-group">
+                                    <label class="lable-color">Repeat Patients</label>
+                                    <input type="text" name="name" value="" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6">
+                                <div class="form-group">
+                                    <label class="lable-color">No of Male Beds</label>
+                                    <input type="text" name="name" value="" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6">
+                                <div class="form-group">
+                                    <label class="lable-color">No of Female Beds</label>
+                                    <input type="text" name="name" value="" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6">
+                                <div class="form-group">
+                                    <label class="lable-color">Common Beds</label>
+                                    <input type="text" name="name" value="" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6">
+                                <div class="form-group">
+                                    <label class="lable-color">Max Stay</label>
+                                    <input type="text" name="name" value="" class="form-control" />
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-4 col-sm-6">
+                                <div class="form-group">
+                                    <label class="lable-color">Active status</label>
+                                    <select class="selectpicker" data-live-search="false" id="cboActiveStatus" title="">
+                                        <option value="m">Active</option>
+                                        <option value="f">Inactive</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <div class="mdl-card__actions mdl-card--border" style="text-align: center;">
+                    <button class="mdl-button mdl-js-button mdl-button--raised primary-button" id="btnSaveSpecialty" onclick="fnSaveBusinessEntity()">
+                        Add
+                    </button>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+   
+

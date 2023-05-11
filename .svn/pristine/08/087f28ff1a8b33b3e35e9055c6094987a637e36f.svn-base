@@ -1,0 +1,204 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = @Localizer["PackageMaster"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    var userFormRole = (eSyaEnterprise_UI.Models.DO_UserFormRole)ViewBag.UserFormRole;
+}
+<script>
+    var _userFormRole = JSON.parse('@Html.Raw(Json.Serialize(userFormRole))');
+</script>
+@section scripts{
+    <script src="~/js/eSyaPackages/PackageMaster.js"></script>
+}
+
+    <div class="row padbot10">
+
+        <div class="col-lg-3  col-md-4 col-sm-8 col-xs-12">
+            <div class="form-group">
+                @*@await Component.InvokeAsync("eSyaBusinessLocation")*@
+                <label> @Localizer["BusinessLocation"] </label>
+                <select class="selectpicker" data-live-search="true" id="cboBusinessKey" title="@Localizer["Select"]" data-size="8" asp-items="@ViewBag.BusinessKey" onchange="fnLoadGrid()"></select>
+
+            </div>
+        </div>
+        <div class="col-lg-3  col-md-4 col-sm-8 col-xs-12">
+            <div class="form-group">
+                <label> @Localizer["PatientType"] </label>
+                <select class="selectpicker" data-live-search="true" id="cboPatientType" title="@Localizer["Select"]" data-size="8" asp-items="@ViewBag.PatientType" onchange="fnLoadGrid()"></select>
+
+            </div>
+        </div>
+        <div class="col-lg-3  col-md-4 col-sm-8 col-xs-12" id="dvCustomer" style="display:none;">
+            <div class="form-group">
+
+               <label> @Localizer["Customer"] </label>
+        <select class="selectpicker" data-live-search="true" id="cboCustomer" title="@Localizer["Select"]" data-size="8" asp-items="@ViewBag.Customers" onchange="fnLoadGrid()"></select>
+        
+         </div>
+        </div>
+        <div class="col-lg-3  col-md-4 col-sm-8 col-xs-12">
+            <div class="form-group">
+                <label> @Localizer["CurrencyCode"] </label>
+                <select class="selectpicker" data-live-search="true" id="cboCurrencyCode" title="@Localizer["Select"]" data-size="8" asp-items="@ViewBag.CurrencyCode" onchange="fnLoadGrid()"></select>
+
+            </div>
+        </div>
+
+    </div>
+<div class="row padbot10">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <table id="jqgPackageMaster"></table>
+        <div id="jqpPackageMaster"></div>
+    </div>
+</div>
+
+<div class="modal fullscreen fade in" id="PopupPackage" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">@Localizer["PackageDetails"]</h4>
+            </div>
+
+            <div class="modal-body">
+                <input type="hidden" id="hdpackId" />
+                <div class="row">
+                    <div class='col-lg-4 col-md-6 col-sm-12'>
+                        <div class="form-group">
+                            <label> @Localizer["Package"] </label>
+                            <select class="selectpicker" data-live-search="true" id="cboPackage" title="@Localizer["Select"]" data-size="8" asp-items="@ViewBag.Packages"></select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class='col-lg-2 col-md-6 col-sm-12 '>
+                        <div class="form-group">
+                            <label>@Localizer["EffectiveDate"]</label>
+                            <input type="date" name="text" id="txtEffectiveDate" value="" class="form-control" />
+                        </div>
+                    </div>
+                    <div class='col-lg-2 col-md-6 col-sm-12 '>
+                        <div class="form-group">
+                            <label>@Localizer["EffectiveTill"]</label>
+                            <input type="date" name="text" id="txtEffectiveTill" value="" class="form-control" />
+                        </div>
+                    </div>
+                 
+                    <div class='col-lg-2 col-md-6 col-sm-12 d-flex align-items-end'>
+                        <div class="form-group">
+                            <label class="mdl-checkbox mdl-js-checkbox" for="chkPatientCopy">
+                                <input type="checkbox" id="chkPatientCopy"
+                                       class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">@Localizer["PatientCopy"]</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class='col-lg-2 col-md-6 col-sm-12 d-flex align-items-end'>
+                        <div class="form-group">
+                            <label class="mdl-checkbox mdl-js-checkbox" for="chkFoodProvided">
+                                <input type="checkbox" id="chkFoodProvided"
+                                       class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">@Localizer["FoodProvided"]</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class='col-lg-2 col-md-6 col-sm-12 d-flex align-items-end'>
+                        <div class="form-group">
+                            <label class="mdl-checkbox mdl-js-checkbox" for="chkActiveStatus">
+                                <input type="checkbox" id="chkActiveStatus"
+                                       class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">@Localizer["Active"]</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class='col-lg-2 col-md-6 col-sm-12'>
+                        <div class="form-group">
+                            <label class="lbl-right"> @Localizer["PackageAmount"]</label>
+                            <input id='txtPackAmount' class='form-control decimalNumber d-inline'>
+                        </div>
+                    </div>
+                    <div class='col-lg-2 col-md-6 col-sm-12'>
+                        <div class="form-group">
+                            <label> @Localizer["ServiceChargePercentage"]</label>
+                            <input id='txtSCPercent' class='form-control decimalNumber d-inline'>
+                        </div>
+                    </div>
+                    <div class='col-lg-2 col-md-6 col-sm-12'>
+                        <div class="form-group">
+                            <label> @Localizer["ActualCost"]</label>
+                            <input id='txtActCost' class='form-control decimalNumber d-inline'>
+                        </div>
+                    </div>
+                </div>
+                <section class="shadowMedium p-3">
+                    <div class="row">
+                        <div class='col-lg-4 col-md-6 col-sm-12'>
+                            <div class="form-group">
+                                <p class="subheading">@Localizer["Services"]</p>
+                                <hr class="left" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class='col-lg-8 col-md-6 col-sm-12'>
+                            <div class="form-group">
+                                <label> @Localizer["Service"] </label>
+                                <select class="selectpicker" data-live-search="true" id="cboService" title="@Localizer["Select"]" data-size="8" asp-items="@ViewBag.Packages"></select>
+                            </div>
+                        </div>
+                        <div class='col-lg-4 col-md-6 col-sm-12 d-flex align-items-end form-group'>
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button"
+                                    id="btnAddService" onclick="fnAddPackageService()">
+                                <i class="fa fa-plus"></i> @Localizer["Add"]
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row padbot10">
+                        <div class='col-12'>
+                            <table id="jqgPackageServices"></table>
+                            <div id="jqpPackageServices"></div>
+                        </div>
+
+                    </div>
+                </section>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button"
+                                id="btnSave" onclick="fnSavePackageMaster()">
+                            <i class="fa fa-save"></i>@Localizer["Save"] 
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal"><i class="fa fa-times"></i>@Localizer["Cancel"]   </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+    var localization = {
+        
+        PackageShortCode: '@Localizer["PackageShortCode"]',
+        PackageDesc: '@Localizer["PackageDesc"]',
+        PackageAmount: '@Localizer["PackageAmount"]',
+        ActualCost: '@Localizer["ActualCost"]',
+        EffectiveDate: '@Localizer["EffectiveDate"]',
+        EffectiveTill: '@Localizer["EffectiveTill"]',
+        Active: '@Localizer["Active"]',
+        Service:'@Localizer["Service"]',
+        ActualPrice: '@Localizer["ActualPrice"]',
+        PackagePrice: '@Localizer["PackagePrice"]',
+        Quantity: '@Localizer["Quantity"]'
+    }
+</script>

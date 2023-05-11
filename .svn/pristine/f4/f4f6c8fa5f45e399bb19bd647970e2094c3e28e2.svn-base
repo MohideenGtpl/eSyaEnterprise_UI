@@ -1,0 +1,271 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = @Localizer["ServiceTemplateCreator"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    var userFormRole = (eSyaEnterprise_UI.Models.DO_UserFormRole)ViewBag.UserFormRole;
+}
+<script>
+    var _userFormRole = JSON.parse('@Html.Raw(Json.Serialize(userFormRole))');
+</script>
+<style>
+    #divShortResult .nav-tabs .nav-link.active {
+        border-color: #fff #fff gold;
+        border-bottom-width: 4px;
+        color: #797172;
+        font-weight: bold;
+        background: #fffcec;
+    }
+    #divShortResult .nav-tabs .nav-link {
+        border-bottom-width: 4px;
+        color: #999;
+        
+    }
+        #divShortResult .nav-tabs .nav-link:hover {
+            border-color: #fff #fff gold;
+            color: #797172;
+            font-weight: bold;
+            background: #fffcec;
+        }
+</style>
+
+@section scripts{
+    <script src="~/js/jsTree.js"></script>
+    <link href="~/css/jsTree.css" rel="stylesheet" />
+    <script src="~/js/eSyaLaboratory/ServiceTemplateCreator.js"></script>
+}
+
+<section id="divServiceTemplate">
+   <div class="row padbot10">
+            <div class="col-lg-4  col-md-4 col-sm-8 col-xs-12">
+                <div class="form-group">
+                    <label> @Localizer["BusinessLocation"] </label>
+                    <select class="selectpicker" data-live-search="true" id="cboBusinessKey" title="@Localizer["Select"]" data-size="8" asp-items="@ViewBag.BusinessKey" onchange="fnLoadGrid()"></select>
+                </div>
+            </div>
+            <div class="col-lg-3  col-md-4 col-sm-8 col-xs-12">
+                <div class="form-group">
+                    <label> @Localizer["ServiceClass"] </label>
+                    <select class="selectpicker" data-live-search="true" id="cboServiceClass" title="@Localizer["Select"]" data-size="8" asp-items="@ViewBag.ServiceClass" onchange="fnLoadGrid()"></select>
+                </div>
+            </div>
+        </div>
+   <div class="row padbot10">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <table id="jqgServiceTemplateCreator"></table>
+                <div id="jqpServiceTemplateCreator"></div>
+            </div>
+        </div>
+</section>
+
+<section  id="divServiceFields" style="display:none;">
+    <div class="row">
+        <div class="col-lg-4 col-md-4 col-sm-6 form-group">
+            <label>Service Name</label>
+            <input type="text" name="Service Class" class="form-control" readonly>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-6 form-group">
+            <label>Result Type</label>
+            <input type="text" name="Result Type" class="form-control" readonly>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-6 form-group">
+            <label>Sample Type</label>
+            <input type="text" name="Sample type" class="form-control" readonly>
+        </div>
+    </div>
+</section>
+<section id="divShortResult" style="display:none">
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" id="shortResult-tab" data-toggle="tab" role="tab" aria-controls="home" aria-selected="true" href="#tabShortResult">Short Result</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" role="tab" aria-controls="profile" aria-selected="false" href="#tabTestMethod">Test Method</a>
+        </li>
+    </ul>
+
+    <div class="tab-content padtop15" id="myTabContent">
+        <div class="tab-pane fade show active" id="tabShortResult" role="tabpanel" aria-labelledby="shortResult-tab">
+            <div class="row form-group">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <table id="jqgShortResult"></table>
+                    <div id="jqpShortResult"></div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="tabTestMethod" role="tabpanel" aria-labelledby="TestMethod-tab">
+
+            <div class="row form-group">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <table id="jqgTestMethod"></table>
+                    <div id="jqpTestMethod"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    
+</section>
+
+<section id="divLongResult" style="display:none">
+    <div class="row padbot10">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <p class="subheading">Long Result</p>
+            <hr class="left" />
+            <table id="jqgLongResult"></table>
+            <div id="jqpLongResult"></div>
+        </div>
+    </div>
+</section>
+
+<section  id="divInputFields" style="display:none">
+    <div class="row">
+        <div class="col-lg-4 col-md-4 col-sm-6 form-group">
+            <label>Interpretation Required</label>
+            <textarea rows="4" cols="20" class="form-control" id=""></textarea>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-6 form-group">
+            <label>Impression</label>
+            <textarea rows="4" cols="20" class="form-control" id=""></textarea>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-6 form-group">
+            <label>Notes</label>
+            <textarea rows="4" cols="20" class="form-control" id=""></textarea>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+            <hr />
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button mr-10" id="btnSave">
+                <i class="fa fa-save"></i>   Save
+            </button>
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button" id="btnCancel" onclick="fnServiceTemplateCreator()"><i class="fa fa-times"></i> Cancel</button>
+
+        </div>
+
+    </div>
+</section>
+ 
+<div class="modal fade" id="PopupServiceTemplateMaster" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title"> @Localizer["AddServiceTemplateMaster"]</h4>
+            </div>
+            <div class="modal-body col-sm-12 col-md-12 col-lg-12">
+                @*<div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <label>
+                                @Localizer["ServiceDescription"]
+                            </label>
+                            <input type="text" maxlength="75" class="form-control" id="txtServiceDesc" disabled />
+                        </div>
+                    </div>
+                </div>*@
+                <div class="row" id="dvAddTemplateMaster">
+                    <div class="col-lg-6  col-md-6 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label> @Localizer["ResultType"] </label>
+                            <select class="selectpicker" data-live-search="true" id="cboPopResultType" title="" data-size="8">
+                                <option value="0" selected> @Localizer["Select"]</option>
+                                @if (ViewBag.ResultType != null)
+                                {
+                                    foreach (var t in ViewBag.ResultType)
+                                    {
+                                        <option value="@t.Value">@t.Text</option>
+                                    }
+
+                                }
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-6  col-md-6 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label> @Localizer["SampleType"] </label>
+                            <select class="selectpicker" data-live-search="true" id="cboPopSampleType" title="" data-size="8">
+                                <option value="0" selected> @Localizer["Select"]</option>
+                                @if (ViewBag.SampleType != null)
+                                {
+                                    foreach (var s in ViewBag.SampleType)
+                                    {
+                                        <option value="@s.Value">@s.Text</option>
+                                    }
+
+                                }
+                            </select>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-6 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label>
+                                @Localizer["PrintSequence"]
+                            </label>
+                            <input type="number" maxlength="3" class="form-control" id="txtPrintSequence" />
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label>
+                                @Localizer["ReportingTime"]
+                            </label>
+                            <input type="number" maxlength="2" class="form-control" id="txtReportingTime" />
+                        </div>
+                    </div>
+                    <input type="text"  class="form-control" id="txtServiceID" hidden/>
+
+                </div>
+                @*<div class="row ">
+                    <div class="col-lg-12" style="margin-bottom: 15px;">
+                        <label class="mdl-checkbox mdl-js-checkbox" for="chkActiveStatus">
+                            <input type="checkbox" id="chkActiveStatus"
+                                   class="mdl-checkbox__input">
+                            <span class="mdl-checkbox__label">@Localizer["Active"]</span>
+                        </label>
+                    </div>
+
+                </div>*@
+
+
+
+
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnPopSave" onclick="fnAddOrUpdateServiceTemplateMaster()">
+                            @Localizer["Save"]
+                        </button>
+                        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button" data-dismiss="modal"> @Localizer["Cancel"]</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
+
+
+    
+
+
+    <script>
+
+    var localization = {
+        ServiceShortName: '@Localizer["ServiceShortName"]',
+        ServiceDescription: '@Localizer["ServiceDescription"]',
+        ResultType: '@Localizer["ResultType"]',
+        SampleType: '@Localizer["SampleType"]',
+        PrintSequence: '@Localizer["PrintSequence"]',
+        ReportingTime: '@Localizer["ReportingTime"]',
+    };
+
+    </script>

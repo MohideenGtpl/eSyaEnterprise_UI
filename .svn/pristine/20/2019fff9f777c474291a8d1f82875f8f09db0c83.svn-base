@@ -1,0 +1,72 @@
+﻿
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+<div class="row padtop15">
+    <input type="text" id="txtCustomerLocation" value="" class="form-control" style="display:none" />
+    <div class="col-lg-6 col-md-5 col-sm-6">
+        <div class="form-group">
+            <label> Customer Location</label>
+            <input type="text" id="txtCustomerLocationDescription" value="" class="form-control" maxlength="50" />
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-6">
+        <div class="default-checkbox padbot20">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsLocationDefault">
+                <input type="checkbox" id="chkIsLocationDefault" class="mdl-checkbox__input">
+                <span class="mdl-checkbox__label">Is Location Default</span>
+            </label>
+        </div>
+    </div>
+
+    <div class="col-lg-4 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label for="txtContactPerson"> Contact Person</label>
+            <input id="txtContactPerson" type="text" value="" class="form-control" maxlength="50"/>
+        </div>
+    </div>
+    <div class="col-lg-8 col-md-8 col-sm-12">
+        <div class="form-group">
+            <label> Address</label>
+            <input type="text" id="txtAddress" value="" class="form-control" maxlength="150"/>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label> Registered Mobile Number</label>
+            @await Component.InvokeAsync("IsdMobileInput", new { id = "CustomerMobile" })
+        </div>
+    </div>
+    <div class="col-lg-6 col-md-5 col-sm-6">
+        <div class="form-group">
+            <label> Email ID</label>
+            <input type="text" id="txtEmailId" value="" class="form-control" maxlength="50"/>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-6">
+        <div class="form-group">
+            <div class="default-checkbox">
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkCDActiveStatus">
+                    <input type="checkbox" id="chkCDActiveStatus" checked="checked" class="mdl-checkbox__input">
+                    <span class="mdl-checkbox__label">Active</span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+        <hr />
+
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent btn-back mr-10 c-white" onclick="fnCloseCustomerDetails()"><i class="fas fa-chevron-left"></i> Back</button>
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button mr-10" id="btnSaveCustomerContact" onclick="fnSaveCustomerContact()">
+            <i class="fa fa-save"></i>  Save
+        </button>
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button" id="btnCancel"><i class="fa fa-redo" onclick="fnClearCustomerContactFields()"></i> Clear</button>
+
+    </div>
+</div>
+<div class="row padtop15">
+    <div class="col-lg-12 col-md-12 col-sm-12 padbot10">
+        <table id="jqgCustomerContactDetails"></table>
+        <div id="jqpCustomerContactDetails"></div>
+    </div>
+</div>

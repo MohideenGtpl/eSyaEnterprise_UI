@@ -1,0 +1,89 @@
+﻿var formID;
+var prevSelectedID;
+
+$(document).ready(function () {
+    $("#pnlMainMenu").hide();
+    fnTreeSize();
+    LoadSpecialtyCode();
+});
+
+function LoadSpecialtyCode() {
+    $("#jstSpecialtyCode").jstree({
+        "state": { "checkbox_disabled": true },
+        "checkbox": {
+            "keep_selected_style": false
+        },
+        core: {
+            'data': [{ "id": "parentnode", "parent": "#", "text": "Specialty Codes" },
+            { "id": "SC01", "parent": "parentnode", "text": "General Medicine" },
+            { "id": "SC02", "parent": "parentnode", "text": "General Surgery" },
+            { "id": "SC03", "parent": "parentnode", "text": "Opthalmalogy" },], 'check_callback': true, 'multiple': true
+        }
+
+    });
+}
+
+$("#jstSpecialtyCode").on('loaded.jstree', function () {
+    $("#jstSpecialtyCode").jstree('open_all');
+    $("#jstSpecialtyCode").jstree()._open_to(prevSelectedID);
+    $('#jstSpecialtyCode').jstree().select_node(prevSelectedID);
+});
+
+$('#jstSpecialtyCode').on("changed.jstree", function (e, data) {
+    if (data.node != undefined) {
+        //if (prevSelectedID != data.node.id) {
+        prevSelectedID = data.node.id;
+
+        if (data.node.id == "AA") {
+            fnClearFields();
+            $("#pnlrdoAddItem").show();
+            $("#pnlMainMenu").hide();
+        }
+        else {
+            if (data.node.parent == "#") {
+                $("#pnlrdoAddItem").show();
+                $("#pnlMainMenu").hide();
+                $(".mdl-card__title-text").text("Add Specialty");
+                fnClearFields();
+                $("#btnSaveSpecialty").html('<i class="fa fa-plus"></i> Add');
+            }
+            else if (data.node.id.startsWith("SC")) {
+                $("#dvForm").show();
+                $("#pnlrdoAddItem").hide();
+                $("#pnlMainMenu").show();
+                $(".mdl-card__title-text").text("Edit Specialty");
+                $("#btnSaveSpecialty").html('<i class="fa fa-sync"></i> Update');
+            }
+            else {
+                fnClearFields();
+                $("#pnlMainMenu").hide();
+            }
+        }
+    }
+});
+
+
+function fnExpandAll() {
+    $('#jstSpecialtyCode').jstree('open_all');
+}
+function fnCollapseAll() {
+    $('#jstSpecialtyCode').jstree('close_all');
+}
+function fnTreeSize() {
+    $("#jstSpecialtyCode").css({
+        'height': $(window).innerHeight() - 136,
+        'overflow': 'auto'
+    });
+}
+$('[name="rdoAddItem"]').change(function () {
+    if ($('#rdoAddSpecialty').prop('checked')) {
+        $('#pnlMainMenu').show();
+    }
+    else if ($('#rdoAddForm').prop('checked')) {
+        $('#pnlSubMenu').hide();
+        $('#pnlForm').show();
+    }
+});
+function fnClearFields() {
+    $('#rdoAddSpecialty').prop('checked', false);
+}

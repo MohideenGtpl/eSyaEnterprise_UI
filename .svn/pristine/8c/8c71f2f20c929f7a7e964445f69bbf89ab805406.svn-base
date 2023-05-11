@@ -1,0 +1,23 @@
+﻿
+@{
+    ViewData["Title"] = "V_313_00";
+}
+@section scripts{
+    <script src="~/js/eSyaClinicalServices/ClinicRoomMaster.js"></script>
+}
+<div class="row">
+    <div class="col-lg-3 col-md-4">
+        <div class="form-group">
+            <label class="lable-color">Floor</label>
+            <select class="selectpicker" data-live-search="false" id="" title="Select" data-size="8"></select>
+        </div>
+    </div>
+</div>
+
+<div class="row padbot10">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <table id="jqgClinicRoomMaster"></table>
+        <div id="jqpClinicRoomMaster"></div>
+    </div>
+</div>
+

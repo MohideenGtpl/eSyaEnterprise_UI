@@ -1,0 +1,23 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+
+namespace eSyaEnterprise_UI.Areas.eSyaPayrollExpat.Controllers
+{
+    public class SalaryPaymentController : Controller
+    {
+        [Area("eSyaPayrollExpat")]
+        public IActionResult V_5501_00()
+        {
+            return View();
+        }
+
+        [Area("eSyaPayrollExpat")]
+        public IActionResult V_5502_00()
+        {
+            return View();
+        }
+    }
+}

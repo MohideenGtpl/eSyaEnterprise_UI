@@ -1,0 +1,90 @@
+﻿$(document).ready(function () {
+    fnGridLoadRoomBedTariff();
+
+});
+var actiontype = "";
+function fnGridLoadRoomBedTariff() {
+
+    $("#jqgRoomBedTariff").jqGrid('GridUnload');
+    $("#jqgRoomBedTariff").jqGrid({
+        //url: getBaseURL() + '',
+        //mtype: 'Post',
+        datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Ward Name", "Ward ID", "Room Name", "RoomID", "Effective From", "Tariff", "Daycare Tariff", "Service Charge Percentage", "Status", "Actions"],
+        colModel: [
+            { name: "WardName", width: 50, editable: true, align: 'left', hidden: false },
+            { name: "WardID", width: 30, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "RoomName", width: 50, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            { name: "RoomID", width: 30, editable: true, align: 'left', hidden: true, resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            { name: "EffectiveFrom", width: 30, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            { name: "Tariff", width: 30, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            { name: "DaycareTariff", width: 30, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            { name: "ServiceChargePercentage", width: 40, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            { name: "Status", width: 40, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            {
+                name: 'edit', search: false, align: 'left', width: 54, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditRoomBedTariff(event,\'edit\')"><i class="fas fa-pencil-alt"></i> ' + localization.Edit + ' </button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnEditRoomBedTariff(event,\'view\')"><i class="far fa-file-alt"></i> ' + localization.View + ' </button>'
+
+                }
+            }
+        ],
+        pager: "#jqpRoomBedTariff",
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0,
+        loadComplete: function (data) {
+            SetGridControlByAction();
+        },
+    }).jqGrid('navGrid', '#jqpRoomBedTariff', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpRoomBedTariff', {
+        caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshRoomBedTariff
+    }).jqGrid('navButtonAdd', '#jqpRoomBedTariff', {
+        caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddRoomBedTariff
+    });
+    fnAddGridSerialNoHeading();
+}
+function fnGridRefreshRoomBedTariff() {
+
+}
+function fnAddRoomBedTariff() {
+    $("#PopupRoomBedTariff").modal('show');
+    $(".modal-title").text("Add Room Bed Tariff");
+    $("#btnSaveRoomBedTariff").html("<i class='fa fa-save'></i> Save");
+    fnEnableAction(false);
+}
+function fnEditRoomBedTariff(e, actiontype) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgRoomBedTariff').jqGrid('getRowData', rowid);
+
+    $("#PopupRoomBedTariff").modal('show');
+    $(".modal-title").text("Edit Room Bed Tariff");
+    $("#btnSaveRoomBedTariff").html("<i class='fa fa-save'></i> Save");
+    if (actiontype.trim() == "edit") {
+        $('#PopupRoomBedTariff').find('.modal-title').text("Update Bed Master");
+        $("#btnSaveRoomBedTariff").html(' Update');
+        $("#btnSaveRoomBedTariff").show();
+    }
+    if (actiontype.trim() == "view") {
+        $('#PopupRoomBedTariff').find('.modal-title').text("View Bed Master");
+        $("#btnSaveRoomBedTariff").hide();
+        fnEnableAction(true);
+        $(".modal-title").text("View Room Bed Tariff");
+    }
+}
+
+function fnEnableAction(val) {
+    $("input,textarea").attr('readonly', val);
+    $("select").next().attr('disabled', val);
+}

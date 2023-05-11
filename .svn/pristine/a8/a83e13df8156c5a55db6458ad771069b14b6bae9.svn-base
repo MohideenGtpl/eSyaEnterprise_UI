@@ -1,0 +1,299 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
+using eSyaEnterprise_UI.Areas.eSyaVendor.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using eSyaEnterprise_UI.Areas.eSyaVendor.Data;
+
+namespace eSyaEnterprise_UI.Areas.eSyaVendor.Controllers
+{
+    public class VendorController : Controller
+    {
+        private readonly IeSyaVendorAPIServices _eSyaVendorAPIServices;
+        public VendorController(IeSyaVendorAPIServices eSyaVendorAPIServices)
+        {
+            _eSyaVendorAPIServices = eSyaVendorAPIServices;
+        }
+
+        ESyaWebAPI _eSyaWebAPI = new ESyaWebAPI();
+        #region Vendor Registration
+        [Area("eSyaVendor")]
+        public IActionResult Create()
+        {
+            HttpResponseMessage response = _eSyaVendorAPIServices.GetConfigCSHttpClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>()).GetAsync("ConfigMasterData/GetISDCodes").Result;
+            string stringData = response.Content.ReadAsStringAsync().Result;
+            var data = JsonConvert.DeserializeObject<List<DO_CountryCodes>>(stringData);
+            ViewBag.Isdcodes = data;
+            return View();
+        } 
+        /// <summary>
+        ///Get Vendor for Grid
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetVendors(string Alphabet)
+        {
+            try
+            {
+                HttpResponseMessage response = _eSyaVendorAPIServices.GetHttpClient().GetAsync("Vendor/GetVendors?Alphabet=" + Alphabet).Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<List<DO_VendorRegistration>>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+
+        }
+
+        /// <summary>
+        /// Insert or Update Vendor.
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertOrUpdateVendor(DO_VendorRegistration vendor)
+        {
+
+            try
+            {
+                vendor.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                vendor.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                vendor.FormId = AppSessionVariables.GetSessionFormID(HttpContext).ToString();
+                HttpResponseMessage response = _eSyaVendorAPIServices.GetHttpClient().PostAsJsonAsync("Vendor/InsertOrUpdateVendor", vendor).Result;
+                string stringdata = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<DO_ReturnParameter>(stringdata);
+                return Json(data);
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+        #endregion Vendor Registration
+
+        #region Vendor Location
+        /// <summary>
+        ///Get Vendor Locationsby Vendor code for Grid
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetVendorLocationsByVendorcode(int vendorcode)
+        {
+            try
+            {
+                HttpResponseMessage response = _eSyaVendorAPIServices.GetHttpClient().GetAsync("Vendor/GetVendorLocationsByVendorcode?vendorcode=" + vendorcode).Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<List<DO_VendorLocation>>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+
+        }
+
+        /// <summary>
+        /// Insert or Update Vendor Location.
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertOrUpdateVendorLocation(DO_VendorLocation vendorloc)
+        {
+
+            try
+            {
+                vendorloc.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                vendorloc.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                vendorloc.FormId = AppSessionVariables.GetSessionFormID(HttpContext).ToString();
+                HttpResponseMessage response = _eSyaVendorAPIServices.GetHttpClient().PostAsJsonAsync("Vendor/InsertOrUpdateVendorLocation", vendorloc).Result;
+                string stringdata = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<DO_ReturnParameter>(stringdata);
+                return Json(data);
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+        #endregion Vendor Location
+
+        #region Vendor Business Key
+        /// <summary>
+        ///Get Vendor BusinessKeysByVendor for Grid
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetBusinessKeysByVendorcode(int vendorcode)
+        {
+            HttpResponseMessage response = _eSyaVendorAPIServices.GetHttpClient().GetAsync("Vendor/GetBusinessLocation").Result;
+            string stringData = response.Content.ReadAsStringAsync().Result;
+            List<DO_BusinessKey> blocations = JsonConvert.DeserializeObject<List<DO_BusinessKey>>(stringData);
+
+            var parameter = "?vendorcode=" + vendorcode;
+            HttpResponseMessage bkeyresponse = _eSyaVendorAPIServices.GetHttpClient().GetAsync("Vendor/GetBusinessKeysByVendorcode" + parameter).Result;
+            string bkeyData = bkeyresponse.Content.ReadAsStringAsync().Result;
+            List<DO_VendorBusinessLink> businesskeydata = JsonConvert.DeserializeObject<List<DO_VendorBusinessLink>>(bkeyData);
+
+            foreach (var obj in blocations)
+            {
+                if (vendorcode != 0)
+                {
+                    if (businesskeydata.Count >0)
+                    {
+
+
+                        var isBusinessSegment = businesskeydata
+                              .Where(c => c.VendorCode == vendorcode && c.BusinessKey == obj.BusinessKey).FirstOrDefault();
+
+                        if (isBusinessSegment != null)
+                        {
+                            obj.ActiveStatus = true;
+                        }
+                        else
+                        {
+                            obj.ActiveStatus = false;
+                        }
+
+                    }
+                }
+            }
+
+            return Json(blocations);
+
+        }
+
+        /// <summary>
+        /// Insert Business Keys.
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertBusinesskeyforVendor(DO_VendorBusinessLink bkeys)
+        {
+
+            try
+            {
+                bkeys.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                bkeys.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                bkeys.FormId = AppSessionVariables.GetSessionFormID(HttpContext).ToString();
+                HttpResponseMessage response = _eSyaVendorAPIServices.GetHttpClient().PostAsJsonAsync("Vendor/InsertBusinesskeyforVendor", bkeys).Result;
+                string stringdata = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<DO_ReturnParameter>(stringdata);
+                return Json(data);
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+        #endregion Vendor Business Key
+
+        #region Vendor Statutory details
+        /// <summary>
+        ///Get Vendor Statutory details by Vendor code and LocationId for Grid
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetStatutorydetailsbyVendorcodeAndLocationId(int vendorcode, int locationId)
+        {
+            try
+            {
+                var parameter = "?vendorcode=" + vendorcode + "&locationId=" + locationId;
+                HttpResponseMessage response = _eSyaVendorAPIServices.GetHttpClient().GetAsync("Vendor/GetStatutorydetailsbyVendorcodeAndLocationId" + parameter).Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<List<DO_VendorStatutoryDetails>>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+
+        }
+
+        /// <summary>
+        /// Insert or Update Vendor Statutory details.
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertOrUpdateStatutorydetails(DO_VendorStatutoryDetails statutorydetails)
+        {
+
+            try
+            {
+                statutorydetails.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                statutorydetails.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                statutorydetails.FormId = AppSessionVariables.GetSessionFormID(HttpContext).ToString();
+                HttpResponseMessage response = _eSyaVendorAPIServices.GetHttpClient().PostAsJsonAsync("Vendor/InsertOrUpdateStatutorydetails", statutorydetails).Result;
+                string stringdata = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<DO_ReturnParameter>(stringdata);
+                return Json(data);
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+        #endregion Vendor Statutory details
+
+        #region Vendor Bank Details
+        /// <summary>
+        ///Get Vendor Bank Details for Grid
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetVendorBankdetailsByVendorcode(int vendorcode)
+        {
+            try
+            {
+                var parameter = "?vendorcode=" + vendorcode;
+                HttpResponseMessage response = _eSyaVendorAPIServices.GetHttpClient().GetAsync("Vendor/GetVendorBankdetailsByVendorcode" + parameter).Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<List<DO_VendorBankdetails>>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+
+        }
+
+        /// <summary>
+        /// Insert or Update Vendor Bank details.
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertOrUpdateVendorBankdetails(DO_VendorBankdetails bankdetails)
+        {
+
+            try
+            {
+                bankdetails.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                bankdetails.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                bankdetails.FormId = AppSessionVariables.GetSessionFormID(HttpContext).ToString();
+                if (bankdetails.IsEdit == 1)
+                {
+                    HttpResponseMessage response = _eSyaVendorAPIServices.GetHttpClient().PostAsJsonAsync("Vendor/UpdateVendorBankdetails", bankdetails).Result;
+                    string stringdata = response.Content.ReadAsStringAsync().Result;
+                    var data = JsonConvert.DeserializeObject<DO_ReturnParameter>(stringdata);
+                    return Json(data);
+                }
+                else
+                {
+                    HttpResponseMessage response = _eSyaVendorAPIServices.GetHttpClient().PostAsJsonAsync("Vendor/InsertVendorBankdetails", bankdetails).Result;
+                    string stringdata = response.Content.ReadAsStringAsync().Result;
+                    var data = JsonConvert.DeserializeObject<DO_ReturnParameter>(stringdata);
+                    return Json(data);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+        #endregion Vendor Bank Details
+    }
+}

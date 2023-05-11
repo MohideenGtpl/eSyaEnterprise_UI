@@ -1,0 +1,192 @@
+﻿
+@{
+    ViewData["Title"] = "V_1010_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts{
+    <script src="~/js/Config/ItemMaster.js"></script>
+}
+
+<div class="row padbot10">
+    <div class="col-lg-4 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label>Item Group</label>
+            <select class="selectpicker" data-live-search="true" id="cboLanguage" title="" data-size="8">
+                <option> Choose Item Group</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label>Item Category</label>
+            <select class="selectpicker" data-live-search="true" id="cboLanguage" title="" data-size="8">
+                <option> Choose Item Category</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label>Item Sub Category</label>
+            <select class="selectpicker" data-live-search="true" id="cboLanguage" title="" data-size="8">
+                <option> Choose Item Sub Category</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="row padbot10">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <table id="jqgItemMaster"></table>
+        <div id="jqpItemMaster"></div>
+    </div>
+</div>
+
+<div class="modal fade" id="PopupItemMaster">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Add Item</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row padbot4">
+                    <div class="col-sm-12">
+                        <input type="text" class="form-control" id="" style="display:none">
+                    </div>
+                    <div class="col-lg-9 col-md-9 col-sm-6">
+                        <div class="form-group">
+                            <label> Item Description</label>
+                            <select class="selectpicker" data-live-search="true" id="" title="" data-size="8">
+                                <option> Choose Item Description</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-12">
+                        <div class="form-group">
+                            <label> Unit of Measure</label>
+                            <select class="selectpicker" data-live-search="true" id="" title="" data-size="8">
+                                <option> Choose Unit of Measure</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label> Pack Unit</label>
+                            <input id="" class="form-control" type="text" autocomplete="off" maxlength="500" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label> Pack Size</label>
+                            <input id="" class="form-control" type="text" autocomplete="off" maxlength="500" />
+
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label> Inventory Class</label>
+                            <input id="" class="form-control" type="text" autocomplete="off" maxlength="500" />
+
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label> Item Class</label>
+                            <select class="selectpicker" data-live-search="true" id="" title="" data-size="8">
+                                <option> Choose Item Class</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label>Item Source</label>
+                            <select class="selectpicker" data-live-search="true" id="" title="" data-size="8">
+                                <option> Choose Item Source</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label>Item Criticality</label>
+                            <select class="selectpicker" data-live-search="true" id="" title="" data-size="8">
+                                <option> Choose Item Criticality</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 padbot10">
+                        <div class="default-checkbox">
+                            <label class="mdl-checkbox mdl-js-checkbox" for="chkIsInspectionRequired">
+                                <input type="checkbox" id="chkIsInspectionRequired"
+                                       class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">Is Inspection Reqd?</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 padbot10">
+                        <div class="default-checkbox">
+                            <label class="mdl-checkbox mdl-js-checkbox" for="chkIsRateContractItem">
+                                <input type="checkbox" id="chkIsRateContractItem"
+                                       class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">Is Rate Contract Item?</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 padbot10">
+                        <div class="default-checkbox">
+                            <label class="mdl-checkbox mdl-js-checkbox" for="chkIsQuotationRequired">
+                                <input type="checkbox" id="chkIsQuotationRequired"
+                                       class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">Is Quotation Required?</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 padbot10">
+                        <div class="default-checkbox">
+                            <label class="mdl-checkbox mdl-js-checkbox" for="chkIsDocumentNoRequired">
+                                <input type="checkbox" id="chkIsDocumentNoRequired"
+                                       class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">Is Batch Applicable?</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label> Accounting Store</label>
+                            <select class="selectpicker" data-live-search="true" id="" title="" data-size="8">
+                                <option> Choose Accounting Store</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label>Custodian Store</label>
+                            <select class="selectpicker" data-live-search="true" id="" title="" data-size="8">
+                                <option> Choose Custodian Store</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label>Active Status</label>
+                            <select class="selectpicker" data-live-search="true" id="" title="" data-size="8">
+                                <option> Choose Active Status</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSave" onclick="fnSaveLocalizationTableMapping()">
+                            Save
+                        </button>
+                        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button" data-dismiss="modal"> Cancel</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

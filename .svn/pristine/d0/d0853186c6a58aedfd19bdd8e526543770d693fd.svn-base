@@ -1,0 +1,45 @@
+﻿
+@{
+    ViewData["Title"] = "V_1573_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/jsTree.css" rel="stylesheet" />
+@section scripts{
+    <script src="~/js/jsTree.js"></script>
+    <script src="~/js/eSyaClinicalServices/SpecialtyDoctorLink.js"></script>
+}
+<div class="row padbot10">
+    <div class="col-lg-4 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color">Business Key</label>
+            <select class="selectpicker" data-live-search="false" id="cboBusinessKey" title="Choose Business Key" onchange="fnLoadSpecialty()">
+                @foreach (var bl in ViewBag.BusinessKey)
+                {
+                    <option value="@bl.BusinessKey">@bl.LocationDescription</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color">Specialty</label>
+            <select class="selectpicker" data-live-search="false" id="cboSpecialty" title="Choose Specialty" onchange="fnLoadDoctorTree()">
+                @*@foreach (var sp in ViewBag.Specialty)
+                {
+                    <option value="@sp.SpecialtyID">@sp.SpecialtyDesc</option>
+                }*@
+            </select>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-6">
+        <div id="jstSpecialtyDoctor"></div>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6">
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveSpecialtyDoctorLink" onclick="fnSaveSpecialtyDoctorLink()">
+            Save
+        </button>
+    </div>
+    </div>
+

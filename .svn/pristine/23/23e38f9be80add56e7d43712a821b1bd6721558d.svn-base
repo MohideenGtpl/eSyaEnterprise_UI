@@ -1,0 +1,483 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.ActionFilter;
+using Microsoft.AspNetCore.Mvc;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using eSyaEnterprise_UI.Areas.Pharmacy.Data;
+using eSyaEnterprise_UI.Areas.Pharmacy.Models;
+
+namespace eSyaEnterprise_UI.Areas.Pharmacy.Controllers
+{
+    [SessionTimeout]
+    public class DrugBrandController : Controller
+    {
+        private readonly IPharmacyAPIServices _pharmacyAPIServices;
+        private readonly ILogger<DrugBrandController> _logger;
+
+        public DrugBrandController(IPharmacyAPIServices pharmacyAPIServices, ILogger<DrugBrandController> logger)
+        {
+            _pharmacyAPIServices = pharmacyAPIServices;
+            _logger = logger;
+        }
+
+        #region Drug Brands
+        [Area("Pharmacy")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public async Task<IActionResult> ECP_04_00()
+        {
+            try
+            {
+                var dc_serviceResponse = await _pharmacyAPIServices.HttpClientServices.GetAsync<List<DO_DrugCategory>>("DrugCategory/GetDrugCategory");
+                var mfc_serviceResponse = await _pharmacyAPIServices.HttpClientServices.GetAsync<List<DO_DrugManufacturer>>("CommonData/GetManufacturerList");
+                var response = await _pharmacyAPIServices.HttpClientServices.GetAsync<List<DO_CountryCodes>>("CommonData/GetISDCodes");
+
+                var parameter = "?codeType=" + CodeTypeValues.DrugPacking;
+                var dp_serviceResponse = await _pharmacyAPIServices.HttpClientServices.GetAsync<List<DO_ApplicationCodes>>("CommonData/GetApplicationCodesByCodeType" + parameter);
+
+                List<int> l_ac = new List<int>();
+                l_ac.Add(CodeTypeValues.Dosage);
+                l_ac.Add(CodeTypeValues.DrugForm);
+
+                if (dc_serviceResponse.Status && response.Status && mfc_serviceResponse.Status && dp_serviceResponse.Status)
+                {
+                    if (dc_serviceResponse.Data != null && response.Data != null && mfc_serviceResponse.Data != null && dp_serviceResponse.Data != null)
+                    {
+                        ViewBag.DrugCategoryList = dc_serviceResponse.Data.Select(b => new SelectListItem
+                        {
+                            Value = b.GenericId.ToString(),
+                            Text = b.GenericDesc,
+                        }).ToList();
+
+                        ViewBag.ISDCodeList = response.Data.Select(b => new SelectListItem
+                        {
+                            Value = b.Isdcode.ToString(),
+                            Text = b.Isdcode.ToString() + '-' + b.CountryName,
+                        }).ToList();
+
+                        ViewBag.ManufacturerList = mfc_serviceResponse.Data.Select(b => new SelectListItem
+                        {
+                            Value = b.ManufacturerID.ToString(),
+                            Text = b.ManufacturerName,
+                        }).ToList();
+
+                        ViewBag.PackingList = dp_serviceResponse.Data.Select(b => new SelectListItem
+                        {
+                            Value = b.ApplicationCode.ToString(),
+                            Text = b.CodeDesc,
+                        }).ToList();
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(dc_serviceResponse.Message), "UD:DrugBrands");
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(dc_serviceResponse.Message), "UD:DrugBrands");
+                }
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:DrugBrands");
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        ///Get Drug Formulation List by Drug Generics
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetDrugFormulationList(int DrugGenerics)
+        {
+            try
+            {
+                var parameter = "?DrugGenerics=" + DrugGenerics;
+                var serviceResponse = await _pharmacyAPIServices.HttpClientServices.GetAsync<List<DO_DrugFormulation>>("CommonData/GetDrugFormulationList" + parameter);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetDrugFormulationList:For DrugGenerics {0}", DrugGenerics);
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetDrugFormulationList:For DrugGenerics {0}", DrugGenerics);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetDrugFormulationList:For DrugGenerics {0}", DrugGenerics);
+                throw ex;
+                //return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        ///Get Drug Formulation Details
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetDrugFormulationDetails(int DrugFormulation)
+        {
+            try
+            {
+                var parameter = "?DrugFormulaId=" + DrugFormulation;
+                var serviceResponse = await _pharmacyAPIServices.HttpClientServices.GetAsync<DO_DrugFormulation>("DrugFormulation/GetDrugFormulationDetails" + parameter);
+
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetDrugFormulationDetails:For DrugFormulation {0}", DrugFormulation);
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetDrugFormulationDetails:For DrugFormulation {0}", DrugFormulation);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetDrugFormulationDetails:For DrugFormulation {0}", DrugFormulation);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        ///Check Drug Volumn Required
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> IsDrugVolumeRequired(int packingID)
+        {
+            try
+            {
+                var parameter = "?packingID=" + packingID;
+                var serviceResponse = await _pharmacyAPIServices.HttpClientServices.GetAsync<bool>("DrugBrand/IsDrugVolumeRequired" + parameter);
+
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        //return Json(serviceResponse.Data);
+                        return Json(new { Status = true, IsDrugVolumeRequired = serviceResponse.Data });
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:IsDrugVolumeRequired:For Drug Packing {0}", packingID);
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:IsDrugVolumeRequired:For Drug Packing {0}", packingID);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:IsDrugVolumeRequired:For Drug Packing {0}", packingID);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        ///Get Drug Brand Information 
+        /// </summary>
+        [HttpGet]
+        public async Task<JsonResult> GetDrugBrandListByNamePrefix(int ISDCode, int drugFormulaId, string drugBrandPrefix)
+        {
+            try
+            {
+                var parameter = "?ISDCode=" + ISDCode + "&drugFormulaId=" + drugFormulaId + "&drugBrandPrefix=" + drugBrandPrefix;
+                var serviceResponse = await _pharmacyAPIServices.HttpClientServices.GetAsync<List<DO_DrugBrand>>("DrugBrand/GetDrugBrandListByNamePrefix" + parameter);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetDrugBrandListByNamePrefix:For drugFormulaId {0} With drugBrandPrefix entered {1}", drugFormulaId, drugBrandPrefix);
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetDrugBrandListByNamePrefix:For drugFormulaId {0} With drugBrandPrefix entered {1}", drugFormulaId, drugBrandPrefix);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetDrugBrandListByNamePrefix:For drugFormulaId {0} With drugBrandPrefix entered {1}", drugFormulaId, drugBrandPrefix);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Get Drug parameter
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetDrugParameterList(int drugCode)
+        {
+            try
+            {
+                var serviceResponse = await _pharmacyAPIServices.HttpClientServices.GetAsync<DO_DrugBrand>("DrugBrand/GetDrugParameterList?drugCode=" + drugCode);
+
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetDrugParameterList:For drugCode {0}", drugCode);
+                        return Json(new { Status = false, StatusCode = "500" });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetDrugParameterList:For drugCode {0}", drugCode);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetDrugParameterList:For drugCode {0}", drugCode);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Insert or Update Drug Category
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> InsertOrUpdateDrugBrand(DO_DrugBrand DrugBrands)
+        {
+            try
+            {
+                if (DrugBrands.ISDCode == 0 || string.IsNullOrEmpty(DrugBrands.ISDCode.ToString()))
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Select ISD Code" });
+                }
+                else if (DrugBrands.GenericID == 0 || string.IsNullOrEmpty(DrugBrands.GenericID.ToString()))
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Select Generics" });
+                }
+                else if (DrugBrands.DrugFormulaID == 0 || string.IsNullOrEmpty(DrugBrands.DrugFormulaID.ToString()))
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Select Drug Formulation" });
+                }
+                else if (DrugBrands.PackSize == 0 || string.IsNullOrEmpty(DrugBrands.PackSize.ToString()))
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Enter Pack Size" });
+                }
+                else if (DrugBrands.PackingId == 0 || string.IsNullOrEmpty(DrugBrands.PackingId.ToString()))
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Select Packing" });
+                }
+                //else if (string.IsNullOrEmpty(DrugBrands.DrugVolume.ToString()))
+                //{
+                //    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Enter Volume" });
+                //}
+                else
+                {
+                    DrugBrands.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                    DrugBrands.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                    DrugBrands.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+
+                    var serviceResponse = await _pharmacyAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("DrugBrand/InsertOrUpdateDrugBrand", DrugBrands);
+                    if (serviceResponse.Status)
+                        return Json(serviceResponse.Data);
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:InsertOrUpdateDrugBrand:params:" + JsonConvert.SerializeObject(DrugBrands));
+                        return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertOrUpdateDrugBrand:params:" + JsonConvert.SerializeObject(DrugBrands));
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+
+
+        #endregion Drug Brands
+
+        #region Drug Business Link
+        [Area("Pharmacy")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public async Task<IActionResult> ECP_05_00()
+        {
+            try
+            {
+                ///Getting Business Key
+                var Bk_response = await _pharmacyAPIServices.HttpClientServices.GetAsync<List<DO_BusinessLocation>>("CommonData/GetBusinessKey");
+
+                if (Bk_response.Status)
+                {
+                    if (Bk_response.Data != null)
+                    {
+                        ViewBag.BusinessKeyList = Bk_response.Data.Select(b => new SelectListItem
+                        {
+                            Value = b.BusinessKey.ToString(),
+                            Text = b.LocationDescription.ToString(),
+                        }).ToList();
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(Bk_response.Message), "UD:DrugBusinessLink");
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(Bk_response.Message), "UD:DrugBusinessLink");
+                }
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:DrugBusinessLink");
+                throw ex;
+            }
+        }
+
+        [Produces("application/json")]
+        [HttpGet]
+        public async Task<JsonResult> GetGenericDrugList(int businessKey)
+        {
+            try
+            {
+                List<jsTreeObject> GenericDrugTree = new List<jsTreeObject>();
+
+                jsTreeObject jsObj = new jsTreeObject
+                {
+                    id = "GS0",
+                    parent = "#",
+                    text = "Generics",
+                    icon = "/images/jsTree/foldergroupicon.png",
+                    state = new stateObject { opened = true, selected = false }//, checkbox_disabled = true, disabled = true
+                };
+                GenericDrugTree.Add(jsObj);
+
+                var clinicResponse = await _pharmacyAPIServices.HttpClientServices.GetAsync<List<DO_DrugBusinessLink>>("DrugBrand/GetGenericDrugList?businessKey=" + businessKey);
+                if (clinicResponse.Status)
+                {
+                    if (clinicResponse.Data != null)
+                    {
+                        List<DO_DrugBusinessLink> clinic_list = clinicResponse.Data.Select(x => new DO_DrugBusinessLink { GenericID = x.GenericID, GenericDesc = x.GenericDesc }).GroupBy(y => y.GenericID, (key, grp) => grp.FirstOrDefault()).ToList();
+                        foreach (DO_DrugBusinessLink cl in clinic_list)
+                        {
+                            jsObj = new jsTreeObject
+                            {
+                                id = cl.GenericID.ToString(),
+                                text = cl.GenericDesc.ToString(),
+                                icon = "/images/jsTree/openfolder.png",
+                                parent = "GS0",
+                                state = new stateObject { opened = true, selected = false },//, checkbox_disabled = true, disabled = true
+                            };
+                            GenericDrugTree.Add(jsObj);
+                        }
+
+                        var conusltant_list = clinicResponse.Data;
+                        foreach (var co in conusltant_list.Where(w => conusltant_list.Any(f => f.GenericID == w.GenericID)))
+                        {
+                            jsObj = new jsTreeObject
+                            {
+                                text = co.DrugBrand,
+                                parent = co.GenericID.ToString()
+                            };
+                            if (co.BusinessKey > 0)
+                            {
+                                jsObj.id = co.DrugCode.ToString() + "_" + "Y" + "_" + co.DrugBrand;
+                                jsObj.icon = "/images/jsTree/fileIcon.png";
+                                //jsObj.icon = "/images/jsTree/checkedstate.jpg";
+                                if (co.ActiveStatus)
+                                    jsObj.state = new stateObject { opened = true, selected = true, Checked = true };
+                                else
+                                    jsObj.state = new stateObject { opened = true, selected = false, Checked = false };
+                            }
+                            else
+                            {
+                                jsObj.id = co.DrugCode.ToString() + "_" + "N" + "_" + co.DrugBrand;
+                                jsObj.icon = "/images/jsTree/fileIcon.png";
+                                jsObj.state = new stateObject { opened = true, selected = false, Checked = false };
+                            }
+
+                            GenericDrugTree.Add(jsObj);
+                        }
+                    }
+
+                    return Json(GenericDrugTree);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(clinicResponse.Message), "UD:GetClinicConsultantTreeList");
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Insert / Update Drug Business Link
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> InsertUpdateDrugBusinessLink(List<DO_DrugBusinessLink> dr_bl)
+        {
+            try
+            {
+                dr_bl.All(c =>
+                {
+                    c.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                    c.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                    c.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                    return true;
+                });
+
+                var Insertresponse = await _pharmacyAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("DrugBrand/InsertUpdateDrugBusinessLink", dr_bl);
+                if (Insertresponse.Status)
+                    return Json(Insertresponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(Insertresponse.Message), "UD:InsertUpdateDrugBusinessLink:params:" + JsonConvert.SerializeObject(dr_bl));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = Insertresponse.Message });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertUpdateDrugBusinessLink:params:" + JsonConvert.SerializeObject(dr_bl));
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+        #endregion
+    }
+}

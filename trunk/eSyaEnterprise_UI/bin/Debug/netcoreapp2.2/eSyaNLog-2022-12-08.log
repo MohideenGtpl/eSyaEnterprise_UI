@@ -1,0 +1,296 @@
+2022-12-08 22:39:37.0542|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/|action: 
+2022-12-08 22:39:37.1837|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/|action: 
+2022-12-08 22:39:37.2179|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2022-12-08 22:39:52.6266|1|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An unhandled exception has occurred while executing the request. System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it ---> System.Net.Sockets.SocketException: No connection could be made because the target machine actively refused it
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.CreateConnectionAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.WaitForCreatedConnectionAsync(ValueTask`1 creationTask)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.SendWithRetryAsync(HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncBuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at eSyaEssentials_UI.HttpClientServices.GetAsync[T](String url)
+   at eSyaEnterprise_UI.ViewComponents.IsdMobileInputViewComponent.InvokeAsync(String id, String value) in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\ViewComponents\IsdMobileInputComponent.cs:line 25
+   at Microsoft.AspNetCore.Mvc.ViewComponents.DefaultViewComponentInvoker.InvokeAsyncCore(ObjectMethodExecutor executor, ViewComponentContext context)
+   at Microsoft.AspNetCore.Mvc.ViewComponents.DefaultViewComponentInvoker.InvokeAsync(ViewComponentContext context)
+   at Microsoft.AspNetCore.Mvc.ViewComponents.DefaultViewComponentHelper.InvokeCoreAsync(ViewComponentDescriptor descriptor, Object arguments)
+   at AspNetCore.Views_Account_Index.<ExecuteAsync>b__67_29() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Views\Account\Index.cshtml:line 155
+   at Microsoft.AspNetCore.Razor.Runtime.TagHelpers.TagHelperExecutionContext.GetChildContentAsync(Boolean useCachedResult, HtmlEncoder encoder)
+   at Microsoft.AspNetCore.Mvc.TagHelpers.RenderAtEndOfFormTagHelper.ProcessAsync(TagHelperContext context, TagHelperOutput output)
+   at Microsoft.AspNetCore.Razor.Runtime.TagHelpers.TagHelperRunner.RunAsync(TagHelperExecutionContext executionContext)
+   at AspNetCore.Views_Account_Index.<ExecuteAsync>b__67_2() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Views\Account\Index.cshtml:line 142
+   at Microsoft.AspNetCore.Razor.Runtime.TagHelpers.TagHelperExecutionContext.SetOutputContentAsync()
+   at AspNetCore.Views_Account_Index.ExecuteAsync() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Views\Account\Index.cshtml:line 22
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ActionContext actionContext, IView view, ViewDataDictionary viewData, ITempDataDictionary tempData, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeResultAsync(IActionResult result)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResultFilterAsync[TFilter,TFilterAsync]()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResultExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeResultFilters()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResourceFilter()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeFilterPipelineAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeAsync()
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/|action: Index
+2022-12-08 22:39:52.7015|3|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An exception was thrown attempting to execute the error handler. System.ArgumentNullException: Value cannot be null.
+Parameter name: logger
+   at Microsoft.Extensions.Logging.LoggerExtensions.Log(ILogger logger, LogLevel logLevel, EventId eventId, Exception exception, String message, Object[] args)
+   at Microsoft.Extensions.Logging.LoggerExtensions.LogError(ILogger logger, Exception exception, String message, Object[] args)
+   at eSyaEnterprise_UI.Extension.ExceptionMiddlewareExtensions.<>c.<<ConfigureExceptionHandler>b__0_1>d.MoveNext() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Extension\ExceptionMiddlewareExtensions.cs:line 44
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/|action: Index
+2022-12-08 22:39:52.7481|1|ERROR|Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware|An unhandled exception has occurred while executing the request. System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it ---> System.Net.Sockets.SocketException: No connection could be made because the target machine actively refused it
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.CreateConnectionAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.WaitForCreatedConnectionAsync(ValueTask`1 creationTask)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.SendWithRetryAsync(HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncBuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at eSyaEssentials_UI.HttpClientServices.GetAsync[T](String url)
+   at eSyaEnterprise_UI.ViewComponents.IsdMobileInputViewComponent.InvokeAsync(String id, String value) in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\ViewComponents\IsdMobileInputComponent.cs:line 25
+   at Microsoft.AspNetCore.Mvc.ViewComponents.DefaultViewComponentInvoker.InvokeAsyncCore(ObjectMethodExecutor executor, ViewComponentContext context)
+   at Microsoft.AspNetCore.Mvc.ViewComponents.DefaultViewComponentInvoker.InvokeAsync(ViewComponentContext context)
+   at Microsoft.AspNetCore.Mvc.ViewComponents.DefaultViewComponentHelper.InvokeCoreAsync(ViewComponentDescriptor descriptor, Object arguments)
+   at AspNetCore.Views_Account_Index.<ExecuteAsync>b__67_29() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Views\Account\Index.cshtml:line 155
+   at Microsoft.AspNetCore.Razor.Runtime.TagHelpers.TagHelperExecutionContext.GetChildContentAsync(Boolean useCachedResult, HtmlEncoder encoder)
+   at Microsoft.AspNetCore.Mvc.TagHelpers.RenderAtEndOfFormTagHelper.ProcessAsync(TagHelperContext context, TagHelperOutput output)
+   at Microsoft.AspNetCore.Razor.Runtime.TagHelpers.TagHelperRunner.RunAsync(TagHelperExecutionContext executionContext)
+   at AspNetCore.Views_Account_Index.<ExecuteAsync>b__67_2() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Views\Account\Index.cshtml:line 142
+   at Microsoft.AspNetCore.Razor.Runtime.TagHelpers.TagHelperExecutionContext.SetOutputContentAsync()
+   at AspNetCore.Views_Account_Index.ExecuteAsync() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Views\Account\Index.cshtml:line 22
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ActionContext actionContext, IView view, ViewDataDictionary viewData, ITempDataDictionary tempData, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeResultAsync(IActionResult result)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResultFilterAsync[TFilter,TFilterAsync]()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResultExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeResultFilters()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResourceFilter()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeFilterPipelineAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeAsync()
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)|url: http://localhost/|action: Index
+2022-12-08 22:39:53.1543|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/favicon.ico|action: 
+2022-12-08 22:39:53.2237|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/favicon.ico|action: 
+2022-12-08 23:03:13.1365|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/|action: 
+2022-12-08 23:03:13.2759|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/|action: 
+2022-12-08 23:03:13.3320|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2022-12-08 23:03:19.1251|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/images/logo/esya-logo-black.png|action: 
+2022-12-08 23:03:19.1824|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/material.min.css|action: 
+2022-12-08 23:03:19.2026|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/images/logo/esya-logo-black.png|action: 
+2022-12-08 23:03:19.2242|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/lib/bootstrap/dist/css/bootstrap.min.css|action: 
+2022-12-08 23:03:19.1605|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/animate.css|action: 
+2022-12-08 23:03:19.2484|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/material.min.css|action: 
+2022-12-08 23:03:19.2849|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/lib/bootstrap/dist/css/bootstrap.min.css|action: 
+2022-12-08 23:03:19.3039|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/animate.css|action: 
+2022-12-08 23:03:19.5399|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/login.css|action: 
+2022-12-08 23:03:19.5931|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/esyafonts.css|action: 
+2022-12-08 23:03:19.6135|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/login.css|action: 
+2022-12-08 23:03:19.6310|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/esyafonts.css|action: 
+2022-12-08 23:03:19.6474|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/esyaTheme.css|action: 
+2022-12-08 23:03:19.6995|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/esyaTheme.css|action: 
+2022-12-08 23:03:19.5550|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/bootstrap-select.css|action: 
+2022-12-08 23:03:19.8834|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/all.min.css|action: 
+2022-12-08 23:03:19.9007|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/lib/bootstrap/dist/js/jquery-3.2.1.min.js|action: 
+2022-12-08 23:03:19.9184|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/lib/jquery/dist/jquery.js|action: 
+2022-12-08 23:03:19.9359|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/all.min.css|action: 
+2022-12-08 23:03:19.9532|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/lib/bootstrap/dist/js/jquery-3.2.1.min.js|action: 
+2022-12-08 23:03:19.9707|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/lib/jquery/dist/jquery.js|action: 
+2022-12-08 23:03:20.1537|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/js/material.min.js|action: 
+2022-12-08 23:03:20.1995|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/js/material.min.js|action: 
+2022-12-08 23:03:20.2165|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/js/all.min.js|action: 
+2022-12-08 23:03:20.2359|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/js/jquery-ui.min.js|action: 
+2022-12-08 23:03:20.2771|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/js/all.min.js|action: 
+2022-12-08 23:03:20.2943|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/js/i18n/grid.locale-en.js|action: 
+2022-12-08 23:03:20.3211|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/js/jquery-ui.min.js|action: 
+2022-12-08 23:03:20.5115|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/js/i18n/grid.locale-en.js|action: 
+2022-12-08 23:03:20.5962|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/js/jquery.jqGrid.min.js|action: 
+2022-12-08 23:03:20.6623|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/js/jquery.jqGrid.min.js|action: 
+2022-12-08 23:03:20.6797|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/js/bootstrap-select.js|action: 
+2022-12-08 23:03:20.7395|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/js/bootstrap-select.js|action: 
+2022-12-08 23:03:20.7582|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/js/Inputmask/inputmask.js|action: 
+2022-12-08 23:03:20.8173|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/js/Inputmask/inputmask.js|action: 
+2022-12-08 23:03:20.8950|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/js/Inputmask/jquery.inputmask.js|action: 
+2022-12-08 23:03:20.9507|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/js/Inputmask/jquery.inputmask.js|action: 
+2022-12-08 23:03:20.9789|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/lib/bootstrap/dist/js/popper.min.js|action: 
+2022-12-08 23:03:21.0496|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/lib/bootstrap/dist/js/popper.min.js|action: 
+2022-12-08 23:03:20.1720|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/lib/bootstrap/dist/js/bootstrap.min.js|action: 
+2022-12-08 23:03:19.8435|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/bootstrap-select.css|action: 
+2022-12-08 23:03:21.1684|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/lib/bootstrap/dist/js/bootstrap.min.js|action: 
+2022-12-08 23:03:21.2434|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/js/Inputmask/bindings/inputmask.binding.js|action: 
+2022-12-08 23:03:21.3204|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/js/Inputmask/bindings/inputmask.binding.js|action: 
+2022-12-08 23:03:21.4844|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/images/esya-products-yellow-with-footer.jpg|action: 
+2022-12-08 23:03:21.5006|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/images/esya-products-yellow-with-footer.jpg|action: 
+2022-12-08 23:03:21.5349|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/fonts/fa-solid-900.woff2|action: 
+2022-12-08 23:03:21.5528|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/fonts/esyaFonts/Roboto/Roboto-Regular.ttf|action: 
+2022-12-08 23:03:21.5972|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/fonts/esyaFonts/Roboto/Roboto-Regular.ttf|action: 
+2022-12-08 23:03:21.6194|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/fonts/Helvetica.ttf|action: 
+2022-12-08 23:03:21.5910|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/fonts/fa-solid-900.woff2|action: 
+2022-12-08 23:03:21.6722|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/fonts/Helvetica.ttf|action: 
+2022-12-08 23:03:27.1622|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/|action: 
+2022-12-08 23:03:27.1887|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/|action: 
+2022-12-08 23:03:28.5955|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/Home|action: 
+2022-12-08 23:03:28.6287|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/Home|action: 
+2022-12-08 23:03:30.5726|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/jqgridcustomstyle.css|action: 
+2022-12-08 23:03:30.5826|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/site.css|action: 
+2022-12-08 23:03:30.5961|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/toastr.min.css|action: 
+2022-12-08 23:03:30.6139|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/jqgridcustomstyle.css|action: 
+2022-12-08 23:03:30.6374|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/site.css|action: 
+2022-12-08 23:03:30.6560|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/toastr.min.css|action: 
+2022-12-08 23:03:30.8650|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/js/jquery.sessionTimeout.js|action: 
+2022-12-08 23:03:30.8846|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/js/toastr.min.js|action: 
+2022-12-08 23:03:30.9023|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/js/Inputmask/inputmask-userdefined.js|action: 
+2022-12-08 23:03:30.9182|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/js/jquery.sessionTimeout.js|action: 
+2022-12-08 23:03:30.9351|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/js/toastr.min.js|action: 
+2022-12-08 23:03:30.9552|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/js/Inputmask/inputmask-userdefined.js|action: 
+2022-12-08 23:03:30.5162|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/jquery-ui.min.css|action: 
+2022-12-08 23:03:31.1218|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/master.css|action: 
+2022-12-08 23:03:30.5460|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/ui.jqgrid.css|action: 
+2022-12-08 23:03:31.1386|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/jquery-ui.min.css|action: 
+2022-12-08 23:03:31.1727|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/master.css|action: 
+2022-12-08 23:03:31.1902|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/ui.jqgrid.css|action: 
+2022-12-08 23:03:31.3732|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/images/logo/esya-logo-whitebg.jpeg|action: 
+2022-12-08 23:03:31.3967|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/images/logo/esya-logo-whitebg.jpeg|action: 
+2022-12-08 23:03:31.4374|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/images/gtpl_logo.jpg|action: 
+2022-12-08 23:03:31.4548|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/fonts/fa-regular-400.woff2|action: 
+2022-12-08 23:03:31.4919|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/images/gtpl_logo.jpg|action: 
+2022-12-08 23:03:31.5116|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/fonts/fa-regular-400.woff2|action: 
+2022-12-08 23:03:31.6681|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/json/errormessage.json|action: 
+2022-12-08 23:03:31.6913|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/json/menuitem.json|action: 
+2022-12-08 23:03:31.7119|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/json/errormessage.json|action: 
+2022-12-08 23:03:31.7247|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/json/menuitem.json|action: 
+2022-12-08 23:03:36.2390|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/eSyaNatureCure/Reports/V_ENC_50_00|action: 
+2022-12-08 23:03:36.2642|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/eSyaNatureCure/Reports/V_ENC_50_00|action: 
+2022-12-08 23:03:41.6156|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/eSyaNatureCure/Reports/V_ENC_51_00|action: 
+2022-12-08 23:03:41.6446|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/eSyaNatureCure/Reports/V_ENC_51_00|action: 
+2022-12-08 23:04:05.0055|1|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An unhandled exception has occurred while executing the request. System.Net.Http.HttpRequestException: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond ---> System.Net.Sockets.SocketException: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.CreateConnectionAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.WaitForCreatedConnectionAsync(ValueTask`1 creationTask)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.SendWithRetryAsync(HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncBuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at eSyaEssentials_UI.HttpClientServices.GetAsync[T](String url)
+   at eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.ReportsController.V_ENC_51_00() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNatureCure\Controllers\ReportsController.cs:line 32
+   at Microsoft.AspNetCore.Mvc.Internal.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeNextActionFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Rethrow(ActionExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeInnerFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResourceFilter()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeFilterPipelineAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeAsync()
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/eSyaNatureCure/Reports/V_ENC_51_00|action: V_ENC_51_00
+2022-12-08 23:04:05.3457|3|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An exception was thrown attempting to execute the error handler. System.ArgumentNullException: Value cannot be null.
+Parameter name: logger
+   at Microsoft.Extensions.Logging.LoggerExtensions.Log(ILogger logger, LogLevel logLevel, EventId eventId, Exception exception, String message, Object[] args)
+   at Microsoft.Extensions.Logging.LoggerExtensions.LogError(ILogger logger, Exception exception, String message, Object[] args)
+   at eSyaEnterprise_UI.Extension.ExceptionMiddlewareExtensions.<>c.<<ConfigureExceptionHandler>b__0_1>d.MoveNext() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Extension\ExceptionMiddlewareExtensions.cs:line 44
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/eSyaNatureCure/Reports/V_ENC_51_00|action: V_ENC_51_00
+2022-12-08 23:04:05.4142|1|ERROR|Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware|An unhandled exception has occurred while executing the request. System.Net.Http.HttpRequestException: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond ---> System.Net.Sockets.SocketException: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.CreateConnectionAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.WaitForCreatedConnectionAsync(ValueTask`1 creationTask)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.SendWithRetryAsync(HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncBuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at eSyaEssentials_UI.HttpClientServices.GetAsync[T](String url)
+   at eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.ReportsController.V_ENC_51_00() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNatureCure\Controllers\ReportsController.cs:line 32
+   at Microsoft.AspNetCore.Mvc.Internal.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeNextActionFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Rethrow(ActionExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeInnerFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResourceFilter()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeFilterPipelineAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeAsync()
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)|url: http://localhost/eSyaNatureCure/Reports/V_ENC_51_00|action: V_ENC_51_00
+2022-12-08 23:04:35.5071|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/eSyaNatureCure/Reports/V_ENC_51_00|action: 
+2022-12-08 23:04:35.5331|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/eSyaNatureCure/Reports/V_ENC_51_00|action: 
+2022-12-08 23:05:16.7902|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/images/ui-icons_ffffff_256x240.png|action: 
+2022-12-08 23:05:16.8122|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/images/ui-icons_ffffff_256x240.png|action: 
+2022-12-08 23:05:27.9440|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/material.min.css.map|action: 
+2022-12-08 23:05:27.9619|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/lib/bootstrap/dist/css/bootstrap.min.css.map|action: 
+2022-12-08 23:05:27.9824|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/material.min.css.map|action: 
+2022-12-08 23:05:27.9999|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/lib/bootstrap/dist/css/bootstrap.min.css.map|action: 

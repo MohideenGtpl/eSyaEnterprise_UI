@@ -1,0 +1,81 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@DateTime.Today.ToString()
+
+<div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+    <div class="form-group">
+        <div>
+            <label class="lable-color">Culture</label>
+            <select class="selectpicker" data-live-search="false" id="cboCulture" title="" onchange="fnCultureChanged()">
+                <option value="en-US">en-US</option>
+                <option value="ar-EG">ar-EG</option>
+                <option value="de-DE">de-DE</option>
+            </select>
+        </div>
+    </div>
+</div>
+<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+    <div class="form-group">
+        <label>From Date</label>
+        <input type="text" class="datepicker" id="myDate">
+    </div>
+</div>
+
+<script>
+
+  // document.getElementById("myDate").value = "2014-02-09";
+
+    $(function () {
+
+      //  $('#myDate').datepicker({ format: 'dd-mm-yyyy' });
+
+
+    $.ajax({
+            url: getBaseURL() + '/Common/GetApplicationCode',
+            type: 'POST',
+            datatype: 'json',
+            async: false,
+            success: function (response) {
+                if (response.Status === true) {
+                    toastr.success("Changes");
+
+                    location.reload();
+                }
+                else {
+                    toastr.error(response.Message);
+                }
+            },
+            error: function (error) {
+                toastr.error(error.statusText);
+            }
+        });
+
+    })
+
+    function fnCultureChanged() {
+        $.ajax({
+            url: getBaseURL() + '/Common/ChangeCultureFormat',
+            type: 'POST',
+            datatype: 'json',
+            data: { cultureFormat: $("#cboCulture").val(), dtDatePicker: $("#myDate").val() },
+            async: false,
+            success: function (response) {
+                if (response.Status === true) {
+                    toastr.success("Changes");
+
+                    location.reload();
+                }
+                else {
+                    toastr.error(response.Message);
+                }
+            },
+            error: function (error) {
+                toastr.error(error.statusText);
+            }
+        });
+    }
+</script>

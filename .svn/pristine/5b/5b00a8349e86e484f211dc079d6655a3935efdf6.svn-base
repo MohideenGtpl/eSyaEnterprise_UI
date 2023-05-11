@@ -1,0 +1,87 @@
+﻿
+@{
+
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localize
+
+<div class="row">
+   
+    <div class="col-md-12 col-sm-12 col-lg-8 " id="divSearch">
+        <div class="form-group">
+            <label>Search By PatientID / PatientName / Email / Mobile Number</label>
+            <input id="txtSearch" type="text" class="form-control" onchange="fnPatientSearch()">
+        </div>
+    </div>
+</div>
+<div class="row padbot10">
+    <div class="col-lg-12">
+        <div class="" style="overflow-y:auto;">
+            <table id="jqgPatientList"></table>
+            <div id="jqpPatientList"></div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    var _localization = {
+        UHID: '@Localize["UHID"]',
+        PatientName: '@Localize["PatientName"]',
+        DateOfBirth: '@Localize["DateOfBirth"]',
+        MobileNumber: '@Localize["MobileNumber"]',
+        eMailID: '@Localize["eMailID"]',
+    }
+    function fnPatientSearch() {
+
+    $("#jqgPatientList").jqGrid('GridUnload');
+    $("#jqgPatientList").jqGrid(
+        {
+            url: getBaseURL() + '/PatientInfo/GetPatientSearch',
+            datatype: "json",
+            contentType: "application/json; charset-utf-8",
+            mtype: 'GET',
+            postData: {
+                searchText: $('#txtSearch').val()
+            },
+            ajaxGridOptions: { contentType: 'application/json; charset=utf-8', async: true },
+            colNames: [_localization.UHID, _localization.PatientName, _localization.DateOfBirth, _localization.MobileNumber, _localization.eMailID],
+            colModel: [
+                { name: "UHID", width: 50, editable: true, align: 'left', hidden: true },
+                { name: "FirstName", width: 50, editable: true, align: 'left', hidden: false },
+                { name: "DateOfBirth", width: 50, editable: true, align: 'left', hidden: false ,formatter: 'date', formatoptions: { srcformat: 'Y/m/d H:i:s', newformat: 'd/m/Y' }},
+
+                { name: "MobileNumber", width: 50, editable: true, align: 'left', hidden: false },
+                { name: "eMailID", width: 50, editable: true, align: 'left', hidden: false },
+
+            ],
+            rowNum: 100000,
+            viewrecords: true,
+            gridview: true,
+            rownumbers: true,
+            scroll: false,
+            loadonce: true,
+            width: 'auto',
+            height: 'auto',
+            autowidth: true,
+            shrinkToFit: true,
+            forceFit: false,
+            pager: "#jqpPatientList",
+            onSelectRow: function (rowid) {
+               var rowData = $('#jqgPatientList').jqGrid('getRowData', rowid);
+               $('#txtPatientMobileNumber').val(rowData['MobileNumber']);
+               fnPatientFODesk_onSelection(rowData['UHID']);
+               $('#PopupPatientSearch').modal('hide');
+            },
+            loadComplete: function (data) {
+
+            }
+        });
+    }
+
+
+
+</script>

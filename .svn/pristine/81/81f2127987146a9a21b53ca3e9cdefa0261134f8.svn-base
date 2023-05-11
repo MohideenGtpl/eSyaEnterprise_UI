@@ -1,0 +1,48 @@
+﻿
+@{
+    ViewData["Title"] = "V_311_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/jsTree.css" rel="stylesheet" />
+@section scripts{
+    <script src="~/js/eSyaClinicalServices/ClinicConsultant.js"></script>
+    <script src="~/js/jsTree.js"></script>
+}
+@{
+    var userFormRole = (eSyaEnterprise_UI.Models.DO_UserFormRole)ViewBag.UserFormRole;
+}
+<script>
+    var _userFormRole = JSON.parse('@Html.Raw(Json.Serialize(userFormRole))');
+</script>
+
+<div class="row">
+    <div class="col-lg-3 col-md-4">
+        <div class="form-group">
+            <label class="lable-color">Business Location</label>
+            <select class="selectpicker" data-live-search="false" id="cboBusinessLocation" title="Select" asp-items="@ViewBag.BusinessLocation"  data-size="8" onchange="fnLoadClinicConsultantTree()">
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-6">
+        <label>  Clinics Info</label>
+        <div id="jstClinicConsultantTree"></div>
+    </div>
+    <div class="col-lg-6 col-md-6">
+
+    </div>
+    <div class="col-lg-2 col-md-2">
+        <h5>Action</h5>
+        <button class="mdl-button mdl-js-button mdl-button--raised primary-button btn_wdth" id="btnSaveOPClinic" @(userFormRole.IsInsert ? "":"disabled") onclick="fnSaveOPClinic()" >
+            <i class="fas fa-save"></i>   Save
+        </button>
+        <button class="mdl-button mdl-js-button mdl-button--raised primary-button btn_wdth" id="btnExpandAll" onclick="fnExpandAll()">
+            <i class="fas fa-expand" style="color:#fff !important"></i>   Expand All
+        </button>
+        <button class="mdl-button mdl-js-button mdl-button--raised primary-button btn_wdth" id="btnCollapseAll" onclick="fnCollapseAll()">
+            <i class="fas fa-compress" style="color:#fff !important"></i>   Collapse All
+        </button>
+    </div>
+</div>

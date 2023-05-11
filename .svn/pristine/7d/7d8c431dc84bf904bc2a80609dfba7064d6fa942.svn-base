@@ -1,0 +1,47 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+
+namespace eSyaEnterprise_UI.Areas.eSyaPayrollExpat.Controllers
+{
+    public class EmployeeExpatController : Controller
+    {
+        [Area("eSyaPayrollExpat")]
+        public IActionResult V_4500_00()
+        {
+            return View();
+        }
+        [Area("eSyaPayrollExpat")]
+        public IActionResult _EmployeeDetails()
+        {
+            return View();
+        }
+        [Area("eSyaPayrollExpat")]
+        public IActionResult _PersonalInformation()
+        {
+            return View();
+        }
+        [Area("eSyaPayrollExpat")]
+        public IActionResult _SalaryInfo()
+        {
+            return View();
+        }
+        [Area("eSyaPayrollExpat")]
+        public IActionResult _BankDetail()
+        {
+            return View();
+        }
+        [Area("eSyaPayrollExpat")]
+        public IActionResult _CurrentJob()
+        {
+            return View();
+        }
+        [Area("eSyaPayrollExpat")]
+        public IActionResult _FixedDeduction()
+        {
+            return View();
+        }
+    }
+}

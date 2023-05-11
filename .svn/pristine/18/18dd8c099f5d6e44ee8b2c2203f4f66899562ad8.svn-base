@@ -1,0 +1,380 @@
+﻿
+@{
+    ViewData["Title"] = "Service Group";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    var userFormRole = (eSyaEnterprise_UI.Models.DO_UserFormRole)ViewBag.UserFormRoles;
+}
+@*<script>
+        var _userFormRole = JSON.parse('@Html.Raw(Json.Serialize(userFormRole))');
+    </script>*@
+@section scripts{
+    <script src="~/js/jsTree.js"></script>
+    <link href="~/css/jsTree.css" rel="stylesheet" />
+    @* <script src="~/js/eSyaServices/ServiceGroup.js"></script>*@
+}
+
+
+<style>
+
+
+    .w-120 {
+        width: 120px !important
+    }
+
+    .mdl-card__title {
+        max-height: 45px !important;
+        display: block !important;
+        padding-left: 0px !important;
+        padding-top: 0px !important;
+    }
+
+    .mdl-card {
+        min-height: auto !important
+    }
+
+    h5 {
+        margin-top: 0px;
+        font-weight: 600;
+        color: #0e75bc;
+        padding-left: 0px;
+        margin-bottom: 10px;
+        font-size: 20px;
+    }
+
+    hr {
+        border-color: #f1f1f1 !important;
+    }
+
+    #pnlAddMainMenu, #pnlAddSubMenu {
+        width: 100%;
+    }
+
+    #lblServiceGroup {
+        cursor: pointer;
+        padding: 2px 4px;
+    }
+
+        #lblServiceGroup:hover {
+            background: #e7f4f9;
+            box-shadow: inset 0 0 1px #cccccc;
+        }
+
+    .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
+        width: 100% !important
+    }
+
+    hr {
+        margin-bottom: 8px;
+        margin-top: 8px;
+    }
+</style>
+
+<div class="row row-bottom-pad">
+    <div class="col-sm-4 col-md-4 col-lg-4">
+
+        <div id="ServiceGroupTree">
+        </div>
+    </div>
+    <div class="col-sm-1 col-md-1 col-lg-1"></div>
+    <div id="dvServiceGroup" class="col-lg-5 col-md-5 col-sm-5 f-right">
+
+        <div class="demo-card-square mdl-card mdl-shadow--2dp marbot15 fullwidth" id="pnlAddServiceGroup">
+            <div class="mdl-card__title mdl-card--expand padleft0 padtop0 h-60 d-block">
+                <h5 class="mdl-card__title-text">Add Service Group </h5>
+            </div>
+            <div class="mdl-card__supporting-text fullwidth">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <label>Service Group Description</label>
+                            <input type="text" class="form-control" id="txtServiceGroupDesc" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row ">
+                    <div class="col-lg-12" style="margin-bottom: 15px;">
+                        <label class="mdl-checkbox mdl-js-checkbox" for="chkActiveStatus">
+                            <input type="checkbox" id="chkActiveStatus"
+                                   class="mdl-checkbox__input">
+                            <span class="mdl-checkbox__label">Is Active</span>
+                        </label>
+                    </div>
+
+                </div>
+                <hr />
+                <div class="mdl-card__actions text-center pad0">
+                    <button type="button" class="btn btn-primary" id="btnSGAdd" onclick="fnAddOrUpdateServiceGroup()"><i class="fa fa-plus"></i> Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 hide-in-smallscreen">
+        <div>
+            <h5>Action</h5>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 btn_pdnTop collapse">
+                <button class="mdl-button mdl-js-button mdl-button--raised cancel-button btn_wdth" onclick="fnDeleteNode()">
+                    <i class="fa fa-times" style="color:#fff !important"></i>     Delete Node
+                </button>
+            </div>
+            <div class="col-lg-12 btn_pdnTop">
+                <button class="mdl-button mdl-js-button mdl-button--raised primary-button btn_wdth" id="btnMoveUp" onclick="fnMoveItemUpDown('U')">
+                    <i class="fas fa-arrow-up" style="color:#fff !important"></i>   Move Up
+                </button>
+            </div>
+            <div class="col-lg-12 btn_pdnTop">
+                <button class="mdl-button mdl-js-button mdl-button--raised primary-button btn_wdth" id="btnMoveDown" onclick="fnMoveItemUpDown('D')">
+                    <i class="fas fa-arrow-down" style="color:#fff !important"></i>   Move Down
+                </button>
+            </div>
+            <div class="col-lg-12 btn_pdnTop">
+                <button class="mdl-button mdl-js-button mdl-button--raised primary-button btn_wdth" id="btnExpandAll"  onclick="fnExpandAll()">
+                    <i class="fas fa-expand" style="color:#fff !important"></i>   Expand All
+                </button>
+            </div>
+            <div class="col-lg-12 btn_pdnTop">
+                <button class="mdl-button mdl-js-button mdl-button--raised primary-button btn_wdth" id="btnCollapseAll" onclick="fnCollapseAll()">
+                    <i class="fas fa-compress" style="color:#fff !important"></i>   Collapse All
+                </button>
+            </div>
+            
+        </div>
+    </div>
+
+</div>
+
+<script>
+    var _userFormRole = JSON.parse('@Html.Raw(Json.Serialize(userFormRole))');
+var ServiceGroupID = "0"
+var ServiceTypeID = "0"
+$(document).ready(function () {
+    fnLoadServiceGroupTree()
+    $('#chkActiveStatus').parent().addClass("is-checked");
+    $('#lblFormName').val("Service Group Master");
+    $("#btnSGAdd").attr("disabled", _userFormRole.IsInsert === false);
+});
+function fnLoadServiceGroupTree() {
+    $.ajax({
+        url: getBaseURL() + '/ServiceManagement/GetServiceGroups',
+        type: 'GET',
+        datatype: 'json',
+        contentType: 'application/json; charset=utf-8',
+        async: false,
+        success: function (result) {
+            $("#ServiceGroupTree").jstree({ core: { data: result, multiple: false } });
+        },
+        error: function (error) {
+            alert(error.statusText)
+        }
+    });
+    $('#ServiceGroupTree').on("changed.jstree", function (e, data) {
+        if (data.node != undefined) {
+            var parentNode = $("#ServiceGroupTree").jstree(true).get_parent(data.node.id);
+
+            // If Parent node is selected
+            if (parentNode == "#") {
+                $("#pnlAddServiceGroup .mdl-card__title-text").text("Add Service Group");
+                $("#txtServiceGroupDesc").val('');
+                $('#chkActiveStatus').parent().addClass("is-checked");
+                $("#btnSGAdd").html("<i class='fa fa-plus'></i> Add");
+                $("#btnSGAdd").attr("disabled", _userFormRole.IsInsert === false);
+                $("#dvServiceGroup").show();
+                ServiceGroupID = "0"
+                ServiceTypeID = data.node.id
+
+            }
+            // If Child node is selected
+            else  {
+                $("#pnlAddServiceGroup .mdl-card__title-text").text("Edit Service Group");
+                $("#btnSGAdd").html("<i class='fa fa-sync'></i> Update");
+                $("#btnSGAdd").attr("disabled", _userFormRole.IsEdit === false);
+                $("#dvServiceGroup").show();
+                ServiceGroupID = data.node.id
+                ServiceGroupID = ServiceGroupID.substring(1)
+                fnFillServiceGroupDetail(ServiceGroupID);
+
+            }
+
+        }
+    });
+}
+function fnFillServiceGroupDetail(ServiceGroupID) {
+    $.ajax({
+        url: getBaseURL() + '/ServiceManagement/GetServiceGroupByID',
+        data: {
+            ServiceGroupID: ServiceGroupID
+        },
+        success: function (result) {
+            $("#txtServiceGroupDesc").val(result.ServiceGroupDesc);
+            if (result.ActiveStatus == true)
+                $('#chkActiveStatus').parent().addClass("is-checked");
+            else
+                $('#chkActiveStatus').parent().removeClass("is-checked");
+        }
+    });
+}
+function fnAddOrUpdateServiceGroup() {
+    var txtServiceGroupDesc = $("#txtServiceGroupDesc").val()
+    if (txtServiceGroupDesc == "" || txtServiceGroupDesc == null || txtServiceGroupDesc == undefined) {
+        toastr.error("Please enter the Service Group Description");
+        return false;
+    }
+    else if (ServiceTypeID == "0" || ServiceTypeID == null || ServiceTypeID == undefined) {
+        toastr.error("Please select Service Type");
+        return false;
+    }
+ 
+    else {
+        $("#btnSGAdd").attr("disabled", true);
+        $.ajax({
+            url: getBaseURL() + '/ServiceManagement/AddOrUpdateServiceGroup',
+            type: 'POST',
+            datatype: 'json',
+            data: {
+                ServiceTypeID: ServiceTypeID,
+                ServiceGroupID: ServiceGroupID,
+                ServiceGroupDesc: $("#txtServiceGroupDesc").val(),
+                ActiveStatus: $("#chkActiveStatus").parent().hasClass("is-checked")
+            },
+            async: false,
+            success: function (response) {
+                if (response.Status == true) {
+                    if (ServiceGroupID == 0) {
+                        toastr.success("Service Group Added");
+                        $("#txtServiceGroupDesc").val('');
+                        $('#chkActiveStatus').parent().addClass("is-checked");
+                        ServiceTypeID = "0"
+                    }
+                    else {
+                        toastr.success("Service Group Updated");
+                    }
+                    $("#ServiceGroupTree").jstree("destroy");
+                    fnLoadServiceGroupTree();
+
+                }
+                else {
+                    toastr.error(response.Message);
+                }
+                $("#btnSGAdd").attr("disabled", false);
+            },
+            error: function (error) {
+                toastr.error(error.statusText);
+                $("#btnSGAdd").attr("disabled", false);
+            }
+        });
+    }
+    }
+function fnExpandAll() {
+    $("#ServiceGroupTree").jstree('open_all');
+    }
+    function fnCollapseAll() {
+        $("#ServiceGroupTree").jstree('close_all');
+    }
+
+    function fnMoveItemUpDown(updown) {
+        var isMoveUp = false, isMoveDown = false;
+        var str;
+        if (updown === "U") {
+            isMoveUp = true;
+            str = ' up';
+        }
+        else if (updown === "D") {
+            isMoveDown = true;
+            str = ' down';
+        }
+        var selectedNode = $('#ServiceGroupTree').jstree().get_selected(true);
+       
+        if (selectedNode.length != 1) {
+            toastr.warning('Please select a Service Group to move.');
+        }
+        else {
+            
+            selectedNode = selectedNode[0];
+
+            if (!selectedNode.id.startsWith("G")) {
+                toastr.warning('Please select a Service Group to move.');
+            }
+            else {
+                var data = {};
+                data.isMoveUp = isMoveUp;
+                data.isMoveDown = isMoveDown;
+                data.serviceTypeId = selectedNode.parent;
+                data.serviceGroupId = selectedNode.id.substring(1);
+               
+                $("#btnMoveUp").attr("disabled", true);
+                $("#btnMoveDown").attr("disabled", true);
+                if (confirm('Do you want to move node ' + selectedNode.text + str + ' ?')) {
+
+                    $.ajax({
+                        url: getBaseURL() + '/ServiceManagement/UpdateServiceGroupIndex',
+                        type: 'POST',
+                        datatype: 'json',
+                        data: data,
+                        async: false,
+                        success: function (response) {
+                            if (response.Status === true) {
+                                toastr.success("Moved");
+                                $("#ServiceGroupTree").jstree("destroy");
+                                fnLoadServiceGroupTree();
+                            }
+                            else {
+                                toastr.error(response.Message);
+                            }
+                            $("#btnMoveUp").attr("disabled", false);
+                            $("#btnMoveDown").attr("disabled", false);
+                        },
+                        error: function (error) {
+                            toastr.error(error.statusText);
+                            $("#btnMoveUp").attr("disabled", false);
+                            $("#btnMoveDown").attr("disabled", false);
+                        }
+                    });
+                }
+            }
+        }
+       
+
+        //var URL;
+        //var selectedNode = $('#jstMenuFormList').jstree().get_selected(true);
+        //if (selectedNode.length != 1) {
+        //    toastr.warning('Please select any one node to move.');
+        //}
+        //else {
+        //    selectedNode = selectedNode[0];
+        //    prevSelectedID = selectedNode.id;
+
+        //    var url;
+        //    var data = {};
+        //    if (selectedNode.id.startsWith("MM")) {
+        //        url = getBaseURL() + '/FormsMenu/UpdateMainMenuIndex';
+        //        data.mainMenuID = selectedNode.id.substring(2);
+        //        data.isMoveUp = isMoveUp;
+        //        data.isMoveDown = isMoveDown;
+        //    }
+        //    else if (selectedNode.id.startsWith("SM")) {
+        //        url = getBaseURL() + '/FormsMenu/UpdateSubMenusIndex';
+        //        data.menuItemID = selectedNode.id.substring(2);
+        //        data.isMoveUp = isMoveUp;
+        //        data.isMoveDown = isMoveDown;
+        //    }
+        //    else if (selectedNode.id.startsWith("FM")) {
+        //        url = getBaseURL() + '/FormsMenu/UpdateFormsIndex';
+
+        //        if (selectedNode.parent.startsWith("MM"))
+        //            data.mainMenuID = selectedNode.parent.substring(2);
+        //        else
+        //            data.menuItemID = selectedNode.parent.substring(2);
+        //        //data.formID = selectedNode.id.substring(2);
+        //        data.formID = selectedNode.id.substring(2).split(".")[1];
+        //        data.isMoveUp = isMoveUp;
+        //        data.isMoveDown = isMoveDown;
+        //    }
+
+            
+        //}
+    }
+</script>
+

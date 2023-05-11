@@ -1,0 +1,333 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.ActionFilter;
+using eSyaEnterprise_UI.Areas.eSyaLaboratory.Data;
+using eSyaEnterprise_UI.Areas.eSyaLaboratory.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+
+namespace eSyaEnterprise_UI.Areas.eSyaLaboratory.Controllers
+{
+    [SessionTimeout]
+    public class ServiceTemplateCreatorController : Controller
+    {
+        private readonly IeSyaLaboratoryAPIServices _eSyaLaboratoryAPIServices;
+        private readonly ILogger<ServiceTemplateCreatorController> _logger;
+        public ServiceTemplateCreatorController(IeSyaLaboratoryAPIServices eSyaLaboratoryAPIServices, ILogger<ServiceTemplateCreatorController> logger)
+        {
+            _eSyaLaboratoryAPIServices = eSyaLaboratoryAPIServices;
+            _logger = logger;
+        }
+
+        /// <summary>
+        /// Service Template Creator
+        /// </summary>
+        /// <returns></returns>
+
+        [Area("eSyaLaboratory")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public async Task<IActionResult> V_4000_00()
+        {
+            ViewBag.UserFormRoles = new DO_UserFormRole { IsInsert = true, IsEdit = true, IsDelete = true };
+            var serviceResponse = await _eSyaLaboratoryAPIServices.HttpClientServices.GetAsync<List<DO_BusinessLocation>>("CommonMethod/GetBusinessKey");
+            if (serviceResponse.Status)
+            {
+                if (serviceResponse.Data != null)
+                {
+                    ViewBag.BusinessKey = serviceResponse.Data.Select(b => new SelectListItem
+                    {
+                        Value = b.BusinessKey.ToString(),
+                        Text = b.LocationDescription,
+                    }).ToList();
+                }
+            }
+            else
+            {
+                _logger.LogError(new Exception(serviceResponse.Message), "UD:V_4000_00:GetBusinessKey");
+            }
+            var serviceResponse1 = await _eSyaLaboratoryAPIServices.HttpClientServices.GetAsync<List<DO_ApplicationCode>>("CommonMethod/GetApplicationCodesByCodeType?codetype=151");
+            if (serviceResponse1.Status)
+            {
+                if (serviceResponse1.Data != null)
+                {
+                    ViewBag.SampleType = serviceResponse1.Data.Select(r => new SelectListItem
+                    {
+                        Value = r.ApplicationCode.ToString(),
+                        Text = r.CodeDesc,
+                    }).ToList();
+                }
+            }
+            else
+            {
+                _logger.LogError(new Exception(serviceResponse1.Message), "UD:V_4000_00:GetApplicationCodesByCodeType: CodeType {0} 151");
+            }
+
+            var serviceResponse2 = await _eSyaLaboratoryAPIServices.HttpClientServices.GetAsync<List<DO_ResultType>>("ServiceTemplateCreator/GetResultTypes");
+            if (serviceResponse2.Status)
+            {
+                if (serviceResponse2.Data != null)
+                {
+                    ViewBag.ResultType = serviceResponse2.Data.Select(r => new SelectListItem
+                    {
+                        Value = r.ResultType.ToString(),
+                        Text = r.ResultTypeDesc,
+                    }).ToList();
+                }
+            }
+            else
+            {
+                _logger.LogError(new Exception(serviceResponse2.Message), "UD:V_4000_00:GetResultTypes");
+            }
+            var serviceResponse3 = await _eSyaLaboratoryAPIServices.HttpClientServices.GetAsync<List<DO_ServiceClass>>("CommonMethod/GetServiceClasses?servicetype=1");
+            if (serviceResponse3.Status)
+            {
+                if (serviceResponse3.Data != null)
+                {
+                    ViewBag.ServiceClass = serviceResponse3.Data.Select(r => new SelectListItem
+                    {
+                        Value = r.ServiceClassId.ToString(),
+                        Text = r.ServiceClassDesc,
+                    }).ToList();
+                }
+            }
+            else
+            {
+                _logger.LogError(new Exception(serviceResponse3.Message), "UD:V_4000_00:GetServiceClasses: For ServiceType {0} 1");
+            }
+
+            return View();
+
+        }
+
+
+
+        public async Task<ActionResult> GetAppCodeByCodeType(int codetype)
+        {
+            try
+            {
+                var serviceResponse = await _eSyaLaboratoryAPIServices.HttpClientServices.GetAsync<List<DO_ApplicationCode>>("CommonMethod/GetApplicationCodesByCodeType?codetype=" + codetype );
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        var AppCode_list = serviceResponse.Data.Select(r => new SelectListItem
+                        {
+                            Value = r.ApplicationCode.ToString(),
+                            Text = r.CodeDesc,
+                        }).ToList(); 
+                        return Json(AppCode_list);
+                    }
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetApplicationCodesByCodeType: CodeType {0} ", codetype);
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(new Exception(ex.Message), "UD:GetApplicationCodesByCodeType: CodeType {0} ", codetype);
+                return Json(new DO_ReturnParameter() { Status = false, Message = ex.Message });
+            }
+            
+        }
+        public async Task<ActionResult> GetLabServicesByBKey(int businessKey)
+        {
+            try
+            {
+                var serviceResponse = await _eSyaLaboratoryAPIServices.HttpClientServices.GetAsync<List<DO_ServiceCode>>("CommonMethod/GetLabServicesByBKey?businessKey=" + businessKey);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        var LabSer_list = serviceResponse.Data.Select(s => new SelectListItem
+                        {
+                            Value = s.ServiceId.ToString(),
+                            Text = s.ServiceDesc,
+                        }).ToList();
+                        return Json(LabSer_list);
+                    }
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetLabServicesByBKey: Business Key {0} ", businessKey);
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(new Exception(ex.Message), "UD:GetLabServicesByBKey: Business Key {0} ", businessKey);
+                return Json(new DO_ReturnParameter() { Status = false, Message = ex.Message });
+            }
+
+        }
+        public async Task<ActionResult> GetServiceTemplateByBKeyServiceClass(int businessKey, int serviceClass)
+        {
+            try
+            {
+                var serviceResponse = await _eSyaLaboratoryAPIServices.HttpClientServices.GetAsync<List<DO_ServiceTemplateCreator>>("ServiceTemplateCreator/GetServiceTemplateByBKeyServiceClass?businessKey=" + businessKey + "&serviceClass=" + serviceClass);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        var ServiceTemplateCreator_list = serviceResponse.Data;
+                        return Json(ServiceTemplateCreator_list);
+                    }
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetServiceTemplateByBKeyServiceClass:For BusinessKey {0} , ServiceClass {1}", businessKey, serviceClass );
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetServiceTemplateByBKeyServiceClass:For BusinessKey {0} , ServiceClass {1}", businessKey, serviceClass);
+                return Json(new DO_ReturnParameter() { Status = false, Message = ex.Message });
+            }
+        }
+        public async Task<ActionResult> GetServiceTemplateByBKeyServiceID(int businessKey, int serviceID)
+        {
+            try
+            {
+                var serviceResponse = await _eSyaLaboratoryAPIServices.HttpClientServices.GetAsync<DO_ServiceTemplateCreator>("ServiceTemplateCreator/GetServiceTemplateByBKeyServiceID?businessKey=" + businessKey + "&serviceID=" + serviceID);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        var ServiceTemplateCreator = serviceResponse.Data;
+                        return Json(ServiceTemplateCreator);
+                    }
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetServiceTemplateByBKeyServiceID:For BusinessKey {0} , ServiceID {1}", businessKey, serviceID);
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetServiceTemplateByBKeyServiceID:For BusinessKey {0} , ServiceID {1}", businessKey, serviceID);
+                return Json(new DO_ReturnParameter() { Status = false, Message = ex.Message });
+            }
+        }
+        public async Task<ActionResult> AddOrUpdateServiceTemplateMaster(DO_ServiceTemplateCreator obj)
+        {
+            try
+            {
+                obj.FormId = "V_4000_00";
+                obj.CreatedOn = DateTime.Now;
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                var serviceResponse = await _eSyaLaboratoryAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("ServiceTemplateCreator/AddOrUpdateServiceTemplateMaster", obj);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Data.Message), "UD:AddOrUpdateServiceTemplateMaster:params:" + JsonConvert.SerializeObject(obj));
+                        return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Data.Message });
+                    }
+
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:AddOrUpdateServiceTemplateMaster:params:" + JsonConvert.SerializeObject(obj));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:AddOrUpdateServiceTemplateMaster:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new DO_ReturnParameter() { Status = false, Message = ex.ToString() });
+            }
+        }
+        public async Task<ActionResult> GetFullServiceResultTemplate(int businessKey, int serviceID, string resultType)
+        {
+            try
+            {
+                var serviceResponse = await _eSyaLaboratoryAPIServices.HttpClientServices.GetAsync<DO_ServiceTemplateFull>("ServiceTemplateCreator/GetFullServiceResultTemplate?businessKey=" + businessKey + "&serviceID=" + serviceID +"&resultType=" + resultType);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        var ServiceShortValues = serviceResponse.Data;
+                        return Json(ServiceShortValues);
+                    }
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetFullServiceResultTemplate:For BusinessKey {0} , ServiceID {1} , RsultType {2}", businessKey, serviceID,resultType);
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetFullServiceResultTemplate:For BusinessKey {0} , ServiceID {1} , RsultType {2}", businessKey, serviceID,resultType);
+                return Json(new DO_ReturnParameter() { Status = false, Message = ex.Message });
+            }
+        }
+        public async Task<ActionResult> AddOrUpdateFullServiceResultTemplate(DO_ServiceTemplateFull obj)
+        {
+            try
+            {
+
+                    obj.CommonValues.FormId = "V_4000_00";
+                    obj.CommonValues.CreatedOn = DateTime.Now;
+                    obj.CommonValues.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                    obj.CommonValues.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                  
+
+                var serviceResponse = await _eSyaLaboratoryAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("ServiceTemplateCreator/AddOrUpdateFullServiceResultTemplate", obj);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Data.Message), "UD:AddOrUpdateFullServiceResultTemplate:params:" + JsonConvert.SerializeObject(obj));
+                        return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Data.Message });
+                    }
+
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:AddOrUpdateFullServiceResultTemplate:params:" + JsonConvert.SerializeObject(obj));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:AddOrUpdateFullServiceResultTemplate:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new DO_ReturnParameter() { Status = false, Message = ex.ToString() });
+            }
+        }
+    }
+}

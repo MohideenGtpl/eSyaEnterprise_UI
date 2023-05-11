@@ -1,0 +1,250 @@
+﻿
+@{
+    ViewData["Title"] = "V_ENC_26_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    body {
+    }
+
+    .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+        color: gold;
+        background-color: #555;
+        border-color: gold #ffc #fff;
+    }
+
+    .nav-tabs > li.active > a, .nav-tabs > li.active > a:focus, .nav-tabs > li.active > a:hover {
+        border-width: 0;
+    }
+
+    .nav-tabs > li > a {
+        border: none;
+        color: #666;
+    }
+
+        .nav-tabs > li.active > a, .nav-tabs > li > a:hover {
+            border: none;
+            color: #4285F4 !important;
+            background: transparent;
+        }
+
+        .nav-tabs > li > a::after {
+            content: "";
+            background: #4285F4;
+            height: 2px;
+            position: absolute;
+            width: 100%;
+            left: 0px;
+            bottom: -1px;
+            transition: all 250ms ease 0s;
+            transform: scale(0);
+        }
+
+    .nav-tabs > li.active > a::after, .nav-tabs > li:hover > a::after {
+        transform: scale(1);
+    }
+
+    .tab-nav > li > a::after {
+        background: #21527d none repeat scroll 0% 0%;
+        color: #fff;
+    }
+
+    .tab-pane {
+        padding: 15px 0;
+    }
+</style>
+
+<link href="~/css/jquery.contextMenu.min.css" rel="stylesheet" />
+
+<script src="~/js/jquery.contextMenu.min.js"></script>
+
+
+
+
+<div class="row">
+    <div class="col-12 col-lg-12 col-md-12">
+
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="PreviousCheckout-tab" data-toggle="tab" data-target="#divPreviousCheckout" type="button" role="tab" aria-controls="profile" aria-selected="true" onclick="fnGridLoadGuestPreviousCheckoutdetails()">Previous Checkout</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="CurrentCheckout-tab" data-toggle="tab" data-target="#divCurrentCheckout" type="button" role="tab" aria-controls="home" aria-selected="false" onclick="fnGridLoadGuestCurrentCheckoutdetails()">Current Checkout</button>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+
+            <div class="tab-pane fade  show active" id="divPreviousCheckout" role="tabpanel" aria-labelledby="PreviousCheckout-tab">
+                <div class="row">
+                    <div class="col-12 col-lg-12 col-md-12 col-sm-12">
+
+                        
+                        <table id="jqgPreviousCheckout"></table>
+                        <div id="jqpPreviousCheckout"></div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="divCurrentCheckout" role="tabpanel" aria-labelledby="CurrentCheckout-tab">
+                <div class="row">
+                    <div class="col-12 col-lg-12 col-md-12 col-sm-12">
+                        <table id="jqgCurrentCheckout"></table>
+                        <div id="jqpCurrentCheckout"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+<script>
+    $(document).ready(function () {
+        fnGridLoadGuestPreviousCheckoutdetails(); 
+        
+
+    });
+   
+    function fnGridLoadGuestPreviousCheckoutdetails() {
+
+        var url = getBaseURL() + '/DepartmentClearance/GetDepartmentClearencePreviousCheckoutdetails';
+
+        $("#jqgPreviousCheckout").GridUnload();
+
+        $("#jqgPreviousCheckout").jqGrid({
+
+            url: url,
+            datatype: 'json',
+            mtype: 'POST',
+            contentType: 'application/json; charset=utf-8',
+            ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+            colNames: ["Booking Date", "Booking Key", "GuestId", "Guest Name", "Age", "Gender", "MobileNo", "Check In", "Check Out", "Paid", "Department Name", "Department Status"],
+            colModel: [
+                { name: "BookingDate", width: 80, editable: true, align: 'center', hidden: false, formatter: 'date', formatoptions: { srcformat: 'Y/m/d H:i:s', newformat: 'd/m/Y' } },
+                { name: "BookingKey", width: 80, align: 'left', editable: true, editoptions: { maxlength: 10 }, resizable: false, hidden: false },
+                { name: "GuestId", width: 80, align: 'left', editable: true, editoptions: { maxlength: 10 }, resizable: false, hidden: true },
+                { name: "GuestName", width: 120, align: 'left', editable: true, editoptions: { maxlength: 15 }, resizable: false },
+                { name: "Age", width: 30, align: 'left', editable: true, editoptions: { maxlength: 15 }, resizable: false },
+                { name: "Gender", editable: true, align: 'left', width: 50, edittype: "select", resizable: false, formatter: 'select', editoptions: { value: "M: Male;F: Female;B: Both;" } },
+                { name: "MobileNo", width: 100, align: 'left', editable: true, editoptions: { maxlength: 15 }, resizable: false },
+                { name: "CheckInDate", width: 80, editable: true, align: 'center', hidden: false, formatter: 'date', formatoptions: { srcformat: 'Y/m/d H:i:s', newformat: 'd/m/Y' } },
+                { name: "CheckOutDate", width: 80, editable: true, align: 'center', hidden: false, formatter: 'date', formatoptions: { srcformat: 'Y/m/d H:i:s', newformat: 'd/m/Y' } },
+                { name: "PaymentReceived", width: 50, editable: true, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+                { name: "DepartmentName", width: 80, align: 'left', resizable: false, hidden: false },
+                { name: "DepartmentStatus", editable: true, align: 'center', width: 80, edittype: "select", resizable: false, formatter: 'select', editoptions: { value: "CLEARED: Cleared;UNCLEARED: Un Cleared" } },
+
+            ],
+            rowNum: 10,
+            rowList:[10,20,50,100],
+            rownumWidth: '55',
+            viewrecords: true,
+            gridview: true,
+            rownumbers: true,
+            scroll: false,
+            loadonce: true,
+            width: 'auto',
+            height: 'auto',
+            autowidth: true,
+            shrinkToFit: true,
+            forceFit: true,
+            caption: 'Guest Previous Checkout Details',
+            pager: "#jqpPreviousCheckout",
+            onSelectRow: function (rowid) {
+
+            },
+            loadComplete: function (data) {
+                fnJqgridSmallScreen("jqgPreviousCheckout");
+                $("#jqgPreviousCheckout").jqGrid("setGridWidth", $(".tab-content").width());
+            },
+            gridComplete: function () {
+
+                var rows = $("#jqgPreviousCheckout").getDataIDs();
+                for (var i = 0; i < rows.length; i++) {
+                    var status = $("#jqgPreviousCheckout").getCell(rows[i], "DepartmentStatus");
+
+                    if (status === "CLEARED") {
+                        $("#jqgPreviousCheckout").jqGrid('setRowData', rows[i], false, { background: '#b3ffb3' });
+                    }
+                    if (status === "UNCLEARED") {
+                        $("#jqgPreviousCheckout").jqGrid('setRowData', rows[i], false, { background: '#ffb3b3' });
+                    }
+                }
+            }
+        });
+
+    }
+
+    function fnGridLoadGuestCurrentCheckoutdetails() {
+
+        var url = getBaseURL() + '/DepartmentClearance/GetDepartmentClearenceCurrentCheckoutdetails';
+
+        $("#jqgCurrentCheckout").GridUnload();
+
+        $("#jqgCurrentCheckout").jqGrid({
+
+            url: url,
+            datatype: 'json',
+            mtype: 'POST',
+            contentType: 'application/json; charset=utf-8',
+            ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+            colNames: ["Booking Date", "Booking Key", "GuestId", "Guest Name", "Age", "Gender", "MobileNo", "Check In", "Check Out", "Paid", "Department Name", "Department Status"],
+            colModel: [
+                { name: "BookingDate", width: 80, editable: true, align: 'center', hidden: false, formatter: 'date', formatoptions: { srcformat: 'Y/m/d H:i:s', newformat: 'd/m/Y' } },
+                { name: "BookingKey", width: 80, align: 'left', editable: true, editoptions: { maxlength: 10 }, resizable: false, hidden: false },
+                { name: "GuestId", width: 80, align: 'left', editable: true, editoptions: { maxlength: 10 }, resizable: false, hidden: true },
+                { name: "GuestName", width: 120, align: 'left', editable: true, editoptions: { maxlength: 15 }, resizable: false },
+                { name: "Age", width: 30, align: 'left', editable: true, editoptions: { maxlength: 15 }, resizable: false },
+                { name: "Gender", editable: true, align: 'left', width: 50, edittype: "select", resizable: false, formatter: 'select', editoptions: { value: "M: Male;F: Female;B: Both;" } },
+                { name: "MobileNo", width: 100, align: 'left', editable: true, editoptions: { maxlength: 15 }, resizable: false },
+                { name: "CheckInDate", width: 80, editable: true, align: 'center', hidden: false, formatter: 'date', formatoptions: { srcformat: 'Y/m/d H:i:s', newformat: 'd/m/Y' } },
+                { name: "CheckOutDate", width: 80, editable: true, align: 'center', hidden: false, formatter: 'date', formatoptions: { srcformat: 'Y/m/d H:i:s', newformat: 'd/m/Y' } },
+                { name: "PaymentReceived", width: 50, editable: true, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+                { name: "DepartmentName", width: 80, align: 'left', resizable: false, hidden: false },
+                { name: "DepartmentStatus", editable: true, align: 'center', width: 80, edittype: "select", resizable: false, formatter: 'select', editoptions: { value: "CLEARED: Cleared;UNCLEARED: Un Cleared" } },
+
+            ],
+            rowNum: 10,
+            rowList: [10, 20, 50, 100],
+            rownumWidth: '55',
+            viewrecords: true,
+            gridview: true,
+            rownumbers: true,
+            scroll: false,
+            loadonce: true,
+            width: 'auto',
+            height: 'auto',
+            autowidth: true,
+            shrinkToFit: true,
+            forceFit: true,
+            caption: 'Guest Current Checkout Details',
+            pager: "#jqpCurrentCheckout",
+            onSelectRow: function (rowid) {
+
+            },
+            loadComplete: function (data) {
+                fnJqgridSmallScreen("jqgCurrentCheckout");
+                $("#jqgCurrentCheckout").jqGrid("setGridWidth", $(".tab-content").width());
+            },
+            gridComplete: function () {
+
+                var rows = $("#jqgCurrentCheckout").getDataIDs();
+                for (var i = 0; i < rows.length; i++) {
+                    var status = $("#jqgCurrentCheckout").getCell(rows[i], "DepartmentStatus");
+
+                    if (status === "CLEARED") {
+                        $("#jqgCurrentCheckout").jqGrid('setRowData', rows[i], false, { background: '#b3ffb3' });
+                    }
+                    if (status === "UNCLEARED") {
+                        $("#jqgCurrentCheckout").jqGrid('setRowData', rows[i], false, { background: '#ffb3b3' });
+                    }
+                }
+            }
+        });
+
+    }
+</script>

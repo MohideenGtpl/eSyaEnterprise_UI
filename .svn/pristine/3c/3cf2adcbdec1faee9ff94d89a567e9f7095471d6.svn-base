@@ -1,0 +1,156 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
+using eSyaEnterprise_UI.Areas.Config.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using eSyaEnterprise_UI.Areas.Config.Data;
+
+namespace eSyaEnterprise_UI.Areas.Config.Controllers
+{
+   
+    public class LocalizationController : Controller
+    {
+        private readonly IeSyaConfigAPIServices _eSyaConfigAPIServices;
+        public LocalizationController(IeSyaConfigAPIServices eSyaConfigAPIServices)
+        {
+            _eSyaConfigAPIServices = eSyaConfigAPIServices;
+        }
+
+        #region Localization Table Mapping
+        /// <summary>
+        /// Localization Master
+        /// </summary>
+        /// <returns></returns>
+        /// 
+        [Area("eSyaConfig")]
+        public IActionResult V_10_00()
+        {
+            ViewBag.formName = "Localization Table Mapping";
+            return View();
+        }
+       
+        /// <summary>
+        /// Getting Localization Master Table List for Grid
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetLocalizationTableMaster()
+        {
+            try
+            {
+                var serviceResponse = _eSyaConfigAPIServices.HttpClientServices.GetAsync<List<DO_LocalizationMaster>>("Localization/GetLocalizationTableMaster").Result;
+                return Json(serviceResponse.Data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Insert or Update Localization Master
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertOrUpdateLocalizationTableMaster(DO_LocalizationMaster obj)
+        {
+
+            try
+            {
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                var serviceResponse = _eSyaConfigAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("Localization/InsertOrUpdateLocalizationTableMaster", obj).Result;
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        #endregion
+
+
+        /// <summary>
+        /// Localization Language Mapping
+        /// </summary>
+        /// 
+        [Area("eSyaConfig")]
+        public IActionResult V_11_00()
+        {
+            ViewBag.formName = "Localization Language Mapping";
+            try
+            {
+                var serviceResponse = _eSyaConfigAPIServices.HttpClientServices.GetAsync<List<DO_Language>>("ConfigMasterData/GetLanguage").Result;
+                ViewBag.LangList = serviceResponse.Data;
+                
+                var servicetableResponse = _eSyaConfigAPIServices.HttpClientServices.GetAsync<List<DO_LocalizationMaster>>("Localization/GetLocalizationMaster").Result;
+                ViewBag.TableList = servicetableResponse.Data;
+                return View();
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+
+        /// <summary>
+        /// Insert or Update Localization Language Mapping
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertOrUpdateLocalizationLanguageMapping(List<DO_LocalizationLanguageMapping> l_obj)
+        {
+
+            try
+            {
+                l_obj.All(c =>
+                {
+                    c.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                    c.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                    return true;
+                });
+                var serviceResponse = _eSyaConfigAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("Localization/InsertOrUpdateLocalizationLanguageMapping", l_obj).Result;
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });   
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        /// <summary>
+        /// Get Localization Language Mapping Grid
+        /// </summary>
+        [HttpGet]
+        public JsonResult GetLocalizationLanguageMapping(string languageCode, int tableCode)
+        {
+            try
+            {
+                if (tableCode > 0)
+                {
+                    var parameter = "?languageCode=" + languageCode + "&tableCode=" + tableCode.ToString();
+                    var serviceResponse = _eSyaConfigAPIServices.HttpClientServices.GetAsync<List<DO_LocalizationLanguageMapping>>("Localization/GetLocalizationLanguageMapping"+parameter).Result;
+                    return Json(serviceResponse.Data);
+                }
+                else
+                    return Json(null);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+        
+    }
+}

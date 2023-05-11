@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+
+namespace eSyaEnterprise_UI.Areas.Config.Controllers
+{
+    public class ApplicationRulesController : Controller
+    {
+        [Area("Config")]
+        public IActionResult V_20_00()
+        {
+            return View();
+        }
+    }
+}

@@ -1,0 +1,147 @@
+2022-02-02 09:13:46.3649|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2022-02-02 09:14:53.6981|1|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An unhandled exception has occurred while executing the request. System.AggregateException: An error occurred while writing to logger(s). (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Invalid format string. Expected 2 format parameters, but failed to lookup parameter index 1) (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Invalid format string. Expected 2 format parameters, but failed to lookup parameter index 1) ---> System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list.
+   at System.Text.StringBuilder.AppendFormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.Format(IFormatProvider provider, String format, Object[] args)
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.Format(Object[] values)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.ToString()
+   at Microsoft.Extensions.Logging.LoggerExtensions.MessageFormatter(Object state, Exception error)
+   at Microsoft.Extensions.Logging.Console.ConsoleLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   --- End of inner exception stack trace ---
+---> (Inner Exception #0) System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list.
+   at System.Text.StringBuilder.AppendFormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.Format(IFormatProvider provider, String format, Object[] args)
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.Format(Object[] values)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.ToString()
+   at Microsoft.Extensions.Logging.LoggerExtensions.MessageFormatter(Object state, Exception error)
+   at Microsoft.Extensions.Logging.Console.ConsoleLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)<---
+
+---> (Inner Exception #1) System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list.
+   at System.Text.StringBuilder.AppendFormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.Format(IFormatProvider provider, String format, Object[] args)
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.Format(Object[] values)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.ToString()
+   at Microsoft.Extensions.Logging.LoggerExtensions.MessageFormatter(Object state, Exception error)
+   at Microsoft.Extensions.Logging.Debug.DebugLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)<---
+
+---> (Inner Exception #2) System.FormatException: Invalid format string. Expected 2 format parameters, but failed to lookup parameter index 1 ---> System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.GetValue(Object[] values, Int32 index)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.get_Item(Int32 index)
+   at NLog.Extensions.Logging.NLogMessageParameterList.TryGetParameterName(IReadOnlyList`1 parameterList, Int32 i, Nullable`1& originalMessageIndex, String& parameterKey)
+   --- End of inner exception stack trace ---
+   at NLog.Extensions.Logging.NLogMessageParameterList.TryGetParameterName(IReadOnlyList`1 parameterList, Int32 i, Nullable`1& originalMessageIndex, String& parameterKey)
+   at NLog.Extensions.Logging.NLogMessageParameterList.IsValidParameterList(IReadOnlyList`1 parameterList, Nullable`1& originalMessageIndex, Boolean& hasMessageTemplateCapture, Boolean& isMixedPositional, Boolean& isPositional)
+   at NLog.Extensions.Logging.NLogMessageParameterList..ctor(IReadOnlyList`1 parameterList)
+   at NLog.Extensions.Logging.NLogMessageParameterList.TryParse(IReadOnlyList`1 parameterList)
+   at NLog.Extensions.Logging.NLogLogger.TryParseMessageTemplate(LogLevel nLogLogLevel, IReadOnlyList`1 messageProperties, NLogMessageParameterList& messageParameters)
+   at NLog.Extensions.Logging.NLogLogger.CreateLogEventInfo[TState](LogLevel nLogLogLevel, TState state, Exception exception, Func`3 formatter)
+   at NLog.Extensions.Logging.NLogLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)<---
+|url: http://localhost/PatientRegistration/GetPatientByUHID|action: GetPatientByUHID
+2022-02-02 09:14:54.0428|3|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An exception was thrown attempting to execute the error handler. System.ArgumentNullException: Value cannot be null.
+Parameter name: logger
+   at Microsoft.Extensions.Logging.LoggerExtensions.Log(ILogger logger, LogLevel logLevel, EventId eventId, Exception exception, String message, Object[] args)
+   at Microsoft.Extensions.Logging.LoggerExtensions.LogError(ILogger logger, Exception exception, String message, Object[] args)
+   at eSyaEnterprise_UI.Extension.ExceptionMiddlewareExtensions.<>c.<<ConfigureExceptionHandler>b__0_1>d.MoveNext() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Extension\ExceptionMiddlewareExtensions.cs:line 44
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/PatientRegistration/GetPatientByUHID|action: GetPatientByUHID
+2022-02-02 09:14:54.1089|1|ERROR|Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware|An unhandled exception has occurred while executing the request. System.AggregateException: An error occurred while writing to logger(s). (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Invalid format string. Expected 2 format parameters, but failed to lookup parameter index 1) (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Invalid format string. Expected 2 format parameters, but failed to lookup parameter index 1) ---> System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list.
+   at System.Text.StringBuilder.AppendFormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.Format(IFormatProvider provider, String format, Object[] args)
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.Format(Object[] values)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.ToString()
+   at Microsoft.Extensions.Logging.LoggerExtensions.MessageFormatter(Object state, Exception error)
+   at Microsoft.Extensions.Logging.Console.ConsoleLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   --- End of inner exception stack trace ---
+---> (Inner Exception #0) System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list.
+   at System.Text.StringBuilder.AppendFormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.Format(IFormatProvider provider, String format, Object[] args)
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.Format(Object[] values)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.ToString()
+   at Microsoft.Extensions.Logging.LoggerExtensions.MessageFormatter(Object state, Exception error)
+   at Microsoft.Extensions.Logging.Console.ConsoleLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)<---
+
+---> (Inner Exception #1) System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list.
+   at System.Text.StringBuilder.AppendFormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.Format(IFormatProvider provider, String format, Object[] args)
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.Format(Object[] values)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.ToString()
+   at Microsoft.Extensions.Logging.LoggerExtensions.MessageFormatter(Object state, Exception error)
+   at Microsoft.Extensions.Logging.Debug.DebugLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)<---
+
+---> (Inner Exception #2) System.FormatException: Invalid format string. Expected 2 format parameters, but failed to lookup parameter index 1 ---> System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.GetValue(Object[] values, Int32 index)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.get_Item(Int32 index)
+   at NLog.Extensions.Logging.NLogMessageParameterList.TryGetParameterName(IReadOnlyList`1 parameterList, Int32 i, Nullable`1& originalMessageIndex, String& parameterKey)
+   --- End of inner exception stack trace ---
+   at NLog.Extensions.Logging.NLogMessageParameterList.TryGetParameterName(IReadOnlyList`1 parameterList, Int32 i, Nullable`1& originalMessageIndex, String& parameterKey)
+   at NLog.Extensions.Logging.NLogMessageParameterList.IsValidParameterList(IReadOnlyList`1 parameterList, Nullable`1& originalMessageIndex, Boolean& hasMessageTemplateCapture, Boolean& isMixedPositional, Boolean& isPositional)
+   at NLog.Extensions.Logging.NLogMessageParameterList..ctor(IReadOnlyList`1 parameterList)
+   at NLog.Extensions.Logging.NLogMessageParameterList.TryParse(IReadOnlyList`1 parameterList)
+   at NLog.Extensions.Logging.NLogLogger.TryParseMessageTemplate(LogLevel nLogLogLevel, IReadOnlyList`1 messageProperties, NLogMessageParameterList& messageParameters)
+   at NLog.Extensions.Logging.NLogLogger.CreateLogEventInfo[TState](LogLevel nLogLogLevel, TState state, Exception exception, Func`3 formatter)
+   at NLog.Extensions.Logging.NLogLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)<---
+|url: http://localhost/PatientRegistration/GetPatientByUHID|action: GetPatientByUHID
+2022-02-02 09:15:40.8028|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2022-02-02 09:15:44.2743|2|ERROR|Microsoft.AspNetCore.Server.IIS.Core.IISHttpServer|Connection ID "17077649797189468185", Request ID "8000001a-0002-ed00-b63f-84710c7967bb": An unhandled exception was thrown by the application. System.ObjectDisposedException: The CancellationTokenSource has been disposed.
+   at System.Threading.CancellationTokenSource.ThrowObjectDisposedException()
+   at System.Threading.CancellationTokenSource.Cancel()
+   at Microsoft.AspNetCore.Server.IIS.Core.IISHttpContext.<>c__DisplayClass314_0.<AbortIO>b__0(Object t)|url: |action: 
+2022-02-02 09:15:44.6788|2|ERROR|Microsoft.AspNetCore.Server.IIS.Core.IISHttpServer|Connection ID "17077649797189468187", Request ID "8000001c-0002-ed00-b63f-84710c7967bb": An unhandled exception was thrown by the application. System.ObjectDisposedException: The CancellationTokenSource has been disposed.
+   at System.Threading.CancellationTokenSource.ThrowObjectDisposedException()
+   at System.Threading.CancellationTokenSource.Cancel()
+   at Microsoft.AspNetCore.Server.IIS.Core.IISHttpContext.<>c__DisplayClass314_0.<AbortIO>b__0(Object t)|url: |action: 
+2022-02-02 09:15:45.3702|2|ERROR|Microsoft.AspNetCore.Server.IIS.Core.IISHttpServer|Connection ID "18086456105130524889", Request ID "800000da-0000-fb00-b63f-84710c7967bb": An unhandled exception was thrown by the application. System.ObjectDisposedException: The CancellationTokenSource has been disposed.
+   at System.Threading.CancellationTokenSource.ThrowObjectDisposedException()
+   at System.Threading.CancellationTokenSource.Cancel()
+   at Microsoft.AspNetCore.Server.IIS.Core.IISHttpContext.<>c__DisplayClass314_0.<AbortIO>b__0(Object t)|url: |action: 
+2022-02-02 09:15:45.4609|2|ERROR|Microsoft.AspNetCore.Server.IIS.Core.IISHttpServer|Connection ID "18230571306091282549", Request ID "80000076-0003-fd00-b63f-84710c7967bb": An unhandled exception was thrown by the application. System.ObjectDisposedException: The CancellationTokenSource has been disposed.
+   at System.Threading.CancellationTokenSource.ThrowObjectDisposedException()
+   at System.Threading.CancellationTokenSource.Cancel()
+   at Microsoft.AspNetCore.Server.IIS.Core.IISHttpContext.<>c__DisplayClass314_0.<AbortIO>b__0(Object t)|url: |action: 
+2022-02-02 11:00:16.8703|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2022-02-02 11:00:57.5425|2|ERROR|Microsoft.AspNetCore.Server.IIS.Core.IISHttpServer|Connection ID "18374686494167138900", Request ID "80000257-0003-ff00-b63f-84710c7967bb": An unhandled exception was thrown by the application. System.ObjectDisposedException: The CancellationTokenSource has been disposed.
+   at System.Threading.CancellationTokenSource.ThrowObjectDisposedException()
+   at System.Threading.CancellationTokenSource.Cancel()
+   at Microsoft.AspNetCore.Server.IIS.Core.IISHttpContext.<>c__DisplayClass314_0.<AbortIO>b__0(Object t)|url: |action: 
+2022-02-02 11:00:57.6374|2|ERROR|Microsoft.AspNetCore.Server.IIS.Core.IISHttpServer|Connection ID "17870283335901642768", Request ID "80000016-0003-f800-b63f-84710c7967bb": An unhandled exception was thrown by the application. System.ObjectDisposedException: The CancellationTokenSource has been disposed.
+   at System.Threading.CancellationTokenSource.ThrowObjectDisposedException()
+   at System.Threading.CancellationTokenSource.Cancel()
+   at Microsoft.AspNetCore.Server.IIS.Core.IISHttpContext.<>c__DisplayClass314_0.<AbortIO>b__0(Object t)|url: |action: 
+2022-02-02 21:23:02.7764|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2022-02-02 21:56:07.2855|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2022-02-02 21:56:27.1853|2|ERROR|Microsoft.AspNetCore.Server.IIS.Core.IISHttpServer|Connection ID "16357073856810188824", Request ID "80000019-0002-e300-b63f-84710c7967bb": An unhandled exception was thrown by the application. System.ObjectDisposedException: The CancellationTokenSource has been disposed.
+   at System.Threading.CancellationTokenSource.ThrowObjectDisposedException()
+   at System.Threading.CancellationTokenSource.Cancel()
+   at Microsoft.AspNetCore.Server.IIS.Core.IISHttpContext.<>c__DisplayClass314_0.<AbortIO>b__0(Object t)|url: |action: 
+2022-02-02 22:00:58.1321||ERROR|eSyaEnterprise_UI.Areas.eSyaOutPatient.Controllers.AppointmentSchedularController|UD:InsertInToPatientOPRegistration:params:{"BusinessKey":587,"FinancialYear":0,"DocumentID":0,"DocumentNumber":0,"AppointmentKey":2258765.0,"ClinicId":0,"ConsultationId":0,"SpecialtyID":0,"SpecialtyDesc":null,"DoctorID":0,"DoctorName":null,"AppointmentDate":"0001-01-01T00:00:00","AppointmentFromTime":"00:00:00","Duration":0,"StartDate":"0001-01-01T00:00:00","EndDate":"0001-01-01T00:00:00","AppointmentStatus":null,"ReasonforAppointment":null,"ReasonforCancellation":null,"QueueTokenKey":null,"VisitType":null,"EpisodeType":null,"ClinicType":0,"ConsultationType":0,"PatientID":null,"UHID":null,"PatientFirstName":null,"PatientMiddleName":null,"PatientLastName":null,"Gender":null,"DateOfBirth":null,"PatientMobileNumber":null,"PatientEmailID":null,"IsSponsored":false,"CustomerID":null,"ReferredBy":0,"PatientName":null,"Age":0,"BMI":0.0,"ActiveStatus":true,"FormID":"3010_00","UserID":8,"TerminalID":"192.168.1.3"} System.Exception: Internal Server Error|url: http://localhost/AppointmentSchedular/SaveRegisterPatientAppointment|action: SaveRegisterPatientAppointment
+2022-02-02 22:01:39.9324||ERROR|eSyaEnterprise_UI.Areas.eSyaOutPatient.Controllers.AppointmentSchedularController|UD:InsertInToPatientOPRegistration:params:{"BusinessKey":587,"FinancialYear":0,"DocumentID":0,"DocumentNumber":0,"AppointmentKey":2258765.0,"ClinicId":0,"ConsultationId":0,"SpecialtyID":0,"SpecialtyDesc":null,"DoctorID":0,"DoctorName":null,"AppointmentDate":"0001-01-01T00:00:00","AppointmentFromTime":"00:00:00","Duration":0,"StartDate":"0001-01-01T00:00:00","EndDate":"0001-01-01T00:00:00","AppointmentStatus":null,"ReasonforAppointment":null,"ReasonforCancellation":null,"QueueTokenKey":null,"VisitType":null,"EpisodeType":null,"ClinicType":0,"ConsultationType":0,"PatientID":null,"UHID":null,"PatientFirstName":null,"PatientMiddleName":null,"PatientLastName":null,"Gender":null,"DateOfBirth":null,"PatientMobileNumber":null,"PatientEmailID":null,"IsSponsored":false,"CustomerID":null,"ReferredBy":0,"PatientName":null,"Age":0,"BMI":0.0,"ActiveStatus":true,"FormID":"3010_00","UserID":8,"TerminalID":"192.168.1.3"} System.Net.Http.HttpRequestException: An error occurred while sending the request. ---> System.IO.IOException: Unable to read data from the transport connection: An existing connection was forcibly closed by the remote host. ---> System.Net.Sockets.SocketException: An existing connection was forcibly closed by the remote host
+   --- End of inner exception stack trace ---
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.GetResult(Int16 token)
+   at System.Net.Security.SslStreamInternal.<FillBufferAsync>g__InternalFillBufferAsync|38_0[TReadAdapter](TReadAdapter adap, ValueTask`1 task, Int32 min, Int32 initial)
+   at System.Net.Security.SslStreamInternal.ReadAsyncInternal[TReadAdapter](TReadAdapter adapter, Memory`1 buffer)
+   at System.Net.Http.HttpConnection.SendAsyncCore(HttpRequestMessage request, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsyncCore(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithNtConnectionAuthAsync(HttpConnection connection, HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithRetryAsync(HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncBuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at eSyaEssentials_UI.HttpClientServices.PostAsJsonAsync[T](String url, Object value)
+   at eSyaEnterprise_UI.Areas.eSyaOutPatient.Controllers.AppointmentSchedularController.SaveRegisterPatientAppointment(DO_PatientAppointmentDetail obj) in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaOutPatient\Controllers\AppointmentSchedularController.cs:line 588|url: http://localhost/AppointmentSchedular/SaveRegisterPatientAppointment|action: SaveRegisterPatientAppointment
+2022-02-02 22:02:40.6380|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 

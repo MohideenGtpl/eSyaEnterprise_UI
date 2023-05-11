@@ -1,0 +1,745 @@
+﻿
+@{
+    ViewData["Title"] = "V_3010_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Scripts{
+
+    <link href="~/css/eSyaOutPatient/Scheduler.css" rel="stylesheet" />
+    <link href="~/js/fullcalendar/core/main.css" rel="stylesheet" />
+    <link href="~/js/fullcalendar/daygrid/main.css" rel="stylesheet" />
+    <link href="~/js/fullcalendar/timegrid/main.css" rel="stylesheet" />
+    <link href="~/js/fullcalendar/list/main.css" rel="stylesheet" />
+
+    <link href="~/js/fullcalendar/pm/timeline/main.css" rel="stylesheet" />
+    <link href="~/js/fullcalendar/pm/resource-timeline/main.css" rel="stylesheet" />
+
+    <link href="~/js/fullcalendar/bootstrap/main.css" rel="stylesheet" />
+
+    <script src="~/js/fullcalendar/core/main.js"></script>
+    <script src="~/js/fullcalendar/core/locales-all.min.js"></script>
+    <script src="~/js/fullcalendar/daygrid/main.js"></script>
+    <script src="~/js/fullcalendar/timegrid/main.js"></script>
+    <script src="~/js/fullcalendar/interaction/main.js"></script>
+    <script src="~/js/fullcalendar/bootstrap/main.js"></script>
+    <script src="~/js/fullcalendar/list/main.js"></script>
+    <script src="~/js/fullcalendar/moment/main.js"></script>
+
+    <script src='~/js/fullcalendar/pm/resource-common/main.js'></script>
+    <script src='~/js/fullcalendar/pm/resource-daygrid/main.js'></script>
+    <script src='~/js/fullcalendar/pm/resource-timegrid/main.js'></script>
+    <script src='~/js/fullcalendar/pm/timeline/main.js'></script>
+
+
+}
+
+<style>
+    hr {
+        border-top: 1px solid #ececec !important;
+    }
+
+    .doctorname {
+        font-size: 16px !important;
+        font-weight: 600 !important;
+        color: #5d5d5d !important;
+        letter-spacing: 0.55px;
+    }
+
+    .AppointmentSectionBox {
+        padding: 15px;
+        border-left: 0px solid #1094f8;
+        box-shadow: 0 1px 2px 1px hsla(0,0%,43%,.14);
+    }
+
+    #PopupAppointmentScheduler.modal {
+        padding-right: 20px !important
+    }
+
+    .m10 {
+        margin: 10px !important;
+    }
+
+    .mar0 {
+        margin: 0px !important
+    }
+
+    .padleft30 {
+        padding-left: 30px !important;
+    }
+
+    #btnMove {
+        position: absolute;
+        right: 0px;
+        top: 0px;
+        border: 0px solid #badef9;
+        padding: 6px 6px;
+        cursor: pointer;
+    }
+
+        #btnMove .svg-inline--fa {
+            color: #797172 !important;
+            font-size: 18px;
+        }
+
+
+    .doctorCol input[type=checkbox] {
+        vertical-align: text-bottom;
+    }
+
+    .doctorCol label {
+        cursor: pointer;
+        color: #1b1b1b !important;
+        padding: 5px;
+        border-bottom: 1px solid #f3f3f3;
+    }
+
+        .doctorCol label:hover {
+            background: aliceblue;
+            color: #0c4ec6 !important;
+        }
+
+    .appointmentSidebar {
+        border: 1px solid #e8edf1;
+        border-radius: 4px;
+        background: #fff !important;
+        width: 210px;
+        position: relative;
+        z-index: 2;
+        padding: 0px;
+    }
+
+        .appointmentSidebar.active {
+            margin-left: -180px !important;
+        }
+
+        .appointmentSidebar input, .appointmentSidebar .selectpicker + .btn {
+            background: transparent !important;
+        }
+
+    .fc-button-primary {
+        color: #003179 !important;
+        background-color: #ffffff !important;
+        border-color: #ffffff !important;
+        font-weight: bold !important;
+        letter-spacing: 1.2px;
+        box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
+    }
+
+    .d-inline-block {
+        display: inline-block !important;
+    }
+
+    .calendarTimeline {
+        width: 83% !important;
+        padding-left: 5px;
+    }
+
+        .calendarTimeline.active {
+            width: 97% !important;
+        }
+
+    .fc-toolbar.fc-header-toolbar {
+        margin-bottom: 0.15em !important;
+        height: 35px;
+    }
+
+    .form-group .bootstrap-select {
+        height: 30px !important;
+        padding: 4px 0px !important;
+    }
+
+    .appointmentSidebar .headingText {
+        height: 35px;
+        line-height: 35px !important;
+        margin: 0px !important;
+        background: linear-gradient(to bottom,#fff,#fffcec);
+        padding-left: 15px !important;
+        font-weight: 600;
+        color: #505050;
+        letter-spacing: 1.45px;
+        margin-bottom: 15px !important;
+    }
+
+    .appointmentSidebar .form-group {
+        padding: 0px 27px 0px 15px !important;
+        margin-bottom: 15px !important;
+    }
+
+    .fa-user-md {
+        font-size: 30px !important;
+        color: #b0b0b0 !important
+    }
+    #divEnterLocation{
+        display:none;
+    }
+</style>
+
+<div class="row">
+    <div class="appointmentSidebar d-inline-block">
+        <p class="headingText">Appointment <span id="btnMove" title="Collapse"><i class="fas fa-bars c-black"></i></span></p>
+        <div class="form-group">
+            <label>Business Key</label>
+            <select class="selectpicker">
+                <option value="0">Select</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Visit Type</label>
+            <select class="selectpicker">
+                <option value="0">Select</option>
+                <option value="C">Clinic Visit</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Date</label>
+            <input type="date" name="name" value="" id="txtDate" data-date-format="DD-MM-YYYY" onchange="fnOnChangeDate()" class="form-control padleft0" />
+        </div>
+        <div class="form-group">
+            <label>Specialty</label>
+            <select class="selectpicker">
+                <option value="value">Select</option>
+            </select>
+        </div>
+
+
+        <p class="headingText">Choose Doctors</p>
+        <div class="form-group">
+
+            <div class="doctorCol">
+                <label for="chkDoctor_1"><input type="checkbox" name="name" value="" id="chkDoctor_1" /> Dr.Arun Kumar</label>
+                <label for="chkDoctor_2"><input type="checkbox" name="name" value="" id="chkDoctor_2" /> Dr.Bala Kumar</label>
+                <label for="chkDoctor_3"><input type="checkbox" name="name" value="" id="chkDoctor_3" /> Dr.Chand</label>
+                <label for="chkDoctor_4"><input type="checkbox" name="name" value="" id="chkDoctor_4" /> Dr.Dinesh</label>
+            </div>
+        </div>
+
+    </div>
+    <div class="d-inline-block padleft5 calendarTimeline">
+        <div id='calendar'></div>
+    </div>
+   
+</div>
+
+
+<div class="modal fade in " id="PopupAppointmentScheduler" tabindex="-1" role="dialog" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg fullwidth m10" role="document">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title blur">Appointment Scheduler</h4>
+            </div>
+            <div class="modal-body">
+
+                @*  <a href="~/Areas/QueueManagement/Views/AppointmentBooking/_AppointmentConfirmation.cshtml">~/Areas/QueueManagement/Views/AppointmentBooking/_AppointmentConfirmation.cshtml</a>*@
+                @*<partial name="~/Areas/QueueManagement/Views/AppointmentBooking/_AppointmentConfirmation.cshtml"></partial>*@
+
+                @await Html.PartialAsync("~/Areas/eSyaOutPatient/Views/AppointmentSchedular/_Confirmation.cshtml")
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveBusinessKey"> Save </button>
+
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" id="btnCancelBusinessKey"><i class="fa fa-times"></i> Cancel</button>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fullscreen fade" id="PopupOnCallRequest" tabindex="-1" role="dialog" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg " role="document">
+        <div class="modal-content ">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i class="fa fa-times" style="color:#000000;"></i>
+                </button>
+                <h5 class="modal-title">Book Appointment</h5>
+            </div>
+
+            <div class="modal-body mbh">
+
+                <div class="row">
+                    <div class="col-lg-2 col-md-4 col-sm-3 col-xs-12" id="divRequestor">
+                        <div class="form-group">
+                            <label class="" style="margin-bottom:0px"> Request Type</label>
+                            <select class="selectpicker" data-live-search="false" id="cboCallRequestType" title="">
+                                <option selected value="">New</option>
+                                <option selected value="">Existing</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12" id="divFamilyID" style="display:none">
+                        <div class="form-group">
+                            <label class="" style="display:none">FamilyId </label>
+
+                            <button type="button" class="familyid-search-btn-2" onclick="fnSearchFamilyID()"><i class="fas fa-search"></i> Search_211")</button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <p class="subheading"> Requestor Details</p>
+                        <hr class="left"/> 
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+                        <div class="form-group">
+                            <label class="">First Name </label>
+                            <input id="txtRequestorFirstName" maxlength="50" type="text" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            <label class="">Last Name </label>
+                            <input id="txtRequestorLastName" maxlength="50" type="text" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            <label class="">Mobile Number </label>
+                            <input id="txtRequestorMobileNumber" maxlength="50" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" style="display:none">
+                        <div class="form-group">
+                            <label class="">Pincode </label>
+                            <input id="onCallRequestPinCoder" maxlength="50" type="number" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="row mar0">
+                            <div class="col-md-11 pad0">
+                                <label class="">Email ID </label>
+                                <input id="txtRequestorEmailID" maxlength="50" type="email" class="form-control" />
+                            </div>
+                            <div class="col-md-1 pad0 padtop20">
+                                <button type="button" id="btnEditEmailID" class="mdl-button mdl-js-button mdl-button--raised primary-button"><i class="fas fa-edit"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            <label>Country  <sup class="c-red">*</sup></label>
+                               <select data-size="5" id="cboISDCode" class="selectpicker form-control" onchange="cboISDCodeChange();">
+                                    <option></option>
+                                </select>
+                         </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            <label id="lblGovernorate"> Governorate</label>
+                            <select class="selectpicker form-control" data-live-search="true" data-size="5" id="cboGovernorate" onchange="fnGovernorateChange()"></select>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 padbot7" id="divDivision">
+                        <div class="form-group">
+                            <label class=""id="lblDivision"> Administrative Division</label>
+                            <div>
+                                <select class="selectpicker form-control" data-live-search="true" data-size="5" id="cboAdministrativeDivision" title=""></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" id="divDistrict">
+                        <div class="form-group">
+                            <label class="" style="margin-bottom:0px" id="lblDistrict"> District Name </label>
+                            <div>
+                                <select class="selectpicker form-control" data-live-search="true" data-size="5" id="cboDistrict" title="" onchange="fnDistrictChange();"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            <label class="">Location </label>
+                            <select class="selectpicker form-control" data-live-search="false" id="cbonewlocation" title="" onchange="fnLocationType()">
+                                <option value=0> Choose Location Type </option>
+                                <option value=1> New </option>
+                                <option value=2>Exists</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12 padtop6" id="divEnterLocation">
+                        <div>
+                            <div class="fullwidth" style="padding-top:0px !important">
+                                <label class="" id="lbllocationtag" style="padding-bottom: 5px;">Enter Location Tag</label>
+                                <input id="txtlocationtag" maxlength="50" type="text" class="form-control" style="height:22px; display: none" />
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12 " id="divSelectLocation">
+                        <div class="fullwidth" style="padding-top:0px !important">
+                            <label class="" style="padding-bottom:8px">Select Location</label>
+                            <select class="selectpicker form-control" data-live-search="false" id="cbolocation" title="" onchange="fnGetLocationAddres();" style="display: none;"></select>
+
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            <label> Door No Flat No Building No</label>
+                            <input id="txtStreetAdrs1" maxlength="150" type="text" class="form-control" style="height:22px" />
+
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="form-group" style="padding-top:0px !important">
+                            <label class="">Street Address  </label>
+                            <input id="txtStreetAdrs2" maxlength="150" type="text" class="form-control" style="height:22px" />
+                            <label class="mdl-textfield__label"> </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" style="display:none">
+                        <div class="form-group" style="padding-top:0px !important">
+                            <label class="">Area Name </label>
+                            <input id="txtStreetAdrs3" maxlength="150" type="text" class="form-control" />
+
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="form-group" style="padding-top:0px !important">
+                            <label>Phone Number</label>
+                            <input type="number" id="txtphonenumber" class="form-control" />
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12" id="divFamilyMembers" style="display:none;  ">
+                        <button type="button" class="mdl-button mdl-js-button mdl-button--raised primary-button mr-15" onclick="fnBindFamilyMembers();"><i class="fas fa-plus"></i>Show Members </button>
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12" id="divAddPatient" style="display:none">
+                        <button type="button" class="mdl-button mdl-js-button mdl-button--raised primary-button" style="margin-right:15px;" onclick="fnAddFamilyMember();"><i class="fas fa-plus"></i> Add Family Member</button>
+                    </div>
+                    <div class="col-lg-12">
+                        <p class="subheading"> Patient Details  </p>
+                        <hr class="left" />
+                    </div>
+                    
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            <label>Relationship </label>
+                            <select class="selectpicker form-control" data-size="5" data-live-search="false" id="cboRelationShip" title="" onchange="fnRelationShipChange()">
+                                <option value="0">Requesting For  </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            <label class="">Patient First Name </label>
+                            <input id="txtPatientFirstName" maxlength="50" type="text" class="form-control" />
+
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            <label class="">Patient Last Name</label>
+                            <input id="txtPatientLastName" maxlength="50" type="text" class="form-control" />
+
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" style="display:none" id="divPatientDropDown">
+                        <div class="">
+                            <label>Patient </label>
+
+                            <select class="selectpicker" data-live-search="false" id="cboPatientName" title="" onchange="cboPatientNameChange()"></select>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                        <label> Gender</label>
+                        <div>
+                            <select id="cboGender" class="selectpicker">
+                                <option value="M">Male</option>
+                                <option value="F">Female</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            <label class="">Patient Mobile Number</label>
+                            <input id="txtPatientMobileNumber" maxlength="50" type="text" class="form-control" style="height:22px" />
+
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="row mar0">
+                            <div class="col-lg-5 col-md-5 col-sm-5 col-xs-12" style="padding-left:0px">
+                                <label for="dtDOB"> DOB </label>
+                                <input type="text" id="dtDOB" class="form-control" style="width:100%; height:22px; " onchange="fnCalculateAge();">
+                            </div>
+                            <div class="col-lg-7 col-md-7 col-sm-7 col-xs-12" style="padding-right:0px">
+                                <label for="txtAge">Age </label>
+                                <input type="text" id="txtAge" class="form-control" style="height:23px;" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="form-group" style="padding-top:0px !important">
+                            <label>Patient Email id </label>
+                            <input id="txtPatientEmailId" maxlength="50" type="email" class="form-control" style="height:21px" />
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 doc_pd" id="divInsurance">
+
+                        <label>Insurance Company </label>
+                        <select class="selectpicker form-control" data-size="5" data-live-search="false" id="cboInsuranceCompany" title="" onchange="fnInsuranceCompanyChange()">
+                            <option selected value="0">
+                                Select Insurance Company
+                            </option>
+
+                        </select>
+
+
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                        <div class="form-group" style="padding-top:0px !important">
+                            <label>Insurance Company Member ID </label>
+                            <textarea id="txtInsuranceMemberID" rows="1" type="email" class="form-control"></textarea>
+
+                        </div>
+                    </div>
+                
+                    <div class="col-lg-2" style="display:none">
+                        <div class="form-group">
+                            <label>Appointment Status </label>
+                            <select class="" data-live-search="true" id="cboStatus" title="">
+                                <option value="true">Active</option>
+                                <option value="false">cancel</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                        <div class="form-group">
+                            <label> Reason for Consultation</label>
+                            <textarea id="txtReasonForConsultation" rows="1" class="form-control"></textarea>
+                        </div>
+
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12 form-group">
+
+                        <label>Referred By</label>
+                        <select class="selectpicker form-control" data-live-search="true" title="" id="cbosubtypeBy" onchange="fnSubTypeChange(this)">
+                            <option selected value="0">
+                                Choose Referred By
+                            </option>
+
+                        </select>
+
+
+                    </div>
+
+                    <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12 form-group">
+
+                        <label>Sub Type</label>
+                        <select class="selectpicker form-control" data-live-search="true" title="" id="cboReferredBy">
+                            <option selected value="0">
+                                Choose Sub Type
+                            </option>
+
+                        </select>
+
+
+                    </div>
+                </div>
+                <div class="row">
+                      <div class="col-lg-12">
+                        <p class="subheading"> Appointment Summary</p>
+                        <hr class="left" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-2 col-md-4 col-sm-4 padbot20">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <label id="lblTime">01-01-2021</label>
+                            <span class="advicetext" style="display:inline">(MM-DD-YYYY)</span>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-4">
+                        <div class="form-group">
+                            <label>Time</label>
+                            <label  id="datTime">01-01-59</label><br />
+                            <span class="advicetext" style="display:inline">(HH-MM-SS 24 HOUR FORMAT)</span>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-4">
+                        <div class="form-group">
+                            <label>Duration</label>
+                            <input type="text" id="txtDuration" class="form-control inline halfwidth" value="05" />
+                            <span class="advicetext" style="display:inline">mins</span>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-4">
+                        <div class="form-group">
+                            <label>Visit Type</label>
+                            <label id="lblVisitType">Sample Visit Type</label>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-4">
+                        <div class="form-group">
+                            <label>Specialty</label>
+                            <label id="lblSpecialty">Sample Specialty </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-4">
+                        <div class="form-group">
+                            <label>Location</label>
+                            <label id="lblLocation"> Sample  Location</label>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="row padbot10 d-none">
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                        <table id="jqtService"></table>
+                        <div id="jqpService"></div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                        <div class="padbot10" style="display:none">
+                            <table id="jqtVaccine"></table>
+                            <div id="jqpVaccine"></div>
+                        </div>
+                        <div class="padbot10">
+                            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-buttonLogin" style="margin-top:5px; margin-right:15px;" onclick="fnVaccineStock()"><i class=""></i>Vaccine Stock</button>
+                        </div>
+                  </div>
+                 <div class="col-lg-12">
+                        <button id="btnCancelAppointment" type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect cancel-button" onclick="fnCancelAppointment();" style="margin-right:15px;"><i class="fa fa-times"></i> Cancel Appointment  </button>
+
+                    </div>
+                </div>
+
+
+
+            </div>
+            <div class="modal-footer">
+                <div class="text-right">
+                    <button id="btnSave" type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-buttonLogin" onclick="fnSave();" style="margin-right:15px;" disabled><i class="fa fa-save"></i> Save </button>
+                    <button id="btnCancel" type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect cancel-button" onclick="fnCancel()"><i class="fa fa-times"></i>Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ 
+
+<script>
+    $('#PopupAppointmentScheduler').on('show.bs.modal', function () {
+
+        $(".modal-body").addClass('bg-lightgrey')
+    });
+    $('#PopupPatientSearch').on('show.bs.modal', function () {
+
+        $(".blur").addClass('active')
+    });
+    $('#PopupPatientSearch').on('hide.bs.modal', function () {
+
+        $(".blur").removeClass('active')
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $(".appointmentSidebar,.waitlist,.pullWaitlist").css({
+            'height': $(window).innerHeight() - 131,
+            'overflow': 'auto'
+        });
+
+        $(".doctorCol").css({
+            'max-height': $(window).innerHeight() / 2.8,
+            'overflow': 'auto'
+        });
+        $(".fc-view-container").css({
+            'height': $(window).innerHeight() - 170,
+            'overflow': 'auto'
+        });
+        $(".fc-timegrid-container").css({
+
+            'overflow': 'hidden'
+        });
+    })
+    function fnShowPopup() {
+        $("#PopupAppointmentScheduler").modal('show');
+    }
+
+    $(window).resize(function () {
+        $(".appointmentSidebar,.waitlist ,.pullWaitlist").css({
+            'height': $(window).innerHeight() - 131,
+            'overflow': 'auto'
+        });
+        //var calendar = new FullCalendar.Calendar(calendarEl, {})
+
+    })
+
+
+
+    $("#btnMove").click(function () {
+        $(".appointmentSidebar").toggleClass('active');
+        $(".appointmentSidebar .form-group").toggleClass('padright27');
+        $("#calendar").parent().toggleClass('active');
+    })
+    function pullthewaitlist() {
+        $(".waitlist").toggleClass('active');
+        $(".calendarTimeline").toggleClass('slightright');
+
+        //if()
+    }
+    $('#PopupAppointmentScheduler').on('show.bs.modal', function () {
+
+        $(".modal-body").addClass('bg-lightgrey')
+    });
+    $('#PopupPatientSearch').on('show.bs.modal', function () {
+
+        $(".blur").addClass('active')
+    });
+    $('#PopupPatientSearch').on('hide.bs.modal', function () {
+
+        $(".blur").removeClass('active')
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+
+            titleFormat: { // will produce something like "Tuesday, September 18, 2018"
+                month: 'long',
+                year: 'numeric',
+                day: 'numeric',
+                //weekday: 'long',
+            },
+            plugins: ['interaction', 'dayGrid', 'timeGrid', 'list', 'timelineWeek', 'resourceTimeGrid'],
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'resourceTimeGridDay,resourceTimeGridFourDay,list,timeGridWeek,dayGridMonth'
+            },
+            themeSystem: 'bootstrap',
+        });
+        calendar.render();
+    });
+
+</script>

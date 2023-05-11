@@ -1,0 +1,152 @@
+﻿
+@{
+    ViewData["Title"] = "V_100_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/jsTree.css" rel="stylesheet" />
+@section scripts{
+    <script src="~/js/jsTree.js"></script>
+}
+    <div class="row">
+        <div class="col-lg-4 col-md-4 col-sm-6">
+            <label>Fixed Asset Group</label>
+            <div id="FormMasterTree"></div>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-6">
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6">
+            <div class="demo-card-square mdl-card mdl-shadow--2dp marbot15 fullwidth" id="pnlAddForms">
+                <div class="mdl-card__title mdl-card--expand padleft0 padtop0 h-60 d-block">
+                    <h5 class="mdl-card__title-text"> Add Asset Group</h5>
+                </div>
+                <div class="mdl-card__supporting-text fullwidth">
+                    <div class="row  padbot10">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="form-group">
+                                <label>Asset Group </label>
+                                <select class="selectpicker" data-live-search="true" id="cboAssetGroup" title="Choose Asset Group" >
+                                    @foreach (var ag in ViewBag.AGappcodes)
+                                    {
+                                        <option value="@ag.ApplicationCode">@ag.CodeDesc</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="form-group">
+                                <label> Sub Group</label>
+                                <select class="selectpicker" data-live-search="true" id="cboAssetSubGroup" title="Choose Asset Sub Group">
+                                    @foreach (var asg in ViewBag.ASGappcodes)
+                                    {
+                                        <option value="@asg.ApplicationCode">@asg.CodeDesc</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr />
+                    <div class="mdl-card__actions text-center">
+
+                        <button type="button" class="btn btn-primary m-r-15" id="btnSaveAssetGroup" onclick="fnSaveAssetGroup()"><i class="fa fa-plus"></i> Add</button>
+                        <button type="button" class="btn btn-danger" id="btnCancelAssetGroup"><i class="fa fa-times"></i> Cancel</button>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+<script>
+
+</script>
+<script type="text/javascript">
+    $(function () {
+
+        createAssetGroupTree();
+        //var jsondata = [
+           
+        //    { "id": "ajson2", "parent": "#", "text": "Asset Group" },
+        //    { "id": "ajson3", "parent": "ajson2", "text": "Sub Group 1" },
+        //    { "id": "ajson4", "parent": "ajson2", "text": "Sub Group 2" },
+        //];
+
+        //createJSTree(jsondata);
+    });
+
+    //function createJSTree(jsondata) {
+    //    $('#FormMasterTree').jstree({
+    //        'core': {
+    //            'data': jsondata
+    //        }
+    //    }).bind("loaded.jstree", function (event, data) {
+    //        $(this).jstree("open_all");
+    //    });
+    //}
+
+    function createAssetGroupTree() {
+
+        $.ajax({
+            url: getBaseURL() + '/FixedAssets/GetAssetGroupAndSubGroup',
+            success: function (result) {
+                $('#FormMasterTree').jstree({
+                    core: { 'data': result, 'check_callback': true, 'multiple': false }
+                });
+            }
+        });
+    }
+
+    function fnSaveAssetGroup() {
+
+        if ($('#cboAssetGroup').val() == "" || $('#cboAssetGroup').val() == null) {
+            toastr.warning("Please Select Asset Group");
+            return;
+        }
+        if ($('#cboAssetSubGroup').val() == "" || $('#cboAssetSubGroup').val() == null) {
+            toastr.warning("Please Select Asset Sub Group");
+            return;
+        }
+        $("#btnSaveAssetGroup").attr('disabled', true);
+
+        var a_grp =
+        {
+            AssetGroupID: $('#cboAssetGroup').val(),
+            AssetSubGroupID: $('#cboAssetSubGroup').val()
+        };
+        //alert(JSON.stringify(getBaseURL()));
+
+        $.ajax({
+            url: getBaseURL() + '/FixedAssets/InsertAssetGroup',
+            type: 'POST',
+            datatype: 'json',
+            data: a_grp,
+            //contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+                if (response.Status) {
+                    toastr.success(response.Message);
+                    $("#btnSaveAssetGroup").html('<i class="fa fa-spinner fa-spin"></i> wait');
+                    $("#btnSaveAssetGroup").attr('disabled', true);
+
+                    $('#FormMasterTree').jstree("destroy");
+                    createAssetGroupTree();
+                }
+                else {
+                    toastr.error(response.Message);
+                    $("#btnSaveAssetGroup").attr('disabled', false);
+                }
+
+                
+            },
+            error: function (error) {
+                toastr.error(error.statusText);
+                $("#btnSaveAssetGroup").attr("disabled", false);
+            }
+        });
+    }
+
+</script>
+

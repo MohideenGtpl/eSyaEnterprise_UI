@@ -1,0 +1,153 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.Areas.eSyaPayrollExpat.Data;
+using eSyaEnterprise_UI.Areas.eSyaPayrollExpat.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+
+namespace eSyaEnterprise_UI.Areas.eSyaPayrollExpat.Controllers
+{
+    public class BankMasterController : Controller
+    {
+        private readonly IeSyaPayrollExpatAPIServices _eSyaPayrollExpatAPIServices;
+        private readonly ILogger<BankMasterController> _logger;
+
+        public BankMasterController(IeSyaPayrollExpatAPIServices eSyaPayrollExpatAPIServices, ILogger<BankMasterController> logger)
+        {
+            _eSyaPayrollExpatAPIServices = eSyaPayrollExpatAPIServices;
+            _logger = logger;
+        }
+        #region Bank Master
+        [Area("eSyaPayrollExpat")]
+        public IActionResult V_4512_00()
+        {
+           
+            return View();
+        }
+
+        /// <summary>
+        ///Get All Bank Master for Grid
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetAllBankMaster()
+        {
+            try
+            {
+                var serviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.GetAsync<List<DO_BankMaster>>("BankMaster/GetAllBankMaster");
+
+                if (serviceResponse.Status)
+                {
+                   return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetAllBankMaster");
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetAllBankMaster");
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        ///Get All Bank Currencies for Grid
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetBankCurrency(string BankCode)
+        {
+            try
+            {
+
+                var currencyserviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.GetAsync<List<DO_CurrencyMaster>>("BankMaster/GetCurrencyMaster");
+                List<DO_CurrencyMaster> currencymasterlist = currencyserviceResponse.Data;
+                var parameter = "?BankCode=" + BankCode;
+                var bankserviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.GetAsync<List<DO_BankCurrency>>("BankMaster/GetBankCurrency" + parameter);
+                List<DO_BankCurrency> bankcurrencies = bankserviceResponse.Data;
+
+                if (currencyserviceResponse.Status && bankserviceResponse.Status)
+                {
+                    foreach (var currency in currencymasterlist)
+                    {
+                        if (BankCode != null)
+                        {
+                            if (bankcurrencies.Count > 0)
+                            {
+                                var bankcurrency = bankcurrencies
+                                      .Where(x => x.BankCode.ToUpper().Replace(" ", "") == BankCode.ToUpper().Replace(" ", "") && x.BankCurrency.ToUpper().Replace(" ", "") == currency.CurrencyCode.ToUpper().Replace(" ", "")).FirstOrDefault();
+
+                                if (bankcurrency != null)
+                                {
+                                    currency.ActiveStatus = true;
+                                }
+                                else
+                                {
+                                    currency.ActiveStatus = false;
+                                }
+
+                            }
+                        }
+                    }
+                    return Json(currencymasterlist);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(bankserviceResponse.Message), "UD:GetBankCurrency:For BankCode {0} ", BankCode);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+
+
+
+            }
+
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetBankCurrency:For BankCode {0} ", BankCode);
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+
+        }
+        /// <summary>
+        /// Insert or Update Bank Master
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> InsertOrUpdateBankMaster(bool isInsert, DO_BankMaster obj)
+        {
+            try
+            {
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                obj.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                if (isInsert)
+                {
+                    var serviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("BankMaster/InsertBankMaster", obj);
+                    if (serviceResponse.Status)
+                        return Json(serviceResponse.Data);
+                    else
+                        return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+                else
+                {
+                    var serviceResponse = await _eSyaPayrollExpatAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("BankMaster/UpdateBankMaster", obj);
+                    if (serviceResponse.Status)
+                        return Json(serviceResponse.Data);
+                    else
+                        return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertOrUpdateBankMaster:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+        #endregion Bank Master
+    }
+}

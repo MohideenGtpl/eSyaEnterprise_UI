@@ -1,0 +1,41 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.Areas.eSyaNursingStation.Data;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+
+namespace eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers
+{
+    public class OperativeAnaesthesiaCareController : Controller
+    {
+        private readonly IeSyaNursingStationAPIServices _eSyaNursingStationAPIServices;
+        private readonly ILogger<OperativeAnaesthesiaCareController> _logger;
+
+        private readonly IHostingEnvironment _hostingEnvironment;
+
+        public OperativeAnaesthesiaCareController(IeSyaNursingStationAPIServices eSyaNursingStationAPIServices, ILogger<OperativeAnaesthesiaCareController> logger, IHostingEnvironment hostingEnvironment)
+        {
+            _eSyaNursingStationAPIServices = eSyaNursingStationAPIServices;
+            _logger = logger;
+            _hostingEnvironment = hostingEnvironment;
+        }
+
+
+        [Area("eSyaNursingStation")]
+        public IActionResult V_6004_00()
+        {
+            return View();
+        }
+
+        [Area("eSyaNursingStation")]
+        public IActionResult V_6004_OT(int UHID, int ipNumber)
+        {
+            ViewBag.UHID = UHID;
+            ViewBag.IpNumber = ipNumber;
+            return View();
+        }
+    }
+}

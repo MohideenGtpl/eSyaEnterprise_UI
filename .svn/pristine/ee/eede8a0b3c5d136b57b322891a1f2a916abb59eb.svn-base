@@ -1,0 +1,480 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model eSyaEnterprise_UI.Areas.eSyaNatureCure.Models.DO_GuestCheckInDetails
+@{
+    ViewData["Title"] = "Guest Info";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/js/eSyaNatureCure/GuestDocumentUpload.js"></script>
+
+
+<script>
+     var localization = {
+         Active: '@Localizer["Active"]',
+         Actions: '@Localizer["Actions"]',
+         Edit: '@Localizer["Edit"]',
+         View: '@Localizer["View"]',
+         Save: '@Localizer["Save"]',
+         Update: '@Localizer["Update"]',
+         Delete: '@Localizer["Delete"]',
+         Activate: '@Localizer["Activate"]',
+         DActivate: '@Localizer["DActivate"]',
+         EditDocumentUpload: '@Localizer["EditDocumentUpload"]',
+         AddDocumentUpload: '@Localizer["AddDocumentUpload"]',
+         ViewDocumentUpload: '@Localizer["ViewDocumentUpload"]',
+       
+    };
+
+</script>
+
+
+<link href="~/css/guestPortal.css" rel="stylesheet" />
+<style>
+    #rs_mjqgAddOnServices, #rs_mjqgActivities {
+        display: none;
+    }
+</style>
+
+<input id="hdBookingKey" type="hidden" value="@Model.BookingKey" />
+<input id="hdGuestId" type="hidden" value="@Model.GuestId" />
+
+<section class="main-content box-shadow-1">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 pt-3">
+                <h5 class="border-bottom pb-1"><span class="px-2 py-1 bg-light mr-2 border"><i class="fa fa-user"></i></span> <span>@Model.FirstName  @Model.LastName  </span></h5>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12 pt-3">
+                <h5 class="border-bottom pb-1"><span class="px-2 py-1 bg-light mr-2 border"><i class="fa fa-bed"></i></span> <span>@Model.PackageDesc</span></h5>
+            </div>
+            <div class="col-lg-2 col-sm-6 col-6 form-group">
+                <label class="d-block">Room Type</label>
+                <span class="text-content">@Model.RoomTypeName</span>
+            </div>
+            <div class="col-lg-2 col-sm-6 col-6 form-group">
+                <label class="d-block">Room Number</label>
+                <span class="text-content">@Model.RoomNumber</span>
+            </div>
+            <div class="col-lg-2 col-sm-6 col-6 form-group">
+                <label class="d-block">Bed Number</label>
+                <span class="text-content">@Model.BedNumber</span>
+            </div>
+            <div class="col-lg-2 col-sm-6 col-6 form-group">
+                <label class="d-block">Check-In date</label>
+                <span class="text-content">@Model.CheckedInDate.ToShortDateString()</span>
+            </div>
+            <div class="col-lg-2 col-sm-6 col-6 form-group">
+                <label class="d-block">Check-Out date</label>
+                <span class="text-content">@Model.CheckedOutDate.ToShortDateString()</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="tab-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <ul class="nav nav-pills border-bottom" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="personalInfo-tab" data-toggle="tab" href="#tab_personalInfo" role="tab" aria-controls="home" aria-selected="true">Personal Information</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="documentupload-tab" data-toggle="tab" href="#tab_documentupload" role="tab" aria-controls="profile" aria-selected="false" onclick="fnLoadDocumentUpload()">Document Upload</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="guestDetails-tab" data-toggle="tab" href="#tab_guestDetails" role="tab" aria-controls="profile" aria-selected="false" onclick="fnLoadPaymentDetails()">Guest Details</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="payment-tab" data-toggle="tab" href="#tab_payment" role="tab" aria-controls="profile" aria-selected="false" onclick="fnLoadPaymentDetails()">Payment</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="checkoutprocess-tab" data-toggle="tab" href="#tab_checkoutprocess" role="tab" aria-controls="profile" aria-selected="false" onclick="fnLoadAddOnServices()">CheckOut & Invoicing </a>
+                    </li>
+
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="tab_personalInfo" role="tabpanel" aria-labelledby="personalinfo-tab">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+                                <label>First Name</label>
+                                <input type="text" class="form-control" id="txtFirstName" value=@Model.FirstName />
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+                                <label>Last Name</label>
+                                <input type="text" class="form-control" id="txtLastName" value=@Model.LastName />
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+                                <label>Mobile Number</label>
+                                <input type="text" class="form-control" id="txtMobileNumber" value=@Model.MobileNumber />
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+                                <label>Email ID</label>
+                                <input type="text" class="form-control" id="txtEmailId" value=@Model.EmailId />
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                                <label>Address</label>
+                                <input type="text" class="form-control" value="" />
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+                                <label>City</label>
+                                <input type="text" class="form-control" value="" />
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+                                <label>Pincode</label>
+                                <input type="text" class="form-control" value="" />
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+                                <hr />
+                                <button type="button" class="btn btn-primary mr-2" id="btnSubmitCheckInGuest" onclick="fnSubmitForCheckIn()"><i class="fa fa-check"></i> Submit</button>
+                                <button type="button" class="btn btn-primary" onclick="close_window();return false;"><i class="fa fa-times"></i> Close</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab_documentupload" role="tabpanel" aria-labelledby="documentupload-tab">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                                <table id="jqgDocumentUpload"></table>
+                                <div id="jqpDocumentUpload"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab_guestDetails" role="tabpanel" aria-labelledby="guestDetails-tab">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                                <table id="jqgGuestDetails"></table>
+                                <div id="jqpGuestDetails"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab_payment" role="tabpanel" aria-labelledby="payment-tab">
+                        <div class="row">
+                            <div class="col-lg-2  col-md-2 col-sm-6">
+                                <label>Package Amount</label>
+                                <input type="text" id="txtPackageAmount" class="form-control currencyFormat" onkeypress="return OnlyNumeric(event);" readonly style="text-align:right;width:100%" value="@Model.TotalPackageAmount" />
+                            </div>
+                            <div class="col-lg-2  col-md-2 col-sm-6">
+                                <label>Collected Amount</label>
+                                <input type="text" id="txtCollectedAmount" class="form-control currencyFormat" onkeypress="return OnlyNumeric(event);" readonly style="text-align:right;width:100%" />
+                            </div>
+                            <div class="col-lg-2  col-md-2 col-sm-6">
+                                <label>Balance Amount</label>
+                                <input type="text" id="txtBalanceAmount" class="form-control currencyFormat" onkeypress="return OnlyNumeric(event);" readonly style="text-align:right;width:100%" />
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-4" style="vertical-align:bottom;top:10px">
+                                <button type="button" class="btn btn-sm btn-primary " style="font-size:12px !important" onclick="fnShowAddPaymentPopup()"><i class="fa fa-plus"></i> Add Payment</button>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                                <table id="jqgPaymentDetails"></table>
+                                <div id="jqpPaymentDetails"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab_addonservices" role="tabpanel" aria-labelledby="addonservices-tab">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                                @*<table id="jqgAddOnServices"></table>
+                    <div id="jqpAddOnServices"></div>*@
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab_checkoutprocess" role="tabpanel" aria-labelledby="checkoutprocess-tab">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="popupAddPayment" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modaltitle">Payment</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fa fa-times"></i></span>
+                </button>
+            </div>
+            <div class="modal-body" style="min-height:280px;  overflow: inherit !important">
+
+                @Html.Partial("~/Areas/eSyaNatureCure/Views/CheckInGuest/_PaymentModeDetails.cshtml")
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary mr-2" id="btnAddOnServices" onclick="fnSavePaymentRefund()"><i class="fa fa-check"></i> Done</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalAddOnServices" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modaltitle">Add on Services</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fa fa-times"></i></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary mr-2" id="btnAddOnServices"><i class="fa fa-check"></i> Done</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade in" id="PopupDocumentUpload" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-md  " role="document" style="box-shadow:none;">
+        <div class="modal-content ">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">@Localizer["AddDocument"]</h4>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="row padbot4">
+
+                    <div class="col-lg-12" style="display:none">
+                        <div class="form-group">
+                            <div>
+                                <label for="txtSerialNumber"> @Localizer["SerialNumber"]</label>
+                                <input class="form-control" type="text" maxlength="9" id="txtSerialNumber" data-inputmask="'mask': '9', 'repeat': 10, 'greedy' : false" />
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label for="txtDocumentName"> @Localizer["DocumentName"]</label>
+                            <input id="txtDocumentName" class="form-control" maxlength="100" type="text" />
+
+                        </div>
+                    </div>
+                    <div class="col-lg-6  col-md-6 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <div class="form-group">
+                                <img id="imgPhotoimageblah" src="" style="display:none">
+                                <label> @Localizer["SelectDocument"] </label>
+                                <input class="mdl-textfield__input fullwidth FileUpload" id="Photoimage" type="file" name="file"  accept='image/*' enctype="multipart/form-data" style="border-bottom:none !important" />
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3  col-md-3 col-sm-12 col-xs-12">
+                        <div class="default-checkbox">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActiveStatus">
+                                <input type="checkbox" id="chkActiveStatus" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">@Localizer["Active"]</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveDocumentUpload" onclick="fnSaveDocumentUpload()">
+                            <i class="fa fa-save"></i> @Localizer["Save"]
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="btnCancelDocumentUpload" onclick="fnClearDocumentUpload()"><i class="fa fa-times"></i> @Localizer["Cancel"] </button>
+                       
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<script src="~/js/jquery-3.6.0.min.js"></script>
+    <script src="~/js/jquery-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="~/js/i18n/grid.locale-en.js"></script>
+    <script src="~/js/jquery.jqGrid.min.js"></script>
+    <script type="text/javascript" src="~/js/all.min.js"></script>
+    <script src="~/js/toastr.min.js"></script>*@
+<script>
+    $(function () {
+        fnLoadGuestDetails();
+        fnLoadPaymentDetails();
+        fnLoadDocumentUpload();
+        $("#alertmod_jqgActivities,#alertmod_jqgAddOnServices").css('display', 'none');
+    });
+
+    function close_window() {
+        if (confirm("Close Window?")) {
+            close();
+        }
+    }
+
+    function fnSubmitForCheckIn() {
+
+        var obj = {
+            BookingKey: $('#hdBookingKey').val(),
+            GuestId: $('#hdGuestId').val(),
+            FirstName: $('#txtFirstName').val(),
+            LastName: $('#txtLastName').val(),
+            MobileNumber: $('#txtMobileNumber').val(),
+            EmailId: $('#txtEmailId').val(),
+        };
+
+        $("#btnSubmitCheckInGuest").attr('disabled', true);
+
+        var URL = getBaseURL() + '/CheckInGuest/CreateGuestCheckin';
+        $.ajax({
+            url: URL,
+            type: 'POST',
+            datatype: 'json',
+            contenttype: 'application/json; charset=utf-8',
+            data: obj,
+            async: true,
+            success: function (response) {
+
+                toastr.success("Guest Checked-In");
+                $("#btnSubmitCheckInGuest").attr('disabled', false);
+            },
+            error: function (error) {
+                toastr.error(error.statusText);
+                $("#btnSubmitCheckInGuest").attr('disabled', false);
+            }
+        });
+    }
+
+    function fnLoadGuestDetails() {
+        $("#jqgGuestDetails").GridUnload();
+
+        $("#jqgGuestDetails").jqGrid({
+            url: getBaseURL() + '/CheckInGuest/GetGuestDetailsByBookingKey',
+            datatype: "json",
+            contenttype: "application/json; charset-utf-8",
+            mtype: 'GET',
+            postData: {
+                bookingKey: function () { return parseInt($('#hdBookingKey').val()) },
+            },
+            jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+            colNames: ["@Localizer["GuestId"]", "@Localizer["FirstName"]","@Localizer["LastName"]", "@Localizer["Gender"]", "@Localizer["AgeYy"]", "@Localizer["MobileNumber"]","@Localizer["RoomType"]","@Localizer["RoomNo"]","@Localizer["BedNo"]","@Localizer["Price"]","@Localizer["Action"]"],
+            colModel: [
+                { name: "GuestId", width: 40, editable: false, editoptions: { disabled: true }, align: 'left', edittype: 'text', hidden: true },
+                { name: "FirstName", width: 150, editable: true, align: 'left', edittype: 'text', hidden: false },
+                { name: "LastName", width: 150, editable: true, align: 'left', edittype: 'text', hidden: false },
+                { name: "Gender", width: 70, editable: true, align: 'left', edittype: 'text', hidden: false },
+                { name: "AgeYy", width: 70, editable: true, align: 'left', edittype: 'text', hidden: false },
+                { name: "MobileNumber", width: 160, editable: true, align: 'left', edittype: 'text', hidden: false },
+                { name: "RoomTypeName", width: 120, editable: true, align: 'left', edittype: 'text', hidden: false },
+                { name: "RoomNumber", width: 80, editable: true, align: 'left', edittype: 'text', hidden: false },
+                { name: "BedNumber", width: 80, editable: true, align: 'left', edittype: 'text', hidden: false },
+                { name: 'PackagePrice', index: 'PackagePrice', width: '120', align: "right", formatter: 'integer', formatoptions: { decimalSeparator: ".", decimalPlaces: 2, thousandsSeparator: ',' } },
+                {
+                    name: "Button", width: 100, editable: false, align: 'left', hidden: false, formatter: function (cellValue, options, rowObject) {
+                        var i = options.rowId;
+                        return "<button id=btnCheckin_" + i + " type='button'  class='btn btn-primary' onclick=fnGuestCheckin('" + rowObject.GuestId + "') >  View </button >";
+                    }
+                },
+            ],
+            rowNum: 10,
+            pager: "#jqpGuestDetails",
+
+            viewrecords: true,
+            gridview: true,
+            rownumbers: true,
+            height: 'auto',
+            width: 'auto',
+            autowidth: true,
+            shrinkToFit: true,
+            forceFit: true,
+            loadonce: true,
+            loadComplete: function (data) {
+            },
+        }).jqGrid('navGrid', '#jqpGuestDetails', { add: false, edit: false, search: false, del: false, refresh: false });
+    }
+    function fnGuestCheckin(guestId) {
+        var url = getBaseURL() + '/eSyaNatureCure/CheckInGuest/V_ENC_04_00?bookingKey=' + $('#hdBookingKey').val() + '&guestId=' + guestId;
+        window.location.href = url;
+    }
+
+    function fnLoadPaymentDetails() {
+        $("#jqgPaymentDetails").GridUnload();
+
+        $("#jqgPaymentDetails").jqGrid({
+            url: getBaseURL() + '/CheckInGuest/GetGuestPaymentReceiptDetails',
+            datatype: "json",
+            contenttype: "application/json; charset-utf-8",
+            mtype: 'GET',
+            postData: {
+                bookingKey: function () { return parseInt($('#hdBookingKey').val()) },
+            },
+            jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+            colNames: ["@Localizer["VoucherType"]", "@Localizer["VoucherTypeDesc"]","@Localizer["PaymentMode"]", "@Localizer["VoucherKey"]", "@Localizer["VoucherDate"]", "@Localizer["VoucherAmount"]"],
+            colModel: [
+                { name: "VoucherType", width: 40, editable: false, editoptions: { disabled: true }, align: 'left', edittype: 'text', hidden: true },
+                { name: "VoucherTypeDesc", width: 200, editable: true, align: 'left', edittype: 'text', hidden: false },
+                { name: "PaymentModeDesc", width: 200, editable: true, align: 'left', edittype: 'text', hidden: false },
+
+                { name: "VoucherKey", width: 150, editable: true, align: 'left', edittype: 'text', editoptions: { maxlength: 50 }, hidden: false },
+                {
+                    name: 'VoucherDate', index: 'VoucherDate', width: 150, sortable: true, formatter: "date", formatoptions:{ newformat: _cnfjqgDateFormat }, width: '100'
+                },
+                { name: 'VoucherAmount', index: 'VoucherAmount', width: '150', align: "right", formatter: 'integer', formatoptions: { decimalSeparator: ".", decimalPlaces: 2, thousandsSeparator: ',' } },
+            ],
+            rowNum: 10,
+            pager: "#jqpPaymentDetails",
+
+            viewrecords: true,
+            gridview: true,
+            rownumbers: true,
+            height: 'auto',
+            width: 'auto',
+            autowidth: true,
+            shrinkToFit: true,
+            forceFit: true,
+            loadonce: true,
+            loadComplete: function (data) {
+                var totalCollectionAmount = 0;
+                var rowIds = $("#jqgPaymentDetails").getDataIDs();
+                for (var i = 0; i < rowIds.length; i++) {
+                    totalCollectionAmount = totalCollectionAmount + Math.round(parseFloat($("#jqgPaymentDetails").jqGrid('getCell', rowIds[i], 'VoucherAmount')));
+                }
+
+                var packageAmmount = parseFloat($('#txtPackageAmount').val());
+                var balanceAmount = packageAmmount - totalCollectionAmount;
+                $('#txtCollectedAmount').val(totalCollectionAmount.toFixed(2));
+                $('#txtBalanceAmount').val(balanceAmount.toFixed(2));
+
+
+            },
+        }).jqGrid('navGrid', '#jqpPaymentDetails', { add: false, edit: false, search: false, del: false, refresh: false });
+
+    }
+
+    function fnShowAddPaymentPopup() {
+
+        $('#popupAddPayment').modal('show');
+    }
+
+</script>
+
+

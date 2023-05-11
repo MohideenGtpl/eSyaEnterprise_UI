@@ -1,0 +1,136 @@
+﻿$(document).ready(function () {
+    fnGridBusinessStores();
+});
+function fnGridBusinessStores() {
+    $("#jqgBusinessStores").jqGrid({
+        url: getBaseURL() + '/Inventory/GetStoreCodes',
+        datatype: 'json',
+        mtype: 'Post',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Business Key", "Store Code","Status"],
+
+        colModel: [
+            { name: "BusinessKey", width: 300, editable: true, align: 'left',hidden:true, editoptions: { maxlength: 25 }},
+            { name: "StoreCode", width: 300, editable: true, align: 'left', editoptions: { maxlength: 25 }, hidden: false },
+             
+            { name: "ActiveStatus", editable: true, width: 120, edittype: "select", align: 'left', formatter: 'select', editoptions: { value: "true:Active;false:Inactive" } },
+
+            
+
+        ],
+        rowNum: 10,
+        rowList: [10, 20, 40],
+        emptyrecords: "No records to Veiw",
+        pager: "#jqpBusinessStores",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        width: 'auto',
+        scroll: false,
+        autowidth: false,
+        shrinkToFit: false,
+        forceFit: false,
+        loadonce: true,
+        //  editurl:,
+
+
+
+       
+
+        ajaxRowOptions: {
+            type: "POST",
+            contentType: "application/json",
+            dataType: "json"
+        },
+
+        serializeRowData: function (postData) {
+
+
+            if (postData.StoreCode == 0) {
+                postData.StoreCode = 0;
+            }
+            return JSON.stringify(postData);
+        },
+        beforeSubmit: function (postdata, formid) {
+
+            return [success, message];
+        },
+
+        ondblClickRow: function (rowid) {
+            $("#jqgBusinessStores").trigger('click');
+        },
+
+    }).jqGrid('navGrid', '#jqpBusinessStores', { add: false, edit: false, search: false, del: false, refresh: false });
+    $("#jqgBusinessStores").jqGrid('inlineNav', '#jqpBusinessStores',
+        {
+            edit: true,
+            editicon: " fa fa-pen",
+            edittext: " Edit",
+            add: true,
+            addicon: "fa fa-plus",
+            addtext: " Add",
+            save: true,
+            savetext: " Save",
+            saveicon: "fa fa-save",
+            cancelicon: "fa fa-ban",
+            canceltext: " Cancel",
+            editParams: {
+                keys: false,
+                oneditfunc: function (formid) {
+
+                    
+
+                },
+                url: null,
+
+                successfunc: function (result) {
+                    var resp = JSON.parse(result.responseText);
+                    if (resp.Status === true) {
+                        toastr.success(resp.Message);
+                        Refresh();
+                        return true;
+                    }
+
+                    if (resp.Status == false) {
+
+                        toastr.error(resp.Message);
+                        Refresh();
+                        return false;
+                    }
+                },
+                aftersavefun: null,
+                errorfun: null,
+                afterrestorefun: null,
+                restoreAfterError: true,
+                mtype: "POST",
+            },
+
+            addParams: {
+                useDefValues: true,
+                position: "last",
+                addRowParams: {
+                    keys: true,
+                    oneditfunc: null,
+                    successfunc: function (result) {
+
+                        var response = JSON.parse(result.responseText);
+                        if (response.Status === true) {
+                            toastr.success(response.Message);
+                            Refresh();
+                            return true;
+                        }
+
+                        if (response.Status == false) {
+                            toastr.error(response.Message);
+                            Refresh();
+                            return false;
+                        }
+
+                    },
+                }
+            },
+        });
+}

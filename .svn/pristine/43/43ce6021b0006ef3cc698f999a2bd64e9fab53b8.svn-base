@@ -1,0 +1,171 @@
+﻿function fnSubmitOPRegistration() {
+
+    if (parseFloat($("#txtTotalConcessionAmount").val()) > 0) {
+        if ($("#txtNarration").val().length <= 1) {
+            toastr.warning("please enter the narration for discount");
+            return;
+        }
+    }
+
+    $("#btnSaveOpReg").prop('disabled', true);
+
+    var paymentResponse = getPaymentDetails();
+
+    if (paymentResponse.totalcollectedamount > parseFloat($("#txtNetBillAmount").val())) {
+        toastr.warning("please check the collected amount.The collected amount cannot be greater than the net bill amount.");
+        $("#btnSaveOpReg").prop('disabled', false);
+        return;
+    }
+
+    if (paymentResponse.totalcollectedamount < parseFloat($("#txtNetBillAmount").val())) {
+        toastr.warning("please collect the full bill amount.Partial payment is not allowed.");
+        $("#btnSaveOpReg").prop('disabled', false);
+        return;
+    }
+
+    if (!paymentResponse.status) {
+        $("#btnSaveOpReg").prop('disabled', false);
+        return false;
+    }
+
+    var l_paymentData = paymentResponse.data;
+
+    var uhid = $("input[name='chkRegisteredPatient']:checked").val();
+
+    var address = [{
+        AddressId: "0",
+        AddressType: "0",
+        Address: $("#txtAddress").val(),
+        AreaCode: $("#cboArea").val(),
+        CityCode: $("#cboCity").val(),
+    }];
+
+    var patientprofile = {
+        UHID: uhid,
+        Nationality: $("#cboNationality").val(),
+        NationalID: $("#txtNationalityID").val(),
+        Title: "",
+        FirstName: $("#txtFirstName").val(),
+        MiddleName: $("#txtMiddleName").val(),
+        LastName: $("#txtLastName").val(),
+        Gender: $("#cboGender").val(),
+        IsDOBApplicable: true,
+        DateOfBirth: $("#txtDateOfBirth").val(),
+        AgeYY: $("#txtDateOfBirthYY").val(),
+        AgeMM: $("#txtDateOfBirthMM").val(),
+        AgeDD: $("#txtDateOfBirthDD").val(),
+        Isdcode: _cnfISDCode,
+        MobileNumber: $('#txtPatientMobileNumber').val(),
+        EMailId: $("#txtEmail").val(),
+        PatientStatus:"Y",
+        L_PatientAddress: address
+    };
+
+    var consultationinfo = {
+        ClinicID: $(':selected', $('#cboClinicType')).data('clinictype'),
+        ConsultationID: $(':selected', $('#cboClinicType')).data('consultationtype'),
+        SpecialtyID: $("#cboSpecialty").val(),
+        DoctorID: $("#cboDoctors").val(),
+        Episode: "N"
+    };
+
+    
+    var l_Services = [];
+    var gvServices = jQuery("#jgvServiceBill").jqGrid('getRowData');
+    for (var i = 0; i < gvServices.length; ++i) {
+        var serv = {};
+        //serv.ServiceTypeId = gvServices[i]['ServiceTypeId'];
+        serv.ServiceId = gvServices[i]['ServiceId'];
+        serv.DoctorId = $("#cboDoctors").val();
+        serv.ServiceRule = gvServices[i]['ServiceRule'];
+        serv.Quantity = parseFloat(gvServices[i]['Quantity']);
+        serv.Rate = parseFloat(gvServices[i]['Rate']);
+        serv.DiscountAmount = parseFloat(gvServices[i]['DiscountAmount']);
+        serv.ConcessionAmount = 0;
+        serv.TotalAmount = parseFloat(gvServices[i]['TotalAmount']);
+        serv.PayableByPatient = parseFloat(gvServices[i]['TotalAmount']);
+        serv.PayableByInsurance = 0;
+        serv.ChargableToPatient = true;
+        l_Services.push(serv);
+    }
+
+    var l_SubLedger = [];
+    var subledger = {
+        SubledgerType: "P",
+        SubledgerId: uhid,
+        PayerPercentage: 0,
+        PayableAmount: $('#txtNetBillAmount').val()
+    };
+    l_SubLedger.push(subledger);
+
+    var billDetail = {
+        UHID: uhid,
+        OPNumber: "0",
+        TransCurrencyCode: _cnfLocalCurrency,
+        LocalCurrencyCode: _cnfLocalCurrency,
+        ExchangeRate: 1,
+        ConcessionOn: "N",
+        TotalBillAmount: $('#txtTotalBillAmount').val(),
+        TotalDiscountAmount: 0,
+        TotalConcessionAmount: $('#txtTotalConcessionAmount').val(),
+        RoundOff: 0,
+        NetBillAmount: $('#txtNetBillAmount').val(),
+        Narration: $('#txtNarration').val(),
+        l_PatientBillDetails: l_Services,
+        l_SubLedgerDetails: l_SubLedger,
+        l_PaymentReceipt: l_paymentData
+    };
+    var op_reg = {
+        UHID: uhid,
+        RegistrationType: $("#cboRegistrationType").val(),
+        VisitType: "C",
+        ClinicId: $(':selected', $('#cboClinicType')).data('clinictype'),
+        ConsultationId: $(':selected', $('#cboClinicType')).data('consultationtype'),
+        PatientType: $('#cboPatientType').val(),
+        PatientCategory: $(':selected', $('#cboPatientCategory')).data('categoryid'),
+        RatePlan: $(':selected', $('#cboPatientCategory')).data('ratetype'),
+        IsVIP: $("#chkIsVIP").parent().hasClass("is-checked"),
+        PatientProfile: patientprofile,
+        ConsultationInfo: consultationinfo,
+        O_PatientBill: billDetail
+    }
+    var URL = getBaseURL() + '/Registration/InsertOPRegistrationVisit';
+    $.ajax({
+        url: URL,
+        type: 'POST',
+        datatype: 'json',
+        contenttype: 'application/json; charset=utf-8',
+        data: op_reg,
+        async: true,
+        success: function (response) {
+            if (response.Status) {
+                toastr.success("Registered & Bill Generated.");
+
+                var dialog = bootbox.dialog({
+                    title: 'View',
+                    closeButton: false,
+                    message: "<p>Registered & Bill Generated.</p>",
+                    buttons: {
+                       ok: {
+                            label: "ok !",
+                            className: 'btn-info',
+                            callback: function () {
+                                window.location.reload();
+                            }
+                        }
+                    }
+                });
+
+            }
+            else {
+                toastr.error(response.Message);
+            }
+            $("#btnSaveOpReg").attr('disabled', false);
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnSaveOpReg").attr('disabled', false);
+        }
+    });
+
+}

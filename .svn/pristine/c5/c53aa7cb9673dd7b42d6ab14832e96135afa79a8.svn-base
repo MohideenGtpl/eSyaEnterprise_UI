@@ -1,0 +1,54 @@
+﻿using Microsoft.Extensions.Configuration;
+using System;
+using System.Net.Http;
+using System.Net.Http.Headers;
+
+namespace eSyaEnterprise_UI.Areas.eSyaClinicalServices.Data
+{
+    public class eSyaClinicalAPIServices: IeSyaClinicalAPIServices
+    {
+        public HttpClient Client { get; private set; }
+        public eSyaClinicalAPIServices(HttpClient httpClient, IConfiguration iConfig)
+        {
+            string apiBaseURI = iConfig.GetValue<string>("eSyaClinicalServices_API");
+            string apiKey = iConfig.GetValue<string>("Apikey");
+
+            //Passing service base url    
+            httpClient.BaseAddress = new Uri(apiBaseURI);
+
+            httpClient.DefaultRequestHeaders.Clear();
+
+            httpClient.DefaultRequestHeaders.Add("Apikey", apiKey);
+
+            //Define request data format    
+            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            Client = httpClient;
+        }
+
+        public HttpClient GetHttpClient()
+        {
+            return Client;
+        }
+
+        public HttpClient GetConfigCSHttpClient(IConfiguration iConfig)
+        {
+            string apiBaseURI = iConfig.GetValue<string>("eSyaWebAPIUrl");
+            string apiKey = iConfig.GetValue<string>("Apikey");
+
+            var client = new HttpClient();
+            //Passing service base url    
+            client.BaseAddress = new Uri(apiBaseURI);
+
+            client.DefaultRequestHeaders.Clear();
+
+            client.DefaultRequestHeaders.Add("Apikey", apiKey);
+
+            //Define request data format    
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            return client;
+        }
+
+    }
+}

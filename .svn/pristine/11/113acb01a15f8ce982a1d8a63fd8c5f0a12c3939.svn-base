@@ -1,0 +1,121 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+<div class="row form-group">
+    <div class="col-lg-2 col-md-2 col-sm-4 form-group">
+        <label>Salary</label>
+        <input type="text" name="salary" class="form-control" value="" />
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-4 form-group">
+        <label>Salary Currency</label>
+        <select class="selectpicker">
+            <option value="0">Select</option>
+            <option>INR</option>
+            <option>KES</option>
+            <option>USD</option>
+        </select>
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-4 form-group">
+        <label>Salary Amount</label>
+        <input type="text" name="salary" class="form-control" value="" />
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <p class="subheading">Breakup by Currency</p>
+        <hr class="left" />
+    </div>
+    <div class="col-lg-7 col-md-7 col-sm-12 form-group">
+        <table id="jqgSalaryInfo"></table>
+        <div id="jqpSalaryInfo"></div>
+    </div>
+    </div>
+    <div class="row">
+         
+        <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+            <label><input type="checkbox" name="IncentivePercentage" id="chkIncentive" class="" value="" /> Is Incentive Applicable ?</label>
+           
+        </div>
+        
+        <div class="col-lg-3 col-md-3 col-sm-6 form-group" id="divIncentivePercentage" style="display:none">
+            <label>Incentive Percentage</label>
+            <input type="text" name="Incentive Percentage" class="form-control" value="" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+            <label> <input type="checkbox" name="NHIF" id="chkNHIF" class="" value="" /> Is NHIF ?</label>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-6 form-group" id="divNHIF" style="display:none">
+            <label> Amount</label>
+            <input type="text" name="Incentive Percentage" class="form-control" value="" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+            <label> <input type="checkbox" name="NSSF" id="chkNSSF" class="" value="" /> Is NSSF Applicable ? </label>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-6 form-group" id="divNSSF" style="display:none">
+            <label> Amount</label>
+            <input type="text" name="Incentive Percentage" class="form-control" value="" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+            <label> <input type="checkbox" name="Cash Payment" id="chkCashPayment" class="" value="" /> Is Opted For Cash Payment ?</label>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-6 form-group" id="divCashPayment" style="display:none">
+            <label>Amount</label>
+            <input type="text" name="Incentive Percentage" class="form-control" value="" />
+        </div>
+        </div>
+    
+    <script>
+
+      
+
+        $(document).ready(function () {
+            $('input[id^="chkIncentive"]').click(function () {
+
+                if ($(this).prop('checked')) {
+                    $("#divIncentivePercentage").css('display', 'block');
+                }
+                else {
+                    $("#divIncentivePercentage").css('display', 'none');
+                }
+            });
+            
+            $('input[id^="chkNHIF"]').click(function () {
+
+                if ($(this).prop('checked')) {
+
+                    $("#divNHIF").css('display', 'block')
+                }
+                else {
+                    $("#divNHIF").css('display', 'none')
+                }
+            });
+
+            $('input[id^="chkNSSF"]').click(function () {
+
+                if ($(this).prop('checked')) {
+
+                    $("#divNSSF").css('display', 'block')
+                }
+                else {
+                    $("#divNSSF").css('display', 'none')
+                }
+            });
+
+            $('input[id^="chkCashPayment"]').click(function () {
+
+                if ($(this).prop('checked')) {
+
+                    $("#divCashPayment").css('display', 'block')
+                }
+                else {
+                    $("#divCashPayment").css('display', 'none')
+                }
+            });
+
+        });
+    </script>

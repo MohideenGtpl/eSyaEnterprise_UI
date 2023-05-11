@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<style>
+    body{
+        height:100%;
+    }
+    .body-content {
+        background-image: url("../../images/logo/esya-logo-whitebg.jpeg");
+        background-position: 0% 35%;
+        background-repeat: no-repeat;
+        background-size: contain;
+        height: calc(100% - 110px);
+        width: 65%;
+        opacity: 0.15;
+    }
+</style>

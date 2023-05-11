@@ -1,0 +1,428 @@
+﻿
+@{
+    ViewData["Title"] = "V_1_02";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .ui-jqgrid .ui-jqgrid-bdiv {
+        position: relative;
+        margin: 0em;
+        padding: 0;
+        /*overflow: auto;*/
+        overflow-x: hidden;
+        overflow-y: auto;
+        text-align: left;
+    }
+</style>
+
+<div class="row row-bottom-pad">
+    <div class="col-sm-4 col-md-4 col-lg-4">
+        <div id="FormMasterTree">
+        </div>
+    </div>
+    <div class="col-sm-1 col-md-1 col-lg-1"></div>
+    <div id="dvForm" class="col-lg-7 col-md-7 col-sm-7 f-right">
+
+        <div class="demo-card-square mdl-card mdl-shadow--2dp marbot15 fullwidth" id="pnlAddForms">
+            <div class="mdl-card__title mdl-card--expand padleft0 padtop0 h-60 d-block">
+                <h5 class="mdl-card__title-text"> Forms </h5>
+            </div>
+            <div class="mdl-card__supporting-text fullwidth">
+                <div class="row ">
+                    <div class="col-sm-3 col-md-3 col-lg-3">
+                        <label> Form ID</label>
+                        <input type="text" name="int" class="form-control " id="txtFormID" />
+                    </div>
+                    <div class="col-sm-9 col-md-9 col-lg-9">
+                        <label> Form Desc</label>
+                        <input type="text" class="form-control " id="txtFormDescription" />
+                    </div>
+                </div>
+                <div class="row ">
+                    <div class="col-lg-6" style="margin-bottom: 15px;">
+                        <label class="mdl-checkbox mdl-js-checkbox" for="chkIsDocumentNoRequired">
+                            <input type="checkbox" id="chkIsDocumentNoRequired"
+                                   class="mdl-checkbox__input">
+                            <span class="mdl-checkbox__label">Is Document Generation Reqd?</span>
+                        </label>
+                    </div>
+                    <div class="col-lg-6" style="margin-bottom: 15px;">
+                        <label class="mdl-checkbox mdl-js-checkbox" for="chkIsStoreLink">
+                            <input type="checkbox" id="chkIsStoreLink"
+                                   class="mdl-checkbox__input">
+                            <span class="mdl-checkbox__label">Is Store Link Reqd?</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="row" id="dvNavigateURL">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <label>Controller Name</label>
+                        <input id="txtControllerName" class="form-control" maxlength="100" type="text" />
+                    </div>
+                </div>
+
+                <hr />
+                <div class="mdl-card__actions text-center pad0">
+
+                    <button type="button" class="btn btn-primary marbot15" id="btnFMAdd" onclick="fnSaveFormMaster()"><i class="fa fa-plus"></i> Add</button>
+                    <button type="button" class="btn btn-primary marbot15" id="btnFMAdd" onclick="fnOpenConfigureMenu()"><i class="fa fa-plus"></i> Configure Menu</button>
+
+                </div>
+
+                <div class="col-lg-12 col-md-12 col-sm-12 pad0 padtop30">
+                    <table id="jqgInternalForms"></table>
+                    <div id="jqpInternalForms"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+    <link rel="stylesheet" href="~/css/jsTree.css" />
+    <script src="~/js/jsTree.js"></script>
+}
+
+<script>
+
+    var prevSelectedID = '';
+
+    $(function () {
+
+        fnLoadFormsTree();
+
+        $("#FormMasterTree").css({
+            'height': $(window).innerHeight() - 183,
+            'overflow': 'auto'
+        });
+
+        $("#txtFormID").val('');
+        $("#txtFormDescription").val('');
+        $("#txtControllerName").val('');
+        $('#chkIsDocumentNoRequired').parent().removeClass("is-checked");
+        $('#chkIsStoreLink').parent().removeClass("is-checked");
+
+    });
+
+    //Tree Root Label is clicked
+    $("#lblFormDetail").click(function () {
+        $("#txtFormID").val('');
+        $("#txtFormDescription").val('');
+        $("#txtControllerName").val('');
+        $('#chkIsDocumentNoRequired').parent().removeClass("is-checked");
+        $('#chkIsStoreLink').parent().removeClass("is-checked");
+
+    })
+
+
+    function fnLoadFormsTree() {
+
+        $.ajax({
+            url: getBaseURL() + '/Forms/GetFormList',
+            type: 'POST',
+            datatype: 'json',
+            contentType: 'application/json; charset=utf-8',
+            async: false,
+            success: function (result) {
+                $("#FormMasterTree").jstree({ core: { data: result, multiple: false } });
+            },
+            error: function (error) {
+                alert(error.statusText)
+            }
+        });
+
+        $("#FormMasterTree").on('loaded.jstree', function () {
+            $("#FormMasterTree").jstree()._open_to(prevSelectedID);
+            $('#FormMasterTree').jstree().select_node(prevSelectedID);
+        });
+
+        $('#FormMasterTree').on("changed.jstree", function (e, data) {
+            if (data.node != undefined) {
+                prevSelectedID = data.node.id;
+
+                var parentNode = $("#FormMasterTree").jstree(true).get_parent(data.node.id);
+
+                var formID = prevSelectedID;
+
+                // If Parent node is selected
+                if (parentNode == "#") {
+                    $("#pnlAddForms .mdl-card__title-text").text("Add Form");
+                    $("#txtFormDescription").val('');
+                    $("#txtControllerName").val('');
+                    $('#chkIsDocumentNoRequired').parent().removeClass("is-checked");
+                    $('#chkIsStoreLink').parent().removeClass("is-checked");
+                    $("#btnFMAdd").html("<i class='fa fa-plus'></i> Add");
+
+                    $("#dvForm").show();
+                    $("#jqgInternalForms").GridUnload();
+                    $('#txtFormID').prop('readonly', false);
+                    $("#dvNavigateURL").show();
+                    $('#txtFormID').val("");
+
+                }
+                // If Child node is selected
+                else if (parentNode == "FM") {
+                    $("#pnlAddForms .mdl-card__title-text").text("Edit Form");
+                    $("#btnFMAdd").html("<i class='fa fa-sync'></i> Update");
+                    $("#dvForm").show();
+                   
+                    fnFillFormDetail(formID);
+                }
+                else {
+                    $("#dvForm").hide();
+                }
+            }
+        });
+
+        $('#FormMasterTree').on("close_node.jstree", function (node) {
+            var closingNode = node.handleObj.handler.arguments[1].node;
+            $('#FormMasterTree').jstree().deselect_node(closingNode.children);
+        });
+    }
+
+    function fnFillFormDetail(formID) {
+
+        $.ajax({
+            url: getBaseURL() + '/Forms/GetFormDetailsByID',
+            data: {
+                formID: formID
+            },
+            success: function (result) {
+
+                if (result != null) {
+
+                    $('#txtFormID').prop('readonly', true);
+                    $("#dvNavigateURL").hide();
+
+                    $("#txtFormID").val(result.FormID);
+                    $("#txtFormDescription").val(result.FormName);
+                    $("#txtControllerName").val(result.ControllerName);
+                    if (result.IsDocumentNumberRequired == true)
+                        $('#chkIsDocumentNoRequired').parent().addClass("is-checked");
+                    else
+                        $('#chkIsDocumentNoRequired').parent().removeClass("is-checked");
+                    if (result.IsStoreLink == true)
+                        $('#chkIsStoreLink').parent().addClass("is-checked");
+                    else
+                        $('#chkIsStoreLink').parent().removeClass("is-checked");
+
+                    fnLoadInternalFormGrid(formID)
+                }
+
+            }
+        });
+    }
+
+    function fnSaveFormMaster() {
+
+        var txtFormID = $("#txtFormID").val();
+        var txtFormDescription = $("#txtFormDescription").val();
+
+        var selectedNode = $('#FormMasterTree').jstree().get_selected(true)[0];
+
+        var FormID = 0, parentID = 0;
+        var isInsert = true;
+        if (selectedNode != null) {
+            if (selectedNode.parent != "#") {
+                FormID = selectedNode.id;
+                parentID = selectedNode.parent;
+                isInsert = false;
+            }
+            else {
+                FormID = txtFormID;
+                parentID = 0;
+            }
+        }
+
+        if (IsStringNullorEmpty(txtFormID)) {
+            alert("Please enter the Form ID", 'e');
+            return false;
+        }
+        if (IsStringNullorEmpty(txtFormDescription)) {
+            alert("Please enter the Form Description", 'e');
+            return false;
+        }
+        else if (isInsert && IsStringNullorEmpty($("#txtControllerName").val())) {
+            alert("Please enter the Controller Name", 'e');
+            return false;
+        }
+        else {
+
+            $("#btnFMAdd").attr("disabled", true);
+            $.ajax({
+                url: getBaseURL() + '/Forms/InsertUpdateIntoFormMaster',
+                type: 'POST',
+                datatype: 'json',
+                data: {
+                    IsInsert: isInsert,
+                    MenuItemID: 0,
+                    FormID: FormID,
+                    FormName: $("#txtFormDescription").val(),
+                    ControllerName: $("#txtControllerName").val(),
+                    IsDocumentNumberRequired: $("#chkIsDocumentNoRequired").parent().hasClass("is-checked"),
+                    IsStoreLink: $("#chkIsStoreLink").parent().hasClass("is-checked")
+                },
+                async: false,
+                success: function (response) {
+                   
+                    if (response.Status == true) {
+                        alert("Form Updated", "s");
+                        $("#FormMasterTree").jstree("destroy");
+                        fnLoadFormsTree();
+                    }
+                    else {
+                        alert(response.Message, "e");
+                    }
+                    $("#btnFMAdd").attr("disabled", false);
+                },
+                error: function (error) {
+                    alert(error.statusText, 'e');
+                    $("#btnFMAdd").attr("disabled", false);
+                }
+            });
+        }
+    }
+
+
+    function fnLoadInternalFormGrid(FormID) {
+
+        $("#jqgInternalForms").GridUnload();
+
+        $("#jqgInternalForms").jqGrid({
+            url: getBaseURL() + '/Forms/GetInternalFormByFormID',
+            datatype: "json",
+            contenttype: "application/json; charset-utf-8",
+            mtype: 'GET',
+            postData: {
+                formID: function () { return FormID; },
+            },
+            jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+            colNames: ["Form ID", "Internal ID", "URL", "Internal Form Desc ", "Status"],
+            colModel: [
+                { name: "FormID", width: 50, editable: false, editoptions: { disabled: true }, align: 'left', edittype: 'text', hidden: false },
+                { name: "InternalFormNumber", width: 50, editable: true, align: 'left', edittype: 'text', hidden: false },
+                { name: "NavigateURL", width: 170, editable: true, align: 'left', edittype: 'text', editoptions: { maxlength: 50 }, hidden: false },
+                { name: "FormDescription", width: 100, editable: true, align: 'left', edittype: 'text', editoptions: { maxlength: 25 }, hidden: false },
+                { name: "ActiveStatus", editable: true, width: 40, align: 'center !important', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            ],
+            rowNum: 100,
+            pager: "#jqpInternalForms",
+            pgtext: null,
+            pgbuttons: null,
+            viewrecords: false,
+            gridview: true,
+            rownumbers: true,
+            height: 'auto',
+            width: 'auto',
+            autowidth: true,
+            shrinkToFit: true,
+            forceFit: true,
+            loadonce: true,
+
+            editurl: getBaseURL() + '/Forms/InsertIntoInternalForm',
+            beforeSubmit: function (postdata, formid) {
+                return [success, message];
+            },
+            ondblClickRow: function (rowid) {
+                //var row_id = $("#jqgInternalForms").getGridParam('selrow');
+                //jQuery('#jqgInternalForms').editRow(row_id, true);
+                //$('#' + row_id + '_InternalFormNumber').prop('disabled', true);
+
+                //$("#edit_jqgInternalForms").trigger("click");
+
+                //jQuery(this).jqGrid('editGridRow', rowid,
+                //    {
+                //        recreateForm: true, closeAfterEdit: true,
+                //        closeOnEscape: true, reloadAfterSubmit: false
+                //    });
+            },
+            loadComplete: function (data) {
+                $(this).find(">tbody>tr.jqgrow:odd").addClass("myAltRowClassEven");
+                $(this).find(">tbody>tr.jqgrow:even").addClass("myAltRowClassOdd");
+                $("#jqgInternalForms").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+            },
+        }).jqGrid('navGrid', '#jqpInternalForms', { add: false, edit: false, search: false, del: false, refresh: false });
+
+        $("#jqgInternalForms").jqGrid('inlineNav', '#jqpInternalForms',
+            {
+                edit: true,
+                editicon: " fa fa-pen",
+                edittext: " Edit",
+                add: true,
+                addicon: "fa fa-plus",
+                addtext: " Add",
+                save: true,
+                savetext: " Save",
+                saveicon: "fa fa-save",
+                cancelicon: "fa fa-ban",
+                canceltext: " Cancel",
+                editParams: {
+                    keys: false,
+                    oneditfunc: function (result) {
+                        var id = $("#jqgInternalForms").jqGrid('getGridParam', 'selrow');
+                        $('#' + id + '_InternalFormNumber').prop('disabled', true);
+                        $('#' + id + '_NavigateURL').prop('disabled', true);
+                    },
+                    url: null,
+                    extraparam: {
+                        FormID: function () { return FormID; },
+                    },
+                    successfunc: function (result) {
+                        if (result.responseJSON.Status === true) {
+                            alert(result.responseJSON.Message, "s");
+                            $("#FormMasterTree").jstree("destroy");
+                            fnLoadFormsTree();
+                            $("#jqgInternalForms").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+                        }
+                        else {
+                            alert(result.responseJSON.Message, "e");
+                        }
+                    },
+                    aftersavefun: null,
+                    errorfun: null,
+                    afterrestorefun: null,
+                    restoreAfterError: false,
+                    mtype: "POST",
+                },
+
+                addParams: {
+                    useDefValues: true,
+                    restoreAfterError: false,
+                    position: "last",
+                    addRowParams: {
+                        keys: true,
+                        oneditfunc: function (rowID) {
+                            $('#' + rowID + '_NavigateURL').prop('disabled', true);
+                        },
+                        extraparam: {
+                            FormID: function () { return FormID; },
+                        },
+                        successfunc: function (result) {
+                            if (result.responseJSON.Status === true) {
+                                alert(result.responseJSON.Message);
+                                $("#FormMasterTree").jstree("destroy");
+                                fnLoadFormsTree();
+                                $("#jqgInternalForms").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+                                return true;
+                            }
+                            else {
+                                alert(result.responseJSON.Message);
+                            }
+                        },
+                    }
+                },
+            });
+    }
+
+
+    function fnOpenConfigureMenu() {
+         var url = '@Url.Action("Create", "eSyaConfigureMenu", new { area = "cnfg" })';
+         window.location.href = url;
+    }
+
+</script>
+
+

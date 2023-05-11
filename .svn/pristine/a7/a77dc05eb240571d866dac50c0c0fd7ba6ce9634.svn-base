@@ -1,0 +1,221 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
+using eSyaEnterprise_UI.Areas.Config.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+namespace eSyaEnterprise_UI.Areas.Config.Controllers
+{
+    public class InventoryController : Controller
+    {
+        ESyaWebAPI _eSyaWebAPI = new ESyaWebAPI();
+
+        #region Store Master
+        //Store Master
+        [Area("Config")]
+        public IActionResult V_10_00()
+        {
+            ViewBag.formName = "Store Master";
+            return View();
+        }
+        /// <summary>
+        /// Get Store Codes List for Grid
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetStoreCodes()
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("StoreMaster/GetStoreCodes").Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<List<DO_StoreMaster>>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Insert or Update Store Codes
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertOrUpdateStoreCodes([FromBody] DO_StoreMaster postData)
+        {
+
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                postData.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                postData.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                HttpResponseMessage response = client.PostAsJsonAsync<DO_StoreMaster>("StoreMaster/InsertOrUpdateStoreCodes", postData).Result;
+                string data = response.Content.ReadAsStringAsync().Result;
+                var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(data);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+        /// <summary>
+        /// Delete Store Codes
+        /// </summary>
+        [HttpPost]
+        public JsonResult DeleteStoreCode(int StoreCode)
+        {
+
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.DeleteAsync("StoreMaster/DeleteStoreCode?StoreCode=" + StoreCode).Result;
+                string data = response.Content.ReadAsStringAsync().Result;
+                var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(data);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+        #endregion Store Master
+
+        #region Inventory Rules
+        //Inventory Rules
+        [Area("Config")]
+        public IActionResult V_72_00()
+        {
+            ViewBag.formName = "Inventory Rules";
+            return View();
+        }
+
+        /// <summary>
+        /// Getting Inventory Rules for Grid
+        /// </summary>
+
+        [HttpPost]
+        public JsonResult GetInventoryRules()
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("InventoryRules/GetInventoryRules").Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<List<DO_InventoryRules>>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Insert or Update Inventory Rules
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertOrUpdateInventoryRules([FromBody] DO_InventoryRules inventoryRule)
+        {
+
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                if (inventoryRule.Isadd == 1)
+                {
+                    HttpResponseMessage Insertresponse = client.PostAsJsonAsync<DO_InventoryRules>("InventoryRules/InsertInventoryRule", inventoryRule).Result;
+                    string resp = Insertresponse.Content.ReadAsStringAsync().Result;
+                    var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(resp);
+                    return Json(result);
+                }
+
+                else
+                {
+                    HttpResponseMessage Updateresponse = client.PostAsJsonAsync<DO_InventoryRules>("InventoryRules/UpdateInventoryRule", inventoryRule).Result;
+                    string resp = Updateresponse.Content.ReadAsStringAsync().Result;
+                    var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(resp);
+                    return Json(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        #endregion Inventory Rules
+
+        #region Unit of Measure
+        //Unit of Measure
+        [Area("Config")]
+        public IActionResult V_73_00()
+        {
+            ViewBag.formName = "Unit of Measure";
+            return View();
+        }
+
+        /// <summary>
+        /// Getting Unit Measure List for Grid
+        /// </summary>
+
+        [HttpPost]
+        public JsonResult GetUnitofMeasurements()
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("UnitofMeasure/GetUnitofMeasurements").Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<List<DO_UnitofMeasure>>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Insert or Update Unite of Measure
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertOrUpdateUnitofMeasurement([FromBody] DO_UnitofMeasure uoms)
+        {
+
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                
+                    HttpResponseMessage response = client.PostAsJsonAsync<DO_UnitofMeasure>("UnitofMeasure/InsertOrUpdateUnitofMeasurement", uoms).Result;
+                    string result = response.Content.ReadAsStringAsync().Result;
+                    var data = JsonConvert.DeserializeObject<DO_ReturnParameter>(result);
+                    return Json(data);
+               
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+        #endregion Unit of Measure
+
+
+
+        #region Item Master
+        //Unit of Measure
+        [Area("Config")]
+        public IActionResult V_74_00()
+        {
+            ViewBag.formName = "Item Master";
+            return View();
+        }
+        #endregion Item Master
+    }
+}

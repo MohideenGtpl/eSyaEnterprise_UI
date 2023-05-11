@@ -1,0 +1,172 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/Masters/CustomerCodes.css" rel="stylesheet" />
+<link href="~/css/bootstrap-timepicker.css" rel="stylesheet" />
+<link href="~/css/jsTree.css" rel="stylesheet" />
+
+@section scripts{
+    <script src="~/js/bootstrap-timepicker.js"></script>
+    <script src="~/js/eSyaClinicalServices/DoctorMaster.js"></script>
+    <script src="~/js/eSyaClinicalServices/DoctorSchedule.js"></script>
+    <script src="~/js/eSyaClinicalServices/DoctorScheduleChange.js"></script>
+    <script src="~/js/eSyaClinicalServices/Doctorleave.js"></script>
+    <script src="~/js/jsTree.js"></script>
+}
+
+@{
+    var userFormRole = (eSyaEnterprise_UI.Models.DO_UserFormRole)ViewBag.UserFormRole; 
+}
+
+@using eSyaEnterprise_UI.Areas.eSyaClinicalServices.Models
+
+
+<script>
+    var _userFormRole = JSON.parse('@Html.Raw(Json.Serialize(userFormRole))');
+
+    var localization = {
+        DoctorShortName: '@Localizer["DoctorShortName"]',
+        DoctorName: '@Localizer["DoctorName"]',
+        Gender: '@Localizer["Gender"]',
+        Qualification: '@Localizer["Qualification"]',
+        MobileNumber: '@Localizer["MobileNumber"]',
+        DoctorClass: '@Localizer["DoctorClass"]',
+        DoctorCategory: '@Localizer["DoctorCategory"]',
+        Active: '@Localizer["Active"]',
+        Actions: '@Localizer["Actions"]',
+        Edit: '@Localizer["Edit"]',
+        View: '@Localizer["View"]',
+        AddDoctor: '@Localizer["AddDoctor"]',
+        Save: '@Localizer["Save"]',
+        Update: '@Localizer["Update"]',
+        Delete: '@Localizer["Delete"]',
+        wait: '@Localizer["wait"]',
+        SegmentDescription: '@Localizer["SegmentDescription"]',
+        BusinessLocation: '@Localizer["BusinessLocation"]',
+        Select: '@Localizer["Select"]',
+        Specialty: '@Localizer["Specialty"]',
+        Clinic: '@Localizer["Clinic"]',
+        ConsultationType: '@Localizer["ConsultationType"]',
+        Dayoftheweek: '@Localizer["Dayoftheweek"]',
+        NumberofPatients: '@Localizer["NumberofPatients"]',
+        Week1: '@Localizer["Week1"]',
+        Week2: '@Localizer["Week2"]',
+        Week3: '@Localizer["Week3"]',
+        Week4: '@Localizer["Week4"]',
+        Week5: '@Localizer["Week5"]',
+        FromTime: '@Localizer["FromTime"]',
+        ToTime: '@Localizer["ToTime"]',
+        ScheduleDate: '@Localizer["ScheduleDate"]',
+        LeaveFrom: '@Localizer["LeaveFrom"]',
+        LeaveTill: '@Localizer["LeaveTill"]',
+        NumberOfDays: '@Localizer["NumberOfDays"]',
+        DoctorClassCode: '@Localizer["DoctorClassCode"]',
+        DoctorCategoryCode: '@Localizer["DoctorCategoryCode"]',
+        AllowConsultation: '@Localizer["AllowConsultation"]',
+        AllowSMS: '@Localizer["AllowSMS"]',
+        IsRevenueShareAppicable: '@Localizer["IsRevenueShareAppicable"]',
+        TraiffFrom: '@Localizer["TraiffFrom"]',
+        LanguageKnown: '@Localizer["LanguageKnown"]',
+        Experience: '@Localizer["Experience"]',
+        DoctorRemarks: '@Localizer["DoctorRemarks"]',
+        DeActivate: '@Localizer["DeActivate"]',
+        Activate: '@Localizer["Activate"]',
+        
+    };
+</script>
+<section id="divGrid">
+    <div class="row form-group">
+        <div class="col-lg-12 col-xl-12 col-sm-12">
+            <label>@Localizer["ChooseDoctorbyalphabets"]</label>
+            <span class="dot">A</span>
+            <span class="dot">B</span>
+            <span class="dot">C</span>
+            <span class="dot">D</span>
+            <span class="dot">E</span>
+            <span class="dot">F</span>
+            <span class="dot">G</span>
+            <span class="dot">H</span>
+            <span class="dot">I</span>
+            <span class="dot">J</span>
+            <span class="dot">K</span>
+            <span class="dot">L</span>
+            <span class="dot">M</span>
+            <span class="dot">N</span>
+            <span class="dot">O</span>
+            <span class="dot">P</span>
+            <span class="dot">Q</span>
+            <span class="dot">R</span>
+            <span class="dot">S</span>
+            <span class="dot">T</span>
+            <span class="dot">U</span>
+            <span class="dot">V</span>
+            <span class="dot">W</span>
+            <span class="dot">X</span>
+            <span class="dot">Y</span>
+            <span class="dot">Z</span>
+            <span class="dot">All</span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <table id="jqgDoctorMaster"></table>
+            <div id="jqpDoctorMaster"></div>
+        </div>
+    </div>
+</section>
+
+<section id="divDoctorCodesForm" style="display:none;">
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12">
+            <h6 class="displayNames" id="hdDoctorName"> <span onclick=""><i class="fa fa-times"></i></span></h6>
+        </div>
+        <div class="col-sm-12">
+            <input type="text" class="form-control" id="txtDoctorId" style="display:none">
+        </div>
+        <div class="col-lg-1 col-md-2 col-sm-2 col-xs-3 col-xl-1  animated slideInLeft sidebarSmall">
+            <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                <a class="nav-link active" id="doctordetails-tab" data-toggle="pill" href="#doctordetails" role="tab" aria-controls="doctordetails" aria-selected="true">  @Localizer["DoctorDetails"]</a>
+                <a class="nav-link" id="businesslink-tab" data-toggle="pill" href="#businesslink" role="tab" aria-controls="businesslink" aria-selected="false">  @Localizer["BusinessLink"]</a>
+                <a class="nav-link " id="specialtylink-tab" data-toggle="pill" href="#specialtylink" role="tab" aria-controls="specialtylink" aria-selected="false" onclick="fnBindDoctorLocationbyDoctorId()"> @Localizer["SpecialtyLink"]</a>
+                <a class="nav-link " id="clinicdoctorlink-tab" data-toggle="pill" href="#clinicdoctorlink" role="tab" aria-controls="clinicdoctorlink" aria-selected="false" onclick="fnLoadClinicBusinessList()"> @Localizer["ClinicDoctorLink"]</a>
+                <a class="nav-link" id="doctorschedule-tab" data-toggle="pill" href="#doctorschedule" role="tab" aria-controls="doctorschedule" aria-selected="false" onclick="fnBindDoctorScheduleLocationbyDoctorId()"> @Localizer["DoctorSchedule"]</a>
+                <a class="nav-link" id="doctorschedulechange-tab" data-toggle="pill" href="#doctorschedulechange" role="tab" aria-controls="doctorschedulechange" aria-selected="false" onclick="fnBindDoctorSchedulechangeLocationbyDoctorId()"> @Localizer["ScheduleChange"]</a>
+                <a class="nav-link" id="doctorleave-tab" data-toggle="pill" href="#doctorleave" role="tab" aria-controls="doctorleave" aria-selected="false"> @Localizer["OnLeave"]</a>
+            </div>
+        </div>
+        <div class="col-lg-11 col-md-10 col-sm-10 col-xl-11 bg-white animated fadeIn delay-1s padleft0 mainbarSmall">
+            <div class="tab-content" id="v-pills-tabContent">
+                <div class="tab-pane fade show active" id="doctordetails" role="tabpanel" aria-labelledby="doctordetails-tab">
+                    @await Html.PartialAsync("_DoctorCodes")
+                </div>
+                <div class="tab-pane fade" id="businesslink" role="tabpanel" aria-labelledby="businesslink-tab">
+                    @await Html.PartialAsync("_BusinessLink")
+                </div>
+                <div class="tab-pane fade" id="specialtylink" role="tabpanel" aria-labelledby="specialtylink-tab">
+                    @await Html.PartialAsync("_SpecialtyLink")
+                </div>
+                <div class="tab-pane fade" id="clinicdoctorlink" role="tabpanel" aria-labelledby="clinicdoctorlink-tab">
+                    @await Html.PartialAsync("_ClinicDoctorLink")
+                </div>
+                <div class="tab-pane fade" id="doctorschedule" role="tabpanel" aria-labelledby="doctorschedule-tab">
+                    @await Html.PartialAsync("_DoctorSchedule")
+                </div>
+                <div class="tab-pane fade" id="doctorschedulechange" role="tabpanel" aria-labelledby="doctorschedulechange-tab">
+                    @await Html.PartialAsync("_DoctorScheduleChange")
+                </div>
+                <div class="tab-pane fade" id="doctorleave" role="tabpanel" aria-labelledby="doctorleave-tab">
+                    @await Html.PartialAsync("_DoctorLeave")
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+

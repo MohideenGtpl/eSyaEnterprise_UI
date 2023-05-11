@@ -1,0 +1,72 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+<div class="row padbot10 padtop15">
+
+    <div class="col-lg-6 col-sm-6 col-md-6">
+        <div class="form-group">
+            <label>Beneficiary Name</label>
+            <input id="txtbeneficiaryname" class="form-control" type="text" autocomplete="off" maxlength="75" pattern="^[a-zA-Z _]+$" />
+
+        </div>
+    </div>
+    <div class="col-lg-4 col-sm-6 col-md-4">
+        <div class="form-group">
+            <label>Bank Name</label>
+            <input id="txtbankname" class="form-control" type="text" autocomplete="off" maxlength="50" pattern="^[a-zA-Z _]+$" />
+
+        </div>
+    </div>
+    <div class="col-lg-2 col-sm-4 col-md-3">
+        <div class="form-group">
+            <label class="lable-color"> Status</label>
+            <select class="selectpicker" id="cbobankstatus">
+
+                <option value="true">Active</option>
+                <option value="false">Inactive</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-2 col-sm-4 col-md-3">
+        <div class="form-group">
+            <label>Bank A/c No.</label>
+            <input id="txtbankacno" class="form-control" type="text" autocomplete="off" maxlength="15" />
+
+        </div>
+    </div>
+    <div class="col-lg-2 col-sm-4 col-md-3">
+        <div class="form-group">
+            <label>Swift Code</label>
+            <input id="txtswiftcode" class="form-control" type="text" autocomplete="off" maxlength="15" />
+
+        </div>
+    </div>
+    <div class="col-lg-2 col-sm-4 col-md-3">
+        <div class="form-group">
+            <label>IFSC Code</label>
+            <input id="txtifsccode" class="form-control" type="text" autocomplete="off" maxlength="10" />
+
+        </div>
+    </div>
+</div>
+<div class="row padbot10">
+    <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+        <hr />
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent btn-back mr-10 c-white" onclick="fnCloseCustomerDetails()"><i class="fas fa-chevron-left"></i> Back</button>
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button mr-10" id="fnSaveBankDetails" onclick="fnSaveBankDetails()"> Save</button>
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button" onclick="fnClearBankDetails()"> Cancel</button>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 padbot10">
+        <table id="jqgCustomerBankDetails"></table>
+        <div id="jqpCustomerBankDetails"></div>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveBankDetails">
+            <i class="fa fa-save"></i> Save
+        </button>
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button" id="btnCancel" onclick="fnCloseForm()"><i class="fa fa-redo"></i> Cancel</button>
+
+    </div>
+</div>

@@ -1,0 +1,125 @@
+﻿
+@{
+    ViewData["Title"] = "V_273_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="row">
+    <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> Business Key</label>
+            <select class="selectpicker" data-live-search="false" id="cboBusinessKey" title="Choose Business Key"></select>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> Patient Category</label>
+            <select class="selectpicker" data-live-search="false" id="cboPatientCategory" title="Choose Patient Category"></select>
+        </div>
+    </div>
+    <div class="col-lg-1 col-md-2 col-sm-6">
+        <label>Discount for</label>
+        <div class="default-checkbox separate padtop0">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsOutPatient">
+                <input type="checkbox" id="chkIsOutPatient" class="mdl-checkbox__input">
+                <span class="mdl-checkbox__label">OP</span>
+            </label>
+        </div>
+    </div>
+    <div class="col-lg-1 col-md-2 col-sm-6">
+        <div class="default-checkbox separate padtop20">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsInPatient">
+                <input type="checkbox" id="chkIsInPatient" class="mdl-checkbox__input">
+                <span class="mdl-checkbox__label">IP</span>
+            </label>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> Discount at</label>
+            <select class="selectpicker" data-live-search="false" id="cboDiscountAt" title="Choose Generics"></select>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> Service Group</label>
+            <select class="selectpicker" data-live-search="false" id="cboServiceGroup" title="Choose Service Group"></select>
+        </div>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <table id="jqgLaboratoryServices"></table>
+        <div id="jqpLaboratoryServices"></div>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+        <hr />
+       <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button mr-10" id=""> Save</button>
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button"> Cancel</button>
+    </div>
+</div>
+<script>
+
+    $(function () {
+        fnGridLaboratoryServices()
+    })
+    function fnGridLaboratoryServices() {
+        $("#jqgLaboratoryServices").jqGrid('GridUnload');
+        $("#jqgLaboratoryServices").jqGrid({
+            // url: getBaseURL() + '' + customerNamePrefix,
+            datatype: 'json',
+            // mtype: 'Post',
+            ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+            jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+            colNames: ["Service Class", "Service Charge", "Discount ", "Discount Rule", "Status", "Actions"],
+            colModel: [
+                { name: "ServiceClass", width: 135, editable: true, align: 'left', hidden: false },
+                { name: "ServiceCharge", width: 135, editable: true, align: 'left', hidden: false },
+                { name: "Discount", width: 50, editable: true, align: 'left', hidden: false },
+                { name: "DiscountRule", width: 55, editable: true, align: 'left', hidden: false },
+                { name: "ActiveStatus", editable: true, width: 38, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: Inactive" } },
+                {
+                    name: 'Action', search: false, align: 'left', width: 54, sortable: false, resizable: false,
+                    formatter: function (cellValue, options, rowdata, action) {
+                        return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditLaboratoryServices(event,\'edit\')"><i class="fa fa-edit"></i> Edit </button>' +
+                            '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnEditLaboratoryServices(event,\'view\')"><i class="far fa-eye"></i> View </button>'
+
+                    }
+                },
+            ],
+            pager: "#jqpLaboratoryServices",
+            rowNum: 10,
+            rowList: [10, 20, 50, 100],
+            loadonce: true,
+            viewrecords: true,
+            gridview: true,
+            rownumbers: true,
+            height: 'auto',
+            align: "left",
+            width: 'auto',
+            autowidth: false,
+            shrinkToFit: false,
+            scrollOffset: 0,
+            loadComplete: function (data) {
+                SetGridControlByAction();
+            },
+        }).jqGrid('navGrid', '#jqpLaboratoryServices', { add: false, edit: false, search: false, del: false, refresh: false });
+        $("#jqgLaboratoryServices").jqGrid('inlineNav', '#jqpLaboratoryServices',
+            {
+                edit: false,
+                edittext: "Edit",
+                editicon: 'fa fa-pen',
+                add: true,
+                addtext: 'Add',
+                addicon: 'fa fa-plus',
+                save: true,
+                savetext: 'Save',
+                saveicon: 'fa fa-save',
+                cancel: true,
+                canceltext: 'cancel',
+                cancelicon: 'fa fa-times'
+            });
+    }
+    function fnGridRefreshLaboratoryServices() { }
+    function fnGridAddLaboratoryServices() {}
+</script>
+

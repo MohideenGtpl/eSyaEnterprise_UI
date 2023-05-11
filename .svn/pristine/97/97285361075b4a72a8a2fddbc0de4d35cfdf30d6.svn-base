@@ -1,0 +1,116 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
+using eSyaEnterprise_UI.Areas.Config.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using eSyaEnterprise_UI.Areas.Config.Data;
+
+namespace eSyaEnterprise_UI.Areas.Config.Controllers
+{
+    public class UserManagementController : Controller
+    {
+        private readonly IeSyaConfigAPIServices _eSyaConfigAPIServices;
+        public UserManagementController(IeSyaConfigAPIServices eSyaConfigAPIServices)
+        {
+            _eSyaConfigAPIServices = eSyaConfigAPIServices;
+        }
+        //User Group
+        [Area("Config")]
+        public IActionResult V_51_00()
+        {
+            ViewBag.formName = "User Group";
+            int ug_ctype = 1;
+            var Ug_serviceResponse = _eSyaConfigAPIServices.HttpClientServices.GetAsync<List<DO_ApplicationCodes>>("ConfigMasterData/GetApplicationCodesByCodeType?codeType=" + ug_ctype).Result;
+            ViewBag.UGappcodes = Ug_serviceResponse.Data;
+
+            int ut_ctype = 2;
+            var Ut_serviceResponse = _eSyaConfigAPIServices.HttpClientServices.GetAsync<List<DO_ApplicationCodes>>("ConfigMasterData/GetApplicationCodesByCodeType?codeType=" + ut_ctype).Result;
+            ViewBag.UTappcodes = Ut_serviceResponse.Data;
+
+            var Menu_serviceResponse = _eSyaConfigAPIServices.HttpClientServices.GetAsync<List<DO_MainMenu>>("eSyaConfigureMenu/GetConfigureMenulist").Result;
+            var MainMenu = Menu_serviceResponse.Data;
+            return View(MainMenu);
+        }
+
+        /// <summary>
+        /// Get Configuration Menu List for js tree
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetConfigureMenulist()
+        {
+            try
+            {
+                var serviceResponse = _eSyaConfigAPIServices.HttpClientServices.GetAsync<List<DO_MainMenu>>("eSyaConfigureMenu/GetConfigureMenulist").Result;
+                return Json(serviceResponse.Data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Get User Group Menu keys for js tree
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetMenuKeysbyUserGroupAndUserType(int uG, int uT)
+        {
+            try
+            {
+                var parameter = "?uG=" + uG + "&uT=" + uT;
+                var serviceResponse = _eSyaConfigAPIServices.HttpClientServices.GetAsync<List<int>>("UserManagement/GetMenuKeysbyUserGroupAndUserType" + parameter).Result;
+                return Json(serviceResponse.Data);
+               
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+        /// <summary>
+        /// Insert into User Group
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertMenukeysIntoUserGroup(DO_UserGroup selectedkeys)
+        {
+
+            try
+            {
+                selectedkeys.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                selectedkeys.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                var serviceResponse = _eSyaConfigAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("UserManagement/InsertMenukeysIntoUserGroup", selectedkeys).Result;
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+            }
+
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        //User Creation Grid
+        [Area("Config")]
+        public IActionResult V_52_00()
+        {
+            ViewBag.formName = "User Creation";
+            return View();
+        }
+        // User Creation form
+        [Area("Config")]
+        public IActionResult _UserCreation()
+        {
+            ViewBag.formName = "User Registration";
+            return View();
+        }
+    }
+}

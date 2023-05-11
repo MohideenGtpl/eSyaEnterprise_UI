@@ -1,0 +1,49 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+
+namespace eSyaEnterprise_UI.Controllers
+{
+    public class LoginController : Controller
+    {
+        public IActionResult Login()
+        {
+            return View();
+        }
+        public IActionResult MobileLogin()
+        {
+            return View();
+        }
+        public IActionResult MobileLoginOTP()
+        {
+            return View();
+        }
+        public IActionResult GmailLogin()
+        {
+            return View();
+        }
+        public IActionResult GetUserID()
+        {
+            return View();
+        }
+        public IActionResult GetPassword()
+        {
+            return View();
+        }
+        public IActionResult FacebookLogin()
+        {
+            return View();
+        }
+        public IActionResult CreatePassword()
+        {
+            return View();
+        }
+
+        public IActionResult LoginConfirmation()
+        {
+            return View();
+        }
+    }
+}

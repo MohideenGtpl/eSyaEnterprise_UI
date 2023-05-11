@@ -1,0 +1,140 @@
+﻿
+$(document).ready(function () {
+    fnGridLoadAssetRegister();
+    $("#divAssetRegister").hide();
+});
+
+function fnFillAssetSubGroup() {
+    
+    if ($('#cboAssetGroup').val() != '' && $('#cboAssetGroup').val() != null) {
+        
+        $.getJSON(getBaseURL() + '/AssetRegister/GetAssetSubGroup?assetGroup=' + $('#cboAssetGroup').val(), function (result) {
+            var options = $("#cboAssetSubGroup");
+            $("#cboAssetSubGroup").empty();
+
+            $.each(result, function () {
+                options.append($("<option />").val(this.AssetSubGroupID).text(this.AssetSubGroup));
+            });
+            $('#cboAssetSubGroup').selectpicker('refresh');
+        });
+
+    }
+}
+
+function fnGridLoadAssetRegister() {
+     
+    $("#jqgAssetRegister").jqGrid('GridUnload');
+    $("#jqgAssetRegister").jqGrid({
+        //url: URL,
+        mtype: 'Post',
+        datatype: 'local',
+        data: [{ InternalAssetNumber: '1000', SerialNumber: 'True', UnitAcquisitionValue: 'True', UnitOriginalCost: '100', AssetDescription: 'This is Test Description', AssetStatusPending:true,Actions:''}],
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Internal Asset Number", "Serial Number", "Unit Acquisition Value", "Unit Original Cost", "Asset Description", "Asset Status Pending", "Actions"],
+        colModel: [
+            { name: "InternalAssetNumber", width: 40, editable: true, align: 'left', hidden: false },
+            { name: "SerialNumber", width: 70, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "UnitAcquisitionValue", width: 70, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            { name: "UnitOriginalCost", editable: true, width: 45, align: 'center', resizable: false },
+            { name: "AssetDescription", editable: true, width: 150, align: 'left', resizable: false},
+            { name: "AssetStatusPending", editable: true, width: 28, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: Inactive" } },
+            {
+                name: 'Actions', search: false, align: 'left', width: 125, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Add" onclick="return fnGridAddAssetRegister(event)"><i class="fa fa-plus"></i> Add </button><button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" onclick="return fnEditAssetRegister(event)"><i class="fa fa-edit"></i> Edit </button><button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnViewAssetRegister(event)"><i class="fa fa-file"></i> View </button>'
+
+                }
+            },
+        ],
+        rowNum: 10,
+        loadonce: false,
+        pager: "#jqpAssetRegister",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0
+    }).jqGrid('navGrid', '#jqpAssetRegister', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpAssetRegister', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshAssetRegister
+    }); 
+}
+
+function fnGridAddAssetRegister() {
+    $("#divAssetRegister").show();
+     
+}
+
+function fnClearFields() {
+    $("#txtAssetRegisterDescription").val("");
+    $('#chkApplicationDefaultStatus').prop('checked', true);
+    $('#chkApplicationDefaultStatus').parent().removeClass('is-checked');
+    $('#chkApplicationDefaultStatus').prop('checked', false);
+    $('#cboActiveStatus').val("true");
+    $('#cboActiveStatus').selectpicker('refresh');
+    $("#txtAssetRegister").val("");
+    $("#btnSaveAssetRegister").attr('disabled', false);
+}
+
+function fnGridRefreshAssetRegister() {
+    $("#jqgAssetRegister").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+function fnEditAssetRegister(e) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgAssetRegister').jqGrid('getRowData', rowid);
+
+    $('#PopupAssetRegister').modal('show');
+    $('#PopupAssetRegister').find('.modal-title').text("Update Application Code");
+    $("#btnSaveAssetRegister").html(' Update');
+    $('#txtAssetRegister').val(rowData.AssetRegister);
+    $("#txtAssetRegisterDescription").val(rowData.CodeDesc);
+
+    if (rowData.DefaultStatus === "true") {
+        $("#chkApplicationDefaultStatus").parent().addClass("is-checked");
+    }
+    else { $("#chkApplicationDefaultStatus").parent().removeClass("is-checked"); }
+    $('#cboActiveStatus').attr('disabled', false);
+    $("#cboActiveStatus").val(rowData.ActiveStatus);
+    $("#cboActiveStatus").selectpicker('refresh');
+    $("#btnSaveAssetRegister").attr('disabled', false);
+}
+function fnViewAssetRegister(e) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgAssetRegister').jqGrid('getRowData', rowid);
+
+    $('#PopupAssetRegister').modal('show');
+    $('#PopupAssetRegister').find('.modal-title').text("View Application Code");
+    $("#btnSaveAssetRegister").html(' Update');
+    $('#txtAssetRegister').val(rowData.AssetRegister);
+    $("#txtAssetRegisterDescription").val(rowData.CodeDesc);
+
+    if (rowData.DefaultStatus === "true") {
+        $("#chkApplicationDefaultStatus").parent().addClass("is-checked");
+    }
+    else { $("#chkApplicationDefaultStatus").parent().removeClass("is-checked"); }
+    $('#cboActiveStatus').attr('disabled', false);
+    $("#cboActiveStatus").val(rowData.ActiveStatus);
+    $("#cboActiveStatus").selectpicker('refresh');
+    $("#btnSaveAssetRegister").attr('disabled', false);
+    $("#btnSaveAssetRegister").hide();
+    $("input,textarea").attr('readonly', true);
+    $("select").next().attr('disabled', true);
+    $("input[type=checkbox]").attr('disabled', true);
+    $("#PopupAssetRegister").on('hidden.bs.modal', function () {
+        $("#btnSaveAssetRegister").show();
+        $("input,textarea").attr('readonly', false);
+        $("select").next().attr('disabled', false);
+        $("input[type=checkbox]").attr('disabled', false);
+    })
+}
+
+
+
+function fnSaveAssetRegister() {
+    $("#PopupAssetRegister").modal('show');
+}

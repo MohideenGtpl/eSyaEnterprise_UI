@@ -1,0 +1,10 @@
+﻿
+@{
+    ViewData["Title"] = "V_4513_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts{
+    <script src="~/js/eSyaPayrollExpat/VariableEntry.js"></script>
+}
+

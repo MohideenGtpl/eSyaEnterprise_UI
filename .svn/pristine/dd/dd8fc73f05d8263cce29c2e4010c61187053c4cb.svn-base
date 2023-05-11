@@ -1,0 +1,29 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+
+namespace eSyaEnterprise_UI.Areas.Config.Controllers
+{
+    public class LocalizationController : Controller
+    {
+        /// <summary>
+        /// Localization Master
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult V_16_00()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// Localization Language Mapping
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult V_17_00()
+        {
+            return View();
+        }
+    }
+}

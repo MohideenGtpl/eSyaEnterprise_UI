@@ -1,0 +1,129 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="google" content="notranslate">
+    <title>diaFAQ</title>
+    <style>
+        body {
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            margin: 0px;
+        }
+
+        section {
+            padding: 20px;
+            background: #f4f9ff;
+        }
+        button.accordion::before {
+            content: '\002B';
+            color: #000;
+            font-weight: bold;
+            float: left;
+            margin-right: 5px;
+            font-size:14px;
+        }
+        button.accordion.active::before {
+            content: "\2212";
+        }
+        p {
+            text-align: justify;
+            line-height: 1.5;
+            margin: 20px 0px;
+            background: #fff;
+            padding: 15px;
+            font-size:14px;
+        }
+
+        .heading {
+            color: #003f67;
+            font-weight: 600;
+            margin: 20px 0px 0px 0px;
+        }
+        /* Style the buttons that are used to open and close the accordion panel */
+        .accordion {
+            background-color: #eee;
+            color: #444;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            text-align: left;
+            border: none;
+            outline: none;
+            transition: 0.4s;
+        }
+
+            /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+            .active, .accordion:hover {
+                background-color: #dff0ff;
+            }
+
+        /* Style the accordion panel. Note: hidden by default */
+        .panel {
+            padding: 0 18px;
+            background-color: white;
+            display: none;
+            overflow: hidden;
+        }
+        img {
+            width: 100%;
+            margin: 20px 0px;
+            border-radius: 5px;
+            box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+            padding: 4px;
+        }
+    </style>
+</head>
+<body>
+    <section>
+        <h1 class="heading">Bariatric Surgery FAQs</h1>
+        <img src="~/images/diaClinic/diaFAQ.png" />
+        <button class="accordion"> Is weight loss surgery for you?</button>
+        <div class="panel">
+            <p>According to international accepted criteria, the indications for obesity surgery are BMI > 40 kg/m2 or BMI>35 with pronounced co-morbidities. It is also requires several failed non-surgical attempts at weight reduction under the guidance of a physician over a period of one year and the absence of surgical contraindication or concomitant disease. Nevertheless, limits to the indication for surgery continue to be changing. For example, diabetes specialists suggest that a BMI of 32 kg/m2 in patients with type 2 diabetes as an indication for surgery.</p>
+        </div>
+
+        <button class="accordion">Obesity & Metabolic surgery: Myth or Magic</button>
+        <div class="panel">
+            <p>Anti-obesity surgery works through simple principles that affect Ingestion [Restriction], Assimilation & Storage [Malabsorption], and Desire to ingest [Satiation and Aversion]. Currently the widely performed surgical procedures are Sleeve Gastrectomy, Gastric Bypass and Mini Gastric bypass. They help in resolution of upto 90% of excess weight and almost similar resolution of co-morbidities like diabetes, hypertension, cholesterol, sleep apnoea, infertility, etc making it the guaranteed and most successful modality so far for morbid obesity.</p>
+        </div>
+
+        <button class="accordion">Diabesity: Is surgery a cure?</button>
+        <div class="panel">
+            <p>Diabetes being a medical disease, it was traditionally treated by diet and exercise with mild oral medicines. The disease keeps on progressing in most people with on-going complications on many organs in the body. It is associated with high cholesterol levels, high blood pressure, fatty liver disease, obesity and polycystic ovary disease causing the Metabolic Syndrome and also kidney failures, heart attacks, eye problems including blindness, nerve diseases etc. Diabetic surgery is surgery for cure of diabetes associated with or without obesity. These type of surgeries are performed for people with uncontrolled levels of blood parameters even after the maximum dose of drugs has been given and when the disease has become life threatening.</p>
+        </div>
+
+        <button class="accordion">Recent advanced in Bariatric & Metabolic surgery</button>
+        <div class="panel">
+            <p>Surgical weight loss is exclusively performed by laparoscopy or key hole surgery in which operations are performed through 4 – 5 small (usually 0.5 – 1.2 cm) incisions. Specialized equipment and instrumentations are necessary for this technique makes it a little more expensive than laparoscopy for other diseases. Latest additions in the field of laparoscopy include Single Incision Laparoscopic surgery, Robotic surgery & Endoluminal surgeries all of which are aimed at increasing the safety of the procedures as well as making it less invasive than conventional laparoscopic procedures.</p>
+        </div>
+    </section>
+    <script>
+        var acc = document.getElementsByClassName("accordion");
+var i;
+
+for (i = 0; i < acc.length; i++) {
+  acc[i].addEventListener("click", function() {
+    /* Toggle between adding and removing the "active" class,
+    to highlight the button that controls the panel */
+    this.classList.toggle("active");
+
+    /* Toggle between hiding and showing the active panel */
+    var panel = this.nextElementSibling;
+    if (panel.style.display === "block") {
+      panel.style.display = "none";
+    } else {
+      panel.style.display = "block";
+    }
+  });
+}
+    </script>
+</body>
+</html>

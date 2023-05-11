@@ -1,0 +1,81 @@
+﻿
+$(document).ready(function () {
+    fnGridLoadCurrencyDenomination();
+});
+var actiontype = "";
+function fnGridLoadCurrencyDenomination() {
+
+    var CurrencyCode = $("#cboCurrencyCode").val();
+    $("#jqgCurrencyDenomination").jqGrid('GridUnload');
+    $("#jqgCurrencyDenomination").jqGrid({
+        //url: getBaseURL() + '' + CurrencyCode,
+        //mtype: 'Post',
+        datatype: 'json',
+        //ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Currency Code", "", "", "Denomination Description", "", "Sequence", "Effective Date", "Active", "Actions"],
+        colModel: [
+            { name: "CurrencyCode", width: 50, editable: true, align: 'left', hidden: false },
+            { name: "BnorCnId", width: 70, editable: false, hidden: true, align: 'left', resizable: true },
+            { name: "DenomId", width: 70, editable: false, hidden: true, align: 'left', resizable: true },
+            { name: "DenomDesc", width: 170, editable: false, hidden: false, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            { name: "DenomId", width: 70, editable: false, hidden: true, align: 'left', resizable: true },
+            { name: "Sequence", width: 50, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "EffectiveDate", width: 50, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "ActiveStatus", width: 35, editable: false, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+            {
+                name: 'Edit', search: false, align: 'left', width: '74', sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditCurrencyDenomination(event,\'edit\')"><i class="fas fa-pencil-alt"></i> Edit </button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnEditCurrencyDenomination(event,\'view\')"><i class="far fa-file-alt"></i> View </button>'
+                }
+            }
+        ],
+        pager: "#jqpCurrencyDenomination",
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0,
+
+    }).jqGrid('navGrid', '#jqpCurrencyDenomination', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpCurrencyDenomination', {
+        caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshCurrencyDenomination
+    }).jqGrid('navButtonAdd', '#jqpCurrencyDenomination', {
+        caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddCurrencyDenomination
+    });
+    fnAddGridSerialNoHeading();
+}
+
+function fnAddCurrencyDenomination() {
+    fnClearFields();
+    var id = $("#CurrencyCode").val();
+    if (id === 0 || id === "0") {
+        toastr.warning("Please select any Currency code type to add");
+    }
+    else {
+        $('#PopupCurrencyDenomination').modal('show');
+        $('#PopupCurrencyDenomination').find('.modal-title').text("Add Currency Denomination");
+        $("#chkActiveStatus").parent().addClass("is-checked");
+        fnClearFields();
+        $("#btnSaveCurrencyDenomination").html(' Save');
+    }
+}
+
+function fnEditCurrencyDenomination(e, actiontype) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgCurrencyDenomination').jqGrid('getRowData', rowid);
+}
+function fnClearFields() {
+
+}
+
+function fnGridRefreshCurrencyDenomination() {
+
+}

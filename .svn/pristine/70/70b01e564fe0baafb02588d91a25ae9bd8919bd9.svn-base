@@ -1,0 +1,30 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+
+namespace eSyaEnterprise_UI.Areas.Config.Controllers
+{
+    public class UserManagementController : Controller
+    {
+        //User Group
+        [Area("Config")]
+        public IActionResult V_51_00()
+        {
+            return View();
+        }
+        //User Creation Grid
+        [Area("Config")]
+        public IActionResult V_52_00()
+        {
+            return View();
+        }
+        // User Creation form
+        [Area("Config")]
+        public IActionResult _UserCreation()
+        {
+            return View();
+        }
+    }
+}

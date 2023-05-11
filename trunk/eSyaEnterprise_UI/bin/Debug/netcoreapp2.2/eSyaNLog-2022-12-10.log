@@ -1,0 +1,502 @@
+2022-12-10 11:35:32.8612|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/|action: 
+2022-12-10 11:35:32.9110|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/|action: 
+2022-12-10 11:35:32.9358|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2022-12-10 11:35:56.2224|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/images/esya-products-yellow-with-footer.jpg|action: 
+2022-12-10 11:35:56.2339|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/images/logo/esya-logo-black.png|action: 
+2022-12-10 11:35:56.2477|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/images/esya-products-yellow-with-footer.jpg|action: 
+2022-12-10 11:35:56.2743|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/js/bootbox.min.js|action: 
+2022-12-10 11:35:56.2955|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/lib/bootstrap/dist/js/popper.min.js|action: 
+2022-12-10 11:35:56.3057|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/js/bootbox.min.js|action: 
+2022-12-10 11:35:56.3057|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/lib/bootstrap/dist/js/popper.min.js|action: 
+2022-12-10 11:35:56.2626|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/images/logo/esya-logo-black.png|action: 
+2022-12-10 11:35:56.3373|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/js/material.min.js|action: 
+2022-12-10 11:35:56.3603|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/js/material.min.js|action: 
+2022-12-10 11:35:56.3688|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/animate.css|action: 
+2022-12-10 11:35:56.3688|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/js/i18n/grid.locale-en.js|action: 
+2022-12-10 11:35:56.3999|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/animate.css|action: 
+2022-12-10 11:35:56.3999|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/js/i18n/grid.locale-en.js|action: 
+2022-12-10 11:35:56.4366|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/material.min.css|action: 
+2022-12-10 11:35:56.4613|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/login.css|action: 
+2022-12-10 11:35:56.4487|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/material.min.css|action: 
+2022-12-10 11:35:56.4838|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/login.css|action: 
+2022-12-10 11:35:56.5410|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/esyafonts.css|action: 
+2022-12-10 11:35:56.5702|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/esyafonts.css|action: 
+2022-12-10 11:35:56.6398|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/all.min.css|action: 
+2022-12-10 11:35:56.6579|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/esyaTheme.css|action: 
+2022-12-10 11:35:56.6683|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/all.min.css|action: 
+2022-12-10 11:35:56.6828|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/esyaTheme.css|action: 
+2022-12-10 11:35:56.6828|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/bootstrap-select.css|action: 
+2022-12-10 11:35:56.7128|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/bootstrap-select.css|action: 
+2022-12-10 11:35:56.8076|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/lib/bootstrap/dist/css/bootstrap.min.css|action: 
+2022-12-10 11:35:56.8364|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/lib/bootstrap/dist/css/bootstrap.min.css|action: 
+2022-12-10 11:35:56.8364|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/js/Inputmask/bindings/inputmask.binding.js|action: 
+2022-12-10 11:35:56.8610|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/js/Inputmask/bindings/inputmask.binding.js|action: 
+2022-12-10 11:35:56.8877|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/fonts/fa-solid-900.woff2|action: 
+2022-12-10 11:35:56.8877|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/fonts/esyaFonts/Roboto/Roboto-Regular.ttf|action: 
+2022-12-10 11:35:56.9147|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/fonts/fa-solid-900.woff2|action: 
+2022-12-10 11:35:56.9147|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/fonts/esyaFonts/Roboto/Roboto-Regular.ttf|action: 
+2022-12-10 11:35:56.9495|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/favicon.ico|action: 
+2022-12-10 11:35:56.9799|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/favicon.ico|action: 
+2022-12-10 11:36:03.8699|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/|action: 
+2022-12-10 11:36:03.8962|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/|action: 
+2022-12-10 11:36:04.8183|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/Home|action: 
+2022-12-10 11:36:04.8304|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/Home|action: 
+2022-12-10 11:36:06.0413|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/site.css|action: 
+2022-12-10 11:36:06.0568|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/jqgridcustomstyle.css|action: 
+2022-12-10 11:36:06.0568|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/ui.jqgrid.css|action: 
+2022-12-10 11:36:06.0716|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/site.css|action: 
+2022-12-10 11:36:06.0716|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/jqgridcustomstyle.css|action: 
+2022-12-10 11:36:06.0875|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/ui.jqgrid.css|action: 
+2022-12-10 11:36:06.1517|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/toastr.min.css|action: 
+2022-12-10 11:36:06.1682|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/toastr.min.css|action: 
+2022-12-10 11:36:06.1850|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/js/utility/cf-input-validation.js|action: 
+2022-12-10 11:36:06.2046|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/master.css|action: 
+2022-12-10 11:36:06.2159|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/js/utility/cf-input-validation.js|action: 
+2022-12-10 11:36:06.2356|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/master.css|action: 
+2022-12-10 11:36:06.2705|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/jquery-ui.min.css|action: 
+2022-12-10 11:36:06.0413|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/images/logo/esya-logo-whitebg.jpeg|action: 
+2022-12-10 11:36:06.2957|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/jquery-ui.min.css|action: 
+2022-12-10 11:36:06.3315|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/images/logo/esya-logo-whitebg.jpeg|action: 
+2022-12-10 11:36:06.4620|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/images/gtpl_logo.jpg|action: 
+2022-12-10 11:36:06.4797|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/fonts/fa-regular-400.woff2|action: 
+2022-12-10 11:36:06.4797|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/images/gtpl_logo.jpg|action: 
+2022-12-10 11:36:06.4968|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/fonts/fa-regular-400.woff2|action: 
+2022-12-10 11:36:06.5647|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/json/menuitem.json|action: 
+2022-12-10 11:36:06.5712|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/json/errormessage.json|action: 
+2022-12-10 11:36:06.5712|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/json/menuitem.json|action: 
+2022-12-10 11:36:06.5888|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/json/errormessage.json|action: 
+2022-12-10 11:36:10.6023|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/eSyaNatureCure/FrontOffice/V_ENC_01_00|action: 
+2022-12-10 11:36:10.6023|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/eSyaNatureCure/FrontOffice/V_ENC_01_00|action: 
+2022-12-10 11:36:15.5097|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/js/eSyaNatureCure/FrontOfficeRescheduling.js|action: 
+2022-12-10 11:36:15.5097|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/eSyaNatureCure.css|action: 
+2022-12-10 11:36:15.5343|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/js/eSyaNatureCure/FrontOfficeRescheduling.js|action: 
+2022-12-10 11:36:15.5423|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/dashBoard.css|action: 
+2022-12-10 11:36:15.5423|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/eSyaNatureCure.css|action: 
+2022-12-10 11:36:15.5664|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/dashBoard.css|action: 
+2022-12-10 11:36:15.7545|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/FrontOffice/GetActiveRoomBedMaster|action: 
+2022-12-10 11:36:15.7868|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/FrontOffice/GetActiveRoomBedMaster|action: 
+2022-12-10 11:36:16.5167|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/FrontOffice/GetDashboardByDate|action: 
+2022-12-10 11:36:16.5260|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/FrontOffice/GetDashboardByDate|action: 
+2022-12-10 11:36:23.1871|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/images/ui-icons_gold_256x240.png|action: 
+2022-12-10 11:36:23.2025|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/FrontOffice/GetGuestRoomchangeByBookingKey|action: 
+2022-12-10 11:36:23.2025|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/images/ui-icons_gold_256x240.png|action: 
+2022-12-10 11:36:23.2185|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/FrontOffice/GetGuestRoomchangeByBookingKey|action: 
+2022-12-10 11:36:23.3747|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/images/ui-icons_ffffff_256x240.png|action: 
+2022-12-10 11:36:23.4014|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/images/ui-icons_ffffff_256x240.png|action: 
+2022-12-10 11:36:23.7106|1|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An unhandled exception has occurred while executing the request. System.AggregateException: An error occurred while writing to logger(s). (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Invalid format string. Expected 2 format parameters, but failed to lookup parameter index 1) (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Invalid format string. Expected 2 format parameters, but failed to lookup parameter index 1) ---> System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list.
+   at System.Text.StringBuilder.AppendFormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.Format(IFormatProvider provider, String format, Object[] args)
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.Format(Object[] values)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.ToString()
+   at Microsoft.Extensions.Logging.LoggerExtensions.MessageFormatter(Object state, Exception error)
+   at Microsoft.Extensions.Logging.Console.ConsoleLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   --- End of inner exception stack trace ---
+---> (Inner Exception #0) System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list.
+   at System.Text.StringBuilder.AppendFormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.Format(IFormatProvider provider, String format, Object[] args)
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.Format(Object[] values)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.ToString()
+   at Microsoft.Extensions.Logging.LoggerExtensions.MessageFormatter(Object state, Exception error)
+   at Microsoft.Extensions.Logging.Console.ConsoleLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)<---
+
+---> (Inner Exception #1) System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list.
+   at System.Text.StringBuilder.AppendFormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.Format(IFormatProvider provider, String format, Object[] args)
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.Format(Object[] values)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.ToString()
+   at Microsoft.Extensions.Logging.LoggerExtensions.MessageFormatter(Object state, Exception error)
+   at Microsoft.Extensions.Logging.Debug.DebugLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)<---
+
+---> (Inner Exception #2) System.FormatException: Invalid format string. Expected 2 format parameters, but failed to lookup parameter index 1 ---> System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.GetValue(Object[] values, Int32 index)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.get_Item(Int32 index)
+   at NLog.Extensions.Logging.NLogMessageParameterList.TryGetParameterName(IReadOnlyList`1 parameterList, Int32 i, Nullable`1& originalMessageIndex, String& parameterKey)
+   --- End of inner exception stack trace ---
+   at NLog.Extensions.Logging.NLogMessageParameterList.TryGetParameterName(IReadOnlyList`1 parameterList, Int32 i, Nullable`1& originalMessageIndex, String& parameterKey)
+   at NLog.Extensions.Logging.NLogMessageParameterList.IsValidParameterList(IReadOnlyList`1 parameterList, Nullable`1& originalMessageIndex, Boolean& hasMessageTemplateCapture, Boolean& isMixedPositional, Boolean& isPositional)
+   at NLog.Extensions.Logging.NLogMessageParameterList..ctor(IReadOnlyList`1 parameterList)
+   at NLog.Extensions.Logging.NLogMessageParameterList.TryParse(IReadOnlyList`1 parameterList)
+   at NLog.Extensions.Logging.NLogLogger.TryParseMessageTemplate(LogLevel nLogLogLevel, IReadOnlyList`1 messageProperties, NLogMessageParameterList& messageParameters)
+   at NLog.Extensions.Logging.NLogLogger.CreateLogEventInfo[TState](LogLevel nLogLogLevel, TState state, Exception exception, Func`3 formatter)
+   at NLog.Extensions.Logging.NLogLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)<---
+|url: http://localhost/FrontOffice/GetGuestRoomchangeByBookingKey|action: GetGuestRoomchangeByBookingKey
+2022-12-10 11:36:23.8336|3|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An exception was thrown attempting to execute the error handler. System.ArgumentNullException: Value cannot be null.
+Parameter name: logger
+   at Microsoft.Extensions.Logging.LoggerExtensions.Log(ILogger logger, LogLevel logLevel, EventId eventId, Exception exception, String message, Object[] args)
+   at Microsoft.Extensions.Logging.LoggerExtensions.LogError(ILogger logger, Exception exception, String message, Object[] args)
+   at eSyaEnterprise_UI.Extension.ExceptionMiddlewareExtensions.<>c.<<ConfigureExceptionHandler>b__0_1>d.MoveNext() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Extension\ExceptionMiddlewareExtensions.cs:line 44
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/FrontOffice/GetGuestRoomchangeByBookingKey|action: GetGuestRoomchangeByBookingKey
+2022-12-10 11:36:23.8626|1|ERROR|Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware|An unhandled exception has occurred while executing the request. System.AggregateException: An error occurred while writing to logger(s). (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Invalid format string. Expected 2 format parameters, but failed to lookup parameter index 1) (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Invalid format string. Expected 2 format parameters, but failed to lookup parameter index 1) ---> System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list.
+   at System.Text.StringBuilder.AppendFormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.Format(IFormatProvider provider, String format, Object[] args)
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.Format(Object[] values)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.ToString()
+   at Microsoft.Extensions.Logging.LoggerExtensions.MessageFormatter(Object state, Exception error)
+   at Microsoft.Extensions.Logging.Console.ConsoleLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   --- End of inner exception stack trace ---
+---> (Inner Exception #0) System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list.
+   at System.Text.StringBuilder.AppendFormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.Format(IFormatProvider provider, String format, Object[] args)
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.Format(Object[] values)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.ToString()
+   at Microsoft.Extensions.Logging.LoggerExtensions.MessageFormatter(Object state, Exception error)
+   at Microsoft.Extensions.Logging.Console.ConsoleLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)<---
+
+---> (Inner Exception #1) System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list.
+   at System.Text.StringBuilder.AppendFormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.Format(IFormatProvider provider, String format, Object[] args)
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.Format(Object[] values)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.ToString()
+   at Microsoft.Extensions.Logging.LoggerExtensions.MessageFormatter(Object state, Exception error)
+   at Microsoft.Extensions.Logging.Debug.DebugLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)<---
+
+---> (Inner Exception #2) System.FormatException: Invalid format string. Expected 2 format parameters, but failed to lookup parameter index 1 ---> System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.GetValue(Object[] values, Int32 index)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.get_Item(Int32 index)
+   at NLog.Extensions.Logging.NLogMessageParameterList.TryGetParameterName(IReadOnlyList`1 parameterList, Int32 i, Nullable`1& originalMessageIndex, String& parameterKey)
+   --- End of inner exception stack trace ---
+   at NLog.Extensions.Logging.NLogMessageParameterList.TryGetParameterName(IReadOnlyList`1 parameterList, Int32 i, Nullable`1& originalMessageIndex, String& parameterKey)
+   at NLog.Extensions.Logging.NLogMessageParameterList.IsValidParameterList(IReadOnlyList`1 parameterList, Nullable`1& originalMessageIndex, Boolean& hasMessageTemplateCapture, Boolean& isMixedPositional, Boolean& isPositional)
+   at NLog.Extensions.Logging.NLogMessageParameterList..ctor(IReadOnlyList`1 parameterList)
+   at NLog.Extensions.Logging.NLogMessageParameterList.TryParse(IReadOnlyList`1 parameterList)
+   at NLog.Extensions.Logging.NLogLogger.TryParseMessageTemplate(LogLevel nLogLogLevel, IReadOnlyList`1 messageProperties, NLogMessageParameterList& messageParameters)
+   at NLog.Extensions.Logging.NLogLogger.CreateLogEventInfo[TState](LogLevel nLogLogLevel, TState state, Exception exception, Func`3 formatter)
+   at NLog.Extensions.Logging.NLogLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)<---
+|url: http://localhost/FrontOffice/GetGuestRoomchangeByBookingKey|action: GetGuestRoomchangeByBookingKey
+2022-12-10 11:36:26.3140|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/FrontOffice/GetActiveRoomNumbersbyRoomType|action: 
+2022-12-10 11:36:26.3277|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/FrontOffice/GetActiveRoomNumbersbyRoomType|action: 
+2022-12-10 11:36:26.6450|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/FrontOffice/GetActiveBedNumbersbyRoomNumber|action: 
+2022-12-10 11:36:26.6623|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/FrontOffice/GetActiveBedNumbersbyRoomNumber|action: 
+2022-12-10 11:36:28.8273|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/FrontOffice/GetActiveBedNumbersbyRoomNumber|action: 
+2022-12-10 11:36:28.8414|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/FrontOffice/GetActiveBedNumbersbyRoomNumber|action: 
+2022-12-10 11:37:11.8904|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/UserProfile/GetUserName|action: 
+2022-12-10 11:37:11.9024|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/UserProfile/GetUserName|action: 
+2022-12-10 11:37:12.7285|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/UserProfile/GetUserName|action: 
+2022-12-10 11:37:12.7580|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/UserProfile/GetUserName|action: 
+2022-12-10 11:37:15.9969|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/FrontOffice/GetGuestRoomchangeByBookingKey|action: 
+2022-12-10 11:37:16.0110|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/FrontOffice/GetGuestRoomchangeByBookingKey|action: 
+2022-12-10 11:37:16.2823|1|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An unhandled exception has occurred while executing the request. System.AggregateException: An error occurred while writing to logger(s). (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Invalid format string. Expected 2 format parameters, but failed to lookup parameter index 1) (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Invalid format string. Expected 2 format parameters, but failed to lookup parameter index 1) ---> System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list.
+   at System.Text.StringBuilder.AppendFormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.Format(IFormatProvider provider, String format, Object[] args)
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.Format(Object[] values)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.ToString()
+   at Microsoft.Extensions.Logging.LoggerExtensions.MessageFormatter(Object state, Exception error)
+   at Microsoft.Extensions.Logging.Console.ConsoleLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   --- End of inner exception stack trace ---
+---> (Inner Exception #0) System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list.
+   at System.Text.StringBuilder.AppendFormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.Format(IFormatProvider provider, String format, Object[] args)
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.Format(Object[] values)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.ToString()
+   at Microsoft.Extensions.Logging.LoggerExtensions.MessageFormatter(Object state, Exception error)
+   at Microsoft.Extensions.Logging.Console.ConsoleLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)<---
+
+---> (Inner Exception #1) System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list.
+   at System.Text.StringBuilder.AppendFormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.Format(IFormatProvider provider, String format, Object[] args)
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.Format(Object[] values)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.ToString()
+   at Microsoft.Extensions.Logging.LoggerExtensions.MessageFormatter(Object state, Exception error)
+   at Microsoft.Extensions.Logging.Debug.DebugLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)<---
+
+---> (Inner Exception #2) System.FormatException: Invalid format string. Expected 2 format parameters, but failed to lookup parameter index 1 ---> System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.GetValue(Object[] values, Int32 index)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.get_Item(Int32 index)
+   at NLog.Extensions.Logging.NLogMessageParameterList.TryGetParameterName(IReadOnlyList`1 parameterList, Int32 i, Nullable`1& originalMessageIndex, String& parameterKey)
+   --- End of inner exception stack trace ---
+   at NLog.Extensions.Logging.NLogMessageParameterList.TryGetParameterName(IReadOnlyList`1 parameterList, Int32 i, Nullable`1& originalMessageIndex, String& parameterKey)
+   at NLog.Extensions.Logging.NLogMessageParameterList.IsValidParameterList(IReadOnlyList`1 parameterList, Nullable`1& originalMessageIndex, Boolean& hasMessageTemplateCapture, Boolean& isMixedPositional, Boolean& isPositional)
+   at NLog.Extensions.Logging.NLogMessageParameterList..ctor(IReadOnlyList`1 parameterList)
+   at NLog.Extensions.Logging.NLogMessageParameterList.TryParse(IReadOnlyList`1 parameterList)
+   at NLog.Extensions.Logging.NLogLogger.TryParseMessageTemplate(LogLevel nLogLogLevel, IReadOnlyList`1 messageProperties, NLogMessageParameterList& messageParameters)
+   at NLog.Extensions.Logging.NLogLogger.CreateLogEventInfo[TState](LogLevel nLogLogLevel, TState state, Exception exception, Func`3 formatter)
+   at NLog.Extensions.Logging.NLogLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)<---
+|url: http://localhost/FrontOffice/GetGuestRoomchangeByBookingKey|action: GetGuestRoomchangeByBookingKey
+2022-12-10 11:37:16.3840|3|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An exception was thrown attempting to execute the error handler. System.ArgumentNullException: Value cannot be null.
+Parameter name: logger
+   at Microsoft.Extensions.Logging.LoggerExtensions.Log(ILogger logger, LogLevel logLevel, EventId eventId, Exception exception, String message, Object[] args)
+   at Microsoft.Extensions.Logging.LoggerExtensions.LogError(ILogger logger, Exception exception, String message, Object[] args)
+   at eSyaEnterprise_UI.Extension.ExceptionMiddlewareExtensions.<>c.<<ConfigureExceptionHandler>b__0_1>d.MoveNext() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Extension\ExceptionMiddlewareExtensions.cs:line 44
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/FrontOffice/GetGuestRoomchangeByBookingKey|action: GetGuestRoomchangeByBookingKey
+2022-12-10 11:37:16.4056|1|ERROR|Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware|An unhandled exception has occurred while executing the request. System.AggregateException: An error occurred while writing to logger(s). (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Invalid format string. Expected 2 format parameters, but failed to lookup parameter index 1) (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Invalid format string. Expected 2 format parameters, but failed to lookup parameter index 1) ---> System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list.
+   at System.Text.StringBuilder.AppendFormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.Format(IFormatProvider provider, String format, Object[] args)
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.Format(Object[] values)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.ToString()
+   at Microsoft.Extensions.Logging.LoggerExtensions.MessageFormatter(Object state, Exception error)
+   at Microsoft.Extensions.Logging.Console.ConsoleLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   --- End of inner exception stack trace ---
+---> (Inner Exception #0) System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list.
+   at System.Text.StringBuilder.AppendFormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.Format(IFormatProvider provider, String format, Object[] args)
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.Format(Object[] values)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.ToString()
+   at Microsoft.Extensions.Logging.LoggerExtensions.MessageFormatter(Object state, Exception error)
+   at Microsoft.Extensions.Logging.Console.ConsoleLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)<---
+
+---> (Inner Exception #1) System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list.
+   at System.Text.StringBuilder.AppendFormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.Format(IFormatProvider provider, String format, Object[] args)
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.Format(Object[] values)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.ToString()
+   at Microsoft.Extensions.Logging.LoggerExtensions.MessageFormatter(Object state, Exception error)
+   at Microsoft.Extensions.Logging.Debug.DebugLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)<---
+
+---> (Inner Exception #2) System.FormatException: Invalid format string. Expected 2 format parameters, but failed to lookup parameter index 1 ---> System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.GetValue(Object[] values, Int32 index)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.get_Item(Int32 index)
+   at NLog.Extensions.Logging.NLogMessageParameterList.TryGetParameterName(IReadOnlyList`1 parameterList, Int32 i, Nullable`1& originalMessageIndex, String& parameterKey)
+   --- End of inner exception stack trace ---
+   at NLog.Extensions.Logging.NLogMessageParameterList.TryGetParameterName(IReadOnlyList`1 parameterList, Int32 i, Nullable`1& originalMessageIndex, String& parameterKey)
+   at NLog.Extensions.Logging.NLogMessageParameterList.IsValidParameterList(IReadOnlyList`1 parameterList, Nullable`1& originalMessageIndex, Boolean& hasMessageTemplateCapture, Boolean& isMixedPositional, Boolean& isPositional)
+   at NLog.Extensions.Logging.NLogMessageParameterList..ctor(IReadOnlyList`1 parameterList)
+   at NLog.Extensions.Logging.NLogMessageParameterList.TryParse(IReadOnlyList`1 parameterList)
+   at NLog.Extensions.Logging.NLogLogger.TryParseMessageTemplate(LogLevel nLogLogLevel, IReadOnlyList`1 messageProperties, NLogMessageParameterList& messageParameters)
+   at NLog.Extensions.Logging.NLogLogger.CreateLogEventInfo[TState](LogLevel nLogLogLevel, TState state, Exception exception, Func`3 formatter)
+   at NLog.Extensions.Logging.NLogLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)<---
+|url: http://localhost/FrontOffice/GetGuestRoomchangeByBookingKey|action: GetGuestRoomchangeByBookingKey
+2022-12-10 11:37:18.3859|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/FrontOffice/GetActiveRoomNumbersbyRoomType|action: 
+2022-12-10 11:37:18.4088|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/FrontOffice/GetActiveRoomNumbersbyRoomType|action: 
+2022-12-10 11:37:18.6207|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/FrontOffice/GetActiveBedNumbersbyRoomNumber|action: 
+2022-12-10 11:37:18.6551|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/FrontOffice/GetActiveBedNumbersbyRoomNumber|action: 
+2022-12-10 11:37:21.1376|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/FrontOffice/GetActiveBedNumbersbyRoomNumber|action: 
+2022-12-10 11:37:21.1491|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/FrontOffice/GetActiveBedNumbersbyRoomNumber|action: 
+2022-12-10 11:37:26.3768|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/FrontOffice/InsertGuestRoomchange|action: 
+2022-12-10 11:37:26.3900|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/FrontOffice/InsertGuestRoomchange|action: 
+2022-12-10 11:37:40.5179|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/FrontOffice/GetGuestReschedulingByBookingKey|action: 
+2022-12-10 11:37:40.5305|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/FrontOffice/GetGuestReschedulingByBookingKey|action: 
+2022-12-10 11:37:40.7905|1|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An unhandled exception has occurred while executing the request. System.AggregateException: An error occurred while writing to logger(s). (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Invalid format string. Expected 2 format parameters, but failed to lookup parameter index 1) (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Invalid format string. Expected 2 format parameters, but failed to lookup parameter index 1) ---> System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list.
+   at System.Text.StringBuilder.AppendFormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.Format(IFormatProvider provider, String format, Object[] args)
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.Format(Object[] values)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.ToString()
+   at Microsoft.Extensions.Logging.LoggerExtensions.MessageFormatter(Object state, Exception error)
+   at Microsoft.Extensions.Logging.Console.ConsoleLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   --- End of inner exception stack trace ---
+---> (Inner Exception #0) System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list.
+   at System.Text.StringBuilder.AppendFormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.Format(IFormatProvider provider, String format, Object[] args)
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.Format(Object[] values)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.ToString()
+   at Microsoft.Extensions.Logging.LoggerExtensions.MessageFormatter(Object state, Exception error)
+   at Microsoft.Extensions.Logging.Console.ConsoleLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)<---
+
+---> (Inner Exception #1) System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list.
+   at System.Text.StringBuilder.AppendFormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.Format(IFormatProvider provider, String format, Object[] args)
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.Format(Object[] values)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.ToString()
+   at Microsoft.Extensions.Logging.LoggerExtensions.MessageFormatter(Object state, Exception error)
+   at Microsoft.Extensions.Logging.Debug.DebugLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)<---
+
+---> (Inner Exception #2) System.FormatException: Invalid format string. Expected 2 format parameters, but failed to lookup parameter index 1 ---> System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.GetValue(Object[] values, Int32 index)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.get_Item(Int32 index)
+   at NLog.Extensions.Logging.NLogMessageParameterList.TryGetParameterName(IReadOnlyList`1 parameterList, Int32 i, Nullable`1& originalMessageIndex, String& parameterKey)
+   --- End of inner exception stack trace ---
+   at NLog.Extensions.Logging.NLogMessageParameterList.TryGetParameterName(IReadOnlyList`1 parameterList, Int32 i, Nullable`1& originalMessageIndex, String& parameterKey)
+   at NLog.Extensions.Logging.NLogMessageParameterList.IsValidParameterList(IReadOnlyList`1 parameterList, Nullable`1& originalMessageIndex, Boolean& hasMessageTemplateCapture, Boolean& isMixedPositional, Boolean& isPositional)
+   at NLog.Extensions.Logging.NLogMessageParameterList..ctor(IReadOnlyList`1 parameterList)
+   at NLog.Extensions.Logging.NLogMessageParameterList.TryParse(IReadOnlyList`1 parameterList)
+   at NLog.Extensions.Logging.NLogLogger.TryParseMessageTemplate(LogLevel nLogLogLevel, IReadOnlyList`1 messageProperties, NLogMessageParameterList& messageParameters)
+   at NLog.Extensions.Logging.NLogLogger.CreateLogEventInfo[TState](LogLevel nLogLogLevel, TState state, Exception exception, Func`3 formatter)
+   at NLog.Extensions.Logging.NLogLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)<---
+|url: http://localhost/FrontOffice/GetGuestReschedulingByBookingKey|action: GetGuestReschedulingByBookingKey
+2022-12-10 11:37:40.8970|3|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An exception was thrown attempting to execute the error handler. System.ArgumentNullException: Value cannot be null.
+Parameter name: logger
+   at Microsoft.Extensions.Logging.LoggerExtensions.Log(ILogger logger, LogLevel logLevel, EventId eventId, Exception exception, String message, Object[] args)
+   at Microsoft.Extensions.Logging.LoggerExtensions.LogError(ILogger logger, Exception exception, String message, Object[] args)
+   at eSyaEnterprise_UI.Extension.ExceptionMiddlewareExtensions.<>c.<<ConfigureExceptionHandler>b__0_1>d.MoveNext() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Extension\ExceptionMiddlewareExtensions.cs:line 44
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/FrontOffice/GetGuestReschedulingByBookingKey|action: GetGuestReschedulingByBookingKey
+2022-12-10 11:37:40.9322|1|ERROR|Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware|An unhandled exception has occurred while executing the request. System.AggregateException: An error occurred while writing to logger(s). (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Invalid format string. Expected 2 format parameters, but failed to lookup parameter index 1) (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Invalid format string. Expected 2 format parameters, but failed to lookup parameter index 1) ---> System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list.
+   at System.Text.StringBuilder.AppendFormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.Format(IFormatProvider provider, String format, Object[] args)
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.Format(Object[] values)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.ToString()
+   at Microsoft.Extensions.Logging.LoggerExtensions.MessageFormatter(Object state, Exception error)
+   at Microsoft.Extensions.Logging.Console.ConsoleLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   --- End of inner exception stack trace ---
+---> (Inner Exception #0) System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list.
+   at System.Text.StringBuilder.AppendFormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.Format(IFormatProvider provider, String format, Object[] args)
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.Format(Object[] values)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.ToString()
+   at Microsoft.Extensions.Logging.LoggerExtensions.MessageFormatter(Object state, Exception error)
+   at Microsoft.Extensions.Logging.Console.ConsoleLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)<---
+
+---> (Inner Exception #1) System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list.
+   at System.Text.StringBuilder.AppendFormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.Format(IFormatProvider provider, String format, Object[] args)
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.Format(Object[] values)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.ToString()
+   at Microsoft.Extensions.Logging.LoggerExtensions.MessageFormatter(Object state, Exception error)
+   at Microsoft.Extensions.Logging.Debug.DebugLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)<---
+
+---> (Inner Exception #2) System.FormatException: Invalid format string. Expected 2 format parameters, but failed to lookup parameter index 1 ---> System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.GetValue(Object[] values, Int32 index)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.get_Item(Int32 index)
+   at NLog.Extensions.Logging.NLogMessageParameterList.TryGetParameterName(IReadOnlyList`1 parameterList, Int32 i, Nullable`1& originalMessageIndex, String& parameterKey)
+   --- End of inner exception stack trace ---
+   at NLog.Extensions.Logging.NLogMessageParameterList.TryGetParameterName(IReadOnlyList`1 parameterList, Int32 i, Nullable`1& originalMessageIndex, String& parameterKey)
+   at NLog.Extensions.Logging.NLogMessageParameterList.IsValidParameterList(IReadOnlyList`1 parameterList, Nullable`1& originalMessageIndex, Boolean& hasMessageTemplateCapture, Boolean& isMixedPositional, Boolean& isPositional)
+   at NLog.Extensions.Logging.NLogMessageParameterList..ctor(IReadOnlyList`1 parameterList)
+   at NLog.Extensions.Logging.NLogMessageParameterList.TryParse(IReadOnlyList`1 parameterList)
+   at NLog.Extensions.Logging.NLogLogger.TryParseMessageTemplate(LogLevel nLogLogLevel, IReadOnlyList`1 messageProperties, NLogMessageParameterList& messageParameters)
+   at NLog.Extensions.Logging.NLogLogger.CreateLogEventInfo[TState](LogLevel nLogLogLevel, TState state, Exception exception, Func`3 formatter)
+   at NLog.Extensions.Logging.NLogLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)<---
+|url: http://localhost/FrontOffice/GetGuestReschedulingByBookingKey|action: GetGuestReschedulingByBookingKey
+2022-12-10 11:38:13.0475|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/FrontOffice/InsertGuestRescheduling|action: 
+2022-12-10 11:38:13.1012|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/FrontOffice/InsertGuestRescheduling|action: 
+2022-12-10 11:39:33.6026|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/|action: 
+2022-12-10 11:39:33.6445|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/|action: 
+2022-12-10 11:39:33.6671|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2022-12-10 11:39:35.3712|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/js/bootbox.min.js|action: 
+2022-12-10 11:39:35.3712|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/material.min.css|action: 
+2022-12-10 11:39:35.3877|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/all.min.css|action: 
+2022-12-10 11:39:35.3877|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/js/bootbox.min.js|action: 
+2022-12-10 11:39:35.4060|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/material.min.css|action: 
+2022-12-10 11:39:35.4158|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/all.min.css|action: 
+2022-12-10 11:39:35.5284|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/images/logo/esya-logo-black.png|action: 
+2022-12-10 11:39:35.5431|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/images/esya-products-yellow-with-footer.jpg|action: 
+2022-12-10 11:39:35.5431|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/js/Inputmask/bindings/inputmask.binding.js|action: 
+2022-12-10 11:39:35.5623|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/images/logo/esya-logo-black.png|action: 
+2022-12-10 11:39:35.5725|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/images/esya-products-yellow-with-footer.jpg|action: 
+2022-12-10 11:39:35.5725|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/js/Inputmask/bindings/inputmask.binding.js|action: 
+2022-12-10 11:39:35.6671|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/favicon.ico|action: 
+2022-12-10 11:39:35.6671|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/fonts/fa-solid-900.woff2|action: 
+2022-12-10 11:39:35.6828|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/fonts/esyaFonts/Roboto/Roboto-Regular.ttf|action: 
+2022-12-10 11:39:35.6828|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/favicon.ico|action: 
+2022-12-10 11:39:35.6991|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/fonts/fa-solid-900.woff2|action: 
+2022-12-10 11:39:35.6991|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/fonts/esyaFonts/Roboto/Roboto-Regular.ttf|action: 
+2022-12-10 11:39:35.4646|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/animate.css|action: 
+2022-12-10 11:39:35.3529|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/bootstrap-select.css|action: 
+2022-12-10 11:39:35.7830|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/animate.css|action: 
+2022-12-10 11:39:35.7915|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/bootstrap-select.css|action: 
+2022-12-10 11:39:35.8085|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/login.css|action: 
+2022-12-10 11:39:35.8400|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/login.css|action: 
+2022-12-10 11:39:35.3529|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/lib/bootstrap/dist/js/popper.min.js|action: 
+2022-12-10 11:39:35.8720|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/lib/bootstrap/dist/js/popper.min.js|action: 
+2022-12-10 11:39:35.8992|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/esyaTheme.css|action: 
+2022-12-10 11:39:35.9234|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/esyaTheme.css|action: 
+2022-12-10 11:39:35.9309|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/esyafonts.css|action: 
+2022-12-10 11:39:35.9483|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/esyafonts.css|action: 
+2022-12-10 11:40:18.2269|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/|action: 
+2022-12-10 11:40:39.3630|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/|action: 
+2022-12-10 11:40:39.3811|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2022-12-10 11:40:41.3696|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/lib/bootstrap/dist/js/popper.min.js|action: 
+2022-12-10 11:40:41.3696|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/bootstrap-select.css|action: 
+2022-12-10 11:40:41.3836|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/lib/bootstrap/dist/js/popper.min.js|action: 
+2022-12-10 11:40:41.3836|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/bootstrap-select.css|action: 
+2022-12-10 11:40:41.3836|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/esyafonts.css|action: 
+2022-12-10 11:40:41.3836|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/all.min.css|action: 
+2022-12-10 11:40:41.3999|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/esyafonts.css|action: 
+2022-12-10 11:40:41.3999|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/all.min.css|action: 
+2022-12-10 11:40:41.3999|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/images/esya-products-yellow-with-footer.jpg|action: 
+2022-12-10 11:40:41.4199|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/images/logo/esya-logo-black.png|action: 
+2022-12-10 11:40:41.4933|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/animate.css|action: 
+2022-12-10 11:40:41.4933|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/esyaTheme.css|action: 
+2022-12-10 11:40:41.4933|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/animate.css|action: 
+2022-12-10 11:40:41.4933|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/esyaTheme.css|action: 
+2022-12-10 11:40:41.5391|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/fonts/fa-solid-900.woff2|action: 
+2022-12-10 11:40:41.5391|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/fonts/esyaFonts/Roboto/Roboto-Regular.ttf|action: 
+2022-12-10 11:40:41.5391|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/fonts/fa-solid-900.woff2|action: 
+2022-12-10 11:40:41.5391|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/fonts/esyaFonts/Roboto/Roboto-Regular.ttf|action: 
+2022-12-10 11:40:41.4688|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/images/esya-products-yellow-with-footer.jpg|action: 
+2022-12-10 11:40:41.4688|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/images/logo/esya-logo-black.png|action: 
+2022-12-10 11:40:41.5720|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/lib/bootstrap/dist/css/bootstrap.min.css|action: 
+2022-12-10 11:40:41.5892|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/lib/bootstrap/dist/css/bootstrap.min.css|action: 
+2022-12-10 11:40:41.5892|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/material.min.css|action: 
+2022-12-10 11:40:41.6050|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/material.min.css|action: 
+2022-12-10 11:40:41.6050|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/login.css|action: 
+2022-12-10 11:40:41.6181|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/login.css|action: 
+2022-12-10 11:40:46.6372|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/|action: 
+2022-12-10 11:40:46.6508|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/|action: 
+2022-12-10 11:40:47.2224|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/Home|action: 
+2022-12-10 11:40:47.2358|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/Home|action: 
+2022-12-10 11:40:48.3237|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/images/logo/esya-logo-whitebg.jpeg|action: 
+2022-12-10 11:40:48.3414|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/ui.jqgrid.css|action: 
+2022-12-10 11:40:48.3414|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/jquery-ui.min.css|action: 
+2022-12-10 11:40:48.3564|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/images/logo/esya-logo-whitebg.jpeg|action: 
+2022-12-10 11:40:48.3564|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/ui.jqgrid.css|action: 
+2022-12-10 11:40:48.3719|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/jquery-ui.min.css|action: 
+2022-12-10 11:40:48.4767|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/toastr.min.css|action: 
+2022-12-10 11:40:48.4767|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/images/gtpl_logo.jpg|action: 
+2022-12-10 11:40:48.4958|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/toastr.min.css|action: 
+2022-12-10 11:40:48.4958|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/images/gtpl_logo.jpg|action: 
+2022-12-10 11:40:55.0119|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/eSyaNatureCure/FrontOffice/V_ENC_01_00|action: 
+2022-12-10 11:40:55.0281|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/eSyaNatureCure/FrontOffice/V_ENC_01_00|action: 
+2022-12-10 11:41:35.9509|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/eSyaNatureCure.css|action: 
+2022-12-10 11:41:35.9509|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/dashBoard.css|action: 
+2022-12-10 11:41:35.9671|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/js/eSyaNatureCure/FrontOfficeRescheduling.js|action: 
+2022-12-10 11:41:35.9671|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/eSyaNatureCure.css|action: 
+2022-12-10 11:41:35.9914|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/dashBoard.css|action: 
+2022-12-10 11:41:35.9914|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/js/eSyaNatureCure/FrontOfficeRescheduling.js|action: 
+2022-12-10 11:41:36.2024|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/FrontOffice/GetActiveRoomBedMaster|action: 
+2022-12-10 11:41:36.2162|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/FrontOffice/GetActiveRoomBedMaster|action: 
+2022-12-10 11:41:36.8213|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/FrontOffice/GetDashboardByDate|action: 
+2022-12-10 11:41:36.8380|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/FrontOffice/GetDashboardByDate|action: 
+2022-12-10 11:41:44.1497|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/images/ui-icons_gold_256x240.png|action: 
+2022-12-10 11:41:44.1721|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/FrontOffice/GetGuestRoomchangeByBookingKey|action: 
+2022-12-10 11:41:44.1850|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/images/ui-icons_gold_256x240.png|action: 
+2022-12-10 11:41:44.1850|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/FrontOffice/GetGuestRoomchangeByBookingKey|action: 
+2022-12-10 11:41:44.3468|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/css/images/ui-icons_ffffff_256x240.png|action: 
+2022-12-10 11:41:44.3585|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/css/images/ui-icons_ffffff_256x240.png|action: 
+2022-12-10 11:41:47.0048|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/FrontOffice/GetGuestReschedulingByBookingKey|action: 
+2022-12-10 11:41:47.0198|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/FrontOffice/GetGuestReschedulingByBookingKey|action: 
+2022-12-10 11:42:09.0876|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/FrontOffice/GetGuestReschedulingByBookingKey|action: 
+2022-12-10 11:42:09.1029|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/FrontOffice/GetGuestReschedulingByBookingKey|action: 
+2022-12-10 11:42:41.0390|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/UserProfile/GetUserName|action: 
+2022-12-10 11:42:41.0514|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/UserProfile/GetUserName|action: 
+2022-12-10 11:42:43.2111|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/UserProfile/GetUserName|action: 
+2022-12-10 11:42:43.2378|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/UserProfile/GetUserName|action: 
+2022-12-10 11:42:58.3913|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/FrontOffice/GetGuestRoomchangeByBookingKey|action: 
+2022-12-10 11:42:58.4045|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/FrontOffice/GetGuestRoomchangeByBookingKey|action: 
+2022-12-10 11:43:01.1232|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/FrontOffice/GetActiveRoomNumbersbyRoomType|action: 
+2022-12-10 11:43:01.1545|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/FrontOffice/GetActiveRoomNumbersbyRoomType|action: 
+2022-12-10 11:43:01.5562|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en'. |url: http://localhost/FrontOffice/GetActiveBedNumbersbyRoomNumber|action: 
+2022-12-10 11:43:01.5825|2|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported UI Cultures 'en'. |url: http://localhost/FrontOffice/GetActiveBedNumbersbyRoomNumber|action: 

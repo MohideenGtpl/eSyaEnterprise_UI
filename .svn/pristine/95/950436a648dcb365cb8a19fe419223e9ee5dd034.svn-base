@@ -1,0 +1,37 @@
+﻿
+<div class="row">
+    <div class="col-lg-3 col-md-2 col-sm-12">
+        <div class="form-group">
+            <label>Address</label>
+            <textarea id="txtAddress" rows="4" class="form-control"></textarea>
+        </div>
+    </div>
+    <div class="col-lg-9 col-md-10 col-sm-12">
+        <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-6">
+                <div class="form-group">
+                    <label>state</label>
+                    <select class="selectpicker" id="cboState"></select>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6">
+                <div class="form-group">
+                    <label>City</label>
+                    <select class="selectpicker" id="cboCity"></select>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6">
+                <div class="form-group">
+                    <label>Area</label>
+                    <select class="selectpicker" id="cboArea"></select>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6">
+                <div class="form-group">
+                    <label>Pincode</label>
+                    <input class="form-control" id="txtPincode" />
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>

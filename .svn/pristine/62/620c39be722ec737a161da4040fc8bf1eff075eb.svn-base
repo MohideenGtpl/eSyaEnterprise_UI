@@ -1,0 +1,150 @@
+﻿
+var treeUG = $("#treeUG");
+var v_userTypeMUG = $("#cboUserType");
+var v_save = $("#saveMUG");
+v_save.prop('disabled', true);
+
+
+$(document).ready(function () {
+    callingTree();
+   
+});
+v_userTypeMUG.on('change', function () {
+
+    if ($(this)[0].selectedIndex != 0) {
+        v_save.prop('disabled', false);
+        treeUG.jstree().uncheck_all();
+        treeUG.jstree().enable_node(j1_1);
+        $("#j1_1").removeClass('jstree-leaf');
+        var uG = $("#cboUsergroup").val();
+        var uT = $("#cboUserType").val();
+        $.ajax({
+            url: getBaseURL() + '/UserManagement/GetMenuKeysbyUserGroupAndUserType?uG=' + uG + "&uT=" + uT,
+            type: 'POST',
+            datatype: 'json',
+            contentType: "application/json; charset=utf-8",
+            success: function (result) {
+                treeUG.jstree('open_all');
+
+                for (var i = 0; i < result.length; i++) {
+                    $("li").each(function (index) {
+                        if ($(this).hasClass('jstree-leaf')) {
+                            if ($(this).attr('data-value') == result[i]) {
+                                treeUG.jstree().check_node($(this).attr('id'));
+                            }
+                        }
+                    });
+                }
+                v_save.prop('disabled', false);
+                fnTreeSize();
+            },
+            error: function (error) { alert(error.status) }
+        });
+    }
+    else {
+        treeUG.jstree().uncheck_all();
+        callingTree();
+        v_save.prop('disabled', true);
+    }
+
+});
+function callingTree() {
+    $.ajax({
+        url: getBaseURL() + '/UserManagement/GetConfigureMenulist',
+        type: 'POST',
+        datatype: 'json',
+        success: function (result) {
+            treeUG.jstree({
+                "checkbox": {
+                    "keep_selected_style": false
+                },
+                "plugins": ["checkbox"],
+                core: {
+                    themes: {
+                        icons: false
+                    }
+                }
+            });
+            treeUG.jstree().disable_node(j1_1);
+            $("#j1_1").addClass('jstree-leaf');
+        },
+        error: function (error) { alert(error.status) }
+    });
+}
+
+function fnsaveUserGroup() {
+    var UGArray=[];
+    $("li").each(function (index) {
+        if ($(this).hasClass("jstree-leaf")) {
+
+            if (treeUG.jstree().is_checked($(this).attr('id'))) {
+                UGArray.push($(this).attr('data-value'));
+            }
+            else {
+                UGArray.push("0" + $(this).attr('data-value'));
+            }
+            
+        }
+    });
+    var selArray=[];
+    for (var i = 0; i <= UGArray.length; i++) {
+        if (/^\d*$/.test(UGArray[i])===true)
+        {
+            selArray.push(UGArray[i]);
+        }
+    }
+    if ($("#cboUsergroup").val() == "0")
+    {
+        toastr.warning("Please select User Group");
+        return;
+    }
+    if ($("#cboUserType").val() == "0")
+    {
+        toastr.warning("Please select User Type");
+        return;
+    }
+    var selectedkeys = {
+        uG: $("#cboUsergroup").val(),
+        uT: $("#cboUserType").val(),
+        dataList: selArray
+    };
+    $.ajax({
+        url: getBaseURL() + '/UserManagement/InsertMenukeysIntoUserGroup',
+        type: 'POST',
+        datatype: 'json',
+        data: { selectedkeys },
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                return true;
+            }
+            else {
+                toastr.error(response.Message);
+                return false;
+            }
+            v_userTypeMUG.trigger('change');
+
+        },
+
+    });
+}
+
+function fnResetUserType() {
+    $("#cboUserType").val('0').selectpicker('refresh');
+    treeUG.jstree().uncheck_all();
+    callingTree();
+    v_save.prop('disabled', true);
+}
+
+  function fnTreeSize() {
+                $("#treeUG").css({
+                    'height': $(window).innerHeight() - 208,
+                    'overflow': 'auto'
+                });
+      $(window).on("resize", function () {
+          $("#treeUG").css({
+              'height': $(window).innerHeight() - 208,
+              'overflow': 'auto'
+          });
+      })
+            }

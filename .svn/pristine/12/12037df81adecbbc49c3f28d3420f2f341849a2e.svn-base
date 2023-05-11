@@ -1,0 +1,325 @@
+﻿
+@{
+    ViewData["Title"] = "V_6003_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/css/eSyaNursingStation/patientClinicalInformation.css" rel="stylesheet" />
+@section scripts{
+    <script src="~/js/eSyaOutPatient/emergency.js"></script>
+}
+
+<div class="divFixedBar">
+    <div class="row mar0">
+        <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-xs-6 d-flex align-items-center">
+            <span class="mr-3"><i class="far fa-user-circle f-28 c-lightgrey"></i></span>
+            <div>
+                <p><span id="lblPatientName"></span></p>
+                <p><span id="lblGender"></span> | <span id="lblAge"></span></p>
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-xs-6 d-flex align-items-center">
+            <span class="mr-3"><i class="fas fa-user-md f-28 mr-2 c-lightgrey"></i></span>
+            <div>
+                <p><span class="labelname"> DOA</span> <span id="lblDOA"></span></p>
+                <p><span id="lblConsultantName"></span></p>
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-xs-6 d-flex align-items-center">
+            <span class="mr-3"><i class="fas fa-hotel f-28 mr-2 c-lightgrey"></i></span>
+            <div>
+                <p><span class="labelname"> Room Type</span> <span id="lblRoomType"></span></p>
+                <p><span class="labelname"> Room No</span> <span id="lblBedNumber"></span></p>
+            </div>
+        </div>
+
+        <div id="floatButtons" class="col-xl-3 col-lg-12 text-right">
+            <button class="mdl-button" id="btnBackNS" onclick="fnBackToNSGrid()"><i class="fas fa-chevron-left"></i> <span class="btntext">Back</span></button>
+            <button class="mdl-button" id="btnSave" onclick="fnSaveNurseAssessment('S')"><i class="far fa-check-circle c-brown"></i> <span class="btntext">Submit</span></button><button class="mdl-button d-none"><i class="fas fa-print c-blue"></i> <span class="btntext">Print</span></button>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-3 col-md-3 col-sm-3 sidebar" id="navbar-example2">
+        <div class="sidebar-sticky">
+            <ul class="nav flex-column" id="nav_menu">
+                <li><a href="#" id="v-nursingcare-tab" data-bs-toggle="pill" data-bs-target="#v-nursing-care" class="nav-link active" role="tab" aria-controls="v-nursing-care" aria-selected="true">Nursing Care Plan</a></li>
+                <li><a href="#" id="v-doctornotes-tab" data-bs-toggle="pill" data-bs-target="#v-doctornotes" class="nav-link active" role="tab" aria-controls="v-doctor-notes" aria-selected="true">Doctor Notes</a></li>
+                <li><a href="#" id="v-vitalreport-tab" data-bs-toggle="pill" data-bs-target="#v-vitalreport" class="nav-link" aria-controls="v-vitalreport" aria-selected="true">Vital Report</a></li>
+                <li><a href="#" id="v-intakeouttake-tab" data-bs-toggle="pill" data-bs-target="#v-intakeouttake" class="nav-link" aria-controls="v-intakeouttake" aria-selected="true">Intake/ Outtake</a></li>
+                <li><a href="#" id="v-drugchart-tab" data-bs-toggle="pill" data-bs-target="#v-drugchart" class="nav-link" aria-controls="v-intakeouttake" aria-selected="true">Drug Chart</a></li>
+                <li><a href="#" id="v-criticalcareunit-tab" data-bs-toggle="pill" data-bs-target="#v-criticalcareunit" class="nav-link" aria-controls="v-criticalcareunit">Critical Care Unit</a></li>
+                <li><a href="#" id="v-ventilator-tab" data-bs-toggle="pill" data-bs-target="#v-ventilator" class="nav-link" aria-controls="v-ventilator">Ventilator / Lab values</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="" id="mainContent">
+        <div class="tab-content" id="v-pills-tabContent">
+            <div class="tab-pane fade show active" id="v-nursing-care" role="tabpanel" aria-labelledby="v-nursingcare-tab">
+                <div class="row">
+                    <div class="col-12 p-0">
+                        <h6>Nursing Care Plan</h6>
+                    </div>
+                </div>
+                <div class="row mr-0" style="margin-right:0px;">
+                    <div class="col-lg-12 col-md-12 col-sm-12 mb-2 divNursingCarePlan">
+                        <table id="jqgNursingCarePlan"></table>
+                        <div id="jqpNursingCarePlan"></div>
+                    </div>
+                    <button type="button" class="mdl-button btn-circle" data-toggle="modal" data-target="#PopupNursingCarePlan"><i class="fa fa-plus"></i></button>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="v-doctornotes" role="tabpanel" aria-labelledby="v-doctornotes-tab">
+                <div class="row">
+                    <div class="col-12 p-0">
+                        <h6>Doctor Notes</h6>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 mb-2 divDoctorNotes">
+                        <table id="jqgDoctorNotes"></table>
+                        <div id="jqpDoctorNotes"></div>
+
+                    </div>
+                    <button type="button" class="mdl-button btn-circle" data-toggle="modal" data-target="#PopupDoctorNotes"><i class="fa fa-plus"></i></button>
+
+                </div>
+            </div>
+            <div class="tab-pane fade" id="v-vitalreport" role="tabpanel" aria-labelledby="v-vitalreport-tab">
+                <div class="row">
+                    <div class="col-12 p-0">
+                        <h6>Vital Report</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="v-intakeouttake" role="tabpanel" aria-labelledby="v-intakeouttake-tab">
+                <div class="row">
+                    <div class="col-12 p-0">
+                        <h6>Intake Outtake</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="v-drugchart" role="tabpanel" aria-labelledby="v-drugchart-tab">
+                <div class="row">
+                    <div class="col-12 p-0">
+                        <h6>Drug Chart</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="v-criticalcareunit" role="tabpanel" aria-labelledby="v-criticalcareunit-tab">
+                <div class="row">
+                    <div class="col-12 p-0">
+                        <h6>Critical Care Unit</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="v-ventilator" role="tabpanel" aria-labelledby="v-ventilator-tab">
+                <div class="row">
+                    <div class="col-12 p-0">
+                        <h6>Ventilator / Lab values</h6>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade in" id="PopupNursingCarePlan" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-md" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Nursing Care Plan</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="txtDate">Date</label>
+                            <input class="form-control datepicker" type="text" maxlength="8" id="txtDate" />
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="txtTime">Time</label>
+                            <input class="form-control timepicker" type="text" maxlength="8" id="txtTime" />
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label for="txtNurseNotes">Nurse Notes</label>
+                            <textarea class="form-control" id="txtNurseNotes"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveNursingCarePlan">
+                            <i class="fa fa-save"></i> Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="btnCancelNursingCarePlan"><i class="fa fa-times"></i> Cancel </button>
+                        @*<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" id="btndeActiveNursingCarePlan"><i class="fa fa-times"></i> DeActivate </button>*@
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade in" id="PopupDoctorNotes" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-md" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Doctor Notes</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="txtDoctorNotesDate">Date</label>
+                            <input class="form-control datepicker" type="text" maxlength="8" id="txtDoctorNotesDate" />
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="txtDoctorNotesTime">Time</label>
+                            <input class="form-control timepicker" type="text" maxlength="8" id="txtDoctorNotesTime" />
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label for="txtDoctorNotes">Doctor Notes</label>
+                            <textarea class="form-control" id="txtDoctorNotes"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveDoctorNotes">
+                            <i class="fa fa-save"></i> Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="btnCancelDoctorNotes"><i class="fa fa-times"></i> Cancel </button>
+                        @*<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" id="btndeActiveNursingCarePlan"><i class="fa fa-times"></i> DeActivate </button>*@
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(".nav li a").click(function () {
+        $(".nav li a").removeClass("active");
+        $(this).addClass("active");
+        $('.tab-pane').removeClass('show active');
+        var v = $(this).attr('data-bs-target'); console.log(v);
+        $(v).addClass('show active');
+    });
+    $(document).ready(function () {
+        fnGridNursingPlan();
+        fnGridDoctorNotes();
+    });
+    function fnGridNursingPlan() {
+        $("#jqgNursingCarePlan").jqGrid({
+            //url: '',
+            //mtype: 'Post',
+            datatype: 'local',
+            ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+            jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+            colNames: ["Date", "Time", "Nurse Notes", "Actions"],
+            colModel: [
+                { name: "Date", width: 90, editable: true, align: 'left', hidden: false },
+                { name: "Time", width: 90, editable: false, hidden: false, align: 'left', resizable: true },
+                { name: "NurseNotes", width: 150, editable: true, align: 'left', resizable: false },
+                {
+                    name: 'edit', search: false, align: 'left', width: 108, sortable: false, resizable: false,
+                    formatter: function (cellValue, options, rowdata, action) {
+                        return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditNursingCarePlan(event,\'edit\')"><i class="fas fa-pencil-alt"></i> Edit </button>' +
+                            '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" id="jqgView" onclick="return fnEditNursingCarePlan(event,\'view\')"><i class="far fa-eye"></i> View </button>' +
+                            '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title = "Delete" id="jqgDelete" onclick = "return fnEditNursingCarePlan(event,\'delete\')" > <i class="fas fa-trash"></i> Delete</button >'
+                    }
+                }
+            ],
+            pager: "#jqpNursingCarePlan",
+            rowNum: 10000,
+            rownumWidth: '55',
+            pgtext: null,
+            pgbuttons: null,
+            loadonce: true,
+            viewrecords: true,
+            gridview: true,
+            rownumbers: true,
+            height: 'auto',
+            width: 'auto',
+            autowidth: true,
+            shrinkToFit: true,
+            forceFit: true,
+            scrollOffset: 0,
+            loadComplete: function (data) {
+
+            },
+        }).jqGrid('navGrid', '#jqpNursingCarePlan', { add: false, edit: false, search: false, del: false, refresh: false });
+        $(window).on("resize", function () {
+            var $grid = $("#jqgNursingCarePlan"),
+                newWidth = $grid.closest(".divNursingCarePlan").parent().width();
+            $grid.jqGrid("setGridWidth", newWidth, true);
+        });
+    }
+
+    function fnGridDoctorNotes() {
+        $("#jqgDoctorNotes").jqGrid({
+            //url: '',
+            //mtype: 'Post',
+            datatype: 'local',
+            ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+            jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+            colNames: ["Date", "Time", "Doctor Notes", "Actions"],
+            colModel: [
+                { name: "Date", width: 100, editable: true, align: 'left', hidden: false },
+                { name: "Time", width: 100, editable: false, hidden: false, align: 'left', resizable: true },
+                { name: "DoctorNotes", width: 150, editable: true, align: 'left', resizable: false },
+                {
+                    name: 'edit', search: false, align: 'left', width: 108, sortable: false, resizable: false,
+                    formatter: function (cellValue, options, rowdata, action) {
+                        return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditDoctorNotes(event,\'edit\')"><i class="fas fa-pencil-alt"></i> Edit </button>' +
+                            '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" id="jqgView" onclick="return fnEditDoctorNotes(event,\'view\')"><i class="far fa-eye"></i> View </button>' +
+                            '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title = "Delete" id="jqgDelete" onclick = "return fnEditDoctorNotes(event,\'delete\')" > <i class="fas fa-trash"></i> Delete </button >'
+                    }
+                }
+            ],
+            pager: "#jqpDoctorNotes",
+            rowNum: 10000,
+            rownumWidth: '55',
+            pgtext: null,
+            pgbuttons: null,
+            loadonce: true,
+            viewrecords: true,
+            gridview: true,
+            rownumbers: true,
+            height: "auto",
+            align: "left",
+            width: "auto",
+            autowidth: true,
+            shrinkToFit: true,
+            forceFit: true,
+            scrollOffset: 0,
+            loadComplete: function (data) {
+
+            },
+        }).jqGrid('navGrid', '#jqpDoctorNotes', { add: false, edit: false, search: false, del: false, refresh: false });
+        $(window).on("resize", function () {
+            var $grid = $("#jqgDoctorNotes"),
+                newWidth = $grid.closest(".divDoctorNotes").parent().width();
+            $grid.jqGrid("setGridWidth", newWidth, true);
+        });
+    }
+</script>

@@ -1,0 +1,60 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+@{
+    ViewData["Title"] = "EPS_04_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+    var localization = {
+
+        Select: '@Localizer["Select"]',
+        ActiveStatus: '@Localizer["Status"]',
+        Actions: '@Localizer["Actions"]',
+        CareCard: '@Localizer["Care Card"]',
+
+
+        Currency: '@Localizer["Currency"]',
+        Rate: '@Localizer["Rate"]',
+        ValidForNoOfDays: '@Localizer["ValidForNoOfDays"]',
+        DependentDesc: '@Localizer["DependentDescription"]',
+        EffectiveFrom: '@Localizer["EffectiveFrom"]',
+        EffectiveTill: '@Localizer["EffectiveTill"]',
+    }
+</script>
+@section scripts{
+    <script src="~/js/PatientManagement/PatientTypes/CareCardRates.js"></script>
+}
+
+<div class="row">
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> @Localizer["BusinessLocation"]</label>
+            <select class="w-100 selectpicker" data-live-search="false" title="" id="cboBusinessLocation">
+                <option value="">Select</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> @Localizer["PatientType"]</label>
+            <select class="w-100 selectpicker" data-live-search="false" title="" id="cboPatientType">
+                <option value="">Select</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> @Localizer["PatientCategory"]</label>
+            <select class="w-100 selectpicker" data-live-search="false" title="" id="cboPatientCategory">
+                <option value="">Select</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-12 col-12 col-md-12 form-group">
+        <table id="jqgCareCardRates"></table>
+        <div id="jqpCareCardRates"></div>
+    </div>
+</div>

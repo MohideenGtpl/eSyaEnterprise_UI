@@ -1,0 +1,219 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
+using eSyaEnterprise_UI.Areas.Config.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+namespace eSyaEnterprise_UI.Areas.Config.Controllers
+{
+    public class DocumentControlController : Controller
+    {
+        ESyaWebAPI _eSyaWebAPI = new ESyaWebAPI();
+        #region Calendar Definition
+        [Area("Config")]
+        public IActionResult V_26_00()
+        {
+            return View();
+        }
+
+
+        /// <summary>
+        /// Getting Calendar Header for Grid
+        /// </summary>
+
+        [HttpPost]
+        public JsonResult GetCalendarHeaders()
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("DocumentControl/GetCalendarHeaders").Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<List<DO_CalendarDefinition>>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Insert Calendar Header & Details
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertCalendarHeaderAndDetails([FromBody] DO_CalendarDefinition calendarheadar)
+        {
+
+            try
+            {
+                calendarheadar.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                calendarheadar.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                calendarheadar.FormId =1;
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.PostAsJsonAsync<DO_CalendarDefinition>("DocumentControl/InsertCalendarHeaderAndDetails", calendarheadar).Result;
+                string data = response.Content.ReadAsStringAsync().Result;
+                var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(data);
+                return Json(result);
+               
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        #endregion Calendar Definition
+
+
+        #region Calendar Details
+        [Area("Config")]
+        public IActionResult V_27_00()
+        {
+            var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+            HttpResponseMessage bkeyresponse = client.GetAsync("ConfigMasterData/GetBusinessKey").Result;
+            string bkeydata = bkeyresponse.Content.ReadAsStringAsync().Result;
+            List<DO_BusinessLocation> b_loc = JsonConvert.DeserializeObject<List<DO_BusinessLocation>>(bkeydata);
+            ViewBag.BusikessKeys = b_loc;
+            return View();
+        }
+        /// <summary>
+        /// Getting cbo Financial Year by Business key
+        /// </summary>
+
+        [HttpPost]
+        public JsonResult GetFinancialYearbyBusinessKey(int Businesskey)
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("DocumentControl/GetFinancialYearbyBusinessKey?Businesskey=" + Businesskey).Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<List<DO_CalendarDetails>>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+        /// <summary>
+        /// Getting Calendar Details by Business Key && Financial Year for Grid
+        /// </summary>
+
+        [HttpPost]
+        public JsonResult GetCalendarDetailsbyBusinessKeyAndFinancialYear(int Businesskey,decimal FinancialYear)
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                var parameter = "?Businesskey=" + Businesskey + "&FinancialYear=" + FinancialYear;
+                HttpResponseMessage response = client.GetAsync("DocumentControl/GetCalendarDetailsbyBusinessKeyAndFinancialYear" + parameter).Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<List<DO_CalendarDetails>>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+        /// <summary>
+        /// Update Calendar Details
+        /// </summary>
+        [HttpPost]
+        public JsonResult UpdateCalendardetails([FromBody] DO_CalendarDetails postData)
+        {
+
+            try
+            {
+                postData.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                postData.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.PostAsJsonAsync<DO_CalendarDetails>("DocumentControl/UpdateCalendardetails", postData).Result;
+                string data = response.Content.ReadAsStringAsync().Result;
+                var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(data);
+                return Json(result);
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+        #endregion Calendar detail
+
+        #region Document Control
+        [Area("Config")]
+        public IActionResult V_28_00()
+        {
+            var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+            HttpResponseMessage resp = client.GetAsync("Forms/GetFormDetails").Result;
+            string respdata = resp.Content.ReadAsStringAsync().Result;
+            List<DO_Forms> formMaster = JsonConvert.DeserializeObject<List<DO_Forms>>(respdata);
+            ViewBag.formMasterlist = formMaster;
+            return View();
+        }
+        /// <summary>
+        /// Getting Document Controls for Grid
+        /// </summary>
+
+        [HttpPost]
+        public JsonResult GetDocumentControls()
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("DocumentControl/GetDocumentControls").Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<List<DO_DocumentControl>>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Insert or Update Document Control
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertOrUpdateDocumentControl([FromBody] DO_DocumentControl control)
+        {
+
+            try
+            {
+                control.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                control.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                if (control.Isadd == 1)
+                {
+                    HttpResponseMessage Insertresponse = client.PostAsJsonAsync<DO_DocumentControl>("DocumentControl/InsertDocumentControl", control).Result;
+                    string resp = Insertresponse.Content.ReadAsStringAsync().Result;
+                    var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(resp);
+                    return Json(result);
+                }
+
+                else
+                {
+                    HttpResponseMessage Updateresponse = client.PostAsJsonAsync<DO_DocumentControl>("DocumentControl/UpdateDocumentControl", control).Result;
+                    string resp = Updateresponse.Content.ReadAsStringAsync().Result;
+                    var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(resp);
+                    return Json(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+        #endregion Document Control
+    }
+}

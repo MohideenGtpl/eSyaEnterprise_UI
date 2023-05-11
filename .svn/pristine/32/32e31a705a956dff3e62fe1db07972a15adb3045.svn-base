@@ -1,0 +1,203 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "V_ENC_21_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/js/eSyaNatureCure/RoomReservation.js"></script>
+@{
+    var userFormRole = (eSyaEnterprise_UI.Models.DO_UserFormRole)ViewBag.UserFormRole;
+}
+<script>
+    var _userFormRole = JSON.parse('@Html.Raw(Json.Serialize(userFormRole))');
+
+     var localization = {
+         AddRoomReservation: '@Localizer["AddRoomReservation"]',
+         BusinessLocation: '@Localizer["BusinessLocation"]',
+         RoomNumber: '@Localizer["RoomNumber"]',
+         BedNumber:'@Localizer["BedNumber"]',
+         ReasonType: '@Localizer["ReasonType"]',
+         Comments: '@Localizer["Comments"]',
+         Active: '@Localizer["Active"]',
+         Actions: '@Localizer["Actions"]',
+         Edit: '@Localizer["Edit"]',
+         View: '@Localizer["View"]',
+         Save: '@Localizer["Save"]',
+         Update: '@Localizer["Update"]',
+         Delete: '@Localizer["Delete"]',
+         Activate: '@Localizer["Activate"]',
+         DActivate: '@Localizer["DActivate"]',
+         AddRoomreservation: '@Localizer["AddRoomReservation"]',
+         UpdateRoomReservation: '@Localizer["UpdateRoomReservation"]',
+         ViewRoomReservation: '@Localizer["ViewRoomReservation"]',
+         RoomTypeDescription: '@Localizer["RoomTypeDescription"]',
+         RoomTypeId: '@Localizer["RoomTypeId"]',
+         EffectiveDate: '@Localizer["EffectiveDate"]',
+         TillDate: '@Localizer["TillDate"]',
+         BusinessKey: '@Localizer["BusinessKey"]',
+         ReasonTypeDesc: '@Localizer["ReasonTypeDescription"]',
+    };
+
+</script>
+
+<style>
+    .bootstrap-select {
+        width: 100% !important;
+    }
+    
+</style>
+
+
+<div class="row padbot10">
+    <div class="col-lg-4 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label> @Localizer["BusinessLocation"] </label>
+            <div>
+
+                @await Component.InvokeAsync("UserBusinessLocation")
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="row padbot10">
+    <div class="col-lg-12 col-md-12 col-sm-12 PackagePricecontainer">
+        <table id="jqgRoomReservation"></table>
+        <div id="jqpRoomReservation"></div>
+    </div>
+</div>
+
+<div class="modal fade in" id="PopupRoomreservation" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content ">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">@Localizer["AddRoomReservation"]</h4>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="row">
+
+                    <div class="col-lg-4 col-md-4 col-sm-4 form-group">
+
+                        <label class="lable-color">@Localizer["RoomType"] </label>
+                        <select class="selectpicker" data-live-search="true" id="cboRoomTypeId" title="" data-size="10" onchange="fncboRoomType_change()">
+                            <option value="0"> Select</option>
+                            @if (ViewBag.roomtypes != null)
+                            {
+                                foreach (var room in ViewBag.roomtypes)
+                                {
+                                    <option value="@room.RoomTypeId">@room.RoomTypeDesc</option>
+                                }
+
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-4 form-group">
+
+                        <label class="lable-color">@Localizer["RoomNumber"] </label>
+                        <select class="selectpicker" data-live-search="true" id="cboRoomNumber" title="" data-size="10" onchange="fncboRoomNumber_change()">
+                            <option value="0"> Select</option>
+                          
+                        </select>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-4 form-group">
+
+                        <label class="lable-color">@Localizer["BedNumber"] </label>
+                        <select class="selectpicker" data-live-search="true" id="cboBedNumber" title="" data-size="10">
+                            <option value="0"> Select</option>
+                        </select>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-4 form-group">
+
+                        <label class="lable-color">@Localizer["ReasonType"] </label>
+                        <select class="selectpicker" data-live-search="true" id="cboReasonType" title="" data-size="10">
+                            <option value="0"> Select</option>
+                            @if (ViewBag.restypes != null)
+                            {
+                                foreach (var app in ViewBag.restypes)
+                                {
+                                    <option value="@app.ApplicationCode">@app.CodeDesc</option>
+                                }
+
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-4 form-group">
+                        <label>@Localizer["EffectiveDate"] </label>
+                        <input type="text" class="form-control datepicker" id="txtEffectiveDate" />
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-4 form-group">
+                        <label>@Localizer["TillDate"] </label>
+                        <input type="text" class="form-control datepicker" id="txtTillDate" />
+                    </div>
+
+                    <div class="col-lg-12 col-md-12 col-sm-12 form-group">
+                        <label>@Localizer["Comments"]  </label>
+                        <textarea rows="4" cols="20" class="form-control" maxlength="500" autocomplete="off" id="txtComments"></textarea>
+                    </div>
+
+                    <div class="col-lg-3  col-md-3 col-sm-12 col-xs-12">
+                        <div class="default-checkbox">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActiveStatus">
+                                <input type="checkbox" id="chkActiveStatus" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">@Localizer["Active"]</span>
+                            </label>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveRoomReservation" onclick="fnSaveRoomReservation();">
+                            <i class="fa fa-save"></i> @Localizer["Save"]
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="btnCancelRoomReservation"><i class="fa fa-times"></i> @Localizer["Cancel"] </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" id="btndeActiveRoomReservation" onclick="fnDeleteRoomReservation();"><i class="fa fa-times"></i> @Localizer["DeActivate"] </button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#txtEffectiveDate").datepicker({
+            dateFormat: _cnfDateFormat,
+            
+        });
+
+        $("#txtTillDate").datepicker({
+            dateFormat: _cnfDateFormat,
+           
+        });
+
+
+        $('#txtTillDate').on('change', function () {
+            var startDate = $('#txtEffectiveDate').val();
+            var endDate = $('#txtTillDate').val();
+            if (endDate < startDate) {
+                toastr.warning('Till date should be greater than Effective date.');
+                $('#txtTillDate').val('');
+            }
+        });
+
+    });
+
+</script>

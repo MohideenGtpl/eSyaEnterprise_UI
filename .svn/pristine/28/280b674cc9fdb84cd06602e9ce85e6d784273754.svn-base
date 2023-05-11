@@ -1,0 +1,160 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.Areas.PatientManagement.Data;
+using eSyaEnterprise_UI.Areas.PatientManagement.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+
+namespace eSyaEnterprise_UI.Areas.PatientManagement.Controllers
+{
+    [Route("[controller]/[action]")]
+    [ApiController]
+    public class MasterController : ControllerBase
+    {
+        private readonly IPatientManagementAPIServices _patientManagementAPIServices;
+        private readonly ILogger<MasterController> _logger;
+
+        public MasterController(IPatientManagementAPIServices patientManagementAPIServices, ILogger<MasterController> logger)
+        {
+            _patientManagementAPIServices = patientManagementAPIServices;
+            _logger = logger;
+        }
+
+        public async Task<IActionResult> GetISDCodes()
+        {
+            try
+            {
+                var serviceResponse = await _patientManagementAPIServices.HttpClientServices.GetAsync<List<DO_IsdCodes>>("Master/GetISDCodes");
+                if (serviceResponse.Status)
+                    return Ok(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetISDCodes");
+                    return Ok(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetISDCodes");
+                throw ex;
+            }
+        }
+
+        public async Task<IActionResult> GetStateList(int isdCode)
+        {
+            try
+            {
+                var parameter = "?isdCode=" + isdCode;
+                var serviceResponse = await _patientManagementAPIServices.HttpClientServices.GetAsync<List<DO_Place>>("Master/GetStateList"+parameter);
+                if (serviceResponse.Status)
+                    return Ok(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetStateList");
+                    return Ok(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetStateList");
+                throw ex;
+            }
+        }
+
+        public async Task<IActionResult> GetCityList(int isdCode, int? stateCode)
+        {
+            try
+            {
+                var parameter = "?isdCode=" + isdCode;
+                if(stateCode != null)
+                    parameter += "&stateCode=" + stateCode;
+                var serviceResponse = await _patientManagementAPIServices.HttpClientServices.GetAsync<List<DO_Place>>("Master/GetCityList" + parameter);
+                if (serviceResponse.Status)
+                    return Ok(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetCityList");
+                    return Ok(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetCityList");
+                throw ex;
+            }
+        }
+
+        public async Task<IActionResult> GetAreaList(int isdCode, int? stateCode, int? cityCode, string pincode)
+        {
+            try
+            {
+                var parameter = "?isdCode=" + isdCode;
+                if (stateCode != null)
+                    parameter += "&stateCode=" + stateCode;
+                if (cityCode != null)
+                    parameter += "&cityCode=" + cityCode;
+                if (pincode != null)
+                    parameter += "&pincode=" + pincode;
+                var serviceResponse = await _patientManagementAPIServices.HttpClientServices.GetAsync<List<DO_AddressIN>>("Master/GetAreaList" + parameter);
+                if (serviceResponse.Status)
+                    return Ok(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetAreaList");
+                    return Ok(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetAreaList");
+                throw ex;
+            }
+        }
+
+
+        public async Task<IActionResult> GetPatientType()
+        {
+            try
+            {
+                var serviceResponse = await _patientManagementAPIServices.HttpClientServices.GetAsync<List<DO_PatientType>>("Master/GetPatientType");
+                if (serviceResponse.Status)
+                    return Ok(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetPatientType");
+                    return Ok(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetPatientType");
+                throw ex;
+            }
+        }
+
+        public async Task<IActionResult> GetPatientCategory(int patientTypeId)
+        {
+            try
+            {
+                var parameter = "?patientTypeId=" + patientTypeId;
+                var serviceResponse = await _patientManagementAPIServices.HttpClientServices.GetAsync<List<DO_PatientCategory>>("Master/GetPatientCategory"+ parameter);
+                if (serviceResponse.Status)
+                    return Ok(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetPatientCategory");
+                    return Ok(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetPatientCategory");
+                throw ex;
+            }
+        }
+
+    }
+}

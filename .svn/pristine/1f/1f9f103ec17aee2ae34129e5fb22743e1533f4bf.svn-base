@@ -1,0 +1,414 @@
+﻿
+@{
+    ViewData["Title"] = "Pre-Operative Form";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/css/material.min.css" rel="stylesheet" /> 
+<link href="~/css/eSyaNursingStation/patientClinicalInformation.css" rel="stylesheet" />
+@section scripts{
+    
+    <script src="~/js/eSyaNursingStation/preoperative.js"></script>
+    <script src="~/js/material.min.js"></script>
+
+}
+
+
+
+<style>
+    .lblCheck{
+        display:flex;align-items:center;
+    }
+    label span{
+        padding-left:5px;
+    }
+    /*.ui-jqgrid .ui-jqgrid-bdiv {
+        overflow-x: auto;
+    }*/
+    
+    .ui-jqgrid .ui-jqgrid-bdiv {
+        /*position: relative;
+        margin: 0;
+        padding: 0;*/
+        overflow: auto;
+        text-align: left;
+    }
+
+    .ui-state-default ui-th-column-header ui-th-ltr {
+        background: #555 !important;
+        color: bisque !important;
+    }
+
+    .ui-jqgrid .ui-jqgrid-htable th {
+        background: #555 !important;
+        color: gold !important;
+    }
+
+    .jqg-first-row-header {
+        visibility: collapse !important;
+    }
+</style>
+
+
+<input type="hidden" id="hdIPNumber" value="0" />
+<input type="hidden" id="hdUHID" value="800" />
+<input type="hidden" id="hdTransactionID" value="0" />
+
+<div class="divFixedBar">
+    <div class="row mr-0">
+        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-xs-12 d-flex align-items-center">
+            
+            <div>
+                <p><span class="labelname"><i class="fas fa-chevron-right c-lightgrey"></i> Patient Name</span><span id="lblPatientName"></span></p>
+                <p><span class="labelname"><i class="fas fa-chevron-right c-lightgrey"></i> Gender:</span><span id="lblGender"></span>&nbsp;&nbsp;<span class="labelname"> Age:</span><span id="lblAge"></span></p>
+            </div>
+        </div>
+        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-xs-12 d-flex align-items-center">
+            
+            <div>
+                <p><span class="labelname"><i class="fas fa-chevron-right c-lightgrey"></i> Doctor Name:</span><span id="lblConsultantName"></span></p>
+                <p><span class="labelname"><i class="fas fa-chevron-right c-lightgrey"></i> Room Type:</span> <span id="lblRoomType"></span>&nbsp;<span class="labelname"> Room No:</span><span id="lblBedNumber"></span></p>
+
+            </div>
+        </div>
+        
+        <div id="floatButtons" class="col-xl-4 col-lg-12 text-right p-0">
+            <button class="mdl-button" id="btnBackNS" onclick="fnBackToNSGrid()"><i class="fas fa-chevron-left"></i> <span class="btntext">Back</span></button>
+            <button class="mdl-button" id="btnSavePreOperative" onclick="fnSavePreOperative()"><i class="far fa-save c-green"></i> <span class="btntext">Save</span></button>
+        </div>
+    </div>
+</div>
+
+<div class="row" style="margin-right: 0px !important;">
+    <div class="col-lg-3 col-md-3 col-sm-3 sidebar" id="navbar-preoperative">
+        <div class="sidebar-sticky">
+            <ul class="nav flex-column" id="nav_menu">
+                <li><a href="#" id="v-po1-tab" data-bs-toggle="pill" data-bs-target="#v-po1" class="nav-link active" role="tab" aria-controls="v-po1" aria-selected="true">General History</a></li>
+                <li><a href="#" id="v-po2-tab" data-bs-toggle="pill" data-bs-target="#v-po2" class="nav-link" role="tab" aria-controls="v-po2" aria-selected="true">Surgical History</a></li>
+                <li><a href="#" id="v-po3-tab" data-bs-toggle="pill" data-bs-target="#v-po3" class="nav-link" aria-controls="v-po3" aria-selected="true">Medical History</a></li>
+                <li><a href="#" id="v-po4-tab" data-bs-toggle="pill" data-bs-target="#v-po4" class="nav-link" aria-controls="v-po4" aria-selected="true">Medications</a></li>
+                <li><a href="#" id="v-po5-tab" data-bs-toggle="pill" data-bs-target="#v-po5" class="nav-link" aria-controls="v-po5" aria-selected="true">Investigations</a></li>
+                <li><a href="#" id="v-po6-tab" data-bs-toggle="pill" data-bs-target="#v-po6" class="nav-link" aria-controls="v-po6" aria-selected="true">Comments</a></li>
+                <li><a href="#" id="v-po7-tab" data-bs-toggle="pill" data-bs-target="#v-po7" class="nav-link" aria-controls="v-po7">Decision</a></li>
+                </ul>
+        </div>
+    </div>
+    <div class="" id="mainContent">
+        <div class="tab-content" id="v-pills-tabContent">
+
+            <div class="tab-pane fade show active" id="v-po1" role="tabpanel" aria-labelledby="v-po-tab">
+                <div class="row">
+                    <div class="col-12 p-0">
+                        <h6 class="main-heading"><i class="fa fa-bars mr-10"></i>General History</h6>
+                    </div>
+                </div>
+                <div class="row mr-0" style="margin-right:0px;">                    
+                    <div class="col-lg-12 col-md-12 col-sm-12 mb-2 divNursingCarePlan">
+                        <div id="dvGeneralHistoryTemplate"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="v-po2" role="tabpanel" aria-labelledby="v-po2-tab" >
+                <div class="row">
+                    <div class="col-12 p-0">
+                        <h6 class="main-heading"><i class="fa fa-bars mr-10"></i>Surgical History</h6>
+                    </div>
+                </div>
+                <div class="row mr-0" style="margin-right:0px;">
+                    <div class="col-lg-12 col-md-12 col-sm-12" style="padding-right:0px">
+                        <div id="dvSurgicalHistoryTemplate"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="v-po3" role="tabpanel" aria-labelledby="v-po3-tab">
+                <div class="row">
+                    <div class="col-12 p-0">
+                        <h6 class="main-heading"><i class="fa fa-bars mr-10"></i>Medical History</h6>
+                    </div>
+                </div>
+                <div class="row mr-0" style="margin-right:0px;">
+                    <div class="col-lg-12 col-md-12 col-sm-12" style="padding-right:0px">
+                        <div id="dvMedicalHistoryTemplate"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="v-po4" role="tabpanel" aria-labelledby="v-po4-tab">
+                <div class="row">
+                    <div class="col-12 p-0">
+                        <h6 class="main-heading"><i class="fa fa-bars mr-10"></i>Medications</h6>
+                    </div>
+                </div>
+                <div class="row mr-0" style="margin-right:0px;">
+                    <div class="col-lg-12 col-md-12 col-sm-12" style="padding-right:0px">
+                        <table id="jqgMedications"></table>
+                        <div id="jqpMedications"></div>
+                    </div>
+                    <button type="button" class="mdl-button btn-circle" onclick="addMedications()"><i class="fa fa-plus"></i></button>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="v-po5" role="tabpanel" aria-labelledby="v-po5-tab">
+                <div class="row">
+                    <div class="col-12 p-0">
+                        <h6 class="main-heading"><i class="fa fa-bars mr-10"></i>Investigations</h6>
+                    </div>
+                </div>
+                <div class="row mr-0" style="margin-right:0px;">
+                        <div class="col-lg-12 col-md-12 col-sm-12" style="padding-right:0px">
+                            <table id="jqgInvestigations"></table>
+                            <div id="jqpInvestigations"></div>
+                        </div>
+                        <button type="button" class="mdl-button btn-circle" onclick="addInvestigations()"><i class="fa fa-plus"></i></button>
+                    </div>
+            </div>
+
+            <div class="tab-pane fade" id="v-po6" role="tabpanel" aria-labelledby="v-po6-tab">
+                <div class="row">
+                    <div class="col-12 p-0">
+                        <h6 class="main-heading"><i class="fa fa-bars mr-10"></i>Comments</h6>
+                    </div>
+                </div>
+                <div class="row mr-0" style="margin-right:0px;">
+                    <div class="col-lg-12 col-md-12 col-sm-12" style="padding-right:0px">
+                        <div id="dvCommentsTemplate"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="v-po7" role="tabpanel" aria-labelledby="v-po7-tab">
+                <div class="row">
+                    <div class="col-12 p-0">
+                        <h6 class="main-heading"><i class="fa fa-bars mr-10"></i>Decision</h6>
+                    </div>
+                </div>
+                <div class="row mr-0" style="margin-right:0px;">
+                    <div class="col-lg-12 col-md-12 col-sm-12" style="padding-right:0px">
+                        <div id="dvDecisionTemplate"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade in" id="PopupMedications" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Medications</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row" hidden>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input class="form-control datepicker" type="text" maxlength="8" id="dpMedicationsDate" />
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Time</label>
+                            <input class="form-control timepicker" type="time" maxlength="8" id="tpMedicationsTime" />
+                        </div>
+                    </div>
+                </div>
+                <div id="dvMedications"></div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button"
+                                id="btnMedications" onclick="saveMedications()">
+                            <i class="fa fa-save"></i> Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal"><i class="fa fa-times"></i> Cancel </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade in" id="PopupInvestigations" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Investigations</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row" hidden>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input class="form-control datepicker" type="text" maxlength="8" id="dpInvestigationsDate" />
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Time</label>
+                            <input class="form-control timepicker" type="time" maxlength="8" id="tpInvestigationsTime" />
+                        </div>
+                    </div>
+                </div>
+                <div id="dvInvestigations"></div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button"
+                                id="btnInvestigations" onclick="saveInvestigations()">
+                            <i class="fa fa-save"></i> Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal"><i class="fa fa-times"></i> Cancel </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade in" id="PopupBariatric" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Bariatric Surgeries</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row" hidden>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input class="form-control datepicker" type="text" maxlength="8" id="dpBariatricDate" />
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Time</label>
+                            <input class="form-control timepicker" type="time" maxlength="8" id="tpBariatricTime" />
+                        </div>
+                    </div>
+                </div>
+                <div id="dvBariatric"></div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button"
+                                id="btnBariatric" onclick="saveBariatric()">
+                            <i class="fa fa-save"></i> Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal"><i class="fa fa-times"></i> Cancel </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade in" id="PopupNonBariatric" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Non-Bariatric Surgeries</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row" hidden>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input class="form-control datepicker" type="text" maxlength="8" id="dpNonBariatricDate" />
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Time</label>
+                            <input class="form-control timepicker" type="time" maxlength="8" id="tpNonBariatricTime" />
+                        </div>
+                    </div>
+                </div>
+                <div id="dvNonBariatric"></div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button"
+                                id="btnNonBariatric" onclick="saveNonBariatric()">
+                            <i class="fa fa-save"></i> Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal"><i class="fa fa-times"></i> Cancel </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade in" id="PopupBodyMeasures" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Body Measures</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row" hidden>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input class="form-control datepicker" type="text" maxlength="8" id="dpBodyMeasuresDate" />
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Time</label>
+                            <input class="form-control timepicker" type="time" maxlength="8" id="tpBodyMeasuresTime" />
+                        </div>
+                    </div>
+                </div>
+                <div id="dvBodyMeasures"></div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button"
+                                id="btnBodyMeasures" onclick="saveBodyMeasures()">
+                            <i class="fa fa-save"></i> Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal"><i class="fa fa-times"></i> Cancel </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
+
+    <script>
+
+        $(".nav li a").click(function () {
+            $(".nav li a").removeClass("active");
+            $(this).addClass("active");
+            $('.tab-pane').removeClass('show active');
+            var v = $(this).attr('data-bs-target');
+            //console.log(v);
+            $(v).addClass('show active');
+        });
+
+        $(document).ready(function () {
+
+        });
+
+        function fnBackToNSGrid() {
+            window.location.href = getBaseURL() + "/eSyaNursingStation/OperativeAnaesthesiaCare/V_6004_00";
+        }
+
+    </script>

@@ -1,0 +1,177 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "V_3_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="~/css/jsTree.css" />
+@section scripts{
+    <script src="~/js/Config/FormModule.js"></script>
+    <script src="~/js/jsTree.js"></script>
+    <script src="~/js/tinymce/tinymce.js"></script>
+}
+
+<div class="row">
+    <div class="col-lg-4 col-md-6 col-sm-4 col-10">
+        <div id="jstMenuFormModule"></div>
+    </div>
+    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12  div-menuform">
+        <div class="demo-card-square mdl-card mdl-shadow--2dp" id="pnlFormModule" style="width:100%">
+            <div id="pnlMainModuleHeading" class="mdl-card__title mdl-card--expand padleft0 padtop0 h-60 d-block">
+                <h5 class="mdl-card__title-text">Add Form Module</h5>
+            </div>
+            <div class="mdl-card__supporting-text fullwidth pad0">
+                <div class="row  padbot10 mar0">
+                    <input type="text" id="txtFormId" style="display:none" />
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group">
+                            <label>@Localizer["ModuleID"] </label>
+                            <select class="selectpicker" data-live-search="true" data-size="8" title="" id="cboModule">
+                                <option value="0">@Localizer["ChooseModule"] </option>
+                                @if (ViewBag.ModuleList != null)
+                                {
+                                    foreach (var module in ViewBag.ModuleList)
+                                    {
+                                        <option value="@module.ApplicationCode">@module.CodeDesc</option>
+                                    }
+                                }
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group ">
+                            <label>@Localizer["FormID"] </label>
+                            <select class="selectpicker" data-live-search="true" data-size="8" title="" id="cboForm"></select>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group ">
+                            <label>@Localizer["TransactionTable"] </label>
+                            <textarea id="txtTransactiontable" rows="3" cols="10" class=" form-control" maxlength="8000"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group">
+                            <label>@Localizer["RefferedTable"] </label>
+                            <textarea id="txtRefferedtable" rows="3" cols="10" class=" form-control" maxlength="8000"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group">
+                            <label>@Localizer["ReferenceLink"] </label>
+                            <textarea id="txtReferencelink" rows="3" cols="10" class=" form-control" maxlength="2000"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label>@Localizer["Description"] </label>
+                            <textarea id="txtDescription"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-lg-9 col-md-9 col-sm-9">
+                        <div class="form-group ">
+                            <label>@Localizer["AssignedTo"]  </label>
+                            <select class="selectpicker" data-size="" data-live-search="true" title="" id="cboAssign">
+                                <option value="0">@Localizer["ChooseAssignedTo"] </option>
+                                @if (ViewBag.AssignList != null)
+                                {
+                                    foreach (var appcode in ViewBag.AssignList)
+                                    {
+                                        <option value="@appcode.ApplicationCode">@appcode.CodeDesc</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-3">
+                        <div class="form-group">
+                            <label>@Localizer["AssignedOn"]  </label>
+                            <input type="text" class="datepicker form-control" name="name" value="" id="dtAssignedon" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin:0px">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="lable-color">@Localizer["Status"] </label>
+                            <div>
+                                <select class="selectpicker" data-live-search="false" id="cboStatus" title="">
+                                    <option value="0">@Localizer["ChooseStatus"] </option>
+                                    <option value="D">@Localizer["ToDo"] </option>
+                                    <option value="P">@Localizer["InProgress"] </option>
+                                    <option value="C">@Localizer["Completed"] </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="default-checkbox">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActiveStatus">
+                                <input type="checkbox" id="chkActiveStatus" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">@Localizer["Active"]  </span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                @*<div class="row" style="margin:0px">
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="lable-color">Active Status</label>
+                                <div>
+                                    <select class="selectpicker" data-live-search="false" id="cboActiveStatus" title="">
+                                        <option value="true">Active</option>
+                                        <option value="false">In Active</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>*@
+            </div>
+            <div class="mdl-card__actions mdl-card--border" style="text-align: center;">
+                <button class="mdl-button mdl-js-button mdl-button--raised primary-button" id="btnSaveFormModule" onclick="fnSaveFormModule()">
+                    @Localizer["Add"]  
+                </button>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+</div>
+<script>
+    $(document).ready(function () {
+        tinymceinit();
+    })
+    function tinymceinit() {
+        tinymce.init({
+            selector: 'textarea#txtDescription',
+            height: 200,
+            menubar: false,
+            plugins: [
+                'advlist autolink lists link image charmap print preview anchor',
+                'searchreplace visualblocks code fullscreen',
+                'insertdatetime media table paste code wordcount'
+            ],
+            toolbar: 'undo redo | formatselect | ' +
+                'bold italic backcolor | alignleft aligncenter ' +
+                'alignright alignjustify | bullist numlist outdent indent | ' +
+                'removeformat | help',
+            //content_css: '//www.tiny.cloud/css/codepen.min.css'
+            init_instance_callback: function (editor) {
+                var freeTiny = document.querySelector('.tox .tox-notification--in');
+                //freeTiny.style.display = 'none';
+            }
+        });
+    }
+</script>
+
+

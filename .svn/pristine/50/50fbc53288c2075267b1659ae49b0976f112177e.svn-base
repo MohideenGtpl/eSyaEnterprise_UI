@@ -1,0 +1,73 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "V_201_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    var userFormRole = (eSyaEnterprise_UI.Models.DO_UserFormRole)ViewBag.UserFormRole;
+
+}
+<script>
+    var _userFormRole = JSON.parse('@Html.Raw(Json.Serialize(userFormRole))');
+</script>
+
+@section scripts{
+
+    <script src="~/js/eSyaUserManagement/UserGroup.js"></script>
+    <script src="~/js/jsTree.js"></script>
+}
+<link href="~/css/jsTree.css" rel="stylesheet" />
+<div class="row padbot10">
+
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> @Localizer["UserGroup"]</label>
+
+            <select class="selectpicker" data-live-search="true" id="cboUsergroup" title="" data-size="8" onchange="fnResetUserType()">
+                <option value="0"> @Localizer["ChooseUserGroup"] </option>
+                @foreach (var ug in ViewBag.UGappcodes)
+                {
+                    <option value="@ug.ApplicationCode">@ug.CodeDesc</option>
+                }
+            </select>
+
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> @Localizer["UserType"]</label>
+
+            <select class="selectpicker" data-live-search="true" id="cboUserType" title="" data-size="8">
+                <option value="0">@Localizer["ChooseUserType"] </option>
+                @foreach (var ut in ViewBag.UTappcodes)
+                {
+                    <option value="@ut.ApplicationCode">@ut.CodeDesc</option>
+                }
+            </select>
+
+        </div>
+    </div>
+    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="saveMUG" 
+            @{ if(userFormRole.IsInsert !=true)
+                {
+                    @:disabled="disabled" 
+                } 
+             }
+            
+            onclick="fnsaveUserGroup()">
+        <i class="fas fa-save"></i> @Localizer["Save"]
+    </button>
+    <div class="col-lg-3 col-md-4 col-sm-6">
+
+    </div>
+
+
+    <div class="col-lg-4 col-md-4 col-sm-12">
+
+        <div id="treeUG">
+        </div>
+    </div>
+</div>

@@ -1,0 +1,230 @@
+﻿
+@{
+    ViewData["Title"] = "V_72_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row ">
+    <div class="col-lg-4 col-md-4 col-sm-6 itemblur">
+
+        <div class="form-group">
+            <label class="lable-color"> Business Location</label>
+            <select class="selectpicker" data-live-search="true" id="cboBusinesskey" title="" data-size="8"
+                    asp-items="@ViewBag.Businesskey">
+
+           </select>
+        </div>
+
+
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6 itemblur">
+        <div class="form-group">
+            <label class="lable-color"> Currency Code</label>
+            <select class="selectpicker" data-live-search="true" id="cboCurrencycode" title="" data-size="8"
+                    asp-items="@ViewBag.CurrencyCodes">
+  
+            </select>
+        </div>
+    </div>
+
+</div>
+<div class="row padbot10">
+    <div class="col-lg-12 col-md-12 col-sm-12 itemblur">
+        <table id="jqgCurrencyRate"></table>
+        <div id="jqpCurrencyRate"></div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<style>
+    .custH {
+        text-align: center;
+        margin-top: -15px;
+        padding-top: 12px;
+        background-color: #797172;
+    }
+</style>
+
+<div class="row">
+    <div class="col-sm-12 col-lg-12 col-md-12">
+        <div class="listercontainer">
+            <table id="listER"></table>
+            <div id="pagerER"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var v_grid = $("#listER");
+        var v_pager = $("#pagerER");
+
+        function custFormat(cellvalue) {
+            if (cellvalue != undefined) {
+                return g_getIndDateM(cellvalue);
+            }
+            else {
+                return "";
+            }
+        }
+
+        v_grid.jqGrid({
+            url: getBaseURL() + "/CurrencyMaster/ReadExchangeRate",
+            mtype: 'post',
+            datatype: 'json',
+            ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+            serializeGridData: function (postData) {
+                return JSON.stringify(postData);
+            },
+            jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+            colNames: ["Code", "Currency", "Date of Exchange", "Standard Rate", "Date", "Rate", "Date", "Rate", "Active Status"],
+            colModel: [
+                { name: "CurrencyCode", width: 100, editable: true, key: true },
+                { name: "CurrencyDesc", width: 120, editable: true },
+                {
+                    name: "DateOfExchangeRate", width: 150, editable: true, align: 'right', formatter: custFormat, editoptions: {
+                        readonly: 'readonly', dataInit: function (DateOfExchangeRate) {
+                            if (new Date($(DateOfExchangeRate).val()).getTime() > new Date().getTime()) {
+                                var d = new Date($(DateOfExchangeRate).val());
+                            }
+                            else { d = new Date(); }
+                            $(DateOfExchangeRate).datepicker({
+                                minDate: d,
+                                onSelect: function (date) {
+                                    var datepic = $(this).datepicker('getDate');
+                                    var month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                                    IndDate = datepic.getDate() + " " + month[datepic.getMonth()] + " " + datepic.getFullYear();
+                                    $(this).val(IndDate);
+                                }
+                            })
+                        }
+                    }
+                },
+                { name: "StandardRate", width: 100, editable: true, align: 'right' },
+                {
+                    name: "SellingLastVoucherDate", editable: true, width: 100, align: "right", formatter: custFormat, editoptions: {
+                        readonly: 'readonly', dataInit: function (SellingLastVoucherDate) {
+                            $(SellingLastVoucherDate).datepicker({
+                                minDate: (new Date),
+                                onSelect: function (date) {
+                                    var datepic = $(this).datepicker('getDate');
+                                    var month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                                    IndDate = datepic.getDate() + " " + month[datepic.getMonth()] + " " + datepic.getFullYear();
+                                    $(this).val(IndDate);
+                                }
+                            })
+                        }
+                    }
+                },
+                { name: "SellingRate", width: 100, editable: true, align: 'right' },
+                {
+                    name: "BuyingLastVoucherDate", width: 100, editable: true, align: 'right', formatter: custFormat, editoptions: {
+                        readonly: 'readonly', dataInit: function (BuyingLastVoucherDate) {
+                            $(BuyingLastVoucherDate).datepicker({
+                                minDate: (new Date),
+                                onSelect: function (date) {
+                                    var datepic = $(this).datepicker('getDate');
+                                    var month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                                    IndDate = datepic.getDate() + " " + month[datepic.getMonth()] + " " + datepic.getFullYear();
+                                    $(this).val(IndDate);
+                                }
+                            })
+                        }
+                    }
+                },
+                { name: "BuyingRate", width: 100, editable: true, align: 'right' },
+                { name: "Status", editable: true, width: 80, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: InActive" } },
+            ],
+            rowNum: 10,
+            rowList: [10, 20, 40],
+            pager: "#pagerER",
+            viewrecords: true,
+            gridview: true,
+            rownumbers: true,
+            height: 'auto',
+            width: 'auto',
+            autowidth: true,
+            shrinkToFit: true,
+            forceFit: false,
+            onSelectRow: function (rowid) {
+                custOnSelectRow(rowid);
+            },
+            loadComplete: function (data) {
+                $("#jqgh_listER_DateOfExchangeRate, #jqgh_listER_StandardRate, #jqgh_listER_SellingLastVoucherDate, #jqgh_listER_SellingRate, #jqgh_listER_BuyingLastVoucherDate, #jqgh_listER_BuyingRate").css({ 'text-align': 'right' });
+                custLoadComplete("listER", "pagerER");
+            },
+        }).jqGrid('navGrid', '#pagerER', { add: false, edittext: 'Edit', del: false, refreshtext: 'Refresh', search: false },
+            {
+                editCaption: 'Edit Exchange Rate',
+                url: getBaseURL() + "/CurrencyMaster/UpdateExchangeRate",
+                closeAfterEdit: true,
+                reloadAfterSubmit: true,
+                beforeShowForm: function (formid) {
+                    $("#tr_CurrencyCode, #tr_CurrencyDesc, #tr_SellingLastVoucherDate, #tr_BuyingLastVoucherDate").css({ 'display': 'none' });
+
+                    $("#tr_SellingRate").find(".CaptionTD")[0].innerHTML = "Selling Rate";
+                    $("#tr_BuyingRate").find(".CaptionTD")[0].innerHTML = "Buying Rate";
+
+                    $("#editmodlistER").css({
+                        'width': Math.round(v_grid.width() / 2.5) + "px",
+                        'height': 'auto'
+                    });
+                    $("#FrmGrid_listER").css({
+                        'width': Math.round(v_grid.width() / 2.5) + "px",
+                        'height': 'auto'
+                    });
+                },
+                afterShowForm: function (formid) {
+                    $("#DateOfExchangeRate").datepicker("hide");
+                    $("#StandardRate").focus();
+                },
+                beforeSubmit: function (postdata, formid) {
+                    var message = '';
+                    if (message != '') {
+                        return [false, message]
+                    }
+                    else {
+                        return [true, '']
+                    }
+                },
+                afterSubmit: function (response, postdata) {
+                    $("#fa").hide();
+                    if (response.responseText == "") {
+                        return [true, '']
+                    }
+                    else {
+                        return [false, response.responseText]
+                    }
+                }
+            }, {});
+
+        v_grid.jqGrid('setGroupHeaders', {
+            useColSpanStyle: true,
+            groupHeaders: [
+                { startColumnName: 'SellingLastVoucherDate', numberOfColumns: 2, titleText: '<div class="custH">Selling</div>' },
+                { startColumnName: 'BuyingLastVoucherDate', numberOfColumns: 2, titleText: '<div class="custH">Buying</div>' }
+            ]
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    $(window).on("resize", function () {
+        var $grid = $("#listER"),
+            newWidth = $grid.closest(".listercontainer").parent().width();
+        $grid.jqGrid("setGridWidth", newWidth, true);
+    });
+</script>

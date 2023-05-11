@@ -1,0 +1,73 @@
+﻿
+$(document).ready(function () {
+    fnGridLoadAssetAllocation();
+});
+var actiontype = "";
+function fnGridLoadAssetAllocation() {
+
+    var codeType = $("#cboCodeType").val();
+    $("#jqgAssetAllocation").jqGrid('GridUnload');
+    $("#jqgAssetAllocation").jqGrid({
+        //url:,
+        //  mtype: 'Post',
+        datatype: 'local',
+        data: [{ AssetDescription: 'Office Chair', AssetNo: '00100', AssetSlNO:'12000100',ActiveStatus:true,Actions:''}],
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Asset Description", "Asset No", "Asset SL No", "Active", "Actions"],
+        colModel: [
+            { name: "AssetDescription", width: 70, editable: true, align: 'left'},
+            { name: "AssetNo", width: 70, editable: false, align: 'left', resizable: true },
+            { name: "AssetSlNO", width: 170, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            { name: "ActiveStatus", editable: true, width: 28, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true: false" } },
+            {
+                name: 'Actions', search: false, align: 'left', width: 54, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" onclick="return fnAssetAllocation(event)"><i class="fas fa-wrench"></i> Allocate </button>'
+                }
+            }
+        ],
+        pager: "#jqpAssetAllocation",
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0
+    }).jqGrid('navGrid', '#jqpAssetAllocation', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpAssetAllocation', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshAssetAllocation
+    });
+    $("[id^='jqgh'][id$='_rn']").empty();
+    $("[id^='jqgh'][id$='_rn']").text("S.No").css("text-align", 'center');
+    $("[id^='gbox_']").parent().css('overflow', 'auto');
+}
+ 
+function fnAssetAllocation(e, actiontype) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgAssetAllocation').jqGrid('getRowData', rowid);
+    $('#PopupAssetAllocation').modal('show');
+     
+}
+ 
+function fnGridRefreshAssetAllocation() {
+    $("[id^='jqgh'][id$='_rn']").empty();
+    $("[id^='jqgh'][id$='_rn']").text("S.No").css("text-align", 'center');
+    $("[id^='gbox_']").parent().css('overflow', 'auto');
+    $("#jqgAssetAllocation").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+$("#btnCancelApplicationCode").click(function () {
+    fnClearFields();
+    $("#jqgAssetAllocation").jqGrid('resetSelection');
+    $('#PopupAssetAllocation').modal('hide');
+});
+
+function fnClearFields() {
+    
+}

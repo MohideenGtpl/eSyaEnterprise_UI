@@ -1,0 +1,103 @@
+﻿
+@{
+    ViewData["Title"] = "ResetPassword";
+}
+
+<style>
+
+    .pass_show {
+        position: relative
+    }
+
+        .pass_show .ptxt {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            z-index: 1;
+            color: #fada28;
+            margin-top: -10px;
+            cursor: pointer;
+            transition: .3s ease all;
+        }
+
+            .pass_show .ptxt:hover {
+                color: #333333;
+            }
+</style>
+
+
+<div class="row">
+    <div class="col-sm-4">
+
+        <label>Current Password</label>
+        <div class="form-group pass_show">
+            <input type="password" id="txtCurrentPassword" value="" class="form-control" placeholder="Current Password">
+        </div>
+        <label>New Password</label>
+        <div class="form-group pass_show">
+            <input type="password" id="txtNewPassword" class="form-control" placeholder="New Password">
+        </div>
+        <label>Confirm Password</label>
+        <div class="form-group pass_show">
+            <input type="password" id="txtConfirmPassword" class="form-control" placeholder="Confirm Password">
+        </div>
+
+    </div>
+</div>
+    <div class="col-sm-4" style="text-align:center">
+        <button type="button" class="btn btn-primary m-r-15 mdl-js-ripple-effect" id="btnSave" onclick="fnSave()"> Update </button>
+        <button type="button" class="btn btn-primary mdl-js-ripple-effect" id="btnClear" onclick="fnClear()"> Clear</button>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('.pass_show').append('<span class="ptxt">Show</span>');
+        });
+
+
+        $(document).on('click', '.pass_show .ptxt', function () {
+
+            $(this).text($(this).text() == "Show" ? "Hide" : "Show");
+
+            $(this).prev().attr('type', function (index, attr) { return attr == 'password' ? 'text' : 'password'; });
+
+        });
+
+
+        function fnSave() {
+            $("#btnSave").attr("disabled", true);
+            $.ajax({
+                url: getBaseURL() + '/UserProfile/ResetUserPassword',
+                type: 'POST',
+                datatype: 'json',
+                data: {
+                    currentPassword: $("#txtCurrentPassword").val(),
+                    newPassword: $("#txtNewPassword").val(),
+                    confirmPassword: $("#txtConfirmPassword").val()
+                },
+                async: false,
+                success: function (response) {
+
+                    if (response.Status == true) {
+                        toastr.success("Updated");
+                        fnClear();
+                    }
+                    else {
+                        toastr.error(response.Message);
+                    }
+                    $("#btnSave").attr("disabled", false);
+                },
+                error: function (error) {
+                    toastr.error(error.statusText);
+                    $("#btnSave").attr("disabled", false);
+                }
+            });
+        }
+
+        function fnClear() {
+            $("#txtCurrentPassword").val("");
+            $("#txtNewPassword").val("")
+            $("#txtConfirmPassword").val("")
+        }
+
+    </script>

@@ -1,0 +1,274 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+<section>
+    <div class="row m-0">
+        <div class="col-lg-10">
+            <h1 class="ga-heading">My Activities</h1>
+        </div>
+        <div class="col-lg-2">
+            <div class="row mr-0">
+                <div id="floatButtons" class="col-xl-2 col-lg-12 text-right p-0">
+
+                    <button class="mdl-button" id="btnSaveForm" onclick="fnAddActivity()"> <span class="btntext">Add Activity</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div id="devActivities">
+
+</div>
+
+
+<div class="modal fade in" id="PopupAddActivity" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">@Localizer["AddActivity"] </h4>
+            </div>
+            <div class="modal-body">
+                <div class="row padbot4">
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <div>
+                                <label class="lable-color">@Localizer["Activity"] </label>
+                                <select class="selectpicker" data-live-search="false" id="cboActivities" title="" data-container="body"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row padbot4">
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label for="txtActivityDate">@Localizer["ActivityDate"]<span class="lblInfo">DD/MM/YYYY</span></label>
+                            <input id="txtActivityDate" type="text" class="form-control datepicker" />
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label>  @Localizer["FromTime"]</label>
+                            <input id="txtFromTime" class="form-control" type="time" autocomplete="off" />
+
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label>  @Localizer["ToTime"]</label>
+                            <input id="txtToTime" class="form-control" type="time" autocomplete="off" />
+
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveActivity" onclick="fnSaveActivity();">
+                            <i class="fa fa-save"></i> @Localizer["Save"]
+                        </button>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        fnGetGuestActivities();
+        fnGetActivities();
+    });
+    function fnGetGuestActivities() {
+        var l_activities = [];
+        var _content = "";
+        $.ajax({
+            url: getBaseURL() + '/FirstConsultation/GetGuestActivities?ipNumber=' + $("#hdbookingKey").val() + $("#hdguestId").val(),
+            type: 'GET',
+            datatype: 'json',
+            async: false,
+            success: function (response) {
+                activities = response;
+            },
+            error: function (error) {
+                toastr.error(error.statusText);
+            }
+        });
+        var l_head = activities.l_activityheader;
+
+        $.each(l_head, function (ky, h) {
+            
+            _content += "<section class='mt-4'><div class='row border-bottom'><div class='col-lg-12 col-md-12 col-12 border-bottom pl-0'>";
+            _content += "<a class='bold m-0' href='#head_" + h.ActivityDayId + "' data-toggle='collapse' role='button' aria-expanded='false'>";
+            _content += "<i class='fa fa-chevron-circle-right'></i> " + h.ActivityDate + "<span class='timeline-duration'>";
+            _content += "<i class='fa fa-circle f-11'></i> Tracked " + h.ActivityDurationHH + " hrs</span>";
+            _content += "</a></div></div>";
+            _content += "<div id='head_" + h.ActivityDayId + "' class='collapse'>";
+            var l_act = activities.l_activitydetails.filter(element => element.ActivityDayId === h.ActivityDayId);
+            $.each(l_act, function (ky, a) {
+                var _color = "";
+                if (!a.ActiveStatus) {
+                    _color = "style = 'background-color:#F75D59;'";
+                }
+
+                _content += "<div class='row border-bottom' " + _color + "><div class='col-lg-2 col-md-2 my-4'>";
+                _content += "<p class='m-0'>" + a.ActivityFromTime + " - " + a.ActivityToTime + "</p>";
+                _content += "<span class='text-black-50 f-11'>" + a.ActivityDurationHH + " hrs</span>";
+                _content += "</div><div class='col-lg-2 col-md-2 pl-0 my-4'>";
+                _content += "<p class='m-0'>" + a.ActivityDesc + "</p>";
+                _content += "<span class='text-black-50 f-11'>" + a.DepartmentDesc + "</span></div><div class='col-lg-2 col-md-2 p-0 my-3 offset-lg-2 offset-md-2 border-left border-right text-center'>";
+                _content += "<p class='text-black-50 m-0 f-11'>" + a.ModifiedUser + "</p>";
+                _content += "<p class='text-black-50 m-0 f-11'>" + a.ModifiedOn + "</p>";
+                var _st = 'Activate';
+                if (a.ActiveStatus) {
+                    _st = 'Deactivate';
+                }
+                _content += "<p id='s_" + a.SerialNumber + "'class='text-black-50 m-0 f-11'><a href='#' onclick='fnUpdateActivity(" + a.SerialNumber + "," + !a.ActiveStatus + ")' > " + _st + " </a></p></div></div>";
+
+
+            });
+            _content += " </div></section>";
+
+
+        });
+
+        $("#devActivities").html(_content);
+
+
+    }
+    function fnGetActivities() {
+        $.ajax({
+            url: getBaseURL() + '/FirstConsultation/GetActivities',
+            type: 'GET',
+            datatype: 'json',
+            async: false,
+            success: function (response) {
+                $("#cboActivities").append('<option value="0">Select Activity</option>');
+                $('#cboActivities').selectpicker('refresh');
+                for (var i = 0; i < response.length; i++) {
+                    $("#cboActivities").append('<option value="' + response[i].ActivityId + '"> ' + response[i].ActivityDesc + ' </option>');
+                    $('#cboActivities').selectpicker('refresh');
+                }
+            },
+            error: function (error) {
+                toastr.error(error.statusText);
+            }
+        });
+    }
+    function fnUpdateActivity(_serial, _status) {
+
+        var obj = {
+            Ipnumber: $("#hdbookingKey").val() + $("#hdguestId").val(),
+            SerialNumber: _serial,
+            ActiveStatus: _status
+        };
+
+        $.ajax({
+            url: getBaseURL() + '/FirstConsultation/AddOrUpdateGuestActivity',
+            type: 'POST',
+            datatype: 'json',
+            data: { obj: obj },
+            success: function (response) {
+                if (response.Status) {
+
+                    $("#devActivities").html('');
+                    fnGetGuestActivities();
+                    toastr.success(response.Message);
+                }
+                else {
+                    toastr.error(response.Message);
+                }
+
+            },
+            error: function (error) {
+                toastr.error(error.statusText);
+            }
+        });
+
+
+    }
+    function fnAddActivity() {
+        fnClearFields();
+        $("#PopupAddActivity").modal('show');
+
+    }
+    function fnSaveActivity() {
+        if (IsStringNullorEmpty($("#cboActivities").val()) || $("#cboActivities").val() == "0") {
+            toastr.warning("Please select Activity");
+            return;
+        }
+        if (IsStringNullorEmpty($("#txtActivityDate").val())) {
+            toastr.warning("Please Enter Activity Date");
+            return;
+        }
+        if (IsStringNullorEmpty($("#txtFromTime").val())) {
+            toastr.warning("Please Enter From Time");
+            return;
+        }
+        if (IsStringNullorEmpty($("#txtToTime").val())) {
+            toastr.warning("Please Enter To Time");
+            return;
+        }
+        var startTime = $('#txtFromTime').val();
+        var endTime = $('#txtToTime').val();
+
+        var startDate = new Date("1/1/1900 " + startTime);
+        var endDate = new Date("1/1/1900 " + endTime);
+
+        if (startDate >= endDate) {
+            toastr.warning("From Time can't be more than or equal to To Time.");
+            $('#txtToTime').focus();
+            return;
+        }
+
+        var obj = {
+            Ipnumber: $("#hdbookingKey").val() + $("#hdguestId").val(),
+            SerialNumber: '0',
+            HospitalNumber: $("#hdUHID").val(),
+            ActivityId: $("#cboActivities").val(),
+            ActivityDate: $("#txtActivityDate").val(),
+            ActivityFromTime: $("#txtFromTime").val(),
+            ActivityToTime: $("#txtToTime").val(),
+        };
+
+        $.ajax({
+            url: getBaseURL() + '/FirstConsultation/AddOrUpdateGuestActivity',
+            type: 'POST',
+            datatype: 'json',
+            data: { obj: obj },
+            success: function (response) {
+                if (response.Status) {
+
+                    $("#devActivities").html('');
+                    fnGetGuestActivities();
+                    $("#PopupAddActivity").modal('hide');
+                    toastr.success(response.Message);
+                }
+                else {
+                    toastr.error(response.Message);
+                }
+
+            },
+            error: function (error) {
+                toastr.error(error.statusText);
+            }
+        });
+    }
+    function fnClearFields() {
+        $('#cboActivities').val("0").selectpicker('refresh');
+        $("#txtActivityDate").val('');
+        $("#txtFromTime").val('');
+        $('#txtToTime').val('');
+    }
+
+</script>

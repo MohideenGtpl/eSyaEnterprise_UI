@@ -1,0 +1,460 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Net.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using eSyaEnterprise_UI.Utility;
+using eSyaEnterprise_UI.Areas.Config.Models;
+using eSyaEnterprise_UI.Areas.FixedAssets.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Areas.FixedAssets.Data;
+using eSyaEnterprise_UI.ActionFilter;
+using eSyaEnterprise_UI.Areas.FixedAssets;
+
+namespace eSyaEnterprise_UI.Areas.eSyaFixedAssets.Controllers
+{
+    [SessionTimeout]
+    public class FixedAssetsController : Controller
+    {
+        private readonly ILogger<FixedAssetsController> _logger;
+
+        private readonly IFixedAssetsAPIServices _FixedAssetsAPIServices;
+        public FixedAssetsController(IFixedAssetsAPIServices FixedAssetsAPIServices, ILogger<FixedAssetsController> logger)
+        {
+            _FixedAssetsAPIServices = FixedAssetsAPIServices;
+            _logger = logger;
+        }
+        #region Asset Group
+        [Area("FixedAssets")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public async Task<IActionResult> V_2001_00()
+        {
+            try
+            {
+                List<int> l_codeType = new List<int>();
+                l_codeType.Add(CodeTypeValues.AssetGroup);
+                l_codeType.Add(CodeTypeValues.AssetSubGroup);
+
+                var response = await _FixedAssetsAPIServices.HttpClientServices.PostAsJsonAsync<List<DO_ApplicationCodes>>("CommonData/GetApplicationCodesByCodeTypeList", l_codeType);
+
+              
+                if (response.Status)
+                {
+                    if (response.Data != null )
+                    {
+                        List<DO_ApplicationCodes> app_codes = response.Data;
+
+                        ViewBag.AssetGroup = app_codes.Where(w => w.CodeType == CodeTypeValues.AssetGroup).Select(b => new SelectListItem
+                        {
+                            Value = b.ApplicationCode.ToString(),
+                            Text = b.CodeDesc,
+                        }).ToList();
+
+                        ViewBag.AssetSubGroup = app_codes.Where(w => w.CodeType == CodeTypeValues.AssetSubGroup).Select(b => new SelectListItem
+                        {
+                            Value = b.ApplicationCode.ToString(),
+                            Text = b.CodeDesc,
+                        }).ToList();
+
+                       
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(response.Message), "UD:GetApplicationCodesByCodeTypeList");
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(response.Message), "UD:GetApplicationCodesByCodeTypeList");
+                }
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetApplicationCodesByCodeTypeList");
+                throw ex;
+            }
+        }
+        [Produces("application/json")]
+        [HttpPost]
+        public async Task<JsonResult> GetAssetGroupTreeView()
+        {
+            try
+            {
+                List<jsTreeObject> jsTree = new List<jsTreeObject>();
+                jsTreeObject jsObj = new jsTreeObject
+                {
+                    id = "MM",
+                    parent = "#",
+                    text = "Asset Group",
+                    icon = "/images/jsTree/foldergroupicon.png",
+                    state = new stateObject { opened = true, selected = false }
+                };
+                jsTree.Add(jsObj);
+                var serviceResponse =await _FixedAssetsAPIServices.HttpClientServices.GetAsync<List<DO_AssetGroup>>("AssetGroup/GetAssetGroupTreeView");
+                if (serviceResponse.Status)
+                {
+                    var AssetGroup = serviceResponse.Data;
+                    if (AssetGroup != null)
+                    {
+                        foreach (var f in AssetGroup.OrderBy(o => o.AssetGroupId).GroupBy(x => x.AssetGroupId).Select(y => y.First()))
+                        {
+                            jsObj = new jsTreeObject
+                            {
+                                id = "MM" + f.AssetGroupId.ToString(),
+                                text = f.AssetGroupDesc,
+                                GroupIndex = f.AssetGroupId.ToString(),
+                                parent = "MM",
+                                state = new stateObject { opened = true, selected = false }
+                            };
+                            jsTree.Add(jsObj);
+                            
+
+                            foreach (var l in f.l_AssetSubGroup.Where(x=>x.AssetGroupId==f.AssetGroupId).GroupBy(x => x.AssetSubGroupId).Select(y => y.First()).OrderBy(o => o.AssetGroupId))
+                            {
+                                jsObj = new jsTreeObject
+                                {
+                                    id = "SM" + l.AssetGroupId.ToString() + "_" + l.AssetSubGroupId.ToString(),
+                                    text = l.AssetSubGroupDesc,
+                                    GroupIndex = l.AssetGroupId.ToString(),
+                                    parent = "MM" + l.AssetGroupId.ToString(),
+                                    state = new stateObject { opened = true, selected = false }
+
+                                   
+                                };
+                                jsTree.Add(jsObj);
+                            }
+                        }
+                    }
+                    return Json(jsTree);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetAssetGroupTreeView");
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetAssetGroupTreeView");
+                throw ex;
+            }
+        }
+        //[HttpPost]
+        //public IActionResult GetAssetGroupTreeView()
+        //{
+        //    try
+        //    {
+
+        //        List<jsTreeObject> jsTree = new List<jsTreeObject>();
+        //        jsTreeObject jsObj1 = new jsTreeObject
+        //        {
+        //            id = "MM",
+        //            parent = "#",
+        //            text = "Asset Group",
+        //            icon = "/images/jsTree/foldergroupicon.png",
+        //            state = new stateObject { opened = true, selected = false }
+        //        };
+        //        jsTree.Add(jsObj1);
+
+        //        var serviceResponse = _FixedAssetsAPIServices.HttpClientServices.GetAsync<List<DO_AssetGroup>>("AssetGroup/GetAssetGroupTreeView").Result;
+        //        if (serviceResponse.Status)
+        //        {
+        //            var configureMenu = serviceResponse.Data;
+
+        //            if (configureMenu != null)
+        //            {
+
+        //                List<DO_AssetGroup> AssetList = new List<DO_AssetGroup>();
+        //                AssetList = configureMenu;
+        //                var Parents = AssetList.Where(x => x.ParentId == 0).ToList();
+        //                foreach (var parent in Parents)
+        //                {
+        //                    SetSubGroup(parent, AssetList);
+        //                }
+        //                foreach (var m in Parents)
+        //                {
+        //                    jsTreeObject jsObj = new jsTreeObject
+        //                    {
+        //                        id = "MM" + m.AssetGroupId.ToString(),
+        //                        text = m.AssetGroupDesc,
+        //                        icon = m.ActiveStatus ? "/images/jsTree/openfolder.png" : "/images/jsTree/inactive.png",
+        //                        GroupIndex = m.AssetGroupId.ToString(),
+        //                        parent = "MM",
+        //                    };
+        //                    jsTree.Add(jsObj);
+
+        //                    foreach (var s in m.AssetGroupList)
+        //                    {
+        //                        if (s.ParentId == m.AssetGroupId)
+        //                        {
+        //                            jsTreeObject js = new jsTreeObject
+        //                            {
+        //                                id = "SM" + s.AssetGroupId.ToString(),
+        //                                text = s.AssetGroupDesc,
+        //                                icon = s.ActiveStatus ? "/images/jsTree/openfolder.png" : "/images/jsTree/openfolder.png",
+        //                                GroupIndex = s.AssetGroupId.ToString(),
+        //                                parent = m.ParentId == 0 ? "MM" + m.AssetGroupId.ToString() : "SM" + s.AssetGroupId.ToString()
+
+        //                            };
+        //                            jsTree.Add(js);
+        //                        }
+        //                        foreach (var s1 in s.AssetGroupList)
+        //                        {
+        //                            if (s1.ParentId == s.AssetGroupId)
+        //                            {
+        //                                jsTreeObject js = new jsTreeObject
+        //                                {
+        //                                    id = "SM" + s1.AssetGroupId.ToString(),
+        //                                    text = s1.AssetGroupDesc,
+        //                                    icon = s1.ActiveStatus ? "/images/jsTree/openfolder.png" : "/images/jsTree/openfolder.png",
+        //                                    GroupIndex = s1.AssetGroupId.ToString(),
+        //                                    parent =  "SM" + s.AssetGroupId.ToString()
+
+        //                                };
+        //                                jsTree.Add(js);
+        //                            }
+        //                            foreach (var s2 in s1.AssetGroupList)
+        //                            {
+        //                                if (s2.ParentId == s1.AssetGroupId)
+        //                                {
+        //                                    jsTreeObject js = new jsTreeObject
+        //                                    {
+        //                                        id = "SM" + s2.AssetGroupId.ToString(),
+        //                                        text = s2.AssetGroupDesc,
+        //                                        icon = s2.ActiveStatus ? "/images/jsTree/openfolder.png" : "/images/jsTree/openfolder.png",
+        //                                        GroupIndex = s2.AssetGroupId.ToString(),
+        //                                        parent = "SM" + s1.AssetGroupId.ToString()
+
+        //                                    };
+        //                                    jsTree.Add(js);
+        //                                }
+        //                                foreach (var s3 in s2.AssetGroupList)
+        //                                {
+        //                                    if (s3.ParentId == s2.AssetGroupId)
+        //                                    {
+        //                                        jsTreeObject js = new jsTreeObject
+        //                                        {
+        //                                            id = "SM" + s3.AssetGroupId.ToString(),
+        //                                            text = s3.AssetGroupDesc,
+        //                                            icon = s3.ActiveStatus ? "/images/jsTree/openfolder.png" : "/images/jsTree/openfolder.png",
+        //                                            GroupIndex = s3.AssetGroupId.ToString(),
+        //                                            parent = "SM" + s2.AssetGroupId.ToString()
+
+        //                                        };
+        //                                        jsTree.Add(js);
+        //                                    }
+        //                                    foreach (var s4 in s3.AssetGroupList)
+        //                                    {
+        //                                        if (s4.ParentId == s3.AssetGroupId)
+        //                                        {
+        //                                            jsTreeObject js = new jsTreeObject
+        //                                            {
+        //                                                id = "SM" + s4.AssetGroupId.ToString(),
+        //                                                text = s4.AssetGroupDesc,
+        //                                                icon = s4.ActiveStatus ? "/images/jsTree/openfolder.png" : "/images/jsTree/openfolder.png",
+        //                                                GroupIndex = s4.AssetGroupId.ToString(),
+        //                                                parent = "SM" + s3.AssetGroupId.ToString()
+
+        //                                            };
+        //                                            jsTree.Add(js);
+        //                                        }
+        //                                    }
+
+        //                                }
+        //                            }
+        //                        }
+
+        //                    }
+
+
+        //                }
+
+        //                return Json(jsTree);
+
+
+        //            }
+        //            return Json(jsTree);
+        //        }
+        //        else
+        //        {
+        //            _logger.LogError(new Exception(serviceResponse.Message), "UD:GetAssetGroupTreeView");
+        //            return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(ex, "UD:GetAssetGroupTreeView");
+        //        throw ex;
+        //    }
+        //}
+
+        //private void SetSubGroup(DO_AssetGroup model,List<DO_AssetGroup> assGroupList)
+        //{
+        //    var childs= assGroupList.Where(x => x.ParentId == model.AssetGroupId).ToList();
+        //    if (childs.Count > 0)
+        //    {
+        //        foreach(var child in childs)
+        //        {
+        //            SetSubGroup(child, assGroupList);
+        //            model.AssetGroupList.Add(child);
+        //        }
+        //    }
+        //}
+
+        /// <summary>
+        /// Insert Or Update Asset Group
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> InsertOrUpdateAssetGroup(DO_AssetGroup obj)
+        {
+            try
+            {
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                obj.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext).ToString();
+
+                var serviceResponse = await _FixedAssetsAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("AssetGroup/InsertOrUpdateAssetGroup", obj);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:InsertOrUpdateAssetGroup:params:" + JsonConvert.SerializeObject(obj));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertOrUpdateAssetGroup:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+        /// <summary>
+        /// Getting Asset Group by Asset Group Id
+        /// </summary>
+        [HttpGet]
+        public async Task<JsonResult> GetAssetGroupbyId(int AssetId)
+        {
+
+            try
+            {
+
+                var parameter = "?AssetId=" + AssetId;
+                var serviceResponse = await _FixedAssetsAPIServices.HttpClientServices.GetAsync<DO_AssetGroup>("AssetGroup/GetAssetGroupbyId" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetAssetGroupbyId:For AssetId {0} ", AssetId);
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+        #endregion Asset Group
+
+        #region Depreciation Method
+        [Area("FixedAssets")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public IActionResult V_2002_00()
+        {
+           
+            return View();
+        }
+
+        /// <summary>
+        ///Get Asset Group for Grid
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetAssetGroupforGrid()
+        {
+
+            try
+            {
+                var response = await _FixedAssetsAPIServices.HttpClientServices.GetAsync<List<DO_AssetGroup>>("AssetGroup/GetAssetGroupforGrid");
+                if (response.Status)
+                {
+                    return Json(response.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(response.Message), "UD:GetAssetGroupforGrid");
+                    return Json(new DO_ReturnParameter() { Status = false, Message = response.StatusCode });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetAssetGroupforGrid");
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+
+        }
+
+        /// <summary>
+        ///Get Depreciation Method by Asset group by asset GroupId for Grid
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetAssetDepreciationMethodsbyAssGroupId(int assetGroupId)
+        {
+            try
+            {
+                var response = await _FixedAssetsAPIServices.HttpClientServices.GetAsync<List<DO_AssetDepreciationMethod>>("AssetGroup/GetAssetDepreciationMethodsbyAssGroupId?assetGroupId=" + assetGroupId);
+                if (response.Status)
+                    return Json(response.Data);
+                else
+                {
+                    _logger.LogError(new Exception(response.Message), "UD:GetAssetDepreciationMethodsbyAssGroupId:assetGroupId-{0}:", assetGroupId);
+                    return Json(new DO_ReturnParameter() { Status = false, Message = response.StatusCode });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetAssetDepreciationMethodsbyAssGroupId:assetGroupId-{0}:", assetGroupId);
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+
+        }
+
+        /// <summary>
+        /// Insert Depreciation Methods
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertDepreciationMethod(List<DO_AssetDepreciationMethod> obj)
+        {
+
+            try
+            {
+                obj.All(c =>
+                {
+                    c.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                    c.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                    c.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                    return true;
+                });
+
+                var response = _FixedAssetsAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("AssetGroup/InsertDepreciationMethod", obj).Result;
+                if (response.Status)
+                    return Json(response.Data);
+                else
+                {
+                    _logger.LogError(new Exception(response.Message), "UD:InsertDepreciationMethod:", obj);
+                    return Json(new DO_ReturnParameter() { Status = false, Message = response.StatusCode });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+        #endregion Depreciation Method
+    }
+
+}

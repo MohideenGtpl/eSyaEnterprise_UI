@@ -1,0 +1,80 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.ActionFilter;
+using eSyaEnterprise_UI.Areas.Facilities.Models;
+using eSyaEnterprise_UI.Areas.Pharmacy.Data;
+using eSyaEnterprise_UI.Areas.Pharmacy.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+
+namespace eSyaEnterprise_UI.Areas.Pharmacy.Controllers
+{
+    [SessionTimeout]
+    public class GenericController : Controller
+    {
+        private readonly IPharmacyAPIServices _IPharmacyAPIServices;
+        private readonly ILogger<GenericController> _logger;
+
+        public GenericController(IPharmacyAPIServices PharmacyAPIServices, ILogger<GenericController> logger)
+        {
+            _IPharmacyAPIServices = PharmacyAPIServices;
+            _logger = logger;
+        }
+
+
+
+        [Area("Pharmacy")]
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// Getting Generic List By Prefix
+        /// </summary>
+        [HttpGet]
+        public async Task<JsonResult> GetGenericByPrefix(string prefix)
+        {
+            try
+            {
+                var parameter = "?prefix=" + prefix;
+                var serviceResponse = await _IPharmacyAPIServices.HttpClientServices.GetAsync<List<DO_Generic>>("Generic/GetGenericByPrefix" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetGenericByPrefix :For prefix {0} ", prefix);
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Getting  Drug Characteristics List.
+        /// </summary>
+        [HttpGet]
+        public async Task<JsonResult> GetDrugCharacteristicsByTypeList(List<int> l_type)
+        {
+            try
+            {
+                var parameter = "?l_type=" + l_type;
+                var serviceResponse = await _IPharmacyAPIServices.HttpClientServices.GetAsync<List<DO_DrugCharacteristics>>("Generic/GetDrugCharacteristicsByTypeList" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetDrugCharacteristicsByTypeList :For l_type {0} ", l_type);
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+    }
+}

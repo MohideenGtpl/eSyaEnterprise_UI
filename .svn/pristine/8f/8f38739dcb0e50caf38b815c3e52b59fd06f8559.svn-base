@@ -1,0 +1,88 @@
+﻿var formID;
+var prevSelectedID;
+
+$(document).ready(function () {
+    $("#pnlMainMenu").hide();
+    fnTreeSize();
+    LoadSpecialtyUnit();
+});
+
+function LoadSpecialtyUnit() {
+    $("#jstMCSpecialtyUnit").jstree({
+        //"state": { "checkbox_disabled": true },
+        "checkbox": {
+            "keep_selected_style": false
+        },
+
+        core: {
+            'data': [{ "id": "parentnode", "parent": "#", "text": "Specialty Codes" },
+            { "id": "SU01", "parent": "parentnode", "text": "General Medicine" },
+            { "id": "SU02", "parent": "SU01", "text": "OPD" },
+            { "id": "SU03", "parent": "SU01", "text": "Evening Clinic" },], 'check_callback': true, 'multiple': true
+        }
+
+    });
+}
+$("#jstMCSpecialtyUnit").on('loaded.jstree', function () {
+    $("#jstMCSpecialtyUnit").jstree('open_all');
+    $("#jstMCSpecialtyUnit").jstree()._open_to(prevSelectedID);
+    $('#jstMCSpecialtyUnit').jstree().select_node(prevSelectedID);
+});
+
+$('#jstMCSpecialtyUnit').on("changed.jstree", function (e, data) {
+    if (data.node != undefined) {
+        //if (prevSelectedID != data.node.id) {
+        prevSelectedID = data.node.id;
+
+        if (data.node.id == "AA") {
+            fnClearFields();
+            $("#pnlrdoAddItem").show();
+            $("#pnlMainMenu").hide();
+        }
+        else {
+            if (data.node.parent == "#") {
+                $("#pnlrdoAddItem").show();
+                $("#pnlMainMenu").hide();
+                $(".mdl-card__title-text").text("Add Units");
+                fnClearFields();
+                $("#btnSaveSpecialty").html('<i class="fa fa-plus"></i> Add');
+            }
+            else if (data.node.id.startsWith("SU")) {
+                $("#dvForm").show();
+                $("#pnlrdoAddItem").hide();
+                $("#pnlMainMenu").show();
+                $(".mdl-card__title-text").text("Edit Units");
+                $("#btnSaveSpecialty").html('<i class="fa fa-sync"></i> Update');
+            }
+            else {
+                fnClearFields();
+                $("#pnlMainMenu").hide();
+            }
+        }
+    }
+});
+
+function fnExpandAll() {
+    $('#jstMCSpecialtyUnit').jstree('open_all');
+}
+function fnCollapseAll() {
+    $('#jstMCSpecialtyUnit').jstree('close_all');
+}
+function fnTreeSize() {
+    $("#jstMCSpecialtyUnit").css({
+        'height': $(window).innerHeight() - 136,
+        'overflow': 'auto'
+    });
+}
+$('[name="rdoAddItem"]').change(function () {
+    if ($('#rdoAddUnits').prop('checked')) {
+        $('#pnlMainMenu').show();
+    }
+    else if ($('#rdoAddForm').prop('checked')) {
+        $('#pnlSubMenu').hide();
+        $('#pnlForm').show();
+    }
+});
+function fnClearFields() {
+    $('#rdoAddUnits').prop('checked', false);
+}

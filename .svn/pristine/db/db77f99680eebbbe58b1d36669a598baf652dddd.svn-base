@@ -1,0 +1,196 @@
+[
+  {
+    "cltype": "ALLE",
+    "name": "Allergy",
+    "item": [
+      {
+        "name": "Type",
+        "controlid": "ALLE-1",
+        "valuetype": "combox",
+        "index": 1,
+        "values": [
+          {
+            "name": "Drug",
+            "value": 1
+          },
+          {
+            "name": "Food",
+            "value": 2
+          }
+        ]
+      },
+      {
+        "name": "Allergy",
+        "controlid": "ALLE-2",
+        "valuetype": "ltext",
+        "index": 2
+      },
+      {
+        "name": "Comment",
+        "controlid": "ALLE-4",
+        "valuetype": "ltext",
+        "index": 4
+      }
+    ]
+  },
+  {
+    "cltype": "CRON",
+    "name": "Chronic Condition",
+    "item": [
+      {
+        "name": "Chronic",
+        "controlid": "CRON-1",
+        "valuetype": "ltext",
+        "index": 1
+      },
+      {
+        "name": "Illness",
+        "controlid": "CRON-2",
+        "valuetype": "ltext",
+        "index": 2
+      },
+      {
+        "name": "Comment",
+        "controlid": "CRON-4",
+        "valuetype": "ltext",
+        "index": 4
+      }
+    ]
+  },
+  {
+    "cltype": "MED",
+    "name": "Medication",
+    "item": [
+      {
+        "name": "Medication",
+        "controlid": "MED-1",
+        "valuetype": "combox",
+        "values": [
+          {
+            "name": "Insulin",
+            "value": "1"
+          },
+          {
+            "name": "Anticoagulants - Antiplatelets",
+            "value": "2"
+          },
+          {
+            "name": "Vitamins",
+            "value": "3"
+          }
+        ],
+        "index": 2
+      },
+      {
+        "name": "Dose",
+        "controlid": "MED-3",
+        "valuetype": "text",
+        "index": 5
+      },
+      {
+        "name": "Frequency",
+        "controlid": "MED-4",
+        "valuetype": "text",
+        "index": 6
+      },
+      {
+        "name": "Duration",
+        "controlid": "MED-5",
+        "valuetype": "text",
+        "index": 7
+      },
+      {
+        "name": "Comment",
+        "controlid": "MED-6",
+        "valuetype": "text",
+        "index": 8
+      }
+    ]
+  },
+  {
+    "cltype": "DIAG",
+    "name": " Diagnosis",
+    "item": [
+      {
+        "name": "Diagnosis",
+        "controlid": "DIAG-1",
+        "valuetype": "ltext",
+        "index": 1
+      },
+      {
+        "name": "Comment",
+        "controlid": "DIAG-2",
+        "valuetype": "ltext",
+        "index": 2
+      }
+    ]
+  },
+  {
+    "cltype": "INV",
+    "name": "Investigations",
+    "item": [
+      {
+        "name": "Type",
+        "controlid": "INV-1",
+        "valuetype": "combox",
+        "values": [
+          {
+            "name": "Laboratory",
+            "value": "LA"
+          },
+          {
+            "name": "Radiology",
+            "value": "RA"
+          }
+        ],
+        "index": 1
+      },
+      {
+        "name": "Test Name",
+        "controlid": "INV-2",
+        "valuetype": "combox",
+        "index": 2
+      },
+      {
+        "name": "Findings",
+        "controlid": "INV-4",
+        "valuetype": "textarea_l",
+        "index": 4
+      },
+      {
+        "name": "Result",
+        "controlid": "INV-5",
+        "valuetype": "fileupload",
+        "index": 5
+      }
+    ]
+  },
+  {
+    "cltype": "DOC",
+    "name": "Documents",
+    "item": [
+      {
+        "name": "Type",
+        "controlid": "DOC-1",
+        "valuetype": "combox",
+        "values": [
+          {
+            "name": "Consent",
+            "value": "1"
+          },
+          {
+            "name": "Medical Report",
+            "value": "2"
+          }
+        ],
+        "index": 1
+      },
+      {
+        "name": "File",
+        "controlid": "DOC-3",
+        "valuetype": "fileupload",
+        "index": 3
+      }
+    ]
+  }
+]

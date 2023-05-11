@@ -1,0 +1,329 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = "EFM_12_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/jquery.contextMenu.min.css" rel="stylesheet" />
+<link href="~/css/Masters/CustomerCodes.css" rel="stylesheet" />
+<link href="~/css/bootstrap-timepicker.css" rel="stylesheet" />
+<link href="~/css/jsTree.css" rel="stylesheet" />
+
+@section scripts{
+    <script src="~/js/bootstrap-timepicker.js"></script>
+   @* <script src="~/js/Facilities/DoctorMaster.js"></script>*@
+    <script src="~/js/Facilities/DoctorSchedule.js"></script>
+    <script src="~/js/Facilities/DoctorScheduleChange.js"></script>
+    <script src="~/js/Facilities/Doctorleave.js"></script>
+    <script src="~/js/jsTree.js"></script>
+    <script src="~/js/jquery.contextMenu.min.js"></script>
+
+}
+<script>
+
+
+    var localization = {
+        DoctorShortName: '@Localizer["DoctorShortName"]',
+        DoctorName: '@Localizer["DoctorName"]',
+        Gender: '@Localizer["Gender"]',
+        Qualification: '@Localizer["Qualification"]',
+        MobileNumber: '@Localizer["MobileNumber"]',
+        DoctorClass: '@Localizer["DoctorClass"]',
+        DoctorCategory: '@Localizer["DoctorCategory"]',
+        Active: '@Localizer["Active"]',
+        Actions: '@Localizer["Actions"]',
+        Edit: '@Localizer["Edit"]',
+        View: '@Localizer["View"]',
+        AddDoctor: '@Localizer["AddDoctor"]',
+        Save: '@Localizer["Save"]',
+        Update: '@Localizer["Update"]',
+        Delete: '@Localizer["Delete"]',
+        wait: '@Localizer["wait"]',
+        SegmentDescription: '@Localizer["SegmentDescription"]',
+        BusinessLocation: '@Localizer["BusinessLocation"]',
+        Select: '@Localizer["Select"]',
+        Specialty: '@Localizer["Specialty"]',
+        Clinic: '@Localizer["Clinic"]',
+        ConsultationType: '@Localizer["ConsultationType"]',
+        Dayoftheweek: '@Localizer["Dayoftheweek"]',
+        NumberofPatients: '@Localizer["NumberofPatients"]',
+        Week1: '@Localizer["Week1"]',
+        Week2: '@Localizer["Week2"]',
+        Week3: '@Localizer["Week3"]',
+        Week4: '@Localizer["Week4"]',
+        Week5: '@Localizer["Week5"]',
+        FromTime: '@Localizer["FromTime"]',
+        ToTime: '@Localizer["ToTime"]',
+        ScheduleDate: '@Localizer["ScheduleDate"]',
+        LeaveFrom: '@Localizer["LeaveFrom"]',
+        LeaveTill: '@Localizer["LeaveTill"]',
+        NumberOfDays: '@Localizer["NumberOfDays"]',
+        DoctorClassCode: '@Localizer["DoctorClassCode"]',
+        DoctorCategoryCode: '@Localizer["DoctorCategoryCode"]',
+        TimeSlotInMins: '@Localizer["TimeSlotInMins"]',
+        PatientPerHour: '@Localizer["PatientPerHour"]',
+        AllowConsultation: '@Localizer["AllowConsultation"]',
+        AllowSMS: '@Localizer["AllowSMS"]',
+        IsRevenueShareAppicable: '@Localizer["IsRevenueShareAppicable"]',
+        TraiffFrom: '@Localizer["TraiffFrom"]',
+        LanguageKnown: '@Localizer["LanguageKnown"]',
+        Experience: '@Localizer["Experience"]',
+        DoctorRemarks: '@Localizer["DoctorRemarks"]',
+        DeActivate: '@Localizer["DeActivate"]',
+        Activate: '@Localizer["Activate"]',
+        TimeSlotInMintues: '@Localizer["TimeSlotInMintues"]',
+
+        ClinicType:'@Localizer["ClinicType"]',
+        CurrencyCode:'@Localizer["CurrencyCode"]',
+        RateType:'@Localizer["RateType"]',
+        ConsultationType: '@Localizer["ConsultationType"]',
+        ServiceDescription: '@Localizer["ServiceDescription"]',
+        EFFRate: '@Localizer["EFFRate"]',
+        Tariff: '@Localizer["Tariff"]',
+
+        Photo: '@Localizer["Photo"]',
+        Signature:'@Localizer["Signature"]',
+
+        ISDCode: '@Localizer["ISDCode"]',
+        StatutoryCode: '@Localizer["StatutoryCode"]',
+        StatutoryDescription: '@Localizer["StatutoryDescription"]',
+        TaxPercentage:'@Localizer["TaxPercentage"]',
+    };
+</script>
+
+<section id="divGrid">
+    <div class="row form-group">
+        <div class="col-lg-12 col-xl-12 col-sm-12">
+            <label>@Localizer["ChooseDoctorbyalphabets"]</label>
+            <span class="dot">A</span>
+            <span class="dot">B</span>
+            <span class="dot">C</span>
+            <span class="dot">D</span>
+            <span class="dot">E</span>
+            <span class="dot">F</span>
+            <span class="dot">G</span>
+            <span class="dot">H</span>
+            <span class="dot">I</span>
+            <span class="dot">J</span>
+            <span class="dot">K</span>
+            <span class="dot">L</span>
+            <span class="dot">M</span>
+            <span class="dot">N</span>
+            <span class="dot">O</span>
+            <span class="dot">P</span>
+            <span class="dot">Q</span>
+            <span class="dot">R</span>
+            <span class="dot">S</span>
+            <span class="dot">T</span>
+            <span class="dot">U</span>
+            <span class="dot">V</span>
+            <span class="dot">W</span>
+            <span class="dot">X</span>
+            <span class="dot">Y</span>
+            <span class="dot">Z</span>
+            <span class="dot">All</span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <table id="jqgDoctorProfile"></table>
+            <div id="jqpDoctorProfile"></div>
+        </div>
+    </div>
+</section>
+
+<section id="divDoctorProfileForm" style="display:none;">
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12">
+            <h6 class="displayNames" id="hdDoctorName"> <span onclick=""><i class="fa fa-times"></i></span></h6>
+        </div>
+        <div class="col-sm-12">
+            <input type="text" class="form-control" id="txtDoctorId" style="display:none">
+        </div>
+        <div class="col-lg-1 col-md-2 col-sm-2 col-xs-3 col-xl-1  animated slideInLeft sidebarSmall">
+            <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                <a class="nav-link active" id="doctorprofile-tab" data-toggle="pill" href="#doctorprofile" role="tab" aria-controls="doctorprofile" aria-selected="true">  @Localizer["Doctor Profile"]</a>
+                <a class="nav-link" id="doctorbusinesslink-tab" data-toggle="pill" href="#doctorbusinesslink" role="tab" aria-controls="doctorbusinesslink" aria-selected="true">  @Localizer["Doctor Business Link"]</a>
+                <a class="nav-link" id="address-tab" data-toggle="pill" href="#address" role="tab" aria-controls="address" aria-selected="true">  @Localizer["Address"]</a>
+                <a class="nav-link" id="aboutdoctor-tab" data-toggle="pill" href="#aboutdoctor" role="tab" aria-controls="aboutdoctor" aria-selected="false">  @Localizer["About Doctor"]</a>
+                <a class="nav-link " id="photoandsignature-tab" data-toggle="pill" href="#photoandsignature" role="tab" aria-controls="photoandsignature" aria-selected="false" onclick=""> @Localizer["Photo and Signature"]</a>
+                <a class="nav-link " id="statutorydetails-tab" data-toggle="pill" href="#statutorydetails" role="tab" aria-controls="statutorydetails" aria-selected="false" onclick=""> @Localizer["Statutory Details"]</a>
+                <a class="nav-link" id="consultationRates-tab" data-toggle="pill" href="#consultationRates" role="tab" aria-controls="consultationRates" aria-selected="false" onclick=""> @Localizer["Consultation Rates"]</a>
+                <a class="nav-link" id="revenueshare-tab" data-toggle="pill" href="#revenueshare" role="tab" aria-controls="revenueshare" aria-selected="false" onclick=""> @Localizer["Revenue Share"]</a>
+            </div>
+        </div>
+        <div class="col-lg-11 col-md-10 col-sm-10 col-xl-11 bg-white animated fadeIn delay-1s padleft0 mainbarSmall">
+            <div class="tab-content" id="v-pills-tabContent">
+                <div class="tab-pane fade show active" id="doctorprofile" role="tabpanel" aria-labelledby="doctorprofile-tab">
+                    @await Html.PartialAsync("_DoctorProfile")
+                </div>
+                <div class="tab-pane fade" id="businesslink" role="tabpanel" aria-labelledby="businesslink-tab">
+                    @await Html.PartialAsync("_DoctorBusinessLink")
+                </div>
+                <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-tab">
+                    @await Html.PartialAsync("_DoctorProfile")
+                </div>
+                <div class="tab-pane fade" id="aboutdoctor" role="tabpanel" aria-labelledby="aboutdoctor-tab">
+                    @await Html.PartialAsync("_AboutDoctor")
+                </div>
+                <div class="tab-pane fade" id="photoandsignature" role="tabpanel" aria-labelledby="photoandsignature-tab">
+                    @await Html.PartialAsync("_PhotoAndSignature")
+                </div>
+                <div class="tab-pane fade" id="statutorydetails" role="tabpanel" aria-labelledby="statutorydetails-tab">
+                    @await Html.PartialAsync("_StatutoryDetails")
+                </div>
+                <div class="tab-pane fade" id="consultationRates" role="tabpanel" aria-labelledby="consultationRates-tab">
+                    @await Html.PartialAsync("_ConsultationRates")
+                </div>
+                <div class="tab-pane fade" id="revenueshare" role="tabpanel" aria-labelledby="revenueshare-tab">
+                    @await Html.PartialAsync("_RevenueShare")
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+
+
+
+<div class="modal fade in" id="PopupStatutoryDetails" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-md" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">@Localizer["AddStatutoryDetails"]</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label for="txtISDCode">@Localizer["ISDCode"] </label>
+                            <input class="form-control" type="text" maxlength="8" id="txtISDCode" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row padbot4">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label for="txtStatutoryCode"> @Localizer["StatutoryCode"]</label>
+                            <input id="txtStatutoryCode" class="form-control" type="text" />
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label for="txtStatutoryDescription"> @Localizer["StatutoryDescription"]</label>
+                            <textarea id="txtStatutoryDescription" class="form-control" maxlength="500"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <div>
+                                <label>@Localizer["TaxPercentage"] </label>
+                                <input id="txtTaxPercentage" class="form-control" maxlength="50" type="text" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3  col-md-3 col-sm-12 col-xs-12 d-flex align-items-center">
+                        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActiveStatus">
+                            <input type="checkbox" id="chkActiveStatus" class="mdl-checkbox__input">
+                            <span class="mdl-checkbox__label">@Localizer["Active"]</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button primary-button" id="btnSaveStatutoryDetails">
+                            <i class="fa fa-save"></i> @Localizer[" Save "]
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="btnCancelStatutoryDetails">
+                            <i class="fa fa-times"></i> @Localizer["Cancel"]
+                        </button>
+                        @*<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" id="btndeActiveStatutoryDetails">
+                            <i class="fa fa-times"></i> @Localizer["DeActivate"]
+                        </button>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade in" id="PopupConsulationRates" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-md" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">@Localizer["AddConsulationRates"]</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label for="txtClinicType">@Localizer["ClinicType"] </label>
+                            <input class="form-control" type="text" maxlength="8" id="txtClinicType" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row padbot4">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label for="txtConsultationType"> @Localizer["ConsultationType"]</label>
+                            <input id="txtConsultationType" class="form-control" type="text" />
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label for="txtServiceDescription"> @Localizer["ServiceDescription"]</label>
+                            <textarea id="txtServiceDescription" class="form-control" maxlength="500"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <div>
+                                <label>@Localizer["EFFRate"] </label>
+                                <input id="txtEFFRate" class="form-control" maxlength="50" type="text" />
+                            </div>
+                        </div>
+                    </div><div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <div>
+                                <label>@Localizer["Tariff"] </label>
+                                <input id="txtTariff" class="form-control" maxlength="50" type="text" />
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-3  col-md-3 col-sm-12 col-xs-12 d-flex align-items-center">
+                        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActiveStatus">
+                            <input type="checkbox" id="chkActiveStatus" class="mdl-checkbox__input">
+                            <span class="mdl-checkbox__label">@Localizer["Active"]</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button primary-button" id="btnSaveConsulationRates">
+                            <i class="fa fa-save"></i> @Localizer[" Save "]
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="btnCancelConsulationRates">
+                            <i class="fa fa-times"></i> @Localizer["Cancel"]
+                        </button>
+                        @*<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" id="btndeActiveConsulationRates">
+                            <i class="fa fa-times"></i> @Localizer["DeActivate"]
+                        </button>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

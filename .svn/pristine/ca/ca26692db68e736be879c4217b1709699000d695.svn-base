@@ -1,0 +1,253 @@
+﻿var actiontype = "";
+$(document).ready(function () {
+
+    $("#jqgStoreMaster").jqGrid({
+        //url: getBaseURL() + '/Inventory/GetStoreCodes',
+        datatype: 'local',
+        // mtype: 'Post',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        data: [{ StoreCode: '1000', StoreType: 'M', StoreDesc: 'Test Description', IsMaterial: true, IsPharmacy: true, IsCafeteria: true, IsFandB: true, ISCustodian: true, IsAccountingStore: true, IsConsumptionStore: true, IsStationary: true, ActiveStatus: true, action: "" }],
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Store Codes", "Store Type", "Store Description", "Is Material?", "Is Pharmacy?", "Is Cafeteria?", "Is F and B?", "Is Custodian ?", "Is Accounting Store ?", "Is Consumption Store ?", "Is Stationary?", "Status", "Action"],
+
+        colModel: [
+
+            { name: "StoreCode", width: 300, editable: true, align: 'left', editoptions: { maxlength: 25 }, hidden: true },
+            { name: "StoreType", editable: true, width: 60, edittype: "select", align: 'left', formatter: 'select', editoptions: { value: "M:Main Store;S:Sub Store" } },
+            {
+                name: "StoreDesc", width: 150, editable: true, editoptions: { size: "40", maxlength: "25" }, edittype: "text",
+            },
+            { name: "IsMaterial", editable: true, width: 35, align: 'center !important', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            { name: "IsPharmacy", editable: true, width: 35, align: 'center !important', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            { name: "IsCafeteria", editable: true, width: 35, align: 'center !important', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            { name: "IsFandB", editable: true, hidden: true, width: 75, align: 'center !important', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            { name: "IsCustodian", editable: true, width: 75, hidden: true, align: 'center !important', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            { name: "IsAccountingStore", editable: true, width: 95, hidden: true, align: 'center !important', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            { name: "IsConsumptionStore", editable: true, width: 95, hidden: true, align: 'center !important', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            { name: "IsStationary", editable: true, hidden: true, width: 95, align: 'center !important', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+
+            { name: "ActiveStatus", editable: true, width: 60, edittype: "select", align: 'left', formatter: 'select', editoptions: { value: "true:Active;false:Inactive" } },
+
+            {
+                name: 'action', search: false, align: 'left', width: 75, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" onclick="return fnEditStoreMaster(event,\'edit\')"><i class="fas fa-pencil-alt"></i> Edit </button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnEditStoreMaster(event,\'view\')"><i class="far fa-file-alt"></i> View </button>' +
+                        '<button onclick=" return fnDeleteStoreCode("' + rowdata.StoreCode + ')" class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid"><i class="fa fa-trash"></i>  Delete</button>'
+
+                }
+            }
+
+        ],
+        rowNum: 10,
+        rowList: [10, 20, 30, 50, 100],
+        emptyrecords: "No records to Veiw",
+        pager: "#jqpStoreMaster",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        width: 'auto',
+        scroll: false,
+        autowidth: false,
+        shrinkToFit: false,
+        forceFit: false,
+        loadonce: true,
+        //editurl: getBaseURL() + '/Inventory/InsertOrUpdateStoreCodes',
+        //ajaxRowOptions: {
+        //    type: "POST",
+        //    dataType: "json"
+        //},
+
+        //serializeRowData: function (postData) {
+        //    if (postData.StoreCode === 0) {
+        //        postData.StoreCode = 0;
+        //    }
+        //    return (postData);
+        //},
+        //beforeSubmit: function (postdata, formid) {
+
+        //    return [success, message];
+        //},
+
+        //ondblClickRow: function (rowid) {
+        //    $("#jqgStoreMaster").trigger('click');
+        //},
+
+    }).jqGrid('navGrid', '#jqpStoreMaster', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpStoreMaster', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshStoreMaster
+    }).jqGrid('navButtonAdd', '#jqpStoreMaster', {
+        caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Add', buttonicon: 'none', id: 'custAdd', position: 'first', onClickButton: fnAddStoreMaster
+    });
+});
+function fnGridRefreshStoreMaster() {
+
+}
+
+function fnAddStoreMaster() {
+    $("#PopupStoreMaster").modal('show');
+    $('#PopupStoreMaster').find('.modal-title').text("Add Store");
+    $("#btnSaveStoreMaster").html(' Save');
+}
+
+
+function fnEditStoreMaster(e, actiontype) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgStoreMaster').jqGrid('getRowData', rowid);
+
+    $('#PopupStoreMaster').modal('show');
+
+    if (actiontype.trim() == "edit") {
+        $('#PopupStoreMaster').find('.modal-title').text("Update Store");
+        $("#btnSaveStoreMaster").html(' Update');
+    }
+    if (actiontype.trim() == "view") {
+        $('#PopupStoreMaster').find('.modal-title').text("View Store");
+        $("#btnSaveStoreMaster").hide();
+        $("input,textarea").attr('readonly', true);
+        $("select").next().attr('disabled', true);
+        $("input[type=checkbox]").attr('disabled', true);
+        $("#PopupStoreMaster").on('hidden.bs.modal', function () {
+            $("#btnSaveStoreMaster").show();
+            $("input,textarea").attr('readonly', false);
+            $("select").next().attr('disabled', false);
+            $("input[type=checkbox]").attr('disabled', false);
+        });
+    }
+}
+//    $("#jqgStoreMaster").jqGrid('inlineNav', '#jqpStoreMaster',
+//        {
+//            edit: true,
+//            editicon: " fa fa-pen",
+//            edittext: " Edit",
+//            add: true,
+//            addicon: "fa fa-plus",
+//            addtext: " Add",
+//            save: true,
+//            savetext: " Save",
+//            saveicon: "fa fa-save",
+//            cancelicon: "fa fa-ban",
+//            canceltext: " Cancel",
+//            editParams: {
+//                keys: false,
+//                oneditfunc: function (formid) {
+
+//                    $("#" + formid + "_StoreType").prop('disabled', true);
+
+//                },
+//                url: null,
+                
+//                successfunc: function (result) {
+//                    var resp = JSON.parse(result.responseText);
+//                    if (resp.Status) {
+//                        toastr.success(resp.Message);
+//                        Refresh();
+//                        return true;
+//                    }
+
+//                    else{
+//                        toastr.error(resp.Message);
+//                        Refresh();
+//                        return false;
+//                    }
+//                },
+//                aftersavefun: null,
+//                errorfun: null,
+//                afterrestorefun: null,
+//                restoreAfterError: true,
+//                mtype: "POST",
+//            },
+
+//            addParams: {
+//                useDefValues: true,
+//                position: "last",
+//                addRowParams: {
+//                    keys: true,
+//                    oneditfunc: null,
+//                    successfunc: function (result) {
+
+//                        var response = JSON.parse(result.responseText);
+//                        if (response.Status) {
+//                            toastr.success(response.Message);
+//                            Refresh();
+//                            return true;
+//                        }
+
+//                        else{
+//                            toastr.error(response.Message);
+//                            Refresh();
+//                            return false;
+//                        }
+
+//                    },
+//                }
+//            },
+//        });
+ 
+
+
+function validateStoreDesc(value, StoreDesc) {
+    if (value == "" || value == null) {
+        toastr.warning("Please Enter the Store description");
+
+        return [false, "Please Enter the Store description"];
+
+    }
+    else {
+        return [true, ""];
+    }
+        
+}
+
+function fnDeleteStoreCode(id) {
+    
+    bootbox.confirm({
+        title: 'Store Code',
+        message: "Are you sure you want to delete ?",
+        buttons: {
+            confirm: {
+                label: 'Yes',
+                className: 'mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button'
+            },
+            cancel: {
+                label: 'No',
+                className: 'mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button'
+            }
+        },
+        callback: function (result) {
+            if (result == true) {
+                if (id == null || id == undefined || id == "0" || id == '') {
+                    alert("Could not Delete");
+                    return false;
+                }
+                $.ajax({
+                    type: 'POST',
+                    url: getBaseURL() + '/Inventory/DeleteStoreCode',
+                    data: { StoreCode: id },
+                    success: function (response) {
+                        if (response.Status) {
+                            toastr.success(response.Message);
+                            Refresh();
+
+                            return true;
+                        }
+                        else{
+                            toastr.error(response.Message);
+                            return false;
+                            Refresh();
+                        }
+                    },
+                    error: function (response) {
+                        alert("Couldn't Delete");
+                    }
+                });
+
+            }
+        }
+    });
+}
+
+function Refresh() {
+
+    $("#jqgStoreMaster").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}

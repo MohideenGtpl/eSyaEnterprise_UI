@@ -1,0 +1,208 @@
+﻿$(document).ready(function () {
+    $('#checkboxContainer').hide();
+    
+
+    $(".dot").click(function () {
+        $('.dot').removeClass('active');
+        var alphabet = $(this).text();
+        VendorRegisterGrid(alphabet);
+        $(this).addClass('active');
+    });
+    $("#accordion").hide();
+   
+
+    $("#jqgVendorRegister").jqGrid({
+
+      
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["", "Vendor Name", "", "Credit Type", "Credit Period (In days)", "Vendor Status", "Is Black Listed", "Score Card", "Status", ""],
+        colModel: [
+            { name: "VendorCode", width: 70, editable: true, align: 'left', hidden: true },
+            { name: "VendorName", width: 170, editable: true, align: 'left', hidden: false },
+            { name: "PreferredPaymentMode", width: 10, editable: true, align: 'left', hidden: true },
+            { name: "CreditType", width: 50, editable: true, align: 'center' },
+            { name: "CreditPeriod", width: 100, editable: true, align: 'left', resizable: true },
+            { name: "ApprovalStatus", width: 70, editable: true, align: 'left' },
+            { name: "IsBlackListed", width: 70, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            { name: "SupplierScore", editable: true, width: 90, align: 'left', },
+            { name: "ActiveStatus", editable: true, width: 95, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: Inactive" } },
+            {
+                name: 'edit', search: false, align: 'center', width: 50, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return "<a href='javascript:fnDelete_TaxStructure()' class='ui-icon ui-icon-closethick'></a>";
+                }
+            },
+        ],
+        rowNum: 10000,
+        loadonce: false,
+        pager: "#jqpVendorRegister",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0,
+        onSelectRow: function (rowid) {
+
+            Selected = 1;
+            SelectedVendorCode = $("#jqvVendorRegister").jqGrid('getCell', rowid, 'VendorCode');
+            SelectedVndrNam = $("#jqvVendorRegister").jqGrid('getCell', rowid, 'VendorName');
+            SelectedPRDPayMM = $("#jqvVendorRegister").jqGrid('getCell', rowid, 'PreferredPaymentMode');
+            SelectedCRDTYP = $("#jqvVendorRegister").jqGrid('getCell', rowid, 'CreditType');
+            SelectedCRDPRD = $("#jqvVendorRegister").jqGrid('getCell', rowid, 'CreditPeriod');
+            SelectedAPRStatus = $("#jqvVendorRegister").jqGrid('getCell', rowid, 'ApprovalStatus');
+            SelectedISBKLST = $("#jqvVendorRegister").jqGrid('getCell', rowid, 'IsBlackListed');
+            SelectedSUPSCR = $("#jqvVendorRegister").jqGrid('getCell', rowid, 'SupplierScore');
+            SelectedActiveStatus = $("#jqvVendorRegister").jqGrid('getCell', rowid, 'ActiveStatus');
+        },
+
+    }).jqGrid('navGrid', '#jqpVendorRegister', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpVendorRegister', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: toRefresh
+    }).jqGrid('navButtonAdd', '#jqpVendorRegister', {
+        caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Add', buttonicon: 'none', id: 'custAdd', position: 'first', onClickButton: toAdd
+    });
+});
+
+function VendorRegisterGrid(alphabet) {
+    $("#jqgVendorRegister").GridUnload();
+
+    $("#jqgVendorRegister").jqGrid({
+      
+        //url: getBaseURL() + '/VendorMaster/Get_vendorRegister?Alphabet=' + alphabet,
+        //mtype: 'POST',
+        //datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["", "Vendor Name", "", "Credit Type",  "Credit Period (In days)", "Vendor Status", "Is Black Listed","Score Card", "Status","" ],
+        colModel: [
+            { name: "VendorCode", width: 70, editable: true, align: 'left', hidden: true }, 
+            { name: "VendorName", width: 170, editable: true, align: 'left', hidden: false },
+            { name: "PreferredPaymentMode", width: 10, editable: true, align: 'left', hidden: true },
+            { name: "CreditType", width: 40, editable: true, align: 'center' },
+            { name: "CreditPeriod", width: 40, editable: true,  align: 'center', resizable: true },
+            { name: "ApprovalStatus", editable: true, width: 45, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Approved;false: UnApproved" } },
+            { name: "IsBlackListed", editable: true, width: 45, align: 'center', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Yes;false: NO" } },
+            { name: "SupplierScore", editable: true, width: 40, align: 'left',  },
+            { name: "ActiveStatus", editable: true, width: 40, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: InActive" } },
+            {
+                name: 'edit', search: false, align: 'center', width: 45, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all" style="padding: 2px 4px; background: #0b76bc!important; color: #fff!important; margin: 3px; " title="Edit" onclick="return toEdit(event)"><i class="fa fa-edit"></i> Edit </button>';
+                }
+            },
+        ],
+        rowList:[10,20,50],
+        rowNum: 10,
+        loadonce: true,
+        pager: "#jqpVendorRegister",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0,
+        onSelectRow: function (rowid) {
+
+            Selected = 1;
+           
+        },
+
+    }).jqGrid('navGrid', '#jqpVendorRegister', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpVendorRegister', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: toRefresh
+    }).jqGrid('navButtonAdd', '#jqpVendorRegister', {
+        caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Add', buttonicon: 'none', id: 'custAdd', position: 'first', onClickButton: toAdd
+    });
+}
+
+function toRefresh() {
+    $("#jqgVendorRegister").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid')
+}
+function toAdd() {
+    
+    $('#txtVendorCode').val('');
+    $("#accordion").show();
+
+    $('#checkboxContainer').empty();
+   
+
+    $("#popupVendorRegister").modal('show');
+
+
+}
+
+function toEdit(e) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqvVendorRegister').jqGrid('getRowData', rowid);
+    
+     
+  
+
+
+    
+}
+
+$("#popUpVendorRegister").on('hidden.bs.modal',function(){
+    //$("#jqpVendorLocation").trigger("GridUnload");
+    alert("modal closed");
+})
+
+function saveRegisterVendorbtn() {
+  
+    
+
+};
+
+function VlidnRegisterVendor() {
+  
+    var VendorName = $("#txtVendorName").val();
+    var CreditPeriod = $("#txtCreditPeriod").val();
+
+    if (VendorName == "" || VendorName == null) {
+        fnAlert("Please Enter vendor Name" , "e");
+        return false;
+    }
+
+    if (CreditPeriod == "" || CreditPeriod == null) {
+        fnAlert("Please Enter Credit Period days" , "e");
+        return false;
+    }
+    if (CreditPeriod == 0 || CreditPeriod == "0") {
+        fnAlert("Credit Period should not beZero", "e");
+        return false;
+    }
+    
+
+}
+
+function fnClearVendorReg() {
+    
+    $("#txtVendorName").val('');
+    $('#cboCreditType').val("P");
+    $('#cboCreditType').selectpicker('refresh');
+    $("#txtCreditPeriod").val('');
+    $('#cboPayMode').val("C");
+    $('#cboPayMode').selectpicker('refresh');
+    $('#cbostatus').val("true");
+    $('#cbostatus').selectpicker('refresh');
+    $('#chkIsBlockList').prop('checked', true);
+    $('#chkIsBlockList').parent().removeClass('is-checked');
+    $('#chkIsBlockList').prop('checked', false);
+    $("#VendorLocations").removeClass('show');
+    $("#txtVendorCode").val('');
+    location.reload();
+}
+
+
+function ReadVendorCodevalues(res) {
+   
+        $("#accordion").show();
+   
+    fn_EnableAccordion();
+
+}

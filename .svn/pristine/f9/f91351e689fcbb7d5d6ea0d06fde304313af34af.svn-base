@@ -1,0 +1,32 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+
+namespace eSyaEnterprise_UI.Areas.eSyaUserManagement.Controllers
+{
+    public class UserController : Controller
+    {
+        [Area("eSyaUserManagement")]
+        public IActionResult V_51_00()
+        {
+            ViewBag.formName = "User Group";
+            return View();
+        }
+
+        [Area("eSyaUserManagement")]
+        public IActionResult V_52_00()
+        {
+            ViewBag.formName = "User Management";
+            return View();
+        }
+
+        [Area("eSyaUserManagement")]
+        public IActionResult _UserCreation()
+        {
+            ViewBag.formName = "User Creation";
+            return View();
+        }
+    }
+}

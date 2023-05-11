@@ -1,0 +1,370 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.Areas.eSyaMaterial.Data;
+using eSyaEnterprise_UI.Areas.eSyaMaterial.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Mvc;
+
+namespace eSyaEnterprise_UI.Areas.eSyaMaterial.Controllers
+{
+    public class ItemControlController : Controller
+    {
+        private readonly IeSyaMaterialAPIServices _eSyaMaterialAPIServices;
+        public ItemControlController(IeSyaMaterialAPIServices eSyaMaterialAPIServices)
+        {
+            _eSyaMaterialAPIServices = eSyaMaterialAPIServices;
+
+        }
+
+        /// <summary>
+        /// Item Group
+        /// </summary>
+        /// <returns></returns>
+
+        [Area("eSyaMaterial")]
+        public IActionResult V_1001_00()
+        {
+            return View();
+        }
+
+
+        /// <summary>
+        /// Item Category / Sub Category
+        /// </summary>
+        /// <returns></returns>
+        [Area("eSyaMaterial")]
+        public IActionResult V_1002_00()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// Item Group Category Link
+        /// </summary>
+        /// <returns></returns>
+        [Area("eSyaMaterial")]
+        public IActionResult V_1003_00()
+        {
+            var serviceResponse = _eSyaMaterialAPIServices.HttpClientServices.GetAsync<List<DO_ItemCategory>>("ItemGroupCategory/GetItemCategory").Result;
+            var ic_list = serviceResponse.Data;
+            ViewBag.ItemCategories = ic_list;
+            var serviceResponse1 = _eSyaMaterialAPIServices.HttpClientServices.GetAsync<List<DO_ItemGroup>>("ItemGroupCategory/GetItemGroup").Result;
+            var ig_list = serviceResponse1.Data;
+            ViewBag.ItemGroups = ig_list;
+
+            return View();
+            
+        }
+
+
+        #region ItemGroup
+        [Produces("application/json")]
+        [HttpGet]
+        public ActionResult GetItemGroup()
+        {
+            try
+            {
+                List<jsTreeObject> treeView = new List<jsTreeObject>();
+
+                jsTreeObject jsObj = new jsTreeObject();
+                jsObj.id = "IG";
+                jsObj.parent = "#";
+                jsObj.text = "Item Groups";
+                jsObj.icon = "/images/jsTree/foldergroupicon.png";
+                jsObj.state = new stateObject { opened = true, selected = false };
+                treeView.Add(jsObj);
+
+                var serviceResponse = _eSyaMaterialAPIServices.HttpClientServices.GetAsync<List<DO_ItemGroup>>("ItemGroupCategory/GetItemGroup").Result;
+                var ig_list = serviceResponse.Data;
+                if (ig_list != null)
+                {
+                    foreach (var ig in ig_list)
+                    {
+                        jsObj = new jsTreeObject();
+                        jsObj.id = ig.ItemGroupId.ToString();
+                        jsObj.text = ig.ItemGroupDesc;
+                        jsObj.icon = "/images/jsTree/openfolder.png";
+                        jsObj.parent = "IG";
+                        treeView.Add(jsObj);
+                    }
+                }
+                return Json(treeView);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public ActionResult GetItemGroupByID(int ItemGroupID)
+        {
+            try
+            {
+                var serviceResponse = _eSyaMaterialAPIServices.HttpClientServices.GetAsync<DO_ItemGroup>("ItemGroupCategory/GetItemGroupByID?ItemGroupID=" + ItemGroupID).Result;
+                var data = serviceResponse.Data;
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+        public ActionResult AddOrUpdateItemGroup(DO_ItemGroup obj)
+        {
+            try
+            {
+                obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                obj.CreatedOn = DateTime.Now;
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                var serviceResponse = _eSyaMaterialAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("ItemGroupCategory/AddOrUpdateItemGroup", obj).Result;
+                if (serviceResponse.Status == true)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+        #endregion
+        #region ItemCategory/SubCategory
+        public ActionResult LoadItemCateSubCateTree()
+        {
+            List<jsTreeObject> treeView = new List<jsTreeObject>();
+
+            jsTreeObject jsObj = new jsTreeObject();
+            jsObj.id = "IC";
+            jsObj.parent = "#";
+            jsObj.text = "Item Categories";
+            jsObj.icon = "/images/jsTree/foldergroupicon.png";
+            jsObj.state = new stateObject { opened = true, selected = false };
+            treeView.Add(jsObj);
+            var serviceResponse = _eSyaMaterialAPIServices.HttpClientServices.GetAsync<List<DO_ItemCategory>>("ItemGroupCategory/GetItemCategory").Result;
+            var ic_list = serviceResponse.Data;
+
+            foreach (var ic in ic_list)
+            {
+                jsObj = new jsTreeObject();
+                jsObj.id = ic.ItemCategory.ToString();
+                jsObj.text = ic.ItemCategoryDesc;
+                jsObj.icon = "/images/jsTree/openfolder.png";
+                jsObj.parent = "IC";
+                jsObj.state = new stateObject { opened = false, selected = false };
+                treeView.Add(jsObj);
+
+                var serviceResponse1 = _eSyaMaterialAPIServices.HttpClientServices.GetAsync<List<DO_ItemSubCategory>>("ItemGroupCategory/GetItemSubCategoryByCateID?ItemCategory=" + ic.ItemCategory).Result;
+                var isc_list = serviceResponse1.Data;
+
+                foreach (var isc in isc_list)
+                {
+                    jsObj = new jsTreeObject();
+                    jsObj.id = "S" + isc.ItemSubCategory.ToString();
+                    jsObj.text = isc.ItemSubCategoryDesc;
+                    jsObj.icon = "/images/jsTree/fileIcon.png";
+                    jsObj.parent = ic.ItemCategory.ToString();
+                    treeView.Add(jsObj);
+
+                }
+
+            }
+
+            return Json(treeView);
+
+        }
+        public ActionResult GetItemCategoryByID(int ItemCategory)
+        {
+            try
+            {
+                var serviceResponse = _eSyaMaterialAPIServices.HttpClientServices.GetAsync<DO_ItemCategory>("ItemGroupCategory/GetItemCategoryByID?ItemCategory=" + ItemCategory).Result;
+                var data = serviceResponse.Data;
+
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+        public ActionResult GetItemSubCategoryByID(int ItemSubCategory)
+        {
+            try
+            {
+                var serviceResponse = _eSyaMaterialAPIServices.HttpClientServices.GetAsync<DO_ItemSubCategory>("ItemGroupCategory/GetItemSubCategoryByID?ItemSubCategory=" + ItemSubCategory).Result;
+                var data = serviceResponse.Data;
+
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    Status = false,
+                    Message = ex.ToString()
+                });
+            }
+        }
+        public ActionResult AddOrUpdateItemCategory(DO_ItemCategory obj)
+        {
+            try
+            {
+                obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                obj.CreatedOn = DateTime.Now;
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                var serviceResponse = _eSyaMaterialAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("ItemGroupCategory/AddOrUpdateItemCategory", obj).Result;
+                if (serviceResponse.Status == true)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+        public ActionResult AddOrUpdateItemSubCategory(DO_ItemSubCategory obj)
+        {
+            try
+            {
+                obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                obj.CreatedOn = DateTime.Now;
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                var serviceResponse = _eSyaMaterialAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("ItemGroupCategory/AddOrUpdateItemSubCategory", obj).Result;
+                if (serviceResponse.Status == true)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+        //public ActionResult GetItemSParameter()
+        //{
+        //    try
+        //    {
+        //        var serviceResponse = _eSyaMaterialAPIServices.HttpClientServices.GetAsync<List<DO_ItemSParameter>>("ItemGroupCategory/GetItemSParameter").Result;
+        //        var data = serviceResponse.Data;
+
+        //        return Json(data);
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //        throw ex;
+        //    }
+
+        //}
+        public ActionResult GetItemSubCategoryByCateID(int ItemCategory)
+        {
+            try
+            {
+                var serviceResponse = _eSyaMaterialAPIServices.HttpClientServices.GetAsync<List<DO_ItemSubCategory>>("ItemGroupCategory/GetItemSubCategoryByCateID?ItemCategory=" + ItemCategory).Result;
+                var data = serviceResponse.Data;
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+        #endregion
+        #region ItemGroupCategoryMapping
+        public ActionResult LoadItemGroupCateSubCateTree()
+        {
+
+            List<jsTreeObject> treeView = new List<jsTreeObject>();
+            jsTreeObject jsObj = new jsTreeObject();
+            var serviceResponse = _eSyaMaterialAPIServices.HttpClientServices.GetAsync<List<DO_ItemGroup>>("ItemGroupCategory/GetItemGroup").Result;
+            var ig_list = serviceResponse.Data;
+            foreach (var ig in ig_list)
+            {
+                jsObj = new jsTreeObject();
+                jsObj.id = "G" + ig.ItemGroupId.ToString();
+                jsObj.text = ig.ItemGroupDesc;
+                jsObj.icon = "/images/jsTree/openfolder.png";
+                jsObj.parent = "#";
+                treeView.Add(jsObj);
+
+                var serviceResponse1 = _eSyaMaterialAPIServices.HttpClientServices.GetAsync<List<DO_ItemCategory>>("ItemGroupCategory/GetItemCategoryByItemGroupID?ItemGroup=" + ig.ItemGroupId).Result;
+                var ic_list = serviceResponse1.Data;
+                foreach (var ic in ic_list)
+                {
+                    jsObj = new jsTreeObject();
+                    jsObj.id = "CG" + ig.ItemGroupId.ToString() + ic.ItemCategory.ToString();
+                    jsObj.text = ic.ItemCategoryDesc;
+                    jsObj.icon = "/images/jsTree/openfolder.png";
+                    jsObj.parent = "G" + ig.ItemGroupId.ToString();
+                    treeView.Add(jsObj);
+
+                    var serviceResponse2 = _eSyaMaterialAPIServices.HttpClientServices.GetAsync<List<DO_ItemSubCategory>>("ItemGroupCategory/GetItemCategoryByItemGroupCategory?ItemGroup=" + ig.ItemGroupId + "&ItemCategory=" + ic.ItemCategory).Result;
+                    var isc_list = serviceResponse2.Data;
+                    foreach (var isc in isc_list)
+                    {
+                        jsObj = new jsTreeObject();
+                        jsObj.id = "SCG" + ig.ItemGroupId.ToString() + ic.ItemCategory.ToString() + isc.ItemSubCategory.ToString();
+                        jsObj.text = isc.ItemSubCategoryDesc;
+                        jsObj.icon = "/images/jsTree/fileIcon.png";
+                        jsObj.parent = "CG" + ig.ItemGroupId.ToString() + ic.ItemCategory.ToString();
+                        treeView.Add(jsObj);
+
+                    }
+                }
+            }
+
+            return Json(treeView);
+
+
+        }
+        public ActionResult ItemGroupCateSubCateMapping(DO_ItemGroupCategory obj)
+        {
+            try
+            {
+                obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                obj.CreatedOn = DateTime.Now;
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                var serviceResponse = _eSyaMaterialAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("ItemGroupCategory/ItemGroupCateSubCateMapping", obj).Result;
+                if (serviceResponse.Status == true)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+        public ActionResult GetMappingRecord(int ItemGroupID, int ItemCategory, int ItemSubCategory)
+        {
+            try
+            {
+                var serviceResponse = _eSyaMaterialAPIServices.HttpClientServices.GetAsync<DO_ItemGroupCategory>("ItemGroupCategory/GetMappinRecord?ItemGroupID=" + ItemGroupID + "&ItemCategory=" + ItemCategory + "&ItemSubCategory=" + ItemSubCategory).Result;
+                var data = serviceResponse.Data;
+                return Json(data);
+
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+        #endregion
+    }
+}

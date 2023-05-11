@@ -1,0 +1,52 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.ActionFilter;
+using eSyaEnterprise_UI.Areas.Configure.Data;
+using eSyaEnterprise_UI.Areas.Configure.Models;
+using eSyaEnterprise_UI.DataServices;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
+using eSyaEnterprise_UI.Extension;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace eSyaEnterprise_UI.Areas.Configure.Controllers
+{
+    public class HolidayMasterController : Controller
+    {
+        private readonly IConfigAPIServices _configAPIServices;
+        private readonly ILogger<HolidayMasterController> _logger;
+
+        public HolidayMasterController(IConfigAPIServices configAPIServices, ILogger<HolidayMasterController> logger)
+        {
+            _configAPIServices = configAPIServices;
+            _logger = logger;
+        }
+
+        [Area("Configure")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public IActionResult ECA_22_00()
+        {
+            try
+            {
+                return View();
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:ECA_22_00");
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+
+
+        }
+    }
+}

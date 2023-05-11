@@ -1,0 +1,373 @@
+﻿
+@{
+    ViewData["Title"] = "V_4500_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/css/Masters/CustomerCodes.css" rel="stylesheet" />
+@section scripts{
+    <script src="~/js/eSyaPayrollExpat/EmployeeDetails.js"></script>
+   
+    <script src="~/js/eSyaPayrollExpat/CurrentJob.js"></script>
+    <script src="~/js/eSyaPayrollExpat/BankDetails.js"></script>
+    <script src="~/js/eSyaPayrollExpat/FixedDeduction.js"></script>
+    <script src="~/js/eSyaPayrollExpat/SalaryInfo.js"></script>
+}
+
+<section id="divGrid">
+    <div class="row form-group">
+         
+        <div class="col-lg-12 col-xl-12 col-sm-12">
+            <label>Choose Employee by alphabets</label>
+            <span class="dot">A</span>
+            <span class="dot">B</span>
+            <span class="dot">C</span>
+            <span class="dot">D</span>
+            <span class="dot">E</span>
+            <span class="dot">F</span>
+            <span class="dot">G</span>
+            <span class="dot">H</span>
+            <span class="dot">I</span>
+            <span class="dot">J</span>
+            <span class="dot">K</span>
+            <span class="dot">L</span>
+            <span class="dot">M</span>
+            <span class="dot">N</span>
+            <span class="dot">O</span>
+            <span class="dot">P</span>
+            <span class="dot">Q</span>
+            <span class="dot">R</span>
+            <span class="dot">S</span>
+            <span class="dot">T</span>
+            <span class="dot">U</span>
+            <span class="dot">V</span>
+            <span class="dot">W</span>
+            <span class="dot">X</span>
+            <span class="dot">Y</span>
+            <span class="dot">Z</span>
+            <span class="dot">All</span>
+        </div>
+    </div>
+
+    <div class="row padbot10">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <table id="jqgEmployeeDetails"></table>
+            <div id="jqpEmployeeDetails"></div>
+        </div>
+    </div>
+</section>
+
+<section id="divForm" style="display:none">
+    <div class="row">
+        <div class="col-lg-12 col-md-12">
+            <h6 class="displayNames" id="hdCustomerName">Add Employee</h6>
+            <span class="btnCloseCodesScreens" onclick="fnCloseEmployeeDetails()"><i class="fa fa-times"></i></span>
+        </div>
+        <div class="col-sm-12">
+            <input type="text" class="form-control" id="txtCustomerCode" style="display:none">
+        </div>
+        <div class="col-lg-1 col-md-2 col-sm-2 col-xs-3 col-xl-1  animated slideInLeft sidebarSmall">
+            <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                <a class="nav-link active" id="employeedetails-tab" data-toggle="pill" href="#employeedetails" role="tab" aria-controls="employeedetails" aria-selected="true">Employee Details</a>
+                <a class="nav-link" id="personalInformation-tab" data-toggle="pill" href="#personalInformation" role="tab" aria-controls="personalInformation" aria-selected="true">Personal Information</a>
+                <a class="nav-link" id="salaryinfo-tab" data-toggle="pill" href="#salaryinfo" role="tab" aria-controls="salaryinfo" aria-selected="false" onclick="fnGridSalaryInfo()">Salary Info</a>
+                <a class="nav-link" id="bankdetail-tab" data-toggle="pill" href="#bankdetail" role="tab" aria-controls="bankdetail" aria-selected="false" onclick="fnGridBankDetails()">Bank Detail</a>
+                <a class="nav-link" id="currentjob-tab" data-toggle="pill" href="#currentjob" role="tab" aria-controls="currentjob" aria-selected="false" onclick="fnGridCurrentJob()">Current Job</a>
+                <a class="nav-link" id="fixeddeduction-tab" data-toggle="pill" href="#fixeddeduction" role="tab" aria-controls="fixeddeduction" aria-selected="false" onclick="fnGridFixedDeduction()">Fixed Deduction</a>
+            </div>
+        </div>
+        <div class="col-lg-11 col-md-12 col-sm-12 col-xl-11 bg-white animated fadeIn delay-1s padleft0 mainbarSmall">
+            <div class="tab-content" id="v-pills-tabContent">
+                <div class="tab-pane fade show active" id="employeedetails" role="tabpanel" aria-labelledby="employeedetails-tab">
+                    @await Html.PartialAsync("_EmployeeDetails")
+                </div>
+                <div class="tab-pane fade show" id="personalInformation" role="tabpanel" aria-labelledby="personalInformation-tab">
+                    @await Html.PartialAsync("_PersonalInformation")
+                </div>
+
+                <div class="tab-pane fade show" id="salaryinfo" role="tabpanel" aria-labelledby="salaryinfo-tab">
+                    @await Html.PartialAsync("_SalaryInfo")
+                </div>
+                <div class="tab-pane fade show" id="bankdetail" role="tabpanel" aria-labelledby="bankdetail-tab">
+                    @await Html.PartialAsync("_BankDetail")
+                </div>
+                <div class="tab-pane fade show" id="currentjob" role="tabpanel" aria-labelledby="currentjob-tab">
+                    @await Html.PartialAsync("_CurrentJob")
+                </div>
+                <div class="tab-pane fade show" id="fixeddeduction" role="tabpanel" aria-labelledby="currentjob-tab">
+                    @await Html.PartialAsync("_FixedDeduction")
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade in" id="PopupBankDetails" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Add Bank Details</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row mar0">
+                    <div class="col-lg-6 col-md-6 col-sm-12 form-group">
+                        <label>Bank Account Type</label>
+                        <select class="selectpicker form-control" id="cboBankAccountType" onchange="fnBankAccountType()">
+                            <option value="0">Select</option>
+                            <option value="l">Local</option>
+                            <option value="o">Outward</option>
+                        </select>
+                         
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12" id="divcurrencyName">
+                        <label>Currency Code</label>
+                        <select class="selectpicker">
+                            <option value="value">Select</option>
+                        </select>
+                    </div>
+                    </div>
+                    <section id="divLocal">
+                        <div class="row mar0">
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <p class="subheading">Beneficiary Details</p>
+                                <hr class="left" />
+                            </div>
+
+                            <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                                <label>Account Holder Name</label>
+                                <input type="text" class="form-control" id="txtAccountHolderName" />
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 form-group">
+                                <label>Beneficiary Address</label>
+                                <input type="text" class="form-control" id="txtBeneficiaryAddress" />
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                                <label>Bank Name</label>
+                                <input type="text" class="form-control" id="txtBankName" />
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                                <label>Account No</label>
+                                <input type="text" class="form-control" id="txtAccountno" />
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                                <label>IFSC Code</label>
+                                <input type="text" class="form-control" id="txtIFSCcode" />
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                                <label>Branch Name</label>
+                                <input type="text" class="form-control" id="txtBankName" />
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 form-group">
+                                <label>Bank Address</label>
+                                <input type="text" class="form-control" id="txtBankAddress" />
+                            </div>
+
+                        </div>
+                    </section>
+                    <section id="divOutward" style="display:none">
+                        <div class="row mar0">
+                           
+                            <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                                <label>SWIFT Code or SQRT Code</label>
+                                <input type="text" class="form-control" id="txtSWIFTCode"  />
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                                <label>IBAN(If Applicable)</label>
+                                <input type="text" class="form-control" id="txtSWIFTCode"  />
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <p class="subheading">Corresponding Bank Details</p>
+                                <hr class="left" />
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                                <label>Corresponding Bank Name</label>
+                                <input type="text" class="form-control" id="txtBeneficiaryBankAddress"  />
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                                <label>Corresponding Bank Address</label>
+                                <input type="text" class="form-control" id="txtSWIFTCode"  />
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                                <label>Corresponding Bank Account No and SWIFT Code</label>
+                                <input type="text" class="form-control" id="txtSWIFTCode"  />
+                            </div>
+                        </div>
+                    </section>
+
+                </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveBankDetails" onclick="fnSaveBankDetails()">
+                            Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="btnCancelBankDetails" onclick="fnClearEmpBankFields()"> Cancel </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+ 
+
+<div class="modal fade in" id="PopupCurrentJobs" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content ">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Add Current Jobs Details</h4>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="row mar0">
+
+                    <div class="col-lg-2 form-group">
+                        <label>From Date</label>
+                        <input type="text" class="form-control datepicker" id="txtcurrentjobFromdate" />
+                    </div>
+                    <div class="col-lg-2 form-group">
+                        <label>Till Date</label>
+                        <input type="text" class="form-control datepicker" id="txtcurrentjobTilldate" />
+                    </div>
+                    <div class="col-lg-4 form-group">
+                        <label>Department</label>
+                        <select class="form-control selectpicker" id="cboCurrentjobdepartment">
+                            <option value="0"> Select</option>
+                            @*@foreach (var dept in ViewBag.EmployeeDepartment)
+                                {
+                                    <option value="@dept.ApplicationCode">@dept.CodeDesc</option>
+                                }*@
+                        </select>
+                    </div>
+                    <div class="col-lg-4 form-group">
+                        <label>Designation</label>
+                        <select class="form-control selectpicker" id="cboCurrentjobdesignation">
+                            <option value="0"> Select</option>
+                            @*@foreach (var desig in ViewBag.EmployeeDesignation)
+                                {
+                                    <option value="@desig.ApplicationCode">@desig.CodeDesc</option>
+                                }*@
+                        </select>
+                    </div>
+                    <div class="col-lg-12 form-group">
+                        <label>Functional Reporting</label>
+                        <input type="text" class="form-control" maxlength="50" pattern="^[a-zA-Z _]+$" autocomplete="off" id="txtFunctionalreporting" />
+                    </div>
+                    <div class="col-lg-12 form-group">
+                        <label>Administrative Reporting</label>
+                        <input type="text" class="form-control" maxlength="50" pattern="^[a-zA-Z _]+$" autocomplete="off" id="txtAdministrativereporting" />
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveCurrentjob" onclick="fnSaveCurrentJobDetails()">
+                            Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="btnCancelCurrentjob" onclick="fnClearCurrentJobFields()"> Cancel </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade in" id="PopupFixedDeduction" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content ">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Add Fixed Deduction Details</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row mar0">
+                    <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-group">
+                        <label>E R Description</label>
+                        <select class="form-control selectpicker" id="cboFixeddeductionErcode">
+                            <option value="0"> Select</option>
+                            @*@foreach (var ercode in ViewBag.ERCode)
+                            {
+                                <option value="@ercode.Ercode">@ercode.Erdesc</option>
+                            }*@
+                        </select>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-group">
+                        <label>Amount</label>
+                        <input type="text" class="form-control currencyFormatAllowMinus" id="txtFixeddeductionamount" />
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-group">
+                        <label>No of Installments</label>
+                        <input type="text" class="form-control integerFormat" id="txtNoofInstallments" maxlength="8" />
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-group">
+                        <label>Paid Amount</label>
+                        <input type="text" class="form-control currencyFormatAllowMinus" id="txtFixeddeductionPaidamount" />
+                    </div>
+                    @*<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-group">
+                            <label>Balance Amount</label>
+                            <input type="text" class="form-control" />
+                        </div>*@
+                    <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-group">
+                        <label>Reference Detail</label>
+                        <input type="text" class="form-control" maxlength="50" id="txtReferencedetail" />
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 form-group">
+                        <label>Status</label>
+                        <select class="form-control selectpicker" id="cboFixeddeductionStatus">
+                            <option value="0">Select</option>
+                            <option value="A">Active</option>
+                            <option value="C">Closed</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-2 col-md-6 col-sm-4 col-xs-12 form-group">
+                        <div class="default-checkbox">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkSkipPayroll">
+                                <input type="checkbox" id="chkSkipPayroll" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label"> Skip Payroll</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveFixedDeduction" onclick="fnSaveFixedDeduction()">
+                            Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="btnCancelFixedDeduction" onclick="fnClearFixedDeductionFields()"> Cancel </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+    
+    function fnBankAccountType() {
+        var BankAccountType = $("#cboBankAccountType").val();
+        if (BankAccountType == "0") {
+             $("#divOutward").css('display', 'none');
+        }
+        if (BankAccountType == "l") {
+           
+            $("#divOutward").css('display', 'none');
+        }
+        if (BankAccountType == "o") {
+        
+            $("#divOutward").css('display', 'block');
+        }
+    }
+    $("#PopupBankDetails").on('hidden.bs.modal', function () {
+        $("#cboBankAccountType").val('0').selectpicker('refresh');
+    })
+</script>

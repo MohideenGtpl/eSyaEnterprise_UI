@@ -1,0 +1,582 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "V_ENC_22_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/jquery.contextMenu.min.css" rel="stylesheet" />
+<link href="~/css/eSyaNatureCure/membershipRegistration.css" rel="stylesheet" />
+@section scripts{
+    <script src="~/js/eSyaNatureCure/MembershipRegistration.js"></script>
+    <script src="~/js/jquery.contextMenu.min.js"></script>
+
+}
+
+@{
+    var userFormRole = (eSyaEnterprise_UI.Models.DO_UserFormRole)ViewBag.UserFormRole;
+}
+<script>
+    var _userFormRole = JSON.parse('@Html.Raw(Json.Serialize(userFormRole))');
+
+    var localization = {
+        MemberId: '@Localizer["MemberId"]',
+        BusinessKey: '@Localizer["BusinessKey"]',
+        FirstName: '@Localizer["FirstName"]',
+        MiddleName: '@Localizer["MiddleName"]',
+        LastName: '@Localizer["LastName"]',
+        Gender:'@Localizer["Gender"]',
+        MembershipType: '@Localizer["MembershipType"]',
+        Age: '@Localizer["Age"]',
+        MobileNumber: '@Localizer["MobileNumber"]',
+        Isdcode: '@Localizer["Isdcode"]',
+        EmailId: '@Localizer["EmailId"]',
+        CityCode: '@Localizer["CityCode"]',
+        StateCode: '@Localizer["StateCode"]',
+        Uhid: '@Localizer["Uhid"]',
+        DonationAmount:'@Localizer["DonationAmount"]',
+        CouponId: '@Localizer["CouponId"]',
+        NoOfYear: '@Localizer["NoOfYear"]',
+        RegisteredDate: '@Localizer["RegisteredDate"]',
+        ValidFrom: '@Localizer["ValidFrom"]',
+        ValidTill: '@Localizer["ValidTill"]',
+        RoomType: '@Localizer["RoomType"]',
+        BookingDiscountPercentage: '@Localizer["BookingDiscountPercentage"]',
+        NoOfPersons: '@Localizer["NoOfPersons"]',
+        PatientType: '@Localizer["PatientType"]',
+        PatientCategory: '@Localizer["PatientCategory"]',
+        Active: '@Localizer["Active"]',
+        Actions: '@Localizer["Actions"]',
+        Edit: '@Localizer["Edit"]',
+        View: '@Localizer["View"]',
+        Save: '@Localizer["Save"]',
+        Update: '@Localizer["Update"]',
+        Delete: '@Localizer["Delete"]',
+        wait: '@Localizer["wait"]',
+        Select: '@Localizer["Select"]',
+        DeActivate: '@Localizer["DeActivate"]',
+        Activate: '@Localizer["Activate"]',
+        MemberName: '@Localizer["MemberName"]',
+        AddMemberShipType: '@Localizer["AddMemberShipType"]',
+        UpdateMemberShipType: '@Localizer["UpdateMemberShipType"]',
+        ViewMemberShipType: '@Localizer["ViewMemberShipType"]',
+        DActivate: '@Localizer["DActivate"]',
+        Activate: '@Localizer["Activate"]',
+        MemberShipType: '@Localizer["MemberShipType"]',
+        NumberOfYears: '@Localizer["NumberOfYears"]',
+        ValidFrom: '@Localizer["ValidFrom"]',
+        ValidTill: '@Localizer["ValidTill"]',
+        RoomType: '@Localizer["RoomType"]',
+        BookingDiscountPercentage: '@Localizer["BookingDiscountPercentage"]',
+        NoOfPersons: '@Localizer["NoOfPersons"]',
+        AddMemberShipDonation: '@Localizer["AddMemberShipDonation"]',
+        DonationDate: '@Localizer["DonationDate"]',
+        DonationAmount: '@Localizer["DonationAmount"]',
+        ReceiptVoucherReference: '@Localizer["ReceiptVoucherReference"]',
+        Comments: '@Localizer["Comments"]',
+        UpdateMemberShipDonation: '@Localizer["UpdateMemberShipDonation"]',
+        ViewMemberShipDonation: '@Localizer["ViewMemberShipDonation"]',
+    };
+</script>
+<section id="divGrid">
+    <div class="row form-group">
+        <div class="col-lg-12 col-xl-12 col-sm-12">
+            <label>@Localizer["ChooseMembersbyAlphabets"]</label>
+            <span class="dot">A</span>
+            <span class="dot">B</span>
+            <span class="dot">C</span>
+            <span class="dot">D</span>
+            <span class="dot">E</span>
+            <span class="dot">F</span>
+            <span class="dot">G</span>
+            <span class="dot">H</span>
+            <span class="dot">I</span>
+            <span class="dot">J</span>
+            <span class="dot">K</span>
+            <span class="dot">L</span>
+            <span class="dot">M</span>
+            <span class="dot">N</span>
+            <span class="dot">O</span>
+            <span class="dot">P</span>
+            <span class="dot">Q</span>
+            <span class="dot">R</span>
+            <span class="dot">S</span>
+            <span class="dot">T</span>
+            <span class="dot">U</span>
+            <span class="dot">V</span>
+            <span class="dot">W</span>
+            <span class="dot">X</span>
+            <span class="dot">Y</span>
+            <span class="dot">Z</span>
+            <span class="dot">All</span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <table id="jqgMemberShip"></table>
+            <div id="jqpMemberShip"></div>
+        </div>
+    </div>
+</section>
+
+<section id="divMemberShipForm" style="display:none;">
+
+    <div class="row">
+
+        <div class="col-lg-12 col-md-12">
+            <h6 class="displayNames" id="hdMemberName"> <span onclick=""><i class="fa fa-times"></i></span></h6>
+        </div>
+
+         <div class="col-lg-12 col-md-12 col-sm-12">
+
+             <div class="row">
+
+                 <input type="hidden" id="hdvMemberShipId" value="" />
+                 <input type="hidden" id="hdvBusinesskey" value="" />
+                 <div class="col-lg-3 col-md-4 col-sm-6">
+                     <div class="form-group">
+                         <label> @Localizer["FirstName"]</label>
+                         <input class="form-control" type="text" autocomplete="off" maxlength="50" id="txtFirstName" />
+                     </div>
+                 </div>
+
+                 <div class="col-lg-3 col-md-4 col-sm-6">
+                     <div class="form-group">
+                         <label> @Localizer["MiddleName"]</label>
+                         <input class="form-control" type="text" autocomplete="off" maxlength="50" id="txtMiddleName" />
+                     </div>
+                 </div>
+
+                 <div class="col-lg-3 col-md-4 col-sm-6">
+                     <div class="form-group">
+                         <label> @Localizer["LastName"]</label>
+                         <input class="form-control" type="text" autocomplete="off" maxlength="50" id="txtLastName" />
+                     </div>
+                 </div>
+
+                 <div class="col-lg-3 col-md-4 col-sm-6">
+                     <div class="form-group">
+                         <label class="lable-color"> @Localizer["Gender"]</label>
+                         <select class="selectpicker" data-live-search="false" title="" id="cboGender">
+                             <option value='0'>Select</option>
+                             <option value="M">Male</option>
+                             <option value="F">Female</option>
+                         </select>
+                     </div>
+                 </div>
+
+                 <div class="col-lg-3 col-md-4 col-sm-6">
+                     <div class="form-group">
+                         <label> @Localizer["Age"]</label>
+                         <input class="form-control" type="text" autocomplete="off" maxlength="3" data-inputmask="'mask': '9', 'repeat': 10, 'greedy' : false" id="txtAge" />
+                     </div>
+                 </div>
+
+                 <div class="col-lg-6 col-md-8 col-sm-6">
+                     <div class="form-group">
+                         <label> @Localizer["MobileNumber"]</label>
+
+
+                         @await Component.InvokeAsync("IsdMobileInput", new { id = "MemberMobile" })
+
+                     </div>
+                 </div>
+
+                 <div class="col-lg-3 col-md-4 col-sm-6">
+
+                     <div class="form-group">
+                         <label> @Localizer["DonationAmount"]</label>
+                         <input class="form-control decimalFormat" type="text" autocomplete="off" maxlength="15" id="txMemberShiptDonationAmount" readonly="readonly" />
+
+                     </div>
+                 </div>
+
+                 <div class="col-lg-3 col-md-4 col-sm-6">
+                     <div class="form-group">
+                         <label class="lable-color"> @Localizer["State"]</label>
+                         <select class="selectpicker" data-live-search="false" title="" id="cboState" onchange="fncboState_change()">
+                             <option value='0'>Select</option>
+
+                         </select>
+                     </div>
+                 </div>
+
+                 <div class="col-lg-3 col-md-4 col-sm-6">
+                     <div class="form-group">
+                         <label class="lable-color"> @Localizer["City"]</label>
+                         <select class="selectpicker" data-live-search="false" title="" id="cboCity" data-size="5">
+                             <option value='0'>Select</option>
+
+                         </select>
+                     </div>
+                 </div>
+
+                 <div class="col-lg-6 col-md-8 col-sm-6">
+                     <div class="form-group">
+                         <label> @Localizer["EmailID"]</label>
+                         <input class="form-control" type="text" autocomplete="off" maxlength="50" id="txtEMailId" />
+                     </div>
+                 </div>
+
+                 <div class="col-lg-3 col-md-4 col-sm-6">
+                     <div class="default-checkbox">
+                         <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActiveStatus">
+                             <input type="checkbox" id="chkActiveStatus" class="mdl-checkbox__input">
+                             <span class="mdl-checkbox__label">@Localizer["Active"]</span>
+                         </label>
+                     </div>
+                 </div>
+
+             </div>
+
+             <div class="row form-group">
+                     <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+                         <hr />
+                         <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent btn-back mr-10 c-white" onclick="fnCloseMemberShip()"><i class="fas fa-chevron-left"></i> @Localizer["Back"]</button>
+                         <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button mr-10" id="btnSaveMemberShip" onclick="fnSaveMemberShip()"><i class="far fa-save"></i> @Localizer["Save"]</button>
+                         <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" id="btnClearMemberShip" onclick="fnClearFields()"><i class="fa fa-redo"></i> @Localizer["Clear"]</button>
+                     </div>
+                 </div>
+
+         </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-12 col-lg-12 col-md-12">
+            
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="membershipType-tab" data-toggle="tab" data-target="#divMembershipType" type="button" role="tab" aria-controls="profile" aria-selected="true">Membership Type</button>    
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="donationAmount-tab" data-toggle="tab" data-target="#divDonationAmount" type="button" role="tab" aria-controls="home" aria-selected="false">Donation Amount</button> 
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                
+                <div class="tab-pane fade  show active" id="divMembershipType" role="tabpanel" aria-labelledby="membershipType-tab">
+                    <div class="row">
+                        <div class="col-12 col-lg-12 col-md-12 col-sm-12">
+                            
+                            <table id="jqgMemberShipType"></table>
+                            <div id="jqpMemberShipType"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="divDonationAmount" role="tabpanel" aria-labelledby="donationAmount-tab">
+                    <div class="row">
+                        <div class="col-12 col-lg-12 col-md-12 col-sm-12">
+                            <table id="jqgDonationAmount"></table>
+                            <div id="jqpDonationAmount"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</section>
+
+<div class="modal fade" id="modalMembershipType" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="txtGuestName">Add MemberShip Type</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fa fa-times"></i></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <section class="bg-white">
+                    <div class="row">
+
+                        <div class="col-lg-4 col-md-4 col-sm-6">
+                            <div class="form-group">
+                                <label class="lable-color"> @Localizer["MemberShipType"]</label>
+                                <select class="selectpicker" data-live-search="false" title="" id="cboMemberShipType" data-size="8">
+                                    <option value='0'>Select</option>
+                                    @if (ViewBag.MemberShipTypes != null)
+                                    {
+                                        foreach (var mc in ViewBag.MemberShipTypes)
+                                        {
+                                            <option value="@mc.ApplicationCode">@mc.CodeDesc</option>
+                                        }
+
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-4 col-sm-6">
+                            <div class="form-group">
+                                <label> @Localizer["CouponId"]</label>
+                                <input class="form-control " type="text" autocomplete="off" maxlength="20" id="txtCouponId" />
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-4 col-sm-6">
+                            <div class="form-group">
+                                <label> @Localizer["NumberofYear"]</label>
+                                <input class="form-control " type="text" autocomplete="off" maxlength="10" data-inputmask="'mask': '9', 'repeat': 10, 'greedy' : false" id="txtNumberofYear" />
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+
+                        <div class="col-lg-4 col-md-4 col-sm-6">
+                            <div class="form-group">
+                                <label> @Localizer["ValidFrom"]</label>
+                                <input id="txtValidFrom" class="form-control" type="text" autocomplete="off" onkeydown="return false" />
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-4 col-sm-6">
+                            <div class="form-group">
+                                <label> @Localizer["ValidTill"]</label>
+                                <input id="txtValidTill" class="form-control" type="text" autocomplete="off" onkeydown="return false" />
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-4 col-sm-6">
+                            <div class="form-group">
+                                <label class="lable-color">
+                                    @Localizer["RoomType"]
+
+                                </label>
+                                <select class="selectpicker" data-live-search="false" title="" id="cboRoomType" data-size="8">
+                                    <option value='0'>Select</option>
+                                    @if (ViewBag.RoomTypes != null)
+                                    {
+                                        foreach (var rt in ViewBag.RoomTypes)
+                                        {
+                                            <option value="@rt.RoomTypeId">@rt.RoomTypeDesc</option>
+                                        }
+
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-6">
+                            <div class="form-group">
+                                <label> @Localizer["NumberofPersons"]</label>
+                                <input class="form-control " type="text" autocomplete="off" maxlength="50" data-inputmask="'mask': '9', 'repeat': 10, 'greedy' : false" id="txtNumberofPersons" />
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-4 col-sm-6">
+                            <div class="form-group">
+                                <label> @Localizer["BookingDiscountPercentage"]</label>
+                                <input class="form-control decimalFormat" type="text" autocomplete="off" maxlength="15" id="txtBookingDiscountPercentage" />
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-lg-4 col-md-4 col-sm-6">
+                            <div class="default-checkbox">
+                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkMembershipActiveStatus">
+                                    <input type="checkbox" id="chkMembershipActiveStatus" class="mdl-checkbox__input">
+                                    <span class="mdl-checkbox__label">@Localizer["Active"]</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnSaveMembershiptype" onclick="fnSaveMemberShipType()">@Localizer["Save"]</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">@Localizer["Close"]</button>
+                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" id="btndeActiveMembershiptype" onclick="fnDeActivateMemberShipType()"><i class="fa fa-times"></i> @Localizer["DeActivate"] </button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modalMemberShipDonation" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="txtGuestName">Add Donation Amount</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fa fa-times"></i></span>
+                </button>
+                <input type="text" id="txtSerialNo" style="display:none" />
+            </div>
+            <div class="modal-body">
+                <section class="bg-white">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-6">
+                            <div class="form-group">
+                                <label> @Localizer["DonationDate"]</label>
+                                <input id="txtDonationdate" class="form-control" type="text" autocomplete="off" onkeydown="return false" />
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6">
+                            <div class="form-group">
+                                <label> @Localizer["DonationAmount"]</label>
+                                <input class="form-control decimalFormat" type="text" autocomplete="off" maxlength="15" id="txtDonationAmount" />
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-4 col-sm-6">
+                            <div class="form-group">
+                                <label> @Localizer["ReceiptVoucherReference"]</label>
+                                <input class="form-control " type="text" autocomplete="off" maxlength="20" id="txtReceiptVoucherReference" />
+                            </div>
+                        </div>
+
+                        <div class="col-lg-8 col-md-8 col-sm-6">
+                            <div class="form-group">
+                                <label> @Localizer["Comments"]</label>
+                                <textarea class="form-control " autocomplete="off" id="txtComments"></textarea>
+                            </div>
+                        </div>
+
+
+
+                        <div class="col-lg-3 col-md-3 col-sm-6">
+                            <div class="default-checkbox">
+                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkDTActiveStatus">
+                                    <input type="checkbox" id="chkDTActiveStatus" class="mdl-checkbox__input">
+                                    <span class="mdl-checkbox__label">@Localizer["Active"]</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+           
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnSaveMembershipDonation" onclick="fnSaveMembershipDonation()">@Localizer["Save"]</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">@Localizer["Close"]</button>
+                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" id="btndeActiveMembershipDonation" onclick="fnDeActivateMembershipDonation()"><i class="fa fa-times"></i> @Localizer["DeActivate"] </button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+$(function () {
+                                
+    var todaydt = new Date();
+    $("#txtValidFrom").datepicker({
+        autoclose: true,
+        dateFormat: _cnfDateFormat,
+        endDate: todaydt,
+        onSelect: function (date) {
+            //Get selected date
+            var date2 = $('#txtValidFrom').datepicker('getDate');
+            //sets minDate to txtTillDate
+            $('#txtValidTill').datepicker('option', 'minDate', date2);
+        }
+    });
+    $('#txtValidTill').datepicker({
+        dateFormat: _cnfDateFormat,
+    });
+    $('#txtDonationdate').datepicker({
+        dateFormat: _cnfDateFormat,
+
+    });
+    BindStates();
+
+});  
+                           
+
+function BindStates() {
+
+    $("#cboState").empty();
+
+    $.ajax({
+        url: getBaseURL() + '/MembershipRegistration/GetStateList?isdCode=' + $("#cboMemberMobile").val(),
+        type: 'GET',
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8',
+        error: function (xhr) {
+            toastr.error('Error: ' + xhr.statusText);
+        },
+        success: function (response, data) {
+            if (response != null) {
+                //refresh each time
+                $("#cboState").empty();
+                $("#cboState").append($("<option value='0'> Select </option>"));
+                for (var i = 0; i < response.length; i++) {
+
+                    $("#cboState").append($("<option></option>").val(response[i]["PlaceId"]).html(response[i]["PlaceName"]));
+                }
+                $('#cboState').selectpicker('refresh');
+            }
+            else {
+                $("#cboState").empty();
+                $("#cboState").append($("<option value='0'> Select </option>"));
+                $('#cboState').selectpicker('refresh');
+            }
+        },
+        async: false,
+        processData: false
+    });
+
+
+}
+
+function BindCities() {
+    $("#cboCity").empty();
+    $.ajax({
+        url: getBaseURL() + '/MembershipRegistration/GetCityList?isdCode=' + $("#cboMemberMobile").val() + '&stateCode=' + $("#cboState").val(),
+        type: 'GET',
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8',
+        error: function (xhr) {
+            toastr.error('Error: ' + xhr.statusText);
+        },
+        success: function (response, data) {
+            if (response != null) {
+                //refresh each time
+                $("#cboCity").empty();
+
+                $("#cboCity").append($("<option value='0'> Select </option>"));
+                for (var i = 0; i < response.length; i++) {
+
+                    $("#cboCity").append($("<option></option>").val(response[i]["PlaceId"]).html(response[i]["PlaceName"]));
+                }
+                $('#cboCity').selectpicker('refresh');
+            }
+            else {
+                $("#cboCity").empty();
+                $("#cboCity").append($("<option value='0'> Select </option>"));
+                $('#cboCity').selectpicker('refresh');
+            }
+        },
+        async: false,
+        processData: false
+    });
+
+
+}                               
+
+function fnCboISDCodes_onChanged() {
+    BindStates();
+    BindCities();
+}                             
+
+ function fncboState_change() {
+     BindCities();
+ }                          
+ </script>
+
+

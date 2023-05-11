@@ -1,0 +1,335 @@
+﻿var actiontype = "";
+var actionParameterType = "";
+$(document).ready(function () {
+    //fnParameterTypeControlVisibilty(false);
+    //fnFillParameterType();
+    //$('#cboParameterType').selectpicker('refresh');
+    //fnGridLoadParameters();
+    fnGridLoadParameterHeader();
+});
+
+function fnGridLoadParameterHeader() {
+    $('#jqgParametersHeader').jqGrid('GridUnload');
+    $("#jqgParametersHeader").jqGrid({
+        url: getBaseURL() + '/ApplicationRules/GetParametersHeaderInformation',
+        datatype: 'json',
+        mtype: 'Get',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        ignoreCase: true,
+        colNames: ["Parameter Type", "Parameter Type Description","Active", "Actions"],
+        colModel: [
+            { name: "ParameterType", width: 45, align: 'left', editable: false, editoptions: { maxlength: 4 } },
+            { name: "ParameterHeaderDesc", width: 205, editable: false, align: 'left', editoptions: { maxlength: 50 } },
+            { name: "ActiveStatus", width: 35, editable: false, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+
+            {
+                name: 'edit', search: false, align: 'left', width: 150, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="UploadQuotation btn-xs ui-button ui- widget ui-corner-all btn-jqgrid" title="View " onclick="return fnParametersInfoPopup(event);"><i class="fa fa-plus"></i>Add/View Parameter</button>' +
+                        ' <button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditParametersType(event,\'edit\')"><i class="fas fa-pencil-alt"></i> Edit </button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnEditParametersType(event,\'view\')"><i class="far fa-eye"></i> View </button>';
+                }
+            },
+        ],
+        pager: "#jqpParametersHeader",
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        rownumWidth:55,
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: true,
+        shrinkToFit: true,
+        forceFit: true,
+        scrollOffset: 0,
+        loadComplete: function (data) {
+           // SetGridControlByAction();
+        },
+    }).
+        jqGrid('navGrid', '#jqpParametersHeader', { add: false, edit: false, search: true, searchtext: 'Search', del: false, refresh: false }, {}, {}, {}, {
+            closeOnEscape: true,
+            caption: "Search...",
+            multipleSearch: true,
+            Find: "Find",
+            Reset: "Reset",
+            odata: [{ oper: 'eq', text: 'Match' }, { oper: 'cn', text: 'Contains' }, { oper: 'bw', text: 'Begins With' }, { oper: 'ew', text: 'Ends With' }],
+        }).jqGrid('navButtonAdd', '#jqpParametersHeader', {
+            caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddParametersType
+        }).
+        jqGrid('navButtonAdd', '#jqpParametersHeader', {
+            caption: '<span class="fa fa-sync" data-toggle="modal"></span> Refresh', buttonicon: 'none', id: 'btnGridRefresh', position: 'last', onClickButton: fnGridRefreshParametersHeader
+        });
+    fnAddGridSerialNoHeading();
+}
+
+function fnAddParametersType() {
+    fnClearParameterTypeFields();
+    $("#PopupParametersHeader").modal('show');
+    $('#PopupParametersHeader').find('.modal-title').text("Add Parameter Type");
+    $("#btnSaveParametersType").html(' Save');
+    $("#chkPTActiveStatus").parent().addClass("is-checked");
+    actionParameterType = "I";
+}
+
+function fnEditParametersType(e, actiontype) {
+    $("#PopupParametersHeader").modal('show');
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgParametersHeader').jqGrid('getRowData', rowid);
+    $('#txtParameterTypeId').val(rowData.ParameterType).attr('readonly', true);
+    $('#txtParameterTypeDescription').val(rowData.ParameterHeaderDesc);
+    if (rowData.ActiveStatus == 'true') {
+        $("#chkPTActiveStatus").parent().addClass("is-checked");
+    }
+    else {
+        $("#chkPTActiveStatus").parent().removeClass("is-checked");
+    }
+    $("#btnSaveParametersType").attr('disabled', false);
+    if (actiontype.trim() == "edit") {
+        $("#chkPTActiveStatus").prop('disabled', false);
+        $('#PopupParametersHeader').find('.modal-title').text("Update Parameter Type");
+        $("#btnSaveParametersType").html('Update');
+        actionParameterType = "U";
+    }
+    if (actiontype.trim() == "view") {
+        $('#PopupParametersHeader').find('.modal-title').text("View Parameter Type");
+        $("#btnSaveParametersType").hide();
+        $("input,textarea").attr('readonly', true);
+        $("input[type=checkbox]").attr('disabled', true);
+        actionParameterType = "V";
+        $("#PopupParametersHeader").on('hidden.bs.modal', function () {
+            $("#btnSaveParametersType").show();
+            $("#chkPTActiveStatus").prop('disabled', true);
+            $("input,textarea").attr('readonly', false);
+            $("select").next().attr('disabled', false);
+            $("input[type=checkbox]").attr('disabled', false);
+        });
+    }
+}
+
+function fnParametersInfoPopup(e) {
+
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgParametersHeader').getRowData(rowid);
+    $("#PopupParameterDetail").modal(true);
+    $("#txtParameterType").val('');
+    $("#txtParameterType").val(rowData.ParameterType);
+    $("#lblParameterType").text(rowData.ParameterHeaderDesc);
+    fnGridLoadParameters();
+}
+
+function fnClearParameterTypeFields() {
+    $("#txtParameterTypeId").val('');
+    $("#txtParameterTypeDescription").val('');
+    $("#chkPTActiveStatus").prop('disabled', false);
+    $("#chkPTActiveStatus").parent().removeClass("is-checked");
+    $("#btnSaveParametersType").attr('disabled', false);
+}
+
+function fnSaveParameterType() {
+
+    if (IsStringNullorEmpty($("#txtParameterTypeId").val())) {
+        toastr.warning("Please Enter Parameter Type Id");
+        return false;
+    }
+    if ($("#txtParameterTypeId").val() == 0) {
+        toastr.warning("Parameter Type Id should not be 0");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtParameterTypeDescription").val())) {
+        toastr.warning("Please Enter Parameter Type Description");
+        return false;
+    }
+
+    var pa_rh = {
+        ParameterType: $("#txtParameterTypeId").val(),
+        ParameterHeaderDesc: $("#txtParameterTypeDescription").val(),
+        ActiveStatus: $("#chkPTActiveStatus").parent().hasClass("is-checked")
+    }
+    $("#btnSaveParametersType").html('<i class="fa fa-spinner fa-spin"></i> wait');
+    $("#btnSaveParametersType").attr('disabled', true);
+
+    var URL = getBaseURL() + '/ApplicationRules/InsertIntoParameterHeader';
+    if (actionParameterType == "U")
+        URL = getBaseURL() + '/ApplicationRules/UpdateParameterHeader';
+
+    $.ajax({
+        url: URL,
+        type: 'POST',
+        datatype: 'json',
+        data: { pa_rh },
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                fnClearParameterTypeFields();
+                fnGridRefreshParametersHeader();
+                $("#PopupParametersHeader").modal('hide');
+            }
+            else {
+                toastr.error(response.Message);
+            }
+            $("#btnSaveParametersType").html('Save');
+            $("#btnSaveParametersType").attr('disabled', false);
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnSaveParametersType").html('Save');
+            $("#btnSaveParametersType").attr("disabled", false);
+        }
+    });
+}
+
+function fnGridLoadParameters() {
+    $('#jqgParameters').jqGrid('GridUnload');
+    $("#jqgParameters").jqGrid({
+        url: getBaseURL() + '/ApplicationRules/GetParametersInformationByParameterType?parameterType=' + $("#txtParameterType").val(),
+        datatype: 'json',
+        mtype: 'Post',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Parameter Type", "Parameter ID", "Parameter Description", "Value Type", "Active", "Actions"],
+        colModel: [
+            { name: "ParameterType", width: 150, editable: true, align: 'left', editoptions: { maxlength: 4 }, hidden: true },
+            { name: "ParameterId", width: 118, editable: true, align: 'left', editoptions: { maxlength: 4 }},
+            { name: "ParameterDesc", width: 280, editable: true, align: 'left', editoptions: { maxlength: 50 } },
+            {
+                name: "ParameterValueType", editable: true, width: 95, align: "left", edittype: "select", resizable: false, formatter: 'select',
+                editoptions: {
+                    value: "A: Amount;B: Boolean;D:Description;P: Percentage;V: Value"
+                }
+            },
+            { name: "ActiveStatus", width: 95, editable: false, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+            {
+                name: 'action', search: false, align: 'left', width: 150, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" onclick="return fnEditParameters(event,\'edit\')"><i class="fas fa-pencil-alt"></i> Edit </button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnEditParameters(event,\'view\')"><i class="far fa-eye"></i> View </button>'
+
+                }
+            },
+        ],
+        rowNum: 10,
+        rowList: [10, 20, 30, 50, 100],
+        rownumWidth:55,
+        emptyrecords: "No records to View",
+        pager: "#jqpParameters",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        width: 'auto',
+        autowidth: true,
+        shrinkToFit: true,
+        forceFit: true,
+        loadonce: true,
+        scrollOffset: 0,
+    }).jqGrid('navGrid', '#jqpParameters', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpParameters', {
+        caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshParameters
+        }).jqGrid('navButtonAdd', '#jqpParameters', {
+        caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'custAdd', position: 'first', onClickButton: fnAddParameters
+        });
+    fnAddGridSerialNoHeading();
+}
+
+function fnAddParameters() {
+    fnClearFields();
+    fnUserAction(false);
+    $('#PopupParameters').find('.modal-title').text("Add Parameters");
+    $("#btnSaveParameters").html('Save').show();
+}
+
+function fnEditParameters(e, actiontype) {
+    debugger;
+        var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+        var rowData = $('#jqgParameters').jqGrid('getRowData', rowid);
+    $('#txtParameterId').val(rowData.ParameterId).attr('readonly', true);
+    $('#txtParameterDescription').val(rowData.ParameterDesc);
+    $('#cboParameterValueType').val(rowData.ParameterValueType);
+    $('#cboParameterValueType').selectpicker('refresh');  
+    if (rowData.ActiveStatus == 'true') {
+        $("#chkActiveStatus").parent().addClass("is-checked");
+    }
+    else {
+        $("#chkActiveStatus").parent().removeClass("is-checked");
+    }  
+    $("#btnSaveParameters").attr('disabled', false);
+    fnUserAction(false);
+     if (actiontype.trim() == "edit") {
+        $("#chkActiveStatus").prop('disabled', false);
+        $("#btnSaveParameters").html('Update').show();
+    }
+    if (actiontype.trim() == "view") {
+        $("#btnSaveParameters").hide();
+        fnUserAction(true);
+        
+    }
+}
+function fnUserAction(val) {
+    $("input,textarea").attr('readonly', val);
+    $("select").next().attr('disabled', val);
+    $("input[type=checkbox]").attr('disabled', val);
+}
+function fnSaveParameters() {
+    
+    if (IsStringNullorEmpty($("#txtParameterDescription").val())) {
+        toastr.warning("Please Enter Parameter Description");
+        return false;
+    }
+
+    var pa_rm = {
+        ParameterType: $("#txtParameterType").val(),
+        ParameterId: $("#txtParameterId").val() === '' ? 0 : $("#txtParameterId").val(),
+        ParameterDesc: $("#txtParameterDescription").val(),
+        ParameterValueType: $("#cboParameterValueType").val(),
+        ActiveStatus: $("#chkActiveStatus").parent().hasClass("is-checked")
+    }
+
+    $.ajax({
+        url: getBaseURL() + '/ApplicationRules/InsertOrUpdateParameters',
+        type: 'POST',
+        datatype: 'json',
+        data: { pa_rm },
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                $("#btnSaveParameters").html('<i class="fa fa-spinner fa-spin"></i> wait');
+                $("#btnSaveParameters").attr('disabled', true);
+                fnGridRefreshParameters();
+                $("#PopupParameters").modal('hide');
+
+            }
+            else {
+                toastr.error(response.Message);
+                $("#btnSaveParameters").attr('disabled', false);
+            }
+
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnSaveParameters").attr("disabled", false);
+        }
+    });
+}
+
+function fnGridRefreshParametersHeader() {
+    $("#jqgParametersHeader").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+function fnGridRefreshParameters() {
+    $("#jqgParameters").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+function fnClearFields() {
+    $("#txtParameterId").val('');
+    $("#txtParameterId").hide();
+    $("#txtParameterDescription").val('');
+    $("#cboParameterValueType").val('B');
+    $("#cboParameterValueType").selectpicker('refresh');
+    $("#chkActiveStatus").prop('disabled', false);
+    $("#chkActiveStatus").parent().removeClass("is-checked");
+    $("#btnSaveParameters").attr('disabled', false);
+}

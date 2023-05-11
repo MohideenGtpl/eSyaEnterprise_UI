@@ -1,0 +1,94 @@
+2021-10-28 10:28:01.7738|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2021-10-28 10:51:26.6866||ERROR|eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.NurseAssessmentController|UD:GetInPatientDetails System.Exception: Internal Server Error|url: http://localhost/NurseAssessment/GetInPatientDetails|action: GetInPatientDetails
+2021-10-28 10:57:48.9182|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2021-10-28 11:00:34.6070||ERROR|eSyaEnterprise_UI.Areas.Config.Controllers.BusinessStructureController|UD:BusinessLocation System.Exception: Internal Server Error|url: http://localhost/eSyaConfig/BusinessStructure/V_103_00|action: V_103_00
+2021-10-28 11:00:35.9842|1|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An unhandled exception has occurred while executing the request. System.NullReferenceException: Object reference not set to an instance of an object.
+   at AspNetCore.Views_Shared_Components_eSyaParameter__eSyaParameter.ExecuteAsync() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Views\Shared\Components\eSyaParameter\_eSyaParameter.cshtml:line 15
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewComponents.ViewViewComponentResult.ExecuteAsync(ViewComponentContext context)
+   at Microsoft.AspNetCore.Mvc.ViewComponents.DefaultViewComponentInvoker.InvokeAsync(ViewComponentContext context)
+   at Microsoft.AspNetCore.Mvc.ViewComponents.DefaultViewComponentHelper.InvokeCoreAsync(ViewComponentDescriptor descriptor, Object arguments)
+   at AspNetCore.Areas_eSyaConfig_Views_BusinessStructure_V_103_00.ExecuteAsync() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaConfig\Views\BusinessStructure\V_103_00.cshtml:line 154
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ActionContext actionContext, IView view, ViewDataDictionary viewData, ITempDataDictionary tempData, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeResultAsync(IActionResult result)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResultFilterAsync[TFilter,TFilterAsync]()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResultExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeResultFilters()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResourceFilter()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeFilterPipelineAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeAsync()
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/eSyaConfig/BusinessStructure/V_103_00|action: V_103_00
+2021-10-28 11:00:36.3805|3|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An exception was thrown attempting to execute the error handler. System.ArgumentNullException: Value cannot be null.
+Parameter name: logger
+   at Microsoft.Extensions.Logging.LoggerExtensions.Log(ILogger logger, LogLevel logLevel, EventId eventId, Exception exception, String message, Object[] args)
+   at Microsoft.Extensions.Logging.LoggerExtensions.LogError(ILogger logger, Exception exception, String message, Object[] args)
+   at eSyaEnterprise_UI.Extension.ExceptionMiddlewareExtensions.<>c.<<ConfigureExceptionHandler>b__0_1>d.MoveNext() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Extension\ExceptionMiddlewareExtensions.cs:line 44
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/eSyaConfig/BusinessStructure/V_103_00|action: V_103_00
+2021-10-28 11:00:36.4385|1|ERROR|Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware|An unhandled exception has occurred while executing the request. System.NullReferenceException: Object reference not set to an instance of an object.
+   at AspNetCore.Views_Shared_Components_eSyaParameter__eSyaParameter.ExecuteAsync() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Views\Shared\Components\eSyaParameter\_eSyaParameter.cshtml:line 15
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewComponents.ViewViewComponentResult.ExecuteAsync(ViewComponentContext context)
+   at Microsoft.AspNetCore.Mvc.ViewComponents.DefaultViewComponentInvoker.InvokeAsync(ViewComponentContext context)
+   at Microsoft.AspNetCore.Mvc.ViewComponents.DefaultViewComponentHelper.InvokeCoreAsync(ViewComponentDescriptor descriptor, Object arguments)
+   at AspNetCore.Areas_eSyaConfig_Views_BusinessStructure_V_103_00.ExecuteAsync() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaConfig\Views\BusinessStructure\V_103_00.cshtml:line 154
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ActionContext actionContext, IView view, ViewDataDictionary viewData, ITempDataDictionary tempData, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeResultAsync(IActionResult result)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResultFilterAsync[TFilter,TFilterAsync]()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResultExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeResultFilters()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResourceFilter()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeFilterPipelineAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeAsync()
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)|url: http://localhost/eSyaConfig/BusinessStructure/V_103_00|action: V_103_00
+2021-10-28 11:14:56.6419|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2021-10-28 11:17:42.2780|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2021-10-28 11:23:01.9508||ERROR|eSyaEnterprise_UI.Areas.eSyaUser.Controllers.UserManagementController|UD:GetApplicationCodesByCodeTypeList System.Exception: Internal Server Error|url: http://localhost/eSyaUser/UserManagement/V_201_00|action: V_201_00
+2021-10-28 11:27:37.8787|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2021-10-28 11:29:32.4499||ERROR|eSyaEnterprise_UI.Areas.eSyaConfig.Controllers.FormsMenuController|UD:V_2_00 System.Exception: Internal Server Error|url: http://localhost/eSyaConfig/FormsMenu/V_2_00|action: V_2_00
+2021-10-28 11:29:35.1174||ERROR|eSyaEnterprise_UI.Areas.eSyaConfig.Controllers.FormsMenuController|UD:GetConfigureMenuTreeView System.Exception: Internal Server Error|url: http://localhost/FormsMenu/GetConfigureMenuTreeView|action: GetConfigureMenuTreeView
+2021-10-28 11:30:03.0829||ERROR|eSyaEnterprise_UI.Areas.eSyaUser.Controllers.UserManagementController|UD:UserMaster System.Exception: Exception of type 'System.Exception' was thrown.|url: http://localhost/eSyaUser/UserManagement/V_202_00|action: V_202_00
+2021-10-28 11:36:41.0101||ERROR|eSyaEnterprise_UI.Controllers.AccountController|UD:Login:params:{"OTP":null,"Password":"Nurse@123","RememberMe":false,"MobileNumber":null,"l_BusinessKey":null,"l_FinancialYear":null,"BusinessKey":0,"FinancialYear":0,"BusinessLocation":null,"Id":"c4293715-db0e-40b4-9463-a3d647345b3b","UserName":"nurse","NormalizedUserName":null,"Email":null,"NormalizedEmail":null,"EmailConfirmed":false,"PasswordHash":null,"SecurityStamp":null,"ConcurrencyStamp":"bf78df5b-0a34-49bb-8b7a-1304202749b6","PhoneNumber":null,"PhoneNumberConfirmed":false,"TwoFactorEnabled":false,"LockoutEnd":null,"LockoutEnabled":false,"AccessFailedCount":0} System.Exception: Internal Server Error|url: http://localhost/|action: Index
+2021-10-28 11:37:38.4784||ERROR|eSyaEnterprise_UI.Controllers.AccountController|UD:Login:params:{"OTP":null,"Password":"Nurse@123","RememberMe":false,"MobileNumber":null,"l_BusinessKey":null,"l_FinancialYear":null,"BusinessKey":0,"FinancialYear":0,"BusinessLocation":null,"Id":"a7b3501d-9d1a-41e3-9d45-bf71e70d718e","UserName":"nurse","NormalizedUserName":null,"Email":null,"NormalizedEmail":null,"EmailConfirmed":false,"PasswordHash":null,"SecurityStamp":null,"ConcurrencyStamp":"d9569ebf-01c3-428f-875e-8f4e14fc1b0f","PhoneNumber":null,"PhoneNumberConfirmed":false,"TwoFactorEnabled":false,"LockoutEnd":null,"LockoutEnabled":false,"AccessFailedCount":0} System.Exception: Internal Server Error|url: http://localhost/|action: Index
+2021-10-28 11:38:42.3644||ERROR|eSyaEnterprise_UI.Controllers.AccountController|UD:Login:params:{"OTP":null,"Password":"Nurse@123","RememberMe":false,"MobileNumber":null,"l_BusinessKey":null,"l_FinancialYear":null,"BusinessKey":0,"FinancialYear":0,"BusinessLocation":null,"Id":"f246a4c5-7c72-4f98-b6c8-a5a6a67737c1","UserName":"nurse","NormalizedUserName":null,"Email":null,"NormalizedEmail":null,"EmailConfirmed":false,"PasswordHash":null,"SecurityStamp":null,"ConcurrencyStamp":"baa48cd6-2d5b-4ed5-8dd0-deefeb78aa3f","PhoneNumber":null,"PhoneNumberConfirmed":false,"TwoFactorEnabled":false,"LockoutEnd":null,"LockoutEnabled":false,"AccessFailedCount":0} System.Exception: Internal Server Error|url: http://localhost/|action: Index
+2021-10-28 11:39:45.1537||ERROR|eSyaEnterprise_UI.Controllers.AccountController|UD:Login:params:{"OTP":null,"Password":"Nurse@123","RememberMe":false,"MobileNumber":null,"l_BusinessKey":null,"l_FinancialYear":null,"BusinessKey":0,"FinancialYear":0,"BusinessLocation":null,"Id":"b40241d6-be62-4de9-ab28-1a3361eed68d","UserName":"nurse","NormalizedUserName":null,"Email":null,"NormalizedEmail":null,"EmailConfirmed":false,"PasswordHash":null,"SecurityStamp":null,"ConcurrencyStamp":"60c6e01b-c9fd-4c5b-ab35-b526b633500a","PhoneNumber":null,"PhoneNumberConfirmed":false,"TwoFactorEnabled":false,"LockoutEnd":null,"LockoutEnabled":false,"AccessFailedCount":0} System.Exception: Internal Server Error|url: http://localhost/|action: Index
+2021-10-28 11:41:20.4766||ERROR|eSyaEnterprise_UI.Controllers.AccountController|UD:Login:params:{"OTP":null,"Password":"Nurse@123","RememberMe":false,"MobileNumber":null,"l_BusinessKey":null,"l_FinancialYear":null,"BusinessKey":0,"FinancialYear":0,"BusinessLocation":null,"Id":"63322b6f-413c-4154-b3f2-421a6ce3e632","UserName":"nurse","NormalizedUserName":null,"Email":null,"NormalizedEmail":null,"EmailConfirmed":false,"PasswordHash":null,"SecurityStamp":null,"ConcurrencyStamp":"d9b768d3-9fe8-49e9-b7d5-e79f44c28bde","PhoneNumber":null,"PhoneNumberConfirmed":false,"TwoFactorEnabled":false,"LockoutEnd":null,"LockoutEnabled":false,"AccessFailedCount":0} System.Exception: Internal Server Error|url: http://localhost/|action: Index
+2021-10-28 11:44:13.1419||ERROR|eSyaEnterprise_UI.Controllers.AccountController|UD:Login:params:{"OTP":null,"Password":"Nurse@123","RememberMe":false,"MobileNumber":null,"l_BusinessKey":null,"l_FinancialYear":null,"BusinessKey":0,"FinancialYear":0,"BusinessLocation":null,"Id":"81105a55-6378-45f0-9fed-fe6126eda768","UserName":"nurse","NormalizedUserName":null,"Email":null,"NormalizedEmail":null,"EmailConfirmed":false,"PasswordHash":null,"SecurityStamp":null,"ConcurrencyStamp":"0d3febf9-7e91-4241-895a-0028e7d3f956","PhoneNumber":null,"PhoneNumberConfirmed":false,"TwoFactorEnabled":false,"LockoutEnd":null,"LockoutEnabled":false,"AccessFailedCount":0} System.Exception: Internal Server Error|url: http://localhost/|action: Index

@@ -1,0 +1,244 @@
+﻿$(document).ready(function () {
+    fnLoadShortResult();
+    fnLoadLongResult();
+    fnTestMethod();
+});
+
+function fnLoadGrid() {
+    if ($('#cboBusinessKey').val() != '' && $('#cboServiceClass').val() != '') {
+        fnLoadServiceTemplateCreator();
+    }
+}
+
+function fnLoadServiceTemplateCreator() {
+    $("#jqgServiceTemplateCreator").jqGrid('GridUnload');
+    $("#jqgServiceTemplateCreator").jqGrid({
+        url: getBaseURL() + '/ServiceTemplateCreator/GetServiceTemplateByBKeyServiceClass?businessKey=' + $('#cboBusinessKey').val() + '&serviceClass=' + $('#cboServiceClass').val() ,
+        datatype: 'json',
+        mtype: 'GET',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Service ID", localization.ServiceShortName, localization.ServiceDescription, localization.ResultType, localization.SampleType, localization.PrintSequence, localization.ReportingTime,""],
+
+        colModel: [
+
+            { name: "ServiceId", width: 10, editable: false, align: 'left', hidden: true },  
+            { name: "ServiceShortDesc", width: 40, editable: false, align: 'left' },
+            { name: "ServiceDesc", width: 80, editable: false, align: 'left' },
+            { name: "ResultTypeDesc", editable: true, width: 30, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "0: Select" } },
+            { name: "SampleType", editable: true, width: 30, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "0: Select" } },
+            { name: "LabPrintSequence", width: 30, editable: true, align: 'left', edittype: 'text' },
+            { name: "TimeRequiredForReport", width: 30, editable: true, align: 'left', edittype: 'text' },
+            {
+                name: "Button", width: 80, editable: false, align: 'center', hidden: false, formatter: function (cellValue, options, rowObject) {
+                    return "<button type='button'  class='btn btn-primary'><i class='fas fa-pen c-white'></i> Edit </button> "+
+                        " <button type = 'button'  class='btn btn-primary' onclick='fnCreateTemplate()'> <i class='fas fa-external-link-alt c-white'></i> Complete Template Creator </button>";
+                }
+            }
+
+        ],
+        rowNum: 10,
+        rowList: [10, 20, 30, 50],
+        emptyrecords: "No records to Veiw",
+        pager: "#jqpServiceTemplateCreator",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: false,
+        height: 'auto',
+        width: 'auto',
+        scroll: false,
+        autowidth: false,
+        shrinkToFit: false,
+        forceFit: false,
+        loadonce: true,
+        cellEdit: true,
+        editurl: 'url',
+
+        cellsubmit: 'clientArray',
+
+        loadComplete: function (data) {
+            $(this).find(">tbody>tr.jqgrow:odd").addClass("myAltRowClassEven");
+            $(this).find(">tbody>tr.jqgrow:even").addClass("myAltRowClassOdd");
+            $("#jqgServiceTemplateCreator").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+           
+        }
+    }).jqGrid('navGrid', '#jqpServiceTemplateCreator', { add: false, edit: false, search: false, del: false, refresh: false });   
+    $("#btnSave").show();
+}
+
+//After Create Template Button Clicked
+function fnCreateTemplate() {
+    $("#divServiceTemplate").hide();
+    $("#divShortResult,#divLongResult").css('display', 'none');
+    $("#divShortResult").css('display', 'block');
+    $("#divServiceFields,#divInputFields").css('display', 'block');
+}
+
+//After Cancel Button Clicked
+function fnServiceTemplateCreator() {
+    $("#divServiceTemplate").show();
+    
+    $("#divShortResult,#divLongResult").css('display', 'none');
+    $("#divServiceFields,#divInputFields").css('display', 'none');
+}
+
+// If the result type is short Call fnLoadShortResult() method
+// If the result type is Long Call fnLoadLongResult() method
+
+
+function fnLoadShortResult() {
+    
+    $("#jqgShortResult").jqGrid('GridUnload');
+    $("#jqgShortResult").jqGrid({
+        //url: getBaseURL() + '',
+        datatype: 'json',
+        //mtype: 'GET',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Test Parameter", "Gender", "Start Age", "Start Age Type", "Gender", "End Age", "End Age Type", "Hype", "Min Value", "Max Value", "Hyper", "Normal Value", ""],
+
+        colModel: [
+
+            { name: "TestParameter", width: 10, editable: false, align: 'left', hidden: true },
+            { name: "Gender", width: 50, editable: false, align: 'left' },
+            { name: "StartAge", width: 80, editable: false, align: 'left' },
+            { name: "StartAgeType", editable: true, width: 60, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "0: Select" } },
+            { name: "Gender", width: 50, editable: false, align: 'left' },
+            { name: "EndAge", width: 80, editable: false, align: 'left' },
+            { name: "EndAgeType", width: 80, editable: false, align: 'left' },
+            { name: "Hype", width: 80, editable: false, align: 'left' },
+            { name: "MinValue", width: 80, editable: false, align: 'left' },
+            { name: "MaxValue", width: 80, editable: false, align: 'left' },
+            { name: "Hyper", width: 80, editable: false, align: 'left' },
+            { name: "NormalValue", width: 80, editable: false, align: 'left' },
+            {
+                name: "Button", width: 80, editable: false, align: 'center', hidden: false, formatter: function (cellValue, options, rowObject) {
+                    return "<button type='button'  class='btn btn-primary'><i class='fas fa-pen c-white'></i> Edit </button> " +
+                        " <button type='button'  class='btn btn-primary'><i class='fas fa-pen c-white'></i> View </button>";
+                }
+            }
+
+        ],
+        rowNum: 10,
+        rowList: [10, 20, 30, 50],
+        emptyrecords: "No records to Veiw",
+        pager: "#jqpShortResult",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: false,
+        height: 'auto',
+        width: 'auto',
+        scroll: false,
+        autowidth: false,
+        shrinkToFit: false,
+        forceFit: false,
+        loadonce: true,
+        cellEdit: true,
+      
+         
+    }).jqGrid('navGrid', '#jqpShortResult', { add: false, edit: false, search: false, del: false, refresh: false })
+        .jqGrid('navButtonAdd', '#jqpShortResult', {
+            caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddShortResult
+        });
+}
+function fnAddShortResult() {
+
+}
+
+function fnLoadLongResult() {
+    $("#jqgLongResult").jqGrid('GridUnload');
+    $("#jqgLongResult").jqGrid({
+        //url: getBaseURL() + '',
+        datatype: 'json',
+        //mtype: 'GET',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Template Code", "Description", "Reporting Sequence",""],
+
+        colModel: [
+
+            { name: "TemplateCode", width: 100, editable: false, align: 'left'},
+            { name: "Description", width: 150, editable: false, align: 'left' },
+            { name: "Reporting Sequence", width: 80, editable: false, align: 'left' },
+            {
+                name: "Button", width: 80, editable: false, align: 'center', hidden: false, formatter: function (cellValue, options, rowObject) {
+                    return "<button type='button'  class='btn btn-primary'><i class='fas fa-pen c-white'></i> Edit </button> " +
+                        " <button type='button'  class='btn btn-primary'><i class='fas fa-pen c-white'></i> View </button>";
+                }
+            }
+        ],
+        rowNum: 10,
+        rowList: [10, 20, 30, 50],
+        emptyrecords: "No records to Veiw",
+        pager: "#jqpLongResult",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: false,
+        height: 'auto',
+        width: 'auto',
+        scroll: false,
+        autowidth: false,
+        shrinkToFit: false,
+        forceFit: false,
+        loadonce: true,
+        cellEdit: true,
+       
+
+        loadComplete: function (data) {
+            $("#jqgLongResult").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+        }
+    }).jqGrid('navGrid', '#jqpLongResult', { add: false, edit: false, search: false, del: false, refresh: false })
+     .jqGrid('navButtonAdd', '#jqpLongResult', {
+        caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddLongResult
+    });
+}
+function fnAddLongResult() {
+
+}
+
+
+function fnTestMethod() {
+    $("#jqgTestMethod").jqGrid('GridUnload');
+    $("#jqgTestMethod").jqGrid({
+        //url: getBaseURL() + '',
+        datatype: 'json',
+        //mtype: 'GET',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Test Method", "Active Status", ""],
+
+        colModel: [
+            { name: "TestMethod", width: 100, editable: false, align: 'left' },
+            { name: "ActiveStatus", width: 150, editable: false, align: 'left', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+            {
+                name: "Button", width: 80, editable: false, align: 'center', hidden: false, formatter: function (cellValue, options, rowObject) {
+                    return "<button type='button'  class='btn btn-primary'><i class='fas fa-pen c-white'></i> Edit </button> " +
+                        " <button type='button'  class='btn btn-primary'><i class='fas fa-pen c-white'></i> View </button>";
+                }
+            }
+        ],
+        rowNum: 100000,
+        pgtext:null,
+        pgbuttons:null,
+        emptyrecords: "No records to Veiw",
+        pager: "#jqpTestMethod",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: false,
+        height: 'auto',
+        width: 'auto',
+        scroll: false,
+        autowidth: false,
+        shrinkToFit: false,
+        forceFit: false,
+        loadonce: true,
+        cellEdit: true,
+       
+         }).jqGrid('navGrid', '#jqpTestMethod', { add: false, edit: false, search: false, del: false, refresh: false })
+        .jqGrid('navButtonAdd', '#jqpTestMethod', {
+            caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddTestMethod
+        });
+}
+function fnAddTestMethod() {
+
+}

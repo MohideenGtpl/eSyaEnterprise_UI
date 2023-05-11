@@ -1,0 +1,268 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
+using eSyaEnterprise_UI.Areas.Config.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using eSyaEnterprise_UI.Areas.Config.Data;
+using eSyaEnterprise_UI.ActionFilter;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using eSyaEnterprise_UI.Areas.eSyaConfig.Models;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using System.Text;
+using Microsoft.AspNetCore.Http.Internal;
+using Microsoft.AspNetCore.Http;
+
+namespace eSyaEnterprise_UI.Areas.eSyaConfig.Controllers
+{
+    [SessionTimeout]
+    public class MobilePannelController : Controller
+    {
+        private IHostingEnvironment _appEnvironment;
+
+        private readonly IeSyaConfigAPIServices _eSyaConfigAPIServices;
+        private readonly ILogger<TemplateCreatorController> _logger;
+        
+        public MobilePannelController(IeSyaConfigAPIServices eSyaConfigAPIServices, ILogger<TemplateCreatorController> logger, IHostingEnvironment hostingEnvironment)
+        {
+            _eSyaConfigAPIServices = eSyaConfigAPIServices;
+            _logger = logger;
+            _appEnvironment = hostingEnvironment;
+        }
+        #region Mobile Pannel
+
+        [Area("eSyaConfig")]
+        //[ServiceFilter(typeof(ViewBagActionFilter))]
+        public IActionResult MobilePannel()
+        {
+            ViewBag.UserFormRole = new DO_UserFormRole { IsInsert = true, IsEdit = true, IsView = true, IsDelete = true };
+            return View();
+        }
+
+        /// <summary>
+        /// Mobile Pannel
+        /// </summary>
+        /// <returns></returns>
+
+        /// <summary>
+        ///Get Mobile Pannel by Language Code &&  Template Type for Grid
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetMobilePannelbyTemplateType(string LanguageCode, string TemplateType,int TemplateId)
+        {
+            try
+            {
+                var parameter = "?LanguageCode=" + LanguageCode + "&TemplateType=" + TemplateType + "&TemplateId=" + TemplateId;
+                var serviceResponse = await _eSyaConfigAPIServices.HttpClientServices.GetAsync<DO_MobilePannel>("MobilePannel/GetMobilePannelbyTemplateType" + parameter);
+                if (serviceResponse.Status)
+                {
+                    var domainname = this.Request.PathBase;
+                    if (serviceResponse.Data != null)
+                    {
+                        if (serviceResponse.Data.ImageUrl != null)
+                        {
+                            string filename = null;
+                            // using the method
+                            filename = Path.GetFileName(serviceResponse.Data.ImageUrl);
+                            serviceResponse.Data.FileName = filename;
+
+                            serviceResponse.Data.ProfileImagePath = domainname + serviceResponse.Data.ImageUrl;
+                            serviceResponse.Data.ImageUrl= domainname + serviceResponse.Data.ImageUrl;
+
+                        }
+                    }
+                    else
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetMobilePannelbyTemplateType:For LanguageCode {0} with TemplateType selected {1} with TemplateId {2}", LanguageCode, TemplateType, TemplateId);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetMobilePannelbyTemplateType:For LanguageCode {0} with TemplateType selected {1} with TemplateId {2}", LanguageCode, TemplateType, TemplateId);
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+        /// <summary>
+        /// Insert or Update Mobile Pannel
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> InsertOrUpdateMobilePannel(DO_MobilePannel obj)
+        {
+
+            try
+            {
+                if (obj.Imagefile != null && (obj.Imagefile.Length > 0))
+                {
+                    var file = obj.Imagefile;
+                    //There is an error here
+                    var uploads = Path.Combine(_appEnvironment.WebRootPath, "Uploads\\ClinicalImages");
+                    if (file.Length > 0)
+                    {
+                        //var fileName = Guid.NewGuid().ToString().Replace("-", "") + Path.GetExtension(file.FileName);
+                        var fileName = Path.GetFileName(file.FileName);
+                        using (var fileStream = new FileStream(Path.Combine(uploads, fileName), FileMode.Create))
+                        {
+                            await file.CopyToAsync(fileStream);
+                            string filePath = "\\Uploads\\ClinicalImages\\" + fileName;
+                            obj.ProfileImagePath = filePath;
+                            obj.ImageUrl = filePath;
+                        }
+
+                    }
+                }
+
+
+
+                obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                if (obj.TemplateId == 0)
+                {
+                    var serviceResponse = await _eSyaConfigAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("MobilePannel/InsertIntoMobilePannel", obj);
+                    if (serviceResponse.Status)
+                        return Json(serviceResponse.Data);
+                    else
+                        return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+                else
+                {
+                    var serviceResponse = await _eSyaConfigAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("MobilePannel/UpdateMobilePannel", obj);
+                    if (serviceResponse.Status)
+                        return Json(serviceResponse.Data);
+                    else
+                        return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertOrUpdateMobilePannel:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+       
+        /// <summary>
+        /// Activate or De Activate Mobile Pannel
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> ActiveOrDeActiveMobilePannel(bool status, int TemplateId,string TemplateType,string LanguageCode)
+        {
+
+            try
+            {
+
+                var parameter = "?status=" + status + "&TemplateId=" + TemplateId + "&TemplateType=" + TemplateType + "&LanguageCode=" + LanguageCode;
+                var serviceResponse = await _eSyaConfigAPIServices.HttpClientServices.GetAsync<DO_ReturnParameter>("MobilePannel/ActiveOrDeActiveMobilePannel" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:ActiveOrDeActiveMobilePannel:For TemplateId {0} ", TemplateId);
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        ///Get Mobile Pannel by Language Code &&  Template Type for Grid
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetMobilePannelListbyTemplateType(string LanguageCode, string TemplateType)
+        {
+            try
+            {
+                var parameter = "?LanguageCode=" + LanguageCode + "&TemplateType=" + TemplateType;
+                var serviceResponse = await _eSyaConfigAPIServices.HttpClientServices.GetAsync<List<DO_MobilePannel>>("MobilePannel/GetMobilePannelListbyTemplateType" + parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetMobilePannelListbyTemplateType:For LanguageCode {0} with TemplateType selected {1}", LanguageCode, TemplateType);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetMobilePannelbyTemplateType:For LanguageCode {0} with TemplateType selected {1}", LanguageCode, TemplateType);
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+        #endregion
+
+
+        /// <summary>
+        ///Get HTML Page 
+        /// </summary>
+        [HttpGet]
+        public async Task<JsonResult> GethtmlPage(string htmlPage)
+        {
+            try
+            {
+                string fileRootPath = _appEnvironment.WebRootPath;
+                var path = Path.Combine(fileRootPath, "ClinicContentPage\\",htmlPage);
+                string content = await System.IO.File.ReadAllTextAsync(path);
+                return Json(new DO_ReturnParameter() { Status = true, Message = content });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GethtmlPage:For htmlPage {0} ", htmlPage);
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+        /// <summary>
+        ///Update HTML Page 
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> UpdatehtmlPage(string htmlPage,string content)
+        {
+            try
+            {
+                string fileRootPath = _appEnvironment.WebRootPath;
+                var path = Path.Combine(fileRootPath, "ClinicContentPage");
+                path = path + @"\" + htmlPage;
+                using (FileStream fs = new FileStream(path, FileMode.Create))
+                {
+                    // convert string to stream
+                    byte[] byteArray = Encoding.UTF8.GetBytes(content);
+                    MemoryStream stream = new MemoryStream(byteArray);
+
+                    var formFile = new FormFile(stream, 0, stream.Length, null, htmlPage)
+                    {
+                        Headers = new HeaderDictionary(),
+                       // ContentType = "Encoding.UTF8"
+                    };
+
+                    await formFile.CopyToAsync(fs);
+                }
+                return Json(new DO_ReturnParameter() { Status = true });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:UpdatehtmlPage:For htmlPage {0} , Content {1} ", htmlPage,content);
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+    }
+}

@@ -1,0 +1,187 @@
+﻿function fnloadvendorLocationGrid() {
+
+    fnClearLocationfields();
+
+    $("#jqgVendorLocation").GridUnload();
+
+    $("#jqgVendorLocation").jqGrid({
+
+        url: getBaseURL() + '/Vendor/GetVendorLocationsByVendorcode?vendorcode=' + $("#txtVendorCode").val(),
+        mtype: 'POST',
+        datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["", "","","Vendor Location", "Vendor Address", "Contact Person", "Registered Mobile Number", "Alternate Mobile Number", "Email ID", "Default Location ", "Active", "Actions"],
+        colModel: [
+            { name: "VendorCode", width: 70, editable: true, align: 'left', hidden: true },
+            { name: "VendorLocationId", width: 70, editable: true, align: 'left', hidden: true },
+            { name: "Isdcode", width: 70, editable: true, align: 'left', hidden: true },
+            { name: "VendorLocation", width: 150, editable: true, align: 'left', hidden: false },
+            { name: "VendorAddress", width: 150, editable: true, align: 'left', hidden: false },
+            { name: "ContactPerson", width: 110, editable: true, align: 'left', },
+            { name: "RegisteredMobileNumber", width: 80, editable: true, align: 'left' },
+            { name: "AlternateMobileNumber", width: 80, editable: true, align: 'left', resizable: true },
+            { name: "EMailId", width: 170, editable: true, align: 'left' },
+            { name: "IsLocationDefault", width: 40, editable: true, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            { name: "ActiveStatus", width: 35, editable: false, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+            {
+                name: 'edit', search: false, align: 'center', width: 50, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all" style="padding: 2px 4px; background: #0b76bc!important; color: #fff!important; margin: 3px; " title="Edit" onclick="return fnEditLocation(event)"><i class="fa fa-edit"></i> Edit </button>'
+                }
+            },
+        ],
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        pager: "#jqpVendorLocation",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        
+    }).jqGrid('navGrid', '#jqpVendorLocation', { add: false, edit: false, search: false, del: false, refresh: false })
+        .jqGrid('navButtonAdd', '#jqpVendorLocation', {
+            caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnRefreshlocationGrid
+        });
+
+}
+
+function fnSaveLocation() {
+   
+    if (IsValidLocation() == false) {
+        return;
+    }
+        var vendorloc = {
+            VendorCode: $("#txtVendorCode").val(),
+            VendorLocationId: $("#txtlocationId").val() === '' ? 0 : $("#txtlocationId").val(),
+            IsLocationDefault: $("#chkDefaulultloc").parent().hasClass("is-checked"),
+            VendorLocation: $("#txtvendorlocation").val(),
+            VendorAddress: $("#txtaddress").val(),
+            Isdcode: $("#cboIsdcode").val(),
+            ContactPerson: $("#txtcontactperson").val(),
+            RegisteredMobileNumber: $("#txtregmobileno").val(),
+            AlternateMobileNumber: $("#txtalternatemobileno").val(),
+            EMailId: $("#txtvendoremailid").val(),
+            ActiveStatus: $("#chklocationstatus").parent().hasClass("is-checked")
+
+        };
+    $.ajax({
+        url: getBaseURL() + '/Vendor/InsertOrUpdateVendorLocation',
+        type: 'POST',
+        datatype: 'json',
+        data: { vendorloc },
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                fnRefreshlocationGrid();
+                $("#btnlocationsave").html("Save");
+                fnClearLocationfields();
+                return true;
+            }
+            else {
+                toastr.error(response.Message);
+                return false;
+            }
+            
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+        }
+    });
+
+}
+
+function fnEditLocation(e) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgVendorLocation').jqGrid('getRowData', rowid);
+    $("#txtlocationId").val(rowData.VendorLocationId);
+    $('#cboIsdcode').val(rowData.Isdcode);
+    $('#cboIsdcode').selectpicker('refresh');
+    $("#txtcontactperson").val(rowData.ContactPerson);
+    $('#txtregmobileno').val(rowData.RegisteredMobileNumber);
+    $('#txtalternatemobileno').val(rowData.AlternateMobileNumber);
+    $('#txtaddress').val(rowData.VendorAddress);
+    $('#txtvendorlocation').val(rowData.VendorLocation);
+    $('#txtvendoremailid').val(rowData.EMailId);
+    if (rowData.ActiveStatus == 'true') {
+        $("#chklocationstatus").parent().addClass("is-checked");
+    }
+    else {
+        $("#chklocationstatus").parent().removeClass("is-checked");
+    }
+
+    if (rowData.IsLocationDefault == 'true') {
+        $("#chkDefaulultloc").parent().addClass("is-checked");
+    }
+    else {
+        $("#chkDefaulultloc").parent().removeClass("is-checked");
+    }
+
+    $("#btnlocationsave").html("Update");
+}
+
+function IsValidLocation() {
+     if (IsStringNullorEmpty($("#txtVendorCode").val())) {
+        toastr.warning("Please Create Vendor Details");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtcontactperson").val())) {
+        toastr.warning("Please Enter Contact Person");
+        return false;
+    }
+    if ($("#cboIsdcode").val() == 0 || $("#cboIsdcode").val() == "0") {
+        toastr.warning("Please select ISD Code");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtregmobileno").val())) {
+        toastr.warning("Please Enter Register Mobile Number");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtvendoremailid").val())) {
+        toastr.warning("Please Enter Email Id");
+        return false;
+    }
+    var validemail = IsValidateEmail($("#txtvendoremailid").val());
+    if (validemail == false) {
+        toastr.warning("Please Enter a valid Email ID");
+        return false;
+    } 
+    if (IsStringNullorEmpty($("#txtaddress").val())) {
+        toastr.warning("Please Enter Address");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtvendorlocation").val())) {
+        toastr.warning("Please Enter Vendor Location");
+        return false;
+    }
+   
+}
+
+function fnRefreshlocationGrid() {
+    $("#jqgVendorLocation").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid')
+}
+
+function fnClearLocationfields () {
+    $("#chkDefaulultloc").parent().removeClass("is-checked");
+    $("#cboIsdcode").val("0");
+    $('#cboIsdcode').selectpicker('refresh');
+    $("#txtlocationId").val('');
+    $("#txtaddress").val('');
+    $("#txtvendorlocation").val('');
+    $("#txtcontactperson").val(''),
+    $("#txtregmobileno").val('');
+    $("#txtalternatemobileno").val('');
+    $("#txtvendoremailid").val('');
+    $("#chklocationstatus").prop('disabled', false);
+    $("#chklocationstatus").parent().addClass("is-checked");
+    $("#btnlocationsave").html("Save");
+}
+
+
+
+

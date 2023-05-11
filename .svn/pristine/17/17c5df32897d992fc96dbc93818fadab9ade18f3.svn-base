@@ -1,0 +1,53 @@
+{
+  "Logging": {
+    "IncludeScopes": false,
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning"
+    }
+  },
+  "Localization": {
+    "Culture": "ar-YE",
+    "UICulture": "ar-YE"
+  },
+  "AllowedHosts": "*",
+  "NlogConnection": {
+    "DbProvider": "sqlserver",
+    "DbHost": "103.227.97.123,1433",
+    "Database": "eSyaEnterprise_Prod",
+    "User": "esya",
+    "Password": "Gt@pl#20"
+  },
+  "ConnectionStrings": {
+    "NLogDb": "Server=103.227.97.123,1433;Database=eSyaEnterprise_Prod;user id=esya;password=Gt@pl#20;",
+    "dbConn_eSyaEnterprise": "Server=103.227.97.123,1433;Database=eSyaEnterprise_Prod;user id=esya;password=Gt@pl#20;"
+  },
+
+  "eSyaGateway_API": "https://product.esyahealth.com/eSyaENTGateway_WebAPI/api/",
+  "eSyaConfig_API": "https://product.esyahealth.com/eSyaENTConfig_WebAPI/api/",
+  "eSyaUserMgmt_API": "https://product.esyahealth.com/eSyaENTUser_WebAPI/api/",
+  "eSyaFA_API": "https://product.esyahealth.com/eSyaENTFixedAssets_WebAPI/api/",
+  "eSyaMaterial_API": "https://product.esyahealth.com/eSyaENTMaterial_WebAPI/api/",
+  "eSyaVendor_API": "https://product.esyahealth.com/eSyaENTVendor_WebAPI/api/",
+  "eSyaCustomer_API": "https://product.esyahealth.com/eSyaENTCustomer_WebAPI/api/",
+  "eSyaClinicalSevices_API": "https://product.esyahealth.com/eSyaENTClinicalSevices_WebAPI/api/",
+  "eSyaMCSevices_API": "https://product.esyahealth.com/eSyaENTMCSevices_WebAPI/api/",
+  "eSyaSevices_API": "https://product.esyahealth.com/eSyaENTSevices_WebAPI/api/",
+
+  "dbContextType": "prod",
+
+  "Apikey": "1",
+
+  //"ConnectionStrings": {
+  //  "dbConn_eSyaEnterprise": "Server=103.227.97.123,1433;Database=eSyaEnterprise_Prod;user id=esya;password=Gt@pl#20;"
+  //},
+    "cnf": {
+      "DateFormat": "dd/mm/yy",
+      "ShortDateFormat": "dd/mm/yy",
+      "DecimalDigit": "2",
+      "LocalCurrencyCode": "INR",
+      "ISDCode": "91"
+    }
+
+}
+ 

@@ -1,0 +1,179 @@
+﻿
+var questions = ["How was your experience making an appointment?", "How  was your experience checking in with reception?", "How was your experience with wait time?"];
+var content = "";
+
+$(function () {
+    content += "<div class='row'>";
+    for (i = 0; i < questions.length; i++) {
+        content += "<div class='col-lg-12 col-md-12 col-sm-12 col-12'>";
+        content += "<div class='divQuestion'>";
+        content += "<p class='m-0' id='qt_" + i + "'>" + questions[i] + "</p>";
+        content += "<div class='divRating'>";
+        content += "<button type='button' class='btn'><span class='fa fa-star'></span></button>";
+        content += "<button type='button' class='btn'><span class='fa fa-star'></span></button>"
+        content += "<button type='button' class='btn'><span class='fa fa-star'></span></button>"
+        content += "<button type='button' class='btn'><span class='fa fa-star'></span></button>"
+        content += "<button type='button' class='btn'><span class='fa fa-star'></span></button>"
+        content += "</div>"
+        content += "<div class=''>"
+        content += "<label class='label-comment'>Comment</label>"
+        content += "<textarea class='form-control' rows='2' cols='4' id='comment_" + i + "' placeholder=''></textarea>";
+        content += "</div></div></div>";
+    }
+    content += "</div>";
+    $("#section_question").append(content);
+})
+
+$("#section_question").on('click', 'button', function () {
+    var clickedElement = $(this).index();
+    var noofelements = $(this).parent().find('.fa-star');
+
+    $(this).parent().find(".fa-star").css('color', '#ccc');
+    $(this).parent().addClass("starClicked");
+    
+    for (i = 0; i <= clickedElement; i++) {
+        $(this).parent().find(noofelements[i]).css('color', 'orange');
+    }
+    if (clickedElement < 2) {
+        $(this).parent().parent().find(".label-comment").html("Comment <sup class='icon-star'><i class='fa fa-star-of-life'></i></sup>");
+        $(this).parent().parent().find("textarea").attr({ "data-status": "m", 'data-rating': clickedElement+1 });
+    }
+    else {
+        $(this).parent().parent().find(".label-comment").html("Comment <span class='text-small'>(Optional)</span>").animate("slow");
+        $(this).parent().parent().find("textarea").attr({ "data-status": "o", 'data-rating': clickedElement+1 });
+    }
+});
+
+function fnValidate() {
+    var cboFloorID = $("#cboFloorID").val();
+    var txtUHID = $("#txtUHID").val();
+    var txtFirstName = $("#txtFirstName").val();
+    var txtMiddleName = $("#txtMiddleName").val();
+    var txtLastName = $("#txtLastName").val();
+    var txtEmailID = $("#txtEmailID").val();
+    var txtMobileNumber = $("#txtMobileNumber").val();
+    var cboSpecialty = $("#cboSpecialty").val();
+    var cboDoctor = $("#cboDoctor").val();
+    var _flag = 0;
+    var cboInsuranceCompany = $("#cboInsuranceCompany").val();
+    let namePattern = /^[A-Za-z]+$/;
+    let mobilenoPattern = /^[6789]\d{9}$/;
+    let EmailPattern = /^\w+([-+.'][^\s]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
+
+    if ($("[id^='cboFloorID']").val() == "ch") {
+        toastr.error("Please select the Floor ID"); $("#cboFloorID").focus();
+        return false;
+    }
+    else if (txtUHID == '') {
+        toastr.error("Please enter the UHID"); $("#txtUHID").focus();
+        $(window).scrollTop("0"); return false;
+    }
+    else if (txtFirstName == '') {
+        toastr.error("Please enter the first name"); $("#txtFirstName").focus();
+        $(window).scrollTop("0"); return false;
+    }
+    else if (txtLastName == '') {
+        toastr.error("Please enter the last name"); $("#txtLastName").focus();
+        $(window).scrollTop("0"); return false;
+    }
+    else if (!namePattern.test(txtFirstName)) {
+        toastr.error("Please enter the valid first name"); $("#txtFirstName").focus();
+        $(window).scrollTop("0"); return false;
+    }
+    else if (!namePattern.test(txtLastName)) {
+        toastr.error("Please enter the valid last name"); $("#txtLastName").focus();
+        $(window).scrollTop("0"); return false;
+    }
+    else if (!EmailPattern.test(txtEmailID)) {
+        toastr.error("Please enter the valid Email ID"); $("#txtEmailID").focus();
+        $(window).scrollTop("0"); return false;
+    }
+    else if (!mobilenoPattern.test(txtMobileNumber)) {
+        toastr.error("Please enter the valid mobile number"); $("#txtMobileNumber").focus();
+        $(window).scrollTop("0"); return false;
+    }
+    else if ($("[id^='cboInsuranceCompany']").val() == "ch") {
+        toastr.error("Please select the Insurance Company"); $("#cboInsuranceCompany").focus();
+        return false;
+    }
+    else if ($("[id^='cboSpecialty']").val() == "ch") {
+        toastr.error("Please select the specialty"); $("#cboSpecialty").focus();
+        return false;
+    }
+
+    else if ($("[id^='cboDoctor']").val() == "ch") {
+        toastr.error("Please select the Doctor"); $("#cboDoctor").focus();
+        return false;
+    }
+    else {
+        $('.divRating').each(function () {
+            if (!$(this).hasClass('starClicked')) {
+                toastr.error("Please give your star rating for all the questions");
+                return false;
+            }
+
+
+        });
+        _flag = 1;
+    }
+    if (_flag == 1) {
+        $('textarea').each(function () {
+            if ($(this).attr('data-status') == 'm') {
+                if ($(this).val() == "") {
+                    toastr.error("Please fill all the mandatory");
+                    return false;
+                }
+            }
+        });
+    }
+
+
+   
+    
+}
+function fnSaveOutpatient() {
+    var starratings = [];
+    var comments = [];
+    for (i = 0; i < questions.length; i++) {
+        starratings.push($("#comment_" + i).attr("data-rating"));
+        comments.push($("#comment_" + i).val());
+    }
+    //toastr.success("Thank you for your valuable feedback");
+    var outpatientFeedbackObj = {
+        cboFloorID: $("#cboFloorID").val(),
+        UHID: $("#txtUHID").val(),
+        firstName: $("#txtFirstName").val(),
+        middleName: $("#txtMiddleName").val(),
+        lastName: $("#txtLastName").val(),
+        emailID: $("#txtEmailID").val(),
+        mobileNumber: $("#txtMobileNumber").val(),
+        insuranceCompany: $("#cboInsuranceCompany").val(),
+        cboSpecialty: $("#cboSpecialty").val(),
+        cboDoctor: $("#cboDoctor").val(),
+        starRating: starratings,
+        questionComments: comments
+    }
+
+    $.ajax({
+        async: false,
+        //url:getBaseURL() + ,
+        type: 'POST',
+        datatype: 'json',
+        success: function (response) {
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+        }
+
+    })
+}
+
+function fnClearFields() {
+    $("input[type=text").val('');
+    $("[id^='cbo']").val('ch');
+    $('.fa-star').css('color', '#ccc');
+    $(".label-comment").html("Comment");
+    $('textarea').val('');
+    $('textarea').attr("data-status", "o");
+    toastr.success("All fields are cleared");
+}

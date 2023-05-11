@@ -1,0 +1,120 @@
+﻿$(document).ready(function () {
+    fnGridSalaryDetails();
+});
+
+var actiontype = "";
+function fnGridSalaryDetails() {
+    $("#jqgSalaryDetails").jqGrid({
+        //url: getBaseURL() + '',
+        datatype: 'json',
+        mtype: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        colNames: ["Pay Category", "ER Code", "Description", "Amount", "Effective From", "Effective Till", ""],
+        colModel: [
+            { name: "PayCategory", width: 50, align: 'left', editable: true, editoptions: { maxlength: 6 }, resizable: false, hidden: true },
+            { name: "ERCode", width: 80, align: 'left', editable: true, editoptions: { maxlength: 50 }, resizable: false, hidden: false },
+            { name: "Description", width: 90, align: 'left', editable: true, editoptions: { maxlength: 50 }, resizable: false },
+            { name: "Amount", width: 95, align: 'left', editable: true, editoptions: { maxlength: 50 }, resizable: false },
+            { name: "Effective From", width: 90, align: 'left', editable: true, editoptions: { maxlength: 50 }, resizable: false },
+            { name: "Effective Till", width: 90, align: 'left', editable: true, editoptions: { maxlength: 50 }, resizable: false },
+            {
+                name: 'edit', search: false, align: 'left', width: 88, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditSalaryDetails(event,\'edit\');"><i class="fa fa-edit"></i>' + localization.Edit + '</button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnEditSalaryDetails(event,\'view\');"><i class="far fa-eye"></i>' + localization.View + '</button>'
+                }
+            },
+        ],
+        pager: "#jqpSalaryDetails",
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        scroll: false,
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        forceFit: false,
+        loadComplete: function (data) {
+            SetGridControlByAction();
+        },
+    }).jqGrid('navGrid', '#jqpSalaryDetails', { add: false, edit: false, search: false, del: false, refresh: false, refreshtext: 'Reload' }).jqGrid('navButtonAdd', '#jqpSalaryDetails', {
+        caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshSalaryDetails
+    }).jqGrid('navButtonAdd', '#jqpSalaryDetails', {
+        caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddSalaryDetails
+    });
+
+    $(window).on("resize", function () {
+        var $grid = $("#jqgSalaryDetails"),
+            newWidth = $grid.closest(".SalaryDetailscontainer").parent().width();
+        $grid.jqGrid("setGridWidth", newWidth, true);
+    });
+    fnAddGridSerialNoHeading();
+}
+
+function fnAddSalaryDetails() {
+    _isInsert = true;
+    $("#divForm").css("display", "block");
+    $("#divGrid").hide();
+    fnClearFields();
+    $('#PopupSalaryDetails').find('.modal-title').text("Add Salary Details");
+    $('#PopupSalaryDetails').modal('show');
+    $("#btnSaveSalaryDetails").html('Save');
+}
+
+function fnEditSalaryDetails(e, actiontype) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgSalaryDetails').jqGrid('getRowData', rowid);
+
+    $('#PopupSalaryDetails').modal('show');
+
+    $("#btnSaveSalaryDetails").attr("disabled", false);
+
+    $("#txtSalaryDetails").attr("readonly", "readonly");
+    _isInsert = false;
+
+    if (actiontype.trim() == "edit") {
+        $('#PopupSalaryDetails').find('.modal-title').text("Update Salary Details");
+        $("#btnSaveSalaryDetails").html(' Update');
+        $("#chkActiveStatus").prop('disabled', false);
+    }
+
+    if (actiontype.trim() == "view") {
+        $('#PopupSalaryDetails').find('.modal-title').text("View Salary Details");
+        $("#btnSaveSalaryDetails").html(' Update');
+        $("#btnSaveSalaryDetails").attr("disabled", false);
+        $("input,textarea").attr('readonly', true);
+        $("select").next().attr('disabled', true);
+        $("#btnSaveSalaryDetails").hide();
+        $("#chkActiveStatus").prop('disabled', true);
+        $("#PopupSalaryDetails").on('hidden.bs.modal', function () {
+            $("#btnSaveSalaryDetails").show();
+            $("input,textarea").attr('readonly', false);
+            $("select").next().attr('disabled', false);
+        });
+    }
+}
+
+var _isInsert = true;
+
+function fnGridRefreshSalaryDetails() {
+    $("#jqgSalaryDetails").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+function fnClearFields() {
+    $("#txtSalaryDetails").removeAttr("readonly");
+    $("#txtSalaryDetails").val('');
+    $('#chkDefaultStatus').prop('checked', true);
+    $("#chkActiveStatus").prop('disabled', false);
+    $("#btnSaveSalaryDetails").attr("disabled", false);
+}
+
+$("#btnCancelSalaryDetails").click(function () {
+    $("#jqgSalaryDetails").jqGrid('resetSelection');
+    $('#PopupSalaryDetails').modal('hide');
+    fnClearFields();
+});

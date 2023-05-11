@@ -1,0 +1,363 @@
+﻿
+@{
+    ViewData["Title"] = "Nutrition Follow-Up Form";
+    if (ViewBag.IsApp == "Y")
+    {
+        Layout = "~/Views/Shared/_Layout_m.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+}
+
+<link href="~/css/material.min.css" rel="stylesheet" />
+<link href="~/css/eSyaNursingStation/patientClinicalInformation.css" rel="stylesheet" />
+@section scripts{
+
+    <script src="~/js/eSyaOutPatient/PatientClinicalForms/nutritionfollowup.js"></script>
+    <script src="~/js/material.min.js"></script>
+
+}
+
+
+
+<style>
+    .lblCheck {
+        display: flex;
+        align-items: center;
+    }
+
+    label span {
+        padding-left: 5px;
+    }
+    /*.ui-jqgrid .ui-jqgrid-bdiv {
+        overflow-x: auto;
+    }*/
+
+    .ui-jqgrid .ui-jqgrid-bdiv {
+        /*position: relative;
+        margin: 0;
+        padding: 0;*/
+        overflow: auto;
+        text-align: left;
+    }
+
+    .ui-state-default ui-th-column-header ui-th-ltr {
+        background: #555 !important;
+        color: bisque !important;
+    }
+
+    .ui-jqgrid .ui-jqgrid-htable th {
+        background: #555 !important;
+        color: gold !important;
+    }
+
+    .jqg-first-row-header {
+        visibility: collapse !important;
+    }
+</style>
+
+
+<input type="hidden" id="hdAppKey" value="@ViewBag.AppKey" />
+<input type="hidden" id="hdUHID" value="@ViewBag.UHID" />
+
+<div class="divFixedBar">
+    <div class="row mr-0">
+        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-xs-12 d-flex align-items-center">
+
+            <div>
+                <p><span class="labelname"><i class="fas fa-chevron-right c-lightgrey"></i> MRN:</span> <span id="lblPatientID"></span>&nbsp;<span class="labelname"> Patient Name:</span><span id="lblPatientName"></span></p>
+                <p><span class="labelname"><i class="fas fa-chevron-right c-lightgrey"></i> Surgery:</span><span id="lblSurgery"></span>&nbsp;<span class="labelname"> Date:</span><span id="lblSurgeryDate"></span></p>
+            </div>
+        </div>
+        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-xs-12 d-flex align-items-center">
+
+            <div>
+                <p><span class="labelname"><i class="fas fa-chevron-right c-lightgrey"></i> Email:</span><span id="lblEmail"></span>&nbsp;<span class="labelname"> Tel:</span><span id="lblTel"></span></p>
+                <p><span class="labelname"><i class="fas fa-chevron-right c-lightgrey"></i> Weight:</span><span id="lblBMI"></span></p>
+
+            </div>
+        </div>
+        <div class="col-xl-2 col-lg-6 col-md-6 col-sm-12 col-xs-12 d-flex align-items-center">
+
+            <div>
+                <p><span class="labelname"><i class="fas fa-chevron-right c-lightgrey"></i> Gender:</span><span id="lblGender"></span>&nbsp;&nbsp;<span class="labelname"> Age:</span><span id="lblAge"></span></p>
+                <p>&nbsp;&nbsp;</p>
+            </div>
+        </div>
+
+        <div id="floatButtons" class="col-xl-2 col-lg-12 text-right p-0">
+
+            <button class="mdl-button" id="btnSaveNutritionFollowup" onclick="fnSaveNutritionFollowup()"><i class="far fa-save c-green"></i> <span class="btntext">Save</span></button>
+            <button class="mdl-button" id="btnBackNS" onclick="fnBack()"><i class="fas fa-times"></i> <span class="btntext">Close</span></button>
+        </div>
+    </div>
+</div>
+
+<div class="row" style="margin-right: 0px !important;">
+    <div class="col-lg-3 col-md-3 col-sm-3 sidebar" id="navbar-preoperative">
+        <div class="sidebar-sticky">
+            <ul class="nav flex-column" id="nav_menu">
+                <li><a href="#" id="v-nf-tab" data-bs-toggle="pill" data-bs-target="#v-nf" class="nav-link active" role="tab" aria-controls="v-nf" aria-selected="true">Nutrition Follow-Up</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="" id="mainContent">
+        <div class="tab-content" id="v-pills-tabContent">
+
+            <div class="tab-pane fade show active" id="v-nf" role="tabpanel" aria-labelledby="v-po-tab">
+                <div class="row">
+                    <div class="col-12 p-0">
+                        <h6 class="main-heading"><i class="fa fa-bars mr-10"></i>Nutrition Follow-Up</h6>
+                    </div>
+                </div>
+                <div class="row mr-0" style="margin-right:0px;">
+                    <div class="col-lg-12 col-md-12 col-sm-12 mb-2 divNursingCarePlan">
+                        <div id="dvNutritionFollowupTemplate"></div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade in" id="PopupBodyMeasures" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Anthropometric Measurements</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row" hidden>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input class="form-control datepicker" type="text" maxlength="8" id="dpBodyMeasuresDate" />
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Time</label>
+                            <input class="form-control timepicker" type="time" maxlength="8" id="tpBodyMeasuresTime" />
+                        </div>
+                    </div>
+                </div>
+                <div id="dvBodyMeasures"></div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button"
+                                id="btnSaveBodyMeasures" onclick="saveBodyMeasures()">
+                            <i class="fa fa-save"></i> Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal"><i class="fa fa-times"></i> Cancel </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade in" id="PopupFluidIntake" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Fluid Intake</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row" hidden>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input class="form-control datepicker" type="text" maxlength="8" id="dpFluidIntakeDate" />
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Time</label>
+                            <input class="form-control timepicker" type="time" maxlength="8" id="tpFluidIntakeTime" />
+                        </div>
+                    </div>
+                </div>
+                <div id="dvFluidIntake"></div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button"
+                                id="btnSaveFluidIntake" onclick="saveFluidIntake()">
+                            <i class="fa fa-save"></i> Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal"><i class="fa fa-times"></i> Cancel </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade in" id="PopupInvestigations" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Investigations</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row" hidden>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input class="form-control datepicker" type="text" maxlength="8" id="dpInvestigationsDate" />
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Time</label>
+                            <input class="form-control timepicker" type="time" maxlength="8" id="tpInvestigationsTime" />
+                        </div>
+                    </div>
+                </div>
+                <div id="dvInvestigations"></div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button"
+                                id="btnSaveInvestigations" onclick="saveInvestigations()">
+                            <i class="fa fa-save"></i> Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal"><i class="fa fa-times"></i> Cancel </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade in" id="PopupActivitylevel" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Activity level</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row" hidden>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input class="form-control datepicker" type="text" maxlength="8" id="dpActivitylevelDate" />
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Time</label>
+                            <input class="form-control timepicker" type="time" maxlength="8" id="tpActivitylevelTime" />
+                        </div>
+                    </div>
+                </div>
+                <div id="dvActivitylevel"></div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button"
+                                id="btnSaveActivitylevel" onclick="saveActivitylevel()">
+                            <i class="fa fa-save"></i> Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal"><i class="fa fa-times"></i> Cancel </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade in" id="PopupMealfrequencies" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Meal frequencies</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row" hidden>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input class="form-control datepicker" type="text" maxlength="8" id="dpMealfrequenciesDate" />
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Time</label>
+                            <input class="form-control timepicker" type="time" maxlength="8" id="tpMealfrequenciesTime" />
+                        </div>
+                    </div>
+                </div>
+                <div id="dvMealfrequencies"></div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button"
+                                id="btnSaveMealfrequencies" onclick="saveMealfrequencies()">
+                            <i class="fa fa-save"></i> Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal"><i class="fa fa-times"></i> Cancel </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+
+    $(".nav li a").click(function () {
+        $(".nav li a").removeClass("active");
+        $(this).addClass("active");
+        $('.tab-pane').removeClass('show active');
+        var v = $(this).attr('data-bs-target');
+        //console.log(v);
+        $(v).addClass('show active');
+    });
+
+    $(document).ready(function () {
+
+    });
+
+    function fnBack() {
+       // window.location.replace(getBaseURL() + '/eSyaOutPatient/PatientClinicalForms/PatientEMR?UHID=' + $('#hdUHID').val());
+        bootbox.confirm({
+            message: "Do you want to leave the form? Any unsaved data will be losted, Proceed?",
+            buttons: {
+                confirm: {
+                    label: 'Yes',
+                    className: 'btn-success'
+                },
+                cancel: {
+                    label: 'No',
+                    className: 'btn-danger'
+                }
+            },
+            callback: function (result) {
+                if (result) {
+                    //history.back();
+                    window.close();
+                }
+            }
+        });
+    }
+
+</script>

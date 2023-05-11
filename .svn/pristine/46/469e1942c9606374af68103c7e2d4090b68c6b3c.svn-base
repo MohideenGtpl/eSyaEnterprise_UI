@@ -1,0 +1,55 @@
+﻿$(document).ready(function () {
+    fnLoadBusinessLinkGrid();
+})
+
+function fnLoadBusinessLinkGrid() {
+
+    $("#jqgCustomerBusinessLink").jqGrid(
+         {
+           // url:,
+           // mtype: 'POST',
+            datatype: 'json',
+            ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+ 
+            colNames: ['', 'Segment Description', 'Business Location', 'Select'],
+            colModel: [
+                { name: "BusinessKey", width: 70, editable: true, align: 'left', hidden: true },
+                { name: 'BusinessSegment', index: 'BusinessSegment', width: '270', resizable: false },
+                { name: 'BusinessLocation', index: 'BusinessLocation', width: '228', resizable: false },
+                {
+                    name: 'ActiveStatus', index: 'ActiveStatus', width: 70, resizable: false, align: 'center',
+                    formatter: "checkbox", formatoptions: { disabled: false },
+                    edittype: "checkbox", editoptions: { value: "true:false" }
+                },
+            ],
+            rowNum: 10,
+            rowList: [10, 20, 50, 100],
+            loadonce: true,
+            pager: "#jqpBusinessLink",
+            viewrecords: true,
+            gridview: true,
+            rownumbers: true,
+            height: 'auto',
+            width: 'auto',
+            autowidth: false,
+            shrinkToFit: false,
+            forceFit: false,
+            scroll: false, scrollOffset: 0,
+            onSelectRow: function (rowid) {
+               },
+            
+        })
+
+        .jqGrid('navGrid', '#jqpCustomerBusinessLink', { add: false, edit: false, search: false, del: false, refresh: false })
+        .jqGrid('navButtonAdd', '#jqpCustomerBusinessLink', {
+            caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnRefreshCustomerBusinessLinkGrid
+        });
+}
+
+function fnSaveBusinessLinks() {
+     
+}
+
+function fnRefreshCustomerBusinessLinkGrid() {
+    $("#jqgCustomerBusinessLink").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid')
+}

@@ -1,0 +1,123 @@
+﻿@*@using Microsoft.AspNetCore.Mvc.Localization
+    @inject IViewLocalizer Localizer*@
+
+@{
+    ViewData["Title"] = "Bed Master";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    var userFormRole = (eSyaEnterprise_UI.Models.DO_UserFormRole)ViewBag.UserFormRole;
+}
+<script>
+    var _userFormRole = JSON.parse('@Html.Raw(Json.Serialize(userFormRole))');
+</script>
+
+@section scripts{
+    <script src="~/js/eSyaInPatient/BedMaster.js"></script>
+}
+
+<div class="row">
+    <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> Business Location</label>
+            <select id="cboBusinessLocation" class="selectpicker" data-live-search="true" title="Select" asp-items="@ViewBag.BusinessLocation"
+                    data-size="8" onchange="fnFillWardDescription()"></select>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> Ward Description</label>
+            <select id="cboWards" class="selectpicker" data-live-search="true" title="Select" data-size="8" onchange="fnFillRoomDescription()"></select>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> Room Description</label>
+            <select id="cboRooms" class="selectpicker" data-live-search="true" title="Select" onchange="fnGridLoadBedMaster()"></select>
+        </div>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <table id="jqgBedMaster"></table>
+        <div id="jqpBedMaster"></div>
+    </div>
+</div>
+
+<div class="modal fade in" id="PopupBedMaster" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content ">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Add Bed Master</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <input type="text" class="form-control" id="" style="display:none">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label>Room Number </label>
+                            <input id="txtRoomNumber" type="text" maxlength="10" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label>Bed Number </label>
+                            <input type="text" id="txtBedNumber" maxlength="10" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label> Store </label>
+                            <select id="cboStore" class="selectpicker" data-live-search="true" title="Select"></select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label> Location </label>
+                            <select id="cboLocation" class="selectpicker" data-live-search="false" title="Select" asp-items="@ViewBag.LocationId"></select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label class="lable-color"> Gender</label>
+                            <select class="selectpicker" data-live-search="false" title="Choose Gender" id="cboGender">
+                                <option value="A">All</option>
+                                <option value="M">Male</option>
+                                <option value="F">Female</option>
+                                <option value="T">Transgender</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label> Bed Status</label>
+                            <input id="txtBedStatus" class="form-control" type="text" readonly />
+
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group">
+                            <label> Remarks</label>
+                            <textarea id="txtRemarks" maxlength="50" rows="4" cols="75" class="form-control"></textarea>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveBedMaster" onclick="fnSaveBedMaster()">
+                            Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="#"> Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

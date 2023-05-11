@@ -1,0 +1,87 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.Areas.Config.Data;
+using eSyaEnterprise_UI.Areas.Config.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+
+namespace eSyaEnterprise_UI.Areas.Config.Controllers
+{
+    public class CommonController : Controller
+    {
+        private readonly IeSyaConfigAPIServices _eSyaConfigAPIServices;
+        public CommonController(IeSyaConfigAPIServices eSyaConfigAPIServices)
+        {
+            _eSyaConfigAPIServices = eSyaConfigAPIServices;
+        }
+
+
+        [Area("Config")]
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        ESyaWebAPI _eSyaWebAPI = new ESyaWebAPI();
+        public JsonResult GetApplicationCode()
+        {
+            List<int> l_ac = new List<int>();
+            l_ac.Add(1);
+            l_ac.Add(2);
+            var client = _eSyaConfigAPIServices.CreateClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+            HttpResponseMessage response = client.PostAsJsonAsync("ConfigMasterData/GetApplicationCodesByCodeTypeList", l_ac).Result;
+            string data = response.Content.ReadAsStringAsync().Result;
+            List<DO_ApplicationCodes> utapp_codes = JsonConvert.DeserializeObject<List<DO_ApplicationCodes>>(data);
+           return Json(utapp_codes);
+        }
+
+        public JsonResult ChangeCultureFormat(string cultureFormat, DateTime dtDatePicker)
+        {
+            
+            var rqf = Request.HttpContext.Features.Get<IRequestCultureFeature>();
+            var culture = rqf.RequestCulture.Culture;
+
+            //CultureInfo cultureInfo = Thread.CurrentThread.CurrentCulture;
+            //var cultureInfo = Thread.CurrentThread.CurrentCulture.Clone() as CultureInfo;
+
+            culture.ClearCachedData();
+            rqf.RequestCulture.UICulture.ClearCachedData();
+
+            var cultureInfo = new RequestCulture(cultureFormat);
+            //var dateformat = new DateTimeFormatInfo
+            //{
+            //    ShortDatePattern = "MM-dd-yyyy",
+            //    LongDatePattern = "MM-dd-yyyy hh:mm:ss tt"
+            //};
+            //cultureInfo.Culture.DateTimeFormat = dateformat;
+            //Thread.CurrentThread.CurrentCulture = cultureInfo.Culture;
+            //Thread.CurrentThread.CurrentUICulture = cultureInfo.UICulture;
+
+            //CultureInfo.DefaultThreadCurrentUICulture = cultureInfo.Culture;
+            //CultureInfo.DefaultThreadCurrentCulture = cultureInfo.UICulture;
+
+            CultureInfo newCulture = (CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
+            newCulture.DateTimeFormat.ShortDatePattern = "MM-dd-yyyy";
+            newCulture.DateTimeFormat.DateSeparator = "-";
+            Thread.CurrentThread.CurrentCulture = newCulture;
+
+            Response.Cookies.Append(
+      CookieRequestCultureProvider.DefaultCookieName,
+      CookieRequestCultureProvider.MakeCookieValue(cultureInfo),
+            new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
+            );
+
+            return Json(new { Status = true });
+        }
+    }
+}

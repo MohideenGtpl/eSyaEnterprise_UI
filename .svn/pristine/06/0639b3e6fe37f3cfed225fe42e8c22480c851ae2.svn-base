@@ -1,0 +1,52 @@
+﻿
+@{
+    ViewData["Title"] = "V_1552_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/jsTree.css" rel="stylesheet" />
+@section scripts{
+    <script src="~/js/jsTree.js"></script>
+    <script src="~/js/eSyaClinicalServices/DoctorBusinessLink.js"></script>
+}
+
+
+    <div class="row">
+        <div class="col-lg-4 col-md-4 col-sm-6">
+            <div class="form-group">
+                <label class="lable-color">Business Key</label>
+                <select class="selectpicker" data-live-search="true" id="cboBusinessKey" title="Select" asp-items="@ViewBag.BusinessKeyList" onchange="fnLoadDoctorBusinessTree()"></select>
+            </div>
+            <label class="lable-color">Doctor Names</label>
+            <div id="jstDoctorBusinessLink"></div>
+
+
+
+        </div>
+        <div class="col-lg-6 col-md-6">
+            <label><i class="fa fa-search c-black"></i>  Search Doctor</label>
+            <input type="text" name="name" value="" class="form-control" id="txtSearchDoctorName" maxlength="200" />
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-4">
+            <div>
+                <h5>Action</h5>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 btn_pdnTop">
+                    <button class="mdl-button mdl-js-button mdl-button--raised primary-button btn_wdth" id="btnSaveDoctorBusinessLink" onclick="fnSaveDoctorBusinessLink()">
+                        <i class="fas fa-save"></i>   Save
+                    </button>
+                </div>
+                <div class="col-lg-12 btn_pdnTop">
+                    <button class="mdl-button mdl-js-button mdl-button--raised primary-button btn_wdth" id="btnExpandAll" onclick="fnExpandAll()" hidden>
+                        <i class="fas fa-expand"></i>   Expand All
+                    </button>
+                </div>
+                <div class="col-lg-12 btn_pdnTop">
+                    <button class="mdl-button mdl-js-button mdl-button--raised primary-button btn_wdth" id="btnCollapseAll" onclick="fnCollapseAll()" hidden>
+                        <i class="fas fa-compress"></i>   Collapse All
+                    </button>
+                </div>
+            </div>
+        </div>
+        </div>
+

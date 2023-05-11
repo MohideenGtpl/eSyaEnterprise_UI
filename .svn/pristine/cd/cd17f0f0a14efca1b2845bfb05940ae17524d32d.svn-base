@@ -1,0 +1,102 @@
+﻿
+@{
+    ViewData["Title"] = "V_1581_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/jsTree.css" rel="stylesheet" />
+@section scripts{
+    <script src="~/js/jsTree.js"></script>
+    <script src="~/js/eSyaMCServices/SpecialtyUnits.js"></script>
+}
+
+<section id="divGrid">
+    <div class="row padbot10">
+        <div class="col-lg-3">
+            <div class="form-group">
+                <label class="lable-color"> Business Key</label>
+                <select class="selectpicker" data-live-search="true" id="cboBusinessKey" title="Select" asp-items="@ViewBag.BusinessLocation" onchange="fnGridLoadPatientCategory()"></select>
+            </div>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <table id="jqgSpecialtyUnits"></table>
+            <div id="jqpSpecialtyUnits"></div>
+        </div>
+    </div>
+</section>
+
+<section id="divForm" style="display:none">
+    <div class="row">
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="form-group">
+                <label class="lable-color">No of Units</label>
+                <input type="text" name="name" value="" class="form-control" />
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="form-group">
+                <label class="lable-color">Effective From</label>
+                <input type="text" name="name" value="" class="datepicker form-control" />
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="form-group">
+                <label class="lable-color">Effective Till</label>
+                <input type="text" name="name" value="" class="datepicker form-control" />
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="form-group">
+                <label class="lable-color">New Patients</label>
+                <input type="text" name="name" value="" class="form-control" />
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="form-group">
+                <label class="lable-color">Repeat Patients</label>
+                <input type="text" name="name" value="" class="form-control" />
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="form-group">
+                <label class="lable-color">No of Male Beds</label>
+                <input type="text" name="name" value="" class="form-control" />
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="form-group">
+                <label class="lable-color">No of Female Beds</label>
+                <input type="text" name="name" value="" class="form-control" />
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="form-group">
+                <label class="lable-color">Common Beds</label>
+                <input type="text" name="name" value="" class="form-control" />
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="form-group">
+                <label class="lable-color">Max Stay</label>
+                <input type="text" name="name" value="" class="form-control" />
+            </div>
+        </div>
+
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="default-checkbox">
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActiveStatus">
+                    <input type="checkbox" id="chkActiveStatus" class="mdl-checkbox__input">
+                    <span class="mdl-checkbox__label">Active</span>
+                </label>
+            </div>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+            <hr />
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent btn-back mr-10 c-white" onclick="fnCloseSpecialtyUnits()"><i class="fas fa-chevron-left"></i> Back</button>
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button mr-10" id="fnSaveBankDetails" onclick="fnSaveSpecialtyUnits()"> Save</button>
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button" onclick="fnCloseSpecialtyUnits()"> Cancel</button>
+
+        </div>
+    </div>
+</section>
+
+

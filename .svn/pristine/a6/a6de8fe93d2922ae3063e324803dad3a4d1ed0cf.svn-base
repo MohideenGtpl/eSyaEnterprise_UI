@@ -1,0 +1,201 @@
+﻿
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="google" content="notranslate">
+    <title>Get User ID</title>
+
+    <script src="~/lib/bootstrap/dist/js/jquery-3.2.1.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/popper.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/js/material.min.js"></script>
+    <script src="~/js/all.min.js"></script>
+    <script src="~/js/jquery-ui.min.js"></script>
+    <script src="~/js/i18n/grid.locale-en.js"></script>
+    <script src="~/js/jquery.jqGrid.min.js"></script>
+    <script src="~/js/bootstrap-select.js"></script>
+    <script src="~/js/bootbox.min.js"></script>
+
+    <script src="~/js/Inputmask/inputmask.js"></script>
+    <script src="~/js/Inputmask/jquery.inputmask.js"></script>
+    <script src="~/js/Inputmask/bindings/inputmask.binding.js"></script>
+
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" media="all" />
+    <link href="~/css/animate.css" rel="stylesheet" media="all" />
+    <link href="~/css/material.min.css" rel="stylesheet" />
+    <link href="~/css/bootstrap-select.css" rel="stylesheet" />
+    <link href="~/css/login.css" rel="stylesheet" media="all" />
+    <link href="~/css/all.min.css" rel="stylesheet" />
+
+</head>
+<body>
+    <div class="loginContainer">
+        @*<div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12  text-center">
+                    <img src="~/images/logo/esya-logo-black.png" class="mainLogo" alt="eSya Logo"/>
+                </div>
+            </div>*@
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6 padright0">
+                <img src="~/images/esya-products-yellow.JPG" class="leftImage" alt="eSya Products" />
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 login-form  pad0 ">
+                <div class="text-center">
+                    <img src="/images/logo/esya-logo-black.png" class="smallDeviceLogo" alt="eSya Logo">
+                </div>
+                <div class="">
+                    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-tabs">
+                        <header class="mdl-layout__header">
+                            <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
+                                <a href="#scroll-tab-1" class="getUserID mdl-layout__tab is-active" onclick="fnHideMobileDiv()">
+                                    <i class="fas fa-key f-18"></i> Get User ID
+                                </a>
+
+                            </div>
+                        </header>
+
+                        <main class="mdl-layout__content">
+                            <section class="mdl-layout__tab-panel is-active" id="scroll-tab-1">
+                                <div class="col-lg-12">
+
+
+                                    <form>
+                                        <div class="text-danger validation-summary-errors" data-valmsg-summary="true">
+                                            <div id="dvOTPError"></div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-12 p-y-20" id="dvMobileNumber">
+                                                <div class="form-group animated fadeIn" style="width:100%">
+                                                    <label class="lable-color" for="txtUsername" id="lblText">Register Mobile Number</label>
+                                                    @await Component.InvokeAsync("IsdMobileInput", new { id = "UserMobile" })
+                                                </div>
+                                                <div class="marbot15 form-group">
+                                                    <p class="OTPStatement"> We will send you the User ID to your Registered Mobile Number</p>
+                                                </div>
+                                                <div class="d-none">
+                                                    <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="mobileNumber">
+                                                        <input type="radio" id="rdoMobileNumber" class="mdl-radio__button" name="options" checked value="1" onchange="fnMobileNumber_checked()">
+                                                        <span class="mdl-radio__label rad-btn">Send User ID To Registered  Mobile Number</span>
+                                                    </label>
+                                                </div>
+                                                <div class="d-none">
+                                                    <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="emailID">
+                                                        <input type="radio" id="rdoEmailID" class="mdl-radio__button" name="options" value="2" onchange="fnEmail_checked()">
+                                                        <span class="mdl-radio__label rad-btn">Send User ID To Registered  Email ID</span>
+                                                    </label>
+                                                </div>
+                                                <div class="col-lg-4 col-md-4 col-sm-6 col-xl-12 padleft0" id="dvSendUserID">
+                                                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored loginButton" onclick="fnSendUserID();  return false;">
+                                                        Go <i class="fas fa-chevron-right"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-12 p-y-20 animated slideInUp" style="display:none" id="dvOnSuccess">
+                                                <div class="alert alert-success alert-dismissible fade show">
+                                                    <div style="font-size:12px;font-weight:500">
+                                                        <i class="fa fa-check"></i> User ID is  sent to your <span id="lblSuccessMessage"> mobile number.</span>
+                                                    </div>
+                                                </div>
+                                                <div style="font-size:12px;font-weight:500">
+                                                    To login with your User ID
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="row p-y-20" style="padding-top:0px;">
+                                            <div class="col-lg-4 col-md-4 col-sm-6 col-xl-12" style="display:none" id="dvLoginNow">
+                                                
+                                                    <a href="@Url.Action("Index","Account")" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored loginButton mar-savebtn noUnderline"> Login Now <i class="fas fa-chevron-right"></i></a>
+                                                
+                                            </div>
+                                           
+                                        </div>
+
+                                    </form>
+
+                                </div>
+                            </section>
+                        </main>
+
+
+
+
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                </div>
+            </div>
+    </div>
+</div>
+    <script>
+        var _cnfISDCode = @Configuration.GetSection("cnf").GetSection("ISDCode").Value;
+
+        function getBaseURL() {
+            var url = window.location.href.split('/');
+            var baseUrl = url[0] + '//' + url[2] + '@Url.Content("~")';
+            return baseUrl;
+        }
+
+        function fnMobileNumber_checked() {
+            if ($("#rdoMobileNumber").attr('checked', true)) {
+                $("#lblText").text("Registered Mobile Number");
+                $("#lblSuccessMessage").text("Mobile Number");
+            }
+        }
+        function fnEmail_checked() {
+            if ($("#rdoEmailID").attr('checked', true)) {
+                $("#lblText").text("Registered Email ID");
+                $("#lblSuccessMessage").text("Email ID");
+            }
+        }
+
+        function fnSendUserID() {
+
+            $("#dvOTPError").html("");
+            $.ajax({
+                url: getBaseURL() + '/Account/SendUserID?mobileNumber=' + $("#txtUserMobile").val(),
+                type: 'POST',
+                datatype: 'json',
+                contentType: 'application/json; charset=utf-8',
+                success: function (result) {
+
+                    if (result.Status) {
+
+                        $("#dvOnSuccess").show();
+                        $("#dvLoginNow").show();
+
+                        $("#dvMobileNumber").hide();
+                        $("#dvSendUserID").hide();
+                    }
+                    else {
+                        if (result.StatusCode === "404") {
+                             
+                            $("#dvOTPError").html("<ul><li>Mobile does not exists</li></ul>");
+                        }
+                        if (result.StatusCode === "500") {
+                            $("#dvOTPError").html("<ul><li>Internal Error</li></ul>");
+                        }
+                    }
+                },
+                error: function (error) {
+                    $("#dvOTPError").html("<ul><li>Internal Error</li></ul>");
+                }
+            });
+           
+        }
+        
+    </script>
+</body>
+</html>

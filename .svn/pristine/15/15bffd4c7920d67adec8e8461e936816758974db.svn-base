@@ -1,0 +1,133 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+
+
+<div class="row">
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> @Localizer["BusinessLocation"]</label>
+            <select class="selectpicker" data-live-search="false" title="Choose BusinessLocation" id="cboBusinessLocation"></select>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> @Localizer["ClinicType"]</label>
+            <select class="selectpicker" data-live-search="false" title="Choose ClinicType" id="cboClinicType"></select>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> @Localizer["RateType"]</label>
+            <select class="selectpicker" data-live-search="false" title="Choose RateType" id="cboRateType"></select>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> @Localizer["CurrencyCode"]</label>
+            <select class="selectpicker" data-live-search="false" title="Choose CurrencyCode" id="cboCurrencyCode"></select>
+        </div>
+    </div>
+
+    <div class="col-lg-12 col-md-12 col-12">
+        <table id="jqgConsultationRates"></table>
+        <div id="jqpConsultationRates"></div>
+    </div>
+</div>
+<div class="row form-group">
+    <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+        <hr />
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent btn-back mr-10 c-white" onclick="fnCloseDoctorProfile()"><i class="fas fa-chevron-left"></i> @Localizer["Back"]</button>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button mr-10" id="btnSaveDoctorMaster" onclick=""><i class="far fa-save"></i> @Localizer["Save"]</button>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" id="btnClearDoctor" onclick=""><i class="fa fa-redo"></i> @Localizer["Clear"]</button>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        fnGridLoadConsultationRates();
+        $.contextMenu({
+            // define which elements trigger this menu
+            selector: "#btnConsultationRates",
+            trigger: 'left',
+            // define the elements of the menu
+            items: {
+                jqgEdit: { name: localization.Edit, icon: "edit", callback: function (key, opt) { fnEditConsultationRates(event, 'edit') } },
+                jqgView: { name: localization.View, icon: "view", callback: function (key, opt) { fnEditConsultationRates(event, 'view') } },
+                jqgDelete: { name: localization.Delete, icon: "delete", callback: function (key, opt) { fnEditConsultationRates(event, 'delete') } },
+            }
+            // there's more, have a look at the demos and docs...
+        });
+        $(".context-menu-icon-edit").html("<span class='icon-contextMenu'><i class='fa fa-pen'></i>" + localization.Edit + " </span>");
+        $(".context-menu-icon-view").html("<span class='icon-contextMenu'><i class='fa fa-eye'></i>" + localization.View + " </span>");
+        $(".context-menu-icon-delete").html("<span class='icon-contextMenu'><i class='fa fa-trash'></i>" + localization.Delete + " </span>");
+    });
+
+    function fnGridLoadConsultationRates() {
+        $('#jqgConsultationRates').jqGrid('GridUnload');
+        $("#jqgConsultationRates").jqGrid({
+            url: getBaseURL() + '/SMSEngine/GetAllConsultationRatess',
+            datatype: 'json',
+            mtype: 'Post',
+            ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+            jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+            colNames: [localization.ClinicType, localization.ConsultationType, localization.ServiceDescription, localization.EFFRate, localization.Tariff, localization.Active, localization.Actions],
+            colModel: [
+                { name: "ClinicType", width: 85, editable: true, align: 'left', editoptions: { maxlength: 8 } },
+                { name: "ConsultationType", width: 128, editable: true, align: 'left', editoptions: { maxlength: 150 } },
+                { name: "ServiceDescription", width: 158, editable: true, align: 'left', editoptions: { maxlength: 150 } },
+                { name: "EFFRate", width: 108, editable: true, align: 'left', editoptions: { maxlength: 150 } },
+                { name: "Tariff", width: 108, editable: true, align: 'left', editoptions: { maxlength: 150 } },
+                { name: "ActiveStatus", editable: true, width: 48, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+                {
+                    name: 'action', search: false, align: 'left', width: 120, sortable: false, resizable: false,
+                    formatter: function (cellValue, options, rowdata, action) {
+                        return '<button class="mr-1 btn btn-outline" id="btnConsultationRates"><i class="fa fa-ellipsis-v"></i></button>'
+                    }
+                },
+            ],
+            pager: "#jqpConsultationRates",
+            rowNum: 10,
+            rowList: [10, 20, 50, 100],
+            rownumWidth: 55,
+            loadonce: true,
+            viewrecords: true,
+            gridview: true,
+            rownumbers: true,
+            height: 'auto',
+            align: "left",
+            width: 'auto',
+            autowidth: true,
+            shrinkToFit: true,
+            forceFit: true,
+            scrollOffset: 0,
+            caption: 'SMS Trigger Event',
+            loadComplete: function (data) {
+                SetGridControlByAction();
+                fnJqgridSmallScreen("jqgConsultationRates");
+            },
+        }).jqGrid('navGrid', '#jqpConsultationRates', {
+            add: false, edit: false, search: false, del: false, refresh: false
+        }).jqGrid('navButtonAdd', '#jqpConsultationRates', {
+            caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshConsultationRates
+        }).jqGrid('navButtonAdd', '#jqpConsultationRates', {
+            caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddConsultationRates
+        });
+        fnAddGridSerialNoHeading();
+    }
+    function fnAddConsultationRates() {
+        PopupConsulationRates
+        $("#PopupConsulationRates").modal('show');
+        $('.modal-title').text(localization.AddConsulationRates);
+    }
+    function fnEditConsultationRates() {
+        $("#PopupConsulationRates").modal('show');
+        $('.modal-title').text(localization.EditConsulationRates);
+    }
+    function fnGridRefreshConsultationRates() {
+
+    }
+</script>

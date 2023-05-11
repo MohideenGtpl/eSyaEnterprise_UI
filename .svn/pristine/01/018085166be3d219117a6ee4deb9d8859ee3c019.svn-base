@@ -1,0 +1,121 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "ECA_13_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/css/jquery.contextMenu.min.css" rel="stylesheet" />
+
+@section scripts{
+    <script src="~/js/Config/PaymentVoucherLink.js"></script>
+    <script src="~/js/jquery.contextMenu.min.js"></script>
+}
+
+@{
+    var userFormRole = (eSyaEnterprise_UI.Models.DO_UserFormRole)ViewBag.UserFormRole;
+}
+<script>
+    var _userFormRole = JSON.parse('@Html.Raw(Json.Serialize(userFormRole))');
+
+     var localization = {
+         AddPaymentVoucherLink: '@Localizer["AddPaymentVoucherLink"]',
+         UpdatePaymentVoucherLink: '@Localizer["UpdatePaymentVoucherLink"]',
+         ViewPaymentVoucherLink: '@Localizer["ViewPaymentVoucherLink"]',
+         DeletePaymentVoucherLink:'@Localizer["DeletePaymentVoucherLink"]',
+         Payment: '@Localizer["Payment"]',
+         Voucher: '@Localizer["Voucher"]',
+         Edit: '@Localizer["Edit"]',
+         Active: '@Localizer["Active"]',
+         Actions: '@Localizer["Actions"]',
+         View: '@Localizer["View"]',
+         Save: '@Localizer["Save"]',
+         Update: '@Localizer["Update"]',
+         Delete: '@Localizer["Delete"]',
+         Activate: '@Localizer["Activate"]',
+         Deactivate: '@Localizer["Deactivate"]',
+         PaymentId: '@Localizer["PaymentId"]',
+         PaymentMode: '@Localizer["PaymentMode"]',
+         VoucherId: '@Localizer["VoucherId"]',
+
+    };
+</script>
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <table id="jqgPaymentVoucherLink"></table>
+        <div id="jqpPaymentVoucherLink"></div>
+    </div>
+</div>
+
+<div class="modal fade in" id="PopupPaymentVoucherLink" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-md  " role="document" style="box-shadow:none;">
+        <div class="modal-content ">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">@Localizer["AddPaymentVoucherLink"]</h4>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="row padbot4">
+
+
+
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            <label for="">@Localizer["Payment"]</label>
+
+                            <select class="selectpicker" data-live-search="true" id="cboPayment" title="Select" data-size="4" data-container="body" asp-items="@ViewBag.Payments">
+                                <option value="0">@Localizer["Select"]  </option>
+                            </select>
+
+
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            <label for="">@Localizer["Voucher"]</label>
+
+                            <select class="selectpicker" data-live-search="true" id="cboVoucher" title="Select" data-size="4" data-container="body" asp-items="@ViewBag.Vouchers">
+                                <option value="0">@Localizer["Select"]  </option>
+                            </select>
+
+
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                        <div class="default-checkbox">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActiveStatus">
+                                <input type="checkbox" id="chkActiveStatus" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">@Localizer["Active"]</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSavePaymentVoucherLink" onclick="fnSavePaymentVoucherLink()"><i class="fa fa-save"></i> @Localizer["Save"]   </button>
+                        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" id="btnDeactivatePaymentVoucherLink" onclick="fnDeletePaymentVoucherLink()"><i class="fas fa-ban"></i>  @Localizer["DeActivate"] </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" id="btnCancelPaymentVoucherLink"> <i class="fa fa-times"></i> @Localizer["Cancel"] </button>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+

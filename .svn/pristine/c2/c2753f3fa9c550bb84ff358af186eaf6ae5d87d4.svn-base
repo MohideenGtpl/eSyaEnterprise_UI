@@ -1,0 +1,615 @@
+
+@{
+    ViewData["Title"] = "V_6003_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js"></script>
+
+<script src="~/js/charts/utils.js"></script>
+
+<link href="~/css/eSyaNursingStation/patientClinicalInformation.css" rel="stylesheet" />
+@section scripts{
+    
+    <script src="~/js/eSyaNursingStation/patientclinicalinformation.js"></script>
+
+    @**@
+
+}
+
+
+
+<style>
+    /*.ui-jqgrid .ui-jqgrid-bdiv {
+        overflow-x: auto;
+    }*/
+    .ui-jqgrid .ui-jqgrid-bdiv {
+        /*position: relative;
+        margin: 0;
+        padding: 0;*/
+        overflow: auto;
+        text-align: left;
+    }
+
+    .ui-state-default ui-th-column-header ui-th-ltr {
+        background: #555 !important;
+        color: bisque !important;
+    }
+
+    .ui-jqgrid .ui-jqgrid-htable th {
+        background: #555 !important;
+        color: gold !important;
+    }
+
+    .jqg-first-row-header {
+        visibility: collapse !important;
+    }
+</style>
+
+
+<input type="hidden" id="hdIPNumber" value="@ViewBag.IpNumber" />
+<input type="hidden" id="hdUHID" value="@ViewBag.UHID" />
+
+<div class="divFixedBar">
+    <div class="row mar0">
+        <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-xs-6 d-flex align-items-center">
+            <span class="mr-3"><i class="far fa-user-circle f-28 c-lightgrey"></i></span>
+            <div>
+                <p><span id="lblPatientName"></span></p>
+                <p><span id="lblGender"></span> | <span id="lblAge"></span></p>
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-xs-6 d-flex align-items-center">
+            <span class="mr-3"><i class="fas fa-user-md f-28 mr-2 c-lightgrey"></i></span>
+            <div>
+                <p><span class="labelname"> DOA</span> <span id="lblDOA"></span></p>
+                <p><span id="lblConsultantName"></span></p>
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-xs-6 d-flex align-items-center">
+            <span class="mr-3"><i class="fas fa-hotel f-28 mr-2 c-lightgrey"></i></span>
+            <div>
+                <p><span class="labelname"> Room Type</span> <span id="lblRoomType"></span></p>
+                <p><span class="labelname"> Room No</span> <span id="lblBedNumber"></span></p>
+            </div>
+        </div>
+
+        <div id="floatButtons" class="col-xl-3 col-lg-12 text-right">
+            <button class="mdl-button" id="btnBackNS" onclick="fnBackToNSGrid()"><i class="fas fa-chevron-left"></i> <span class="btntext">Back</span></button>
+            @*<button class="mdl-button" id="btnSave" onclick="fnSaveNurseAssessment('S')"><i class="far fa-check-circle c-brown"></i> <span class="btntext">Submit</span></button><button class="mdl-button d-none"><i class="fas fa-print c-blue"></i> <span class="btntext">Print</span></button>*@
+        </div>
+    </div>
+</div>
+
+<div class="row" style="margin-right: 0px !important;">
+    <div class="col-lg-3 col-md-3 col-sm-3 sidebar" id="navbar-example2">
+        <div class="sidebar-sticky">
+             <ul class="nav flex-column" id="nav_menu">
+                <li><a href="#" id="v-nursingcare-tab" data-bs-toggle="pill" data-bs-target="#v-nursing-care" class="nav-link active" role="tab" aria-controls="v-nursing-care" aria-selected="true">Nurse Notes</a></li>
+                <li><a href="#" id="v-doctornotes-tab" data-bs-toggle="pill" data-bs-target="#v-doctornotes" class="nav-link" role="tab" aria-controls="v-doctor-notes" aria-selected="true">Doctor Notes</a></li>
+                <li><a href="#" id="v-vitalreport-tab" data-bs-toggle="pill" data-bs-target="#v-vitalreport" class="nav-link" aria-controls="v-vitalreport" aria-selected="true">Vital Values</a></li>
+                <li><a href="#" id="v-vitalcharts-tab" data-bs-toggle="pill" data-bs-target="#v-vitalcharts" class="nav-link" aria-controls="v-vitalcharts" aria-selected="true">Vital Charts</a></li>
+                <li><a href="#" id="v-intakeouttake-tab" data-bs-toggle="pill" data-bs-target="#v-intakeouttake" class="nav-link" aria-controls="v-intakeouttake" aria-selected="true">Intake/ Outtake</a></li>
+                <li><a href="#" id="v-drugchart-tab" data-bs-toggle="pill" data-bs-target="#v-drugchart" class="nav-link" aria-controls="v-intakeouttake" aria-selected="true">Drug Chart</a></li>
+                @*<li><a href="#" id="v-criticalcareunit-tab" data-bs-toggle="pill" data-bs-target="#v-criticalcareunit" class="nav-link" aria-controls="v-criticalcareunit">Critical Care Unit</a></li>*@
+                <li><a href="#" id="v-ventilator-tab" data-bs-toggle="pill" data-bs-target="#v-ventilator" class="nav-link" aria-controls="v-ventilator">Ventilator / Lab values</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="" id="mainContent">
+        <div class="tab-content" id="v-pills-tabContent">
+
+            <div class="tab-pane fade show active" id="v-nursing-care" role="tabpanel" aria-labelledby="v-nursingcare-tab">
+                <div class="row">
+                    <div class="col-12 p-0">
+                        <h6 class="main-heading"><span class="menu-small"><i class="fa fa-bars mr-10"></i></span> Nurse Notes</h6>
+                    </div>
+                </div>
+                <div class="row mr-0" style="margin-right:0px;">
+                    <div class="col-lg-12 col-md-12 col-sm-12 mb-2 divNursingCarePlan">
+                        <table id="jqgNursingCarePlan"></table>
+                        <div id="jqpNursingCarePlan"></div>
+                    </div>
+                    <button type="button" class="mdl-button btn-circle" onclick="addNurseNotes()"><i class="fa fa-plus"></i></button>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="v-doctornotes" role="tabpanel" aria-labelledby="v-doctornotes-tab">
+                <div class="row">
+                    <div class="col-12 p-0">
+                        <h6 class="main-heading"><span class="menu-small"><i class="fa fa-bars mr-10"></i></span> Doctor Notes</h6>
+                    </div>
+                </div>
+                <div class="row mr-0" style="margin-right:0px;">
+                    <div class="col-lg-12 col-md-12 col-sm-12" style="padding-right:0px">
+                        <table id="jqgDoctorNotes"></table>
+                        <div id="jqpDoctorNotes"></div>
+                    </div>
+                    <button type="button" class="mdl-button btn-circle" onclick="addDoctorNotes()"><i class="fa fa-plus"></i></button>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="v-vitalreport" role="tabpanel" aria-labelledby="v-vitalreport-tab">
+                <div class="row">
+                    <div class="col-12 p-0">
+                        <h6 class="main-heading"><span class="menu-small"><i class="fa fa-bars mr-10"></i></span> Vital Values</h6>
+                    </div>
+                </div>
+                <div class="row mr-0" style="margin-right:0px;">
+                    <div class="col-lg-12 col-md-12 col-sm-12" style="padding-right:0px">
+                        <table id="jqgVitalCharts"></table>
+                        <div id="jqpVitalCharts"></div>
+                    </div>
+                    <button type="button" class="mdl-button btn-circle" onclick="addVitalCharts()"><i class="fa fa-plus"></i></button>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="v-vitalcharts" role="tabpanel" aria-labelledby="v-vitalcharts-tab">
+                <div class="row">
+                    <div class="col-12 p-0">
+                        <h6 class="main-heading"><span class="menu-small"><i class="fa fa-bars mr-10"></i></span> Vital Charts</h6>
+                    </div>
+                </div>
+                <div class="row mr-0" style="margin-right:0px;">
+                    <div class="col-lg-12 col-md-12 col-sm-12" style="padding-right:0px">
+
+                        <canvas id="myChart" style="width:100%;max-width:100%;"></canvas>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="v-intakeouttake" role="tabpanel" aria-labelledby="v-intakeouttake-tab">
+                <div class="row">
+                    <div class="col-12 p-0">
+                        <h6 class="main-heading"><span class="menu-small"><i class="fa fa-bars mr-10"></i></span> Intake and Output Charts</h6>
+                    </div>
+                </div>
+                <div class="row mr-0" style="margin-right:0px;">
+                    <div class="col-lg-12 col-md-12 col-sm-12" style="padding-right:0px;width:2000px;overflow:auto;">
+                        <table id="jqgIntakeOutputCharts"></table>
+                        <div id="jqpIntakeOutputCharts"></div>
+                    </div>
+                    <button type="button" class="mdl-button btn-circle" onclick="addIntakeOutputCharts()"><i class="fa fa-plus"></i></button>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="v-drugchart" role="tabpanel" aria-labelledby="v-drugchart-tab">
+                <div class="row">
+                    <div class="col-12 p-0">
+                        <h6 class="main-heading"><span class="menu-small"><i class="fa fa-bars mr-10"></i></span> Drug Chart</h6>
+                    </div>
+                </div>
+                <div class="row mr-0" style="margin-right:0px;">
+                    <div class="col-lg-12 col-md-12 col-sm-12" style="padding-right:0px">
+                        <table id="jqgDrugCharts"></table>
+                        <div id="jqpDrugCharts"></div>
+                    </div>
+                    <button type="button" class="mdl-button btn-circle" onclick="addDrugCharts()"><i class="fa fa-plus"></i></button>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="v-ventilator" role="tabpanel" aria-labelledby="v-ventilator-tab">
+                <div class="row">
+                    <div class="col-12 p-0">
+                        <h6 class="main-heading"><span class="menu-small"><i class="fa fa-bars mr-10"></i></span> Ventilator Setting / Lab Values</h6>
+                    </div>
+                </div>
+                <div class="row mr-0" style="margin-right:0px;">
+                    <div class="col-lg-12 col-md-12 col-sm-12" style="padding-right:0px;width:2000px;overflow:auto;">
+                        <table id="jqgVentilatorLabValuesCharts"></table>
+                        <div id="jqpVentilatorLabValuesCharts"></div>
+                    </div>
+                    <button type="button" class="mdl-button btn-circle" onclick="addVentilatorLabValuesCharts()"><i class="fa fa-plus"></i></button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade in" id="PopupNurseNotes" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Nurse Notes</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="txtDate">Date</label>
+                            <input class="form-control datepicker" type="text" id="dpNurseDate" />
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="txtTime">Time</label>
+                            <input class="form-control" type="time" id="tpNurseTime" />
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label for="txtNurseNotes">Nurse Notes</label>
+                            <textarea class="form-control" id="txtNurseNotes"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button"
+                                id="btnSaveNursingCarePlan" onclick="saveNurseNotes()">
+                            <i class="fa fa-save"></i> Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="btnCancelNursingCarePlan"><i class="fa fa-times"></i> Cancel </button>
+                        @*<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" id="btndeActiveNursingCarePlan"><i class="fa fa-times"></i> DeActivate </button>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade in" id="PopupDoctorNotes" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Doctor Notes</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="txtDoctorNotesDate">Date</label>
+                            <input class="form-control datepicker" type="text" maxlength="8" id="dpDoctorDate" />
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="txtDoctorNotesTime">Time</label>
+                            <input class="form-control timepicker" type="text" maxlength="8" id="tpDoctorTime" />
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label for="txtDoctorNotes">Doctor Notes</label>
+                            <textarea class="form-control" id="txtDoctorNotes"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button"
+                                id="btnSaveDoctorNotes" onclick="saveDoctorNotes()">
+                            <i class="fa fa-save"></i> Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="btnCancelDoctorNotes"><i class="fa fa-times"></i> Cancel </button>
+                        @*<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" id="btndeActiveNursingCarePlan"><i class="fa fa-times"></i> DeActivate </button>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade in" id="PopupVitalCharts" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Vital Charts</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input class="form-control datepicker" type="text" maxlength="8" id="dpVitalChartsDate" />
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Time</label>
+                            <input class="form-control timepicker" type="time" maxlength="8" id="tpVitalChartsTime" />
+                        </div>
+                    </div>
+                </div>
+                <div id="dvClinicalTemplate"></div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button"
+                                id="btnSaveVitalCharts" onclick="saveVitalCharts()">
+                            <i class="fa fa-save"></i> Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal"><i class="fa fa-times"></i> Cancel </button>
+                        @*<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" id="btndeActiveNursingCarePlan"><i class="fa fa-times"></i> DeActivate </button>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade in" id="PopupIntakeOutputCharts" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Intake and Output Charts</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input class="form-control datepicker" type="text" maxlength="8" id="dpIntakeOutputChartsDate" />
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Time</label>
+                            <input class="form-control timepicker" type="time" maxlength="8" id="tpIntakeOutputChartsTime" />
+                        </div>
+                    </div>
+                </div>
+                <div id="dvIntakeOutputClinicalTemplate"></div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button"
+                                id="btnSaveIntakeOutputCharts" onclick="saveIntakeOutputCharts()">
+                            <i class="fa fa-save"></i> Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal"><i class="fa fa-times"></i> Cancel </button>
+                        @*<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" id="btndeActiveNursingCarePlan"><i class="fa fa-times"></i> DeActivate </button>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade in" id="PopupDrugCharts" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Drug Charts</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label>Drug</label>
+                            <select class="selectpicker" data-live-search="true" id="cboDrug" title="" data-size="8">
+                                <option value="0" disabled>Select Drug</option>
+                                <option value="1">Nicip</option>
+                                <option value="2">Nicip plus</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>Dosages</label>
+                            <input class="form-control" type="text" id="txtDosages" />
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>Frequency</label>
+                            <input class="form-control" type="text" id="txtFrequency" />
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>Route</label>
+                            <input class="form-control" type="text" id="txtRoute" />
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>Medication Start Date</label>
+                            <input class="form-control datepicker" type="text" id="dpMedicationStartDate" />
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>Medication End Date</label>
+                            <input type="checkbox" id="chkMedicationEndDateDisable" onclick="disableMedicationEndDate()" style="float:left;padding-right:3px">
+                            <input class="form-control datepicker" type="text" id="dpMedicationEndDate" disabled="disabled" style="width:90%;" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button"
+                                id="btnSaveDrugCharts" onclick="saveDrugCharts()">
+                            <i class="fa fa-save"></i> Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal"><i class="fa fa-times"></i> Cancel </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade in" id="PopupDrugMedicationGiven" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Medication Given chart</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label>Drug</label>
+                            <input class="form-control" type="text" maxlength="8" readonly id="txtMedicationDrugName" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Medication Date</label>
+                            <input class="form-control datepicker" type="text" maxlength="8" id="dpMedicationGivenDate" />
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Medication Time</label>
+                            <input class="form-control timepicker" type="time" maxlength="8" id="tpMedicationGivenTime" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row mr-0" style="margin-right:0px;">
+                    <div class="col-lg-12 col-md-12 col-sm-12 mb-2" style="padding-right:0px">
+                        <table id="jqgDrugMedication"></table>
+                        <div id="jqpDrugMedication"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button"
+                                id="btnSaveDrugMedication" onclick="saveDrugMedication()">
+                            <i class="fa fa-save"></i> Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal"><i class="fa fa-times"></i> Cancel </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade in" id="PopupVentilatorLabValuesCharts" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Ventilator Settings / Lab Values</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input class="form-control datepicker" type="text" maxlength="8" id="dpVentilatorLabValuesChartsDate" />
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Time</label>
+                            <input class="form-control timepicker" type="time" maxlength="8" id="tpVentilatorLabValuesChartsTime" />
+                        </div>
+                    </div>
+                </div>
+                <div id="dvVentilatorLabValuesClinicalTemplate"></div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button"
+                                id="btnSaveVentilatorLabValuesCharts" onclick="saveVentilatorLabValuesCharts()">
+                            <i class="fa fa-save"></i> Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal"><i class="fa fa-times"></i> Cancel </button>
+                        @*<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" id="btndeActiveNursingCarePlan"><i class="fa fa-times"></i> DeActivate </button>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    
+    const DATA_COUNT = 7;
+    const NUMBER_CFG = { count: DATA_COUNT, min: -100, max: 100 };
+
+    var labels = months({ count: 7 });
+    labels = ['01-Oct-21 10:00:00', '01-Oct-21 11:00:00', '01-Oct-21 12:00:00', '01-Oct-21 13:00:00', '01-Oct-21 14:30:00', '01-Oct-21 15:00:00', '01-Oct-21 15:10:00', '01-Oct-21 17:12:00'];
+    //const data = {
+    //    labels: labels,
+    //    datasets: [
+    //        {
+    //            label: 'Dataset 1',
+    //            data: [10,16,20,10,20,30,40,100],
+    //            borderColor: CHART_COLORS.red
+    //        },
+    //        {
+    //            label: 'Dataset 2',
+    //            data: [15, 19, 26, 13, 60, 40, 41, 150],
+    //            borderColor: CHART_COLORS.blue
+    //        }
+    //    ]
+     //,options: {
+        //    responsive: true,
+        //    plugins: {
+        //        legend: {
+        //            position: 'top',
+        //        },
+        //        title: {
+        //            display: true,
+        //            text: 'Chart.js Line Chart'
+        //        }
+        //    }
+        //},
+        //options: {
+        //    scales: {
+        //        x: {
+        //            type: 'time',
+        //            time: {
+        //                unit: 'month'
+        //            }
+        //        }
+        //    }
+        //}
+    //};
+
+
+    //const data = [{ x: '2021-10-06T17:49:00', "net": 100, "cogs": 50, "gm": 50 }, { x: '2021-10-07T14:45:00', "net": 120, "cogs": 55, "gm": 75 }];
+    //const data = [{ "x": "jan", "TransactionID": 7, "VT-1": "45", "VT-2": "18", "VT-3": "5", "VT-4": "45", "VT-5": "4" },
+    //    { "x": "Feb", "TransactionID": 8, "VT-1": "50", "VT-2": "60", "VT-3": "70", "VT-4": "80", "VT-5": "90", "VT-11": "100" },
+    //    { "x": "mar", "TransactionID": 9, "VT-1": "22" },
+    //    { "x": "Apr", "TransactionID": 10, "VT-1": "56", "VT-2": "5", "VT-3": "5" }]
+    //new Chart("myChart", {
+    //    type: "line",
+    //    data: {
+    //        labels: ["jan", "Feb", "mar", "Apr"],
+    //        datasets: [{
+    //            label: "Temperature",
+    //            data: data,
+    //            parsing: { yAxisKey: "VT-1" }, borderColor: "#f53794"
+    //        }
+    //        ]
+    //    }
+    //});
+
+</script>

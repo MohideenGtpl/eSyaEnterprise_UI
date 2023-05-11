@@ -1,0 +1,118 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "ESA_05_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts{
+    <script src="~/js/Config/PaymentMode.js"></script>
+}
+
+@{
+    var userFormRole = (eSyaEnterprise_UI.Models.DO_UserFormRole)ViewBag.UserFormRole;
+}
+<script>
+    var _userFormRole = JSON.parse('@Html.Raw(Json.Serialize(userFormRole))');
+
+     var localization = {
+         PaymentId: '@Localizer["PaymentId"]',
+         AddPayment: '@Localizer["AddPaymentMode"]',
+         PaymentMode: '@Localizer["PaymentMode"]',
+         PaymentModecategory: '@Localizer["PaymentModecategory"]',
+         Edit: '@Localizer["Edit"]',
+         Active: '@Localizer["Active"]',
+         Actions: '@Localizer["Actions"]',
+         View: '@Localizer["View"]',
+         Save: '@Localizer["Save"]',
+         Update: '@Localizer["Update"]',
+         Delete: '@Localizer["Delete"]',
+         Activate: '@Localizer["Activate"]',
+         Deactivate: '@Localizer["Deactivate"]',
+         AddPaymentMode: '@Localizer["AddPaymentMode"]',
+         UpdatePaymentMode: '@Localizer["UpdatePaymentMode"]',
+         ViewPaymentMode: '@Localizer["ViewPaymentMode"]',
+         DeletePaymentMode:'@Localizer["DeletePaymentMode"]',
+    };
+</script>
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <table id="jqgPaymentMode"></table>
+        <div id="jqpPaymentMode"></div>
+    </div>
+</div>
+
+<div class="modal fade in" id="PopupPaymentMode" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-md  " role="document" style="box-shadow:none;">
+        <div class="modal-content ">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">@Localizer["AddPayment"]</h4>
+            </div>
+
+            <div class="modal-body">
+              
+                <div class="row padbot4">
+
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            <label for="txtPaymentId">@Localizer["PaymentId"]</label>
+                            <input class="form-control" type="text" maxlength="15" id="txtPaymentId" data-inputmask="'mask': '9', 'repeat': 10, 'greedy' : false" />
+
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            <label for="">@Localizer["PaymentMode"]</label>
+
+                            <select class="selectpicker" data-live-search="true" id="cboPaymentModeId" title="Select" data-size="4" data-container="body" asp-items="@ViewBag.Mode">
+                                <option value="0">@Localizer["Select"]  </option>
+                            </select>
+
+
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            <label for="">@Localizer["PaymentModecategory"]</label>
+
+                            <select class="selectpicker" data-live-search="true" id="cboPaymentModecategoryId" title="Select" data-size="4" data-container="body" asp-items="@ViewBag.Category">
+                                <option value="0">@Localizer["Select"]  </option>
+                            </select>
+
+
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                        <div class="default-checkbox">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActiveStatus">
+                                <input type="checkbox" id="chkActiveStatus" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">@Localizer["Active"]</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSavePaymentMode" onclick="fnSavePaymentMode()"><i class="fa fa-save"></i> @Localizer["Save"]   </button>
+                        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" id="btnDeactivatePaymentMode" onclick="fnDeletePaymentMode()"><i class="fas fa-ban"></i>  @Localizer["DeActivate"] </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" id="btnCancelPaymentMode"> <i class="fa fa-times"></i> @Localizer["Cancel"] </button>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+

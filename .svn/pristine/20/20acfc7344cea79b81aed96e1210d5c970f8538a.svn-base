@@ -1,0 +1,65 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewData["Title"] = "V_4023_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts{
+    <script src="~/js/eSyaPayroll/ArrearDetails.js"></script>
+}
+
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-6 form-group">
+        <label>Employee</label>
+        <select class="selectpicker" data-live-search="true" id="cboEmployeenumber" title="" data-size="8"
+                asp-items="@ViewBag.Employees" onchange="fnGridLoadPayTo()"></select>
+
+    </div>
+
+    <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+        <label>Pay Period</label>
+        <select class="selectpicker" data-live-search="true" id="cboPayperiod" title="" data-size="8"
+                asp-items="@ViewBag.Payperiods" onchange="fnGridLoadPayTo()"></select>
+    </div>
+
+
+</div>
+
+
+
+
+
+<div class="row">
+
+    <div class="col-sm-4 col-4 form-group" style="background: #ffcccc; vertical-align: middle !important; display: inline !important;  padding: 10px;">
+        <div class="radio" style="margin:0px;height:20px">
+            <label style="font-size:14px !important;color:#797172 !important"><input type="radio" name="rdoStatus" value="ToPay" checked onchange="fnGridLoadPayTo()" /> To Pay </label>
+        </div>
+    </div>
+    <div class="col-sm-4 col-4 form-group" style="background: #ccffd9; vertical-align: middle !important; display: inline !important;  padding: 10px;margin-left: -15px;">
+        <div class="radio" style="margin:0px;"><label style="font-size:14px !important;color:#797172 !important"><input type="radio" name="rdoStatus" value="Paid" onchange=" fnGridLoadArrearDetails()" /> Paid</label></div>
+    </div>
+</div>
+
+
+<div class="row padbot10" id="divpayto">
+    <div class="col-lg-12 col-md-12 col-sm-12 itemblur">
+        <table id="jqgToPay"></table>
+        <div id="jqpToPay"></div>
+    </div>
+</div>
+
+
+<div class="row padbot10" id="divpaid">
+    <div class="col-lg-12 col-md-12 col-sm-12 itemblur">
+        <table id="jqgPaid"></table>
+        <div id="jqpPaid"></div>
+    </div>
+</div>
+
+<hr />
+<div class="col-lg-3 col-md-3 col-sm-6 form-group text-right padtop20">
+    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveArreardetails" onclick="fnSaveArreardetails()">
+        Save
+    </button>
+</div>

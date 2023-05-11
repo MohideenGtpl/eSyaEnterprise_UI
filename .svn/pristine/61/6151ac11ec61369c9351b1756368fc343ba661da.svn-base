@@ -1,0 +1,123 @@
+﻿
+var _isClicked = '';
+    $(function () {
+        fnLoadPatientCategoryAttribute();
+        $.contextMenu({
+            selector: "#btnPatientCategoryAttribute",
+            trigger: 'left',
+            items: {
+                jqgEdit: { name: localization.Edit, icon: "edit", callback: function (key, opt) { fnEditPatientCategoryAttribute(event, 'edit') } },
+                jqgView: { name: localization.View, icon: "view", callback: function (key, opt) { fnEditPatientCategoryAttribute(event, 'view') } },
+                jqgDelete: { name: localization.Delete, icon: "delete", callback: function (key, opt) { fnEditPatientCategoryAttribute(event, 'delete') } },
+            }
+        });
+        $(".context-menu-icon-edit").html("<span class='icon-contextMenu'><i class='fa fa-pen'></i>" + localization.Edit + " </span>");
+        $(".context-menu-icon-view").html("<span class='icon-contextMenu'><i class='fa fa-eye'></i>" + localization.View + " </span>");
+        $(".context-menu-icon-delete").html("<span class='icon-contextMenu'><i class='fa fa-trash'></i>" + localization.Delete + " </span>");
+})
+function fnLoadPatientCategoryAttribute() {
+    $("#jqgPatientCategoryAttribute").jqGrid('GridUnload');
+    $("#jqgPatientCategoryAttribute").jqGrid({
+        url: getBaseURL() + '',
+        datatype: 'local',
+        mtype: 'GET',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: [localization.PatientType, localization.PatientCategory, localization.ActiveStatus, localization.Actions],
+        data: [{
+            PatientType: 'OP', PatientCategory: 'General', ActiveStatus: true, Actions: ''
+        }, {
+                PatientType: 'IP', PatientCategory: 'General', ActiveStatus: false, Actions: ''
+            }],
+        colModel: [
+
+            { name: "PatientType", width: 150, editable: false, align: 'left', hidden: false },
+            { name: "PatientCategory", width: 150, editable: false, align: 'left' },
+            { name: "ActiveStatus", width: 35, editable: false, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+            {
+                name: 'edit', search: false, align: 'left', width: 35, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="mr-1 btn btn-outline" id="btnPatientCategoryAttribute"><i class="fa fa-ellipsis-v"></i></button>'
+                }
+            },
+        ],
+        rowNum: 10,
+        rowList: [10, 20, 30, 50],
+        emptyrecords: "No records to Veiw",
+        pager: "#jqpPatientCategoryAttribute",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: false,
+        height: 'auto',
+        width: 'auto',
+        //scroll: false,
+        autowidth: true,
+        shrinkToFit: true,
+        forceFit: true,
+        loadonce: false,
+       
+       // editurl: 'url',
+        // cellsubmit: 'clientArray',
+
+        loadComplete: function (data) {
+           $("#jqgPatientCategoryAttribute").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+        },
+        onSelectRow: function (rowid, status, e) {
+            _isClicked = 1;
+            var $self = $(this), $target = $(e.target),
+                p = $self.jqGrid("getGridParam"),
+                rowData = $self.jqGrid("getLocalRow", rowid),
+                $td = $target.closest("tr.jqgrow>td"),
+                iCol = $td.length > 0 ? $td[0].cellIndex : -1,
+                cmName = iCol >= 0 ? p.colModel[iCol].name : "";
+         
+              },
+        
+    }).jqGrid('navGrid', '#jqpPatientCategoryAttribute', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpPatientCategoryAttribute', {
+        caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshPatientCategoryAttribute
+        }).jqGrid('navButtonAdd', '#jqpPatientCategoryAttribute', {
+            caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddPatientCategoryAttribute
+    });
+    fnAddGridSerialNoHeading();
+}
+function fnAddPatientCategoryAttribute(id) {
+   
+    if (_isClicked == 0 || null || undefined) {
+        toastr.warning("Please select any row on the grid");
+        return false;
+    }
+    else {
+        $("#sectionGrid").css('display', 'none');
+        $('#sectionTabs').css('display', 'block');
+        _isClicked = 0;
+
+    }
+}
+function fnGridRefreshPatientCategoryAttribute() {
+    $("#jqgPatientCategoryAttribute").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+    $('td,tr').removeClass('ui-state-highlight ui-state-hover').removeAttr("aria-selected");
+}
+function fnClosePatientCategoryAttributeGrid() {
+    $("#sectionGrid").show();
+    $('#sectionTabs').css('display', 'none');
+    $('.tab-pane').removeClass('active show');
+    $("#careCard").addClass('active show');
+    $('#v-pills-tab a').removeClass('active');
+    $('#careCard-tab').addClass('active');
+    fnGridRefreshPatientCategoryAttribute();
+    $("#btnSaveDoctorProfile,#btnSaveDocumentSubmission,#btncareCard,#btnSaveSpecialty,#btnSaveRateTypes,#btnSaveDependent,#btnClearCareCard,#btnClearRateTypes,#btnClearSpecialty,#btnClearDependent,#btnClearDocumentSubmission").css('display', 'inline-block');
+}
+function fnEditPatientCategoryAttribute(e,actiontype) {
+    var rowid = $("#jqgPatientCategoryAttribute").jqGrid('getGridParam', 'selrow');
+    var rowData = $('#jqgPatientCategoryAttribute').jqGrid('getRowData', rowid);
+    if (actiontype.trim() == "edit") {
+        $("#btnSaveDoctorProfile,#btnSaveDocumentSubmission,#btncareCard,#btnSaveSpecialty,#btnSaveRateTypes,#btnSaveDependent").html("<i class='fa fa-sync'></i> Update");
+        $("#sectionGrid").css('display', 'none');
+        $('#sectionTabs').css('display', 'block');
+    }
+    if (actiontype.trim() == "view") {
+        $("#btnSaveDoctorProfile,#btnSaveDocumentSubmission,#btncareCard,#btnSaveSpecialty,#btnSaveRateTypes,#btnSaveDependent,#btnClearCareCard,#btnClearRateTypes,#btnClearSpecialty,#btnClearDependent,#btnClearDocumentSubmission").css('display', 'none');
+        $("#sectionGrid").css('display', 'none');
+        $('#sectionTabs').css('display', 'block');
+    }
+}

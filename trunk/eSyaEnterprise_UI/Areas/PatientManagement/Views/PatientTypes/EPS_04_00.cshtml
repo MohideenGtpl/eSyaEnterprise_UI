@@ -1,0 +1,52 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+@{
+    ViewData["Title"] = "EPS_04_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/css/jquery.contextMenu.min.css" rel="stylesheet" />
+<script>
+    var localization = {
+
+        Select: '@Localizer["Select"]',
+        ActiveStatus: '@Localizer["Status"]',
+        Actions: '@Localizer["Actions"]',
+        CareCard: '@Localizer["Care Card"]',
+        PatientType: '@Localizer["PatientType"]',
+        PatientCategory: '@Localizer["PatientCategory"]',
+        BusinessKey: '@Localizer["BusinessKey"]',
+        Currency: '@Localizer["Currency"]',
+        Rate: '@Localizer["Rate"]',
+        ValidForNoOfDays: '@Localizer["ValidForNoOfDays"]',
+        DependentDesc: '@Localizer["DependentDescription"]',
+        EffectiveFrom: '@Localizer["EffectiveFrom"]',
+        EffectiveTill: '@Localizer["EffectiveTill"]',
+    }
+</script>
+@section scripts{
+    <script src="~/js/PatientManagement/PatientTypes/CareCardRates.js"></script>
+    <script src="~/js/jquery.contextMenu.min.js"></script>
+
+}
+
+<div class="row">
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label>@Localizer["BusinessLocation"]</label>
+            @await Component.InvokeAsync("UserBusinessLocation")
+        </div>
+    </div>
+
+    <div class="col-lg-12 col-12 col-md-12 form-group">
+        <table id="jqgCareCardRates"></table>
+        <div id="jqpCareCardRates"></div>
+    </div>
+</div>
+
+<script>
+var Currencies = (@Html.Raw(Json.Serialize(ViewBag.Currencies)));
+</script>

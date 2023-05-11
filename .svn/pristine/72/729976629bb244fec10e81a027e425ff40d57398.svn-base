@@ -1,0 +1,200 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "V_273_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    var userFormRole = (eSyaEnterprise_UI.Models.DO_UserFormRole)ViewBag.UserFormRole;
+}
+<script>
+    var _userFormRole = JSON.parse('@Html.Raw(Json.Serialize(userFormRole))');
+
+     var localization = {
+         AddPatientCategory: '@Localizer["AddPatientCategory"]',
+         ViewPatientCategory: '@Localizer["ViewPatientCategory"]',
+         EditPatientCategory: '@Localizer["EditPatientCategory"]',
+         Save: '@Localizer["Save"]',
+         Update: '@Localizer["Update"]',
+         SpecialtyDescription: '@Localizer["SpecialtyDescription"]',
+         Active: '@Localizer["Active"]',
+    };
+
+</script>
+
+<link href="~/css/jsTree.css" rel="stylesheet" />
+@section scripts{
+    <script src="~/js/jsTree.js"></script>
+    <script src="~/js/eSyaCustomer/CustomerAttributes.js"></script>
+}
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-6">
+        <div id="jstPatientType"></div>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6">
+        <div class="mdl-card mdl-shadow--2dp" id="pnlMainMenu" style="width: 100%; display:none">
+            <div id="pnlMainModuleHeading" class="mdl-card__title mdl-card--expand padleft0 padtop0 h-60 d-block">
+                <h5 class="mdl-card__title-text"> @Localizer["AddPatientCategory"]</h5>
+            </div>
+            <div class="mdl-card__supporting-text fullwidth pad0 mb-20">
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <input type="text" class="form-control" id="txtBusinessId" style="display:none">
+                    </div>
+                </div>
+
+
+                <div class="row padbot4 mar0">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group collapse">
+                            <label for="txtPatientTypeId">Patient Type Id</label>
+                            <input id="txtPatientTypeId" class="form-control" maxlength="10" type="text" data-inputmask="'mask': '9', 'repeat': 10, 'greedy' : false" />
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group collapse">
+                            <label for="txtPatientCategoryId">Patient Category Id</label>
+                            <input id="txtPatientCategoryId" class="form-control" maxlength="10" type="text" data-inputmask="'mask': '9', 'repeat': 10, 'greedy' : false" />
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label>@Localizer["PatientCategory"] </label>
+                            <select class="selectpicker" data-live-search="true" id="cboPatientcategory" title="Select" Categorydata-size="8" asp-items="@ViewBag.PatientCategory">
+                                <option value="0">@Localizer["Select"]  </option>
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label>Rate Type @@ Which Level </label>
+                            <select class="selectpicker" data-live-search="false" id="cboServiceWiseRateType" title="Select" Categorydata-size="8">
+                                <option value="N"> None </option>
+                                <option value="T"> Service Type </option>
+                            </select>
+                        </div>
+                    </div>
+                      <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group" id="divRateType">
+                            <label> Rate Type </label>
+                            <select class="selectpicker" data-live-search="true" id="cboRateType" title="Select" Categorydata-size="8" asp-items="@ViewBag.RateType">
+                                <option value="0">@Localizer["Select"]  </option>
+                            </select>
+
+                        </div>
+                    </div>
+                     <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="default-checkbox">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkTreatmentallowedop">
+                                <input type="checkbox" id="chkTreatmentallowedop" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">@Localizer["TreatmentAllowedOP"] </span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="default-checkbox">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkTreatmentallowedip">
+                                <input type="checkbox" id="chkTreatmentallowedip" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">@Localizer["TreatmentAllowedIP"] </span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="default-checkbox">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkCareCardApplicable">
+                                <input type="checkbox" id="chkCareCardApplicable" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">Care Card Applicable </span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="default-checkbox">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActivestatus">
+                                <input type="checkbox" id="chkActivestatus" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">@Localizer["Active"] </span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="default-checkbox">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsspecialtylink">
+                                <input type="checkbox" id="chkIsspecialtylink" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">@Localizer["IsSpecialtyLink"] </span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="default-checkbox ">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkValidateDocument">
+                                <input type="checkbox" id="chkValidateDocument" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">Validate Document </span>
+                            </label>
+                        </div>
+                    </div>
+           
+                    <div class="col-lg-12 col-md-12 col-sm-12 padtop15" id="divjqgrid">
+                        <table id="jqgSpecialtyLink"></table>
+                        <div id="jqpSpecialtyLink"></div>
+                    </div>
+
+                    <div class="col-lg-12 col-md-12 col-sm-12 padtop15" id="divjqgridRateType">
+                        <table id="jqgRateType"></table>
+                        <div id="jqpRateType"></div>
+                    </div>
+
+                    <div class="col-lg-12 col-md-12 col-sm-12 padtop15" id="divjqgridDocumentType">
+                        <table id="jqgDocumentType"></table>
+                        <div id="jqpDocumentType"></div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="mdl-card__actions mdl-card--border" style="text-align: center;">
+                <button class="mdl-button mdl-js-button mdl-button--raised primary-button" id="btnAddPatientType" onclick="fnSavePatientCategory()">
+                    @Localizer["Save"] 
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-6">
+        <div>
+            <h5>Actions</h5>
+        </div>
+        <div class="row">
+          
+            <div class="col-lg-12 btn_pdnTop">
+                <button class="mdl-button mdl-js-button mdl-button--raised primary-button btn_wdth" id="btnExpandAll" onclick="fnExpandAll()">
+                    <i class="fas fa-expand"></i>   @Localizer["ExpandAll"]
+                </button>
+            </div>
+            <div class="col-lg-12 btn_pdnTop">
+                <button class="mdl-button mdl-js-button mdl-button--raised primary-button btn_wdth" id="btnCollapseAll" onclick="fnCollapseAll()">
+                    <i class="fas fa-compress"></i>   @Localizer["CollapseAll"]
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+
+ var RateTypes = (@Html.Raw(Json.Serialize(ViewBag.RateType)));
+
+</script>

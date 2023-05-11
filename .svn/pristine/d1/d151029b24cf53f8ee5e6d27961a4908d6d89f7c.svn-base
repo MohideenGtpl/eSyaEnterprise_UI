@@ -1,0 +1,39 @@
+﻿
+@{
+    ViewData["Title"] = "V_1573_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/jsTree.css" rel="stylesheet" />
+@section scripts{
+    <script src="~/js/jsTree.js"></script>
+    <script src="~/js/eSyaClinicalServices/SpecialtyDoctorLink.js"></script>
+}
+<div class="row padbot10">
+    <div class="col-lg-4 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color">Business Key</label>
+            <select class="selectpicker" data-live-search="false" id="" title="Choose Business Key">
+                
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color">Doctor</label>
+            <select class="selectpicker" data-live-search="false" id="" title="Choose Doctor">
+                
+            </select>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-6">
+        <div id="jstSpecialtyUnit"></div>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6">
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="">
+            Save
+        </button>
+    </div>
+    </div>
+

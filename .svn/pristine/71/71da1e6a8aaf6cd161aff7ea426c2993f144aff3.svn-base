@@ -1,0 +1,83 @@
+﻿$(document).ready(function () {
+    fnGridLoadSpecialtyUnits();
+    $("#divForm").hide();
+
+})
+
+function fnGridLoadSpecialtyUnits() {
+    $("#jqgSpecialtyUnits").jqGrid('GridUnload');
+    $("#jqgSpecialtyUnits").jqGrid({
+        url: getBaseURL() + '/SpecialtyUnits/GetSpecialtyUnitsbyBusinessKey?Businesskey=' + $("#cboBusinessKey").val(),
+        datatype: 'json',
+        mtype: 'Post',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["", "","Specialty", "Effective From", "No Of Units", "New Patients", "Repeat Patients", "No of Male Beds", "No of Female Beds", "No Of Common Beds", "Max Stay Allowed", "Active", "Actions"],
+        colModel: [
+            { name: "BusinessKey", width: 50, editable: true, align: 'left', hidden: true },
+            { name: "SpecialtyId", width: 50, editable: true, align: 'left', hidden: true },
+            
+            { name: "SpecialtyDesc", width: 50, editable: false, hidden: false, align: 'left', resizable: true },
+
+            {
+                name: 'EffectiveFrom', index: 'EffectiveFrom', width: 60, sorttype: "date", formatter: "date", formatoptions:
+                    { newformat: _cnfjqgDateFormat }
+            },          
+            { name: "NoOfUnits", width: 50, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            { name: "NewPatient", width: 50, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "RepeatPatient", width: 50, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "NoOfMaleBeds", width: 50, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "NoOfFemaleBeds", width: 50, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "NoOfCommonBeds", width: 40, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "MaxStayAllowed", width: 40, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "ActiveStatus", width: 35, editable: false, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+            {
+                name: 'edit', search: false, align: 'left', width: 74, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditSpecialtyUnits(event,\'edit\')"><i class="fas fa-pencil-alt"></i> ' + localization.Edit + ' </button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnEditSpecialtyUnits(event,\'view\')"><i class="far fa-file-alt"></i> ' + localization.View + ' </button>'
+
+                }
+            }
+        ],
+        pager: "#jqpSpecialtyUnits",
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0,
+        loadComplete: function (data) {
+            //SetGridControlByAction();
+        },
+    }).jqGrid('navGrid', '#jqpSpecialtyUnits', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpSpecialtyUnits', {
+        caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshSpecialtyUnits
+    });
+    fnAddGridSerialNoHeading();
+}
+
+function fnEditSpecialtyUnits() {
+    $("#divForm").css('display', 'block');
+    $("#divGrid").hide();
+}
+function fnGridRefreshSpecialtyUnits() {
+    $("#jqgSpecialtyUnits").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+function fnCloseSpecialtyUnits() {
+    $("#divForm").css('display', 'none');
+    $("#divGrid").show();
+}
+
+function fnSaveSpecialtyUnits() {
+
+}
+
+
+
+

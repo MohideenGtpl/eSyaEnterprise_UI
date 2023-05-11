@@ -1,0 +1,135 @@
+﻿@{
+    ViewData["Title"] = "V_20_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts{
+    <script src="~/js/Config/Parameters.js"></script>
+}
+
+<div class="row padbot10">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="ParametersContainer">
+            <table id="jqgParametersHeader"></table>
+            <div id="jqpParametersHeader"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade in" id="PopupParametersHeader" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-md" role="document" style="box-shadow:none;">
+        <div class="modal-content ">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Add Parameter Type</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row padbot4">
+                    <div class="col-lg-4 col-md-4 col-sm-12 lblright">
+                        <div class="form-group lblright">
+                            <label for="txtParameterTypeId" class="text-right">Parameter Type ID</label>
+                            <input id="txtParameterTypeId" class="form-control integerFormat" maxlength="5" type="text" />
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group">
+                            <label for="txtParameterTypeDescription">Parameter Type Description</label>
+                            <input id="txtParameterTypeDescription" class="form-control" maxlength="50" type="text" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                        <div class="default-checkbox">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkPTActiveStatus">
+                                <input type="checkbox" id="chkPTActiveStatus" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">Active</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveParametersType" onclick="fnSaveParameterType();">
+                            Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="#" onclick="fnClearParameterTypeFields()"> Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fullscreen fade in" id="PopupParameterDetail" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <input type="text" id="txtParameterType" style="display:none" />
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header popupHeader">
+                <h4 class="modal-title"> Parameters </h4>
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 form-group">
+                        Parameter Type :  <span id="lblParameterType" class="fixedText"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 form-group">
+                        <table id="jqgParameters"></table>
+                        <div id="jqpParameters"></div>
+                    </div>
+                </div>
+                <div class="row padbot4" id="divParameters">
+                    <div class="col-lg-12 col-md-12 col-sm-12 collapse">
+                        <div class="form-group">
+                            <label for="txtParameterId">Parameter ID</label>
+                            <input id="txtParameterId" class="form-control" maxlength="10" type="text" />
+                        </div>
+                    </div>
+                    <div class="col-lg-9 col-md-9 col-sm-9">
+                        <div class="form-group">
+                            <label for="txtParameterDescription">Parameter Description</label>
+                            <input id="txtParameterDescription" class="form-control" maxlength="50" type="text" />
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-12">
+                        <div class="form-group">
+                            <label class="lable-color">Value Type</label>
+                            <div>
+                                <select class="selectpicker" data-live-search="false" id="cboParameterValueType" title="">
+                                    <option value="A">Amount</option>
+                                    <option value="B">Boolean</option>
+                                    <option value="D">Description</option>
+                                    <option value="P">Percentage</option>
+                                    <option value="V">Value</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                        <div class="default-checkbox padtop0 padbot20">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActiveStatus">
+                                <input type="checkbox" id="chkActiveStatus" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">Active</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 text-center">
+                        <hr />
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button mr-10" id="btnSaveParameters" onclick="fnSaveParameters();">
+                            Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="#" onclick="fnClearFields()"> Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

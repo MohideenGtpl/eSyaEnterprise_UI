@@ -1,0 +1,433 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.ActionFilter;
+using eSyaEnterprise_UI.Areas.eSyaServices.Data;
+using eSyaEnterprise_UI.Areas.eSyaServices.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+
+namespace eSyaEnterprise_UI.Areas.eSyaServices.Controllers
+{
+    [SessionTimeout]
+    public class ServiceRatesController : Controller
+    {
+        private readonly IeSyaServicesAPIServices _eSyaServicesAPIServices;
+        private readonly ILogger<ServiceRatesController> _logger;
+        public ServiceRatesController(IeSyaServicesAPIServices eSyaServicesAPIServices, ILogger<ServiceRatesController> logger)
+        {
+            _eSyaServicesAPIServices = eSyaServicesAPIServices;
+            _logger = logger;
+        }
+        
+
+        #region ServiceBaseRate
+        /// <summary>
+        /// Service Base Rate
+        /// </summary>
+        /// <returns></returns>
+
+        [Area("eSyaServices")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public async Task<IActionResult> V_1514_00()
+        {
+            ViewBag.UserFormRoles = new DO_UserFormRole { IsInsert = true, IsEdit = true, IsDelete = true };
+            var serviceResponse = await _eSyaServicesAPIServices.HttpClientServices.GetAsync<List<DO_BusinessLocation>>("CommonMethod/GetBusinessKey");
+            if (serviceResponse.Status)
+            {
+                if (serviceResponse.Data != null)
+                {
+                    ViewBag.BusinessKey = serviceResponse.Data.Select(b => new SelectListItem
+                    {
+                        Value = b.BusinessKey.ToString(),
+                        Text = b.LocationDescription,
+                    }).ToList();
+                }
+            }
+            else
+            {
+                _logger.LogError(new Exception(serviceResponse.Message), "UD:V_1514_00:GetBusinessKey");
+            }
+            var serviceResponse1 = await _eSyaServicesAPIServices.HttpClientServices.GetAsync<List<DO_ApplicationCode>>("CommonMethod/GetApplicationCodesByCodeType?codetype=62");
+            if (serviceResponse1.Status)
+            {
+                if (serviceResponse1.Data != null)
+                {
+                    ViewBag.RateType = serviceResponse1.Data.Select(r => new SelectListItem
+                    {
+                        Value = r.ApplicationCode.ToString(),
+                        Text = r.CodeDesc,
+                    }).ToList();
+                }
+            }
+            else
+            {
+                _logger.LogError(new Exception(serviceResponse1.Message), "UD:V_1514_00:GetApplicationCodesByCodeType: CodeType {0} 62");
+            }
+            var serviceResponse2 = await _eSyaServicesAPIServices.HttpClientServices.GetAsync<List<DO_CurrencyCode>>("CommonMethod/GetCurrencyCodes");
+            if (serviceResponse2.Status)
+            {
+                if (serviceResponse2.Data != null)
+                {
+                    ViewBag.CurrencyCode = serviceResponse2.Data.Select(c => new SelectListItem
+                    {
+                        Value = c.CurrencyCode.ToString(),
+                        Text = c.CurrencyName,
+                    }).ToList();
+                }
+            }
+            else
+            {
+                _logger.LogError(new Exception(serviceResponse2.Message), "UD:V_1514_00:GetCurrencyCodes");
+            }
+
+            return View();
+
+        }
+
+        /// <summary>
+        /// Add Service Base Rate
+        /// </summary>
+        /// <returns></returns>
+
+        [Area("eSyaServices")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public async Task<IActionResult> V_1520_00()
+        {
+            ViewBag.UserFormRoles = new DO_UserFormRole { IsInsert = true, IsEdit = true, IsDelete = true };
+            var serviceResponse = await _eSyaServicesAPIServices.HttpClientServices.GetAsync<List<DO_BusinessLocation>>("CommonMethod/GetBusinessKey");
+            if (serviceResponse.Status)
+            {
+                if (serviceResponse.Data != null)
+                {
+                    ViewBag.BusinessKey = serviceResponse.Data.Select(b => new SelectListItem
+                    {
+                        Value = b.BusinessKey.ToString(),
+                        Text = b.LocationDescription,
+                    }).ToList();
+                }
+            }
+            else
+            {
+                _logger.LogError(new Exception(serviceResponse.Message), "UD:V_1520_00:GetBusinessKey");
+            }
+            var serviceResponse1 = await _eSyaServicesAPIServices.HttpClientServices.GetAsync<List<DO_ApplicationCode>>("CommonMethod/GetApplicationCodesByCodeType?codetype=62");
+            if (serviceResponse1.Status)
+            {
+                if (serviceResponse1.Data != null)
+                {
+                    ViewBag.RateType = serviceResponse1.Data.Select(r => new SelectListItem
+                    {
+                        Value = r.ApplicationCode.ToString(),
+                        Text = r.CodeDesc,
+                    }).ToList();
+                }
+            }
+            else
+            {
+                _logger.LogError(new Exception(serviceResponse1.Message), "UD:V_1520_00:GetApplicationCodesByCodeType: CodeType {0} 62");
+            }
+            var serviceResponse2 = await _eSyaServicesAPIServices.HttpClientServices.GetAsync<List<DO_CurrencyCode>>("CommonMethod/GetCurrencyCodes");
+            if (serviceResponse2.Status)
+            {
+                if (serviceResponse2.Data != null)
+                {
+                    ViewBag.CurrencyCode = serviceResponse2.Data.Select(c => new SelectListItem
+                    {
+                        Value = c.CurrencyCode.ToString(),
+                        Text = c.CurrencyName,
+                    }).ToList();
+                }
+            }
+            else
+            {
+                _logger.LogError(new Exception(serviceResponse2.Message), "UD:V_1520_00:GetCurrencyCodes");
+            }
+
+            return View();
+
+        }
+
+        public async Task<ActionResult> GetServiceBaseRateByBKeyRateTypeCurrCode(int businessKey, int ratetype,string currencycode)
+        {
+            try
+            {
+                var serviceResponse = await _eSyaServicesAPIServices.HttpClientServices.GetAsync<List<DO_ServiceBaseRate>>("ServiceRates/GetServiceBaseRateByBKeyRateTypeCurrCode?businessKey=" + businessKey + "&ratetype=" + ratetype + "&currencycode=" + currencycode);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        var ServiceBaseRate_list = serviceResponse.Data;
+                        return Json(ServiceBaseRate_list);
+                    }
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetServiceGetServiceBaseRateByBKeyRateType:For BusinessKey {0} , RateType {1}, CurrencyCode {2}", businessKey,ratetype,currencycode);
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetServiceGetServiceBaseRateByBKeyRateType:For BusinessKey {0} , RateType {1}, CurrencyCode {2}", businessKey,ratetype,currencycode);
+                return Json(new DO_ReturnParameter() { Status = false, Message = ex.Message });
+            }
+        }
+        public async Task<ActionResult> GetServiceBaseRateByBKeyRateTypeCurrCodeForAdd(int businessKey, int ratetype, string currencycode)
+        {
+            try
+            {
+                var serviceResponse = await _eSyaServicesAPIServices.HttpClientServices.GetAsync<List<DO_ServiceBaseRate>>("ServiceRates/GetServiceBaseRateByBKeyRateTypeCurrCodeForAdd?businessKey=" + businessKey + "&ratetype=" + ratetype + "&currencycode=" + currencycode);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        var ServiceBaseRate_list = serviceResponse.Data;
+                        return Json(ServiceBaseRate_list);
+                    }
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetServiceGetServiceBaseRateByBKeyRateTypeForAdd:For BusinessKey {0} , RateType {1}, CurrencyCode {2}", businessKey, ratetype, currencycode);
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetServiceGetServiceBaseRateByBKeyRateTypeForAdd:For BusinessKey {0} , RateType {1}, CurrencyCode {2}", businessKey, ratetype, currencycode);
+                return Json(new DO_ReturnParameter() { Status = false, Message = ex.Message });
+            }
+        }
+        public async Task<ActionResult> AddOrUpdateServiceBaseRate(List<DO_ServiceBaseRate> obj)
+        {
+            try
+            {
+                foreach (var ser_br in obj)
+                {
+                    ser_br.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                    ser_br.CreatedOn = DateTime.Now;
+                    ser_br.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                    ser_br.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                }
+
+
+                var serviceResponse = await _eSyaServicesAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("ServiceRates/AddOrUpdateServiceBaseRate", obj);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Data.Message), "UD:AddOrUpdateServiceBaseRate:params:" + JsonConvert.SerializeObject(obj));
+                        return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Data.Message });
+                    }
+
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:AddOrUpdateServiceBaseRate:params:" + JsonConvert.SerializeObject(obj));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:AddOrUpdateServiceBaseRate:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+        public async Task<ActionResult> AddServiceBaseRate(List<DO_ServiceBaseRate> obj)
+        {
+            try
+            {
+                foreach (var ser_br in obj)
+                {
+                    ser_br.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                    ser_br.CreatedOn = DateTime.Now;
+                    ser_br.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                    ser_br.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                }
+
+
+                var serviceResponse = await _eSyaServicesAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("ServiceRates/AddServiceBaseRate", obj);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        return Json(serviceResponse.Data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Data.Message), "UD:AddServiceBaseRate:params:" + JsonConvert.SerializeObject(obj));
+                        return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Data.Message });
+                    }
+
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:AddServiceBaseRate:params:" + JsonConvert.SerializeObject(obj));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:AddServiceBaseRate:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+        #endregion
+
+        #region ServiceRatePlan
+        /// <summary>
+        /// Service Rate Plan
+        /// </summary>
+        /// <returns></returns>
+
+        [Area("eSyaServices")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public async Task<IActionResult> V_1516_00()
+        {
+            ViewBag.UserFormRoles = new DO_UserFormRole { IsInsert = true, IsEdit = true, IsDelete = true };
+            var serviceResponse = await _eSyaServicesAPIServices.HttpClientServices.GetAsync<List<DO_BusinessLocation>>("CommonMethod/GetBusinessKey");
+            if (serviceResponse.Status)
+            {
+                if (serviceResponse.Data != null)
+                {
+                    ViewBag.BusinessKey = serviceResponse.Data.Select(b => new SelectListItem
+                    {
+                        Value = b.BusinessKey.ToString(),
+                        Text = b.LocationDescription,
+                    }).ToList();
+                }
+            }
+            else
+            {
+                _logger.LogError(new Exception(serviceResponse.Message), "UD:V_1516_00:GetBusinessKey");
+            }
+            var serviceResponse1 = await _eSyaServicesAPIServices.HttpClientServices.GetAsync<List<DO_ApplicationCode>>("CommonMethod/GetApplicationCodesByCodeType?codetype=62");
+            if (serviceResponse1.Status)
+            {
+                if (serviceResponse1.Data != null)
+                {
+                    ViewBag.RateType = serviceResponse1.Data.Select(r => new SelectListItem
+                    {
+                        Value = r.ApplicationCode.ToString(),
+                        Text = r.CodeDesc,
+                    }).ToList();
+                }
+            }
+            else
+            {
+                _logger.LogError(new Exception(serviceResponse1.Message), "UD:V_1516_00:GetApplicationCodesByCodeType: CodeType {0} 62");
+            }
+
+
+            return View();
+
+        }
+
+        public async Task<ActionResult> GetServiceRatePlansByBKey(int businessKey)
+        {
+            try
+            {
+                var serviceResponse = await _eSyaServicesAPIServices.HttpClientServices.GetAsync<List<DO_ServiceRatePlan>>("ServiceRates/GetServiceRatePlansByBKey?businessKey=" + businessKey);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        var ServiceRatePlan_list = serviceResponse.Data;
+                        return Json(ServiceRatePlan_list);
+                    }
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetServiceRatePlansByBKey:For BusinessKey {0} ", businessKey);
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetServiceRatePlansByBKey:For BusinessKey {0} ", businessKey);
+                return Json(new DO_ReturnParameter() { Status = false, Message = ex.Message });
+            }
+        }
+        public async Task<ActionResult> AddOrUpdateServiceRatePlan(DO_ServiceRatePlan obj)
+        {
+            try
+            {
+                obj.FormId = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                obj.CreatedOn = DateTime.Now;
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                var serviceResponse = await _eSyaServicesAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("ServiceRates/AddOrUpdateServiceRatePlan", obj);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Data.Message), "UD:AddOrUpdateServiceRatePlan:params:" + JsonConvert.SerializeObject(obj));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Data.Message });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:AddOrUpdateServiceRatePlan:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+        public async Task<ActionResult> GetServiceRatePlanByBKeyRType(int businessKey, int ratetype)
+        {
+            try
+            {
+                var serviceResponse = await _eSyaServicesAPIServices.HttpClientServices.GetAsync<DO_ServiceRatePlan>("ServiceRates/GetServiceRatePlanByBKeyRType?businessKey=" + businessKey + "&ratetype=" + ratetype);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data != null)
+                    {
+                        var data = serviceResponse.Data;
+                        return Json(data);
+                    }
+                    else
+                    {
+                        _logger.LogError(new Exception(serviceResponse.Message), "UD:GetServiceRatePlanByBKeyRType:For BusinessKey {0}, RateType {1} ", businessKey,ratetype);
+                        return Json(new { Status = false, Message = serviceResponse.Message });
+                    }
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetServiceRatePlanByBKeyRType:For BusinessKey {0}, RateType {1} ", businessKey, ratetype);
+                    return Json(new { Status = false, Message = serviceResponse.Message });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetServiceRatePlanByBKeyRType:For BusinessKey {0}, RateType {1} ", businessKey, ratetype);
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+        #endregion
+
+      
+    }
+}

@@ -1,0 +1,598 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = "PatientEMR";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<link href="~/css/emergency.css" rel="stylesheet" />
+<link href="~/css/jquery.contextMenu.min.css" rel="stylesheet" />
+<link href="~/dashboardAssets/vendors/mdi/css/materialdesignicons.min.css" rel="stylesheet" />
+<link href="~/dashboardAssets/vendors/css/vendor.bundle.base.css" rel="stylesheet" />
+@*<link href="~/dashboardAssets/css/style.css" rel="stylesheet" />*@
+
+
+@section scripts{
+    <script src="~/js/jquery-ui.min.js"></script>
+    <script src="~/js/i18n/grid.locale-en.js"></script>
+    <script src="~/js/jquery.jqGrid.min.js"></script>
+    <script src="~/js/jquery.contextMenu.min.js"></script>
+    <script src="~/js/PatientManagement/ClinicalForms/patientemr.js"></script>
+    <script src="~/js/material.min.js"></script>
+    <script src="~/js/jquery.PrintArea.js"></script>
+    <script src="~/js/jQuery.print.min.js"></script>
+}
+
+
+<input type="hidden" id="hdUHID" value="@ViewBag.UHID" />
+<input type="hidden" id="hdAppKey" value="@ViewBag.AppKey" />
+<div class="row">
+    <nav class="sidebar sidebar-offcanvas d-none" id="sidebar">
+        <ul class="nav">
+
+            <li class="nav-item nav-profile">
+                <a href="#" class="nav-link">
+                    <div class="nav-profile-image">
+                        <img src="~/dashboardAssets/images/faces-clipart/pic-10.jpg" alt="profile">
+                        <span class="login-status online"></span>
+                        <!--change to offline or busy as needed-->
+                    </div>
+
+                    <div class="nav-profile-text d-flex flex-column">
+                        <span class="font-weight-bold mb-2" id="lblPatName_"></span>
+                        <span class="text-secondary text-small" id="lblPatAge_"></span>
+                    </div>
+
+
+
+                </a>
+
+            </li>
+            <li class="nav-item">
+                <p class="nav-link m-0" data-flag="divPatientInfo">
+                    <span class="menu-title">Patient Info</span>
+                    <i class="mdi  mdi-calendar-clock menu-icon"></i>
+                </p>
+            </li>
+            <li class="nav-item">
+                <p class="nav-link m-0" data-flag="divChronicCondition">
+                    <span class="menu-title">Chronic Condition</span>
+
+                    <i class="mdi mdi-calendar-text menu-icon"></i>
+                </p>
+            </li>
+            <li class="nav-item">
+                <p class="nav-link m-0" data-flag="divDrugAllergy">
+                    <span class="menu-title">Allergy</span>
+                    <i class="mdi  mdi-calendar-blank menu-icon"></i>
+                </p>
+            </li>
+
+            <li class="nav-item">
+                <p class="nav-link m-0" data-flag="divMedication">
+                    <span class="menu-title">Medication</span>
+                    <i class="mdi mdi-medical-bag menu-icon"></i>
+                </p>
+            </li>
+            <li class="nav-item">
+                <p class="nav-link m-0" data-flag="divDiagnosis">
+                    <span class="menu-title">Diagnosis</span>
+                    <i class="mdi  mdi-hospital menu-icon"></i>
+                </p>
+            </li>
+
+
+
+
+            <li class="nav-item" hidden>
+                <p class="nav-link m-0" data-flag="divExamination">
+                    <span class="menu-title">Examination</span>
+                    <i class="mdi  mdi-account-circle menu-icon"></i>
+                </p>
+            </li>
+            <li class="nav-item">
+                <p class="nav-link m-0" data-flag="divInvestigationOrder">
+                    <span class="menu-title">Investigation Order</span>
+                    <i class="mdi mdi-information menu-icon"></i>
+                </p>
+            </li>
+            <li class="nav-item" hidden>
+                <p class="nav-link m-0" data-flag="divSickLeave">
+                    <span class="menu-title">Sick Leave</span>
+                    <i class="mdi  mdi-account-circle menu-icon"></i>
+                </p>
+            </li>
+            <li class="nav-item">
+                <p class="nav-link m-0" data-flag="divDocumentUpload">
+                    <span class="menu-title">Document Upload</span>
+                    <i class="mdi  mdi-file-document-box-outline menu-icon"></i>
+                </p>
+            </li>
+        </ul>
+    </nav>
+    <nav class="col-md-3 col-lg-2 col-sm-3 sidebar" id="navbar-example2">
+        <div class="sidebar-sticky">
+            <div class="nav-item nav-profile">
+                <a href="#" class="nav-link">
+                    <div class="nav-profile-image">
+                        <img src="~/dashboardAssets/images/faces-clipart/pic-10.jpg" alt="profile">
+                        <span class="login-status online"></span>
+                        <!--change to offline or busy as needed-->
+                    </div>
+
+                    <div class="nav-profile-text d-flex flex-column">
+                        <span class="font-weight-bold mb-2" id="lblPatName"></span>
+                        <span class="text-secondary text-small" id="lblPatAge"></span>
+                    </div>
+
+                </a>
+
+            </div>
+            <ul class="nav flex-column" id="nav_menu">
+
+
+                <li class="nav-item">
+                    <a class="nav-link m-0" href="#divPatientInfo">
+                        <i class="mdi  mdi-calendar-clock menu-icon"></i> Patient Info
+                    </a>
+
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link m-0" href="#divChronicCondition"><i class="mdi mdi-calendar-text menu-icon"></i> Chronic Condition </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link m-0" href="#divDrugAllergy"> <i class="mdi  mdi-calendar-blank menu-icon"></i> Allergy</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link m-0" href="#divMedication"><i class="mdi mdi-medical-bag menu-icon"></i> Medication </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link m-0" href="#divDiagnosis"><i class="mdi  mdi-hospital menu-icon"></i> Diagnosis</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link m-0" href="#divExamination"> <i class="mdi  mdi-account-circle menu-icon"></i> Examination </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link m-0" href="#divInvestigationOrder"><i class="mdi mdi-information menu-icon"></i> Investigation Order</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link m-0" href="#divSickLeave"> <i class="mdi  mdi-account-circle menu-icon"></i> Sick Leave</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link m-0" href="#divDocumentUpload"><i class="mdi  mdi-file-document-box-outline menu-icon"></i> Document Upload</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link m-0" href="#" onclick="fnPrintSummary()"><i class="mdi  mdi-file-document-box-outline menu-icon"></i> Print Summary</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <main class="" id="mainContent" data-spy="scroll" data-target="#navbar-example2" data-offset="30">
+        <div class="main-panel">
+
+            <div class="pageSection">
+                <div class="page-header">
+                    <h4 id="divPatientInfo"><span class="menu-small"><i class="fa fa-bars"></i></span> Patient Info</h4>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        @await Html.PartialAsync("~/Areas/PatientManagement/Views/ClinicalForms/_PatientInfo.cshtml")
+
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="pageSection">
+                <div class="page-header">
+                    <h4 id="divChronicCondition"><span class="menu-small"><i class="fa fa-bars"></i></span> Chronic Condition</h4>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        @await Html.PartialAsync("~/Areas/PatientManagement/Views/ClinicalForms/_ChronicCondition.cshtml")
+
+                    </div>
+                </div>
+            </div>
+            <div class="pageSection">
+                <div class="page-header">
+                    <h4 id="divDrugAllergy"><span class="menu-small"><i class="fa fa-bars"></i></span> Allergy</h4>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        @await Html.PartialAsync("~/Areas/PatientManagement/Views/ClinicalForms/_Allergy.cshtml")
+                    </div>
+                </div>
+            </div>
+
+            <div class="pageSection">
+                <div class="page-header">
+                    <h4 id="divMedication"><span class="menu-small"><i class="fa fa-bars"></i></span> Medication </h4>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        @await Html.PartialAsync("~/Areas/PatientManagement/Views/ClinicalForms/_Medication.cshtml")
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="pageSection">
+                <div class="page-header">
+                    <h4 id="divDiagnosis"><span class="menu-small"><i class="fa fa-bars"></i></span> Diagnosis </h4>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        @await Html.PartialAsync("~/Areas/PatientManagement/Views/ClinicalForms/_Diagnosis.cshtml")
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="pageSection">
+                <div class="page-header">
+                    <h4 id="divExamination"><span class="menu-small"><i class="fa fa-bars"></i></span> Examination </h4>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        @await Html.PartialAsync("~/Areas/PatientManagement/Views/ClinicalForms/_Examination.cshtml")
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="pageSection">
+                <div class="page-header">
+                    <h4 id="divInvestigationOrder"><span class="menu-small"><i class="fa fa-bars"></i></span> Investigation Order </h4>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        @await Html.PartialAsync("~/Areas/PatientManagement/Views/ClinicalForms/_InvestigationOrder.cshtml")
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="pageSection">
+                <div class="page-header">
+                    <h4 id="divSickLeave"><span class="menu-small"><i class="fa fa-bars"></i></span> Sick Leave </h4>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        @await Html.PartialAsync("~/Areas/PatientManagement/Views/ClinicalForms/_SickLeave.cshtml")
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="pageSection">
+                <div class="page-header">
+                    <h4 id="divDocumentUpload"><span class="menu-small"><i class="fa fa-bars"></i></span> Document Upload </h4>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        @await Html.PartialAsync("~/Areas/PatientManagement/Views/ClinicalForms/_DocumentUpload.cshtml")
+
+                    </div>
+                </div>
+            </div>
+        </div> @*Main Panel ends*@
+    </main>
+</div>
+<div class="modal fade in" id="PopupInfo" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title"><span id="popTitle">Anthropometric Measurements</span></h4>
+            </div>
+
+            <div class="modal-body" style="background-color: #ffffff;">
+                <div class="row" hidden>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input class="form-control datepicker" type="text" maxlength="8" id="dpDate" />
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Time</label>
+                            <input class="form-control timepicker" type="time" maxlength="8" id="tpTime" />
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <input type="hidden" id="hdPopType" />
+                        </div>
+                    </div>
+                </div>
+                <div id="dvPopupBody"></div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button"
+                                id="btnsavePopupInfo" onclick="savePopupInfo()">
+                            <i class="fa fa-save"></i> Save
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal"><i class="fa fa-times"></i> Cancel </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade in" id="PopupPrint" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title"><span>Print</span></h4>
+            </div>
+
+            <div class="modal-body" style="background-color: #ffffff;">
+                <div id="dvPrintArea" style="width:95%;height:100%;">
+                    <div class="row" id="dvPatData">
+                        <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12 col-xs-12 d-flex align-items-center">
+
+                            <div>
+                                <p><span class="labelname"> Patient Name:</span><span id="lblPatientName_P"></span>&nbsp;</p>
+                                <p class="m-0"><span class="labelname"> Age:</span><span id="lblAge_P"></span>&nbsp;</p>
+
+
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12 col-xs-12 d-flex align-items-center">
+
+                            <div>
+                                <p><span class="labelname"> ID:</span> <span id="lblPatientID_P"></span>&nbsp;</p>
+                                <p class="m-0"><span class="labelname"> DOB:</span><span id="lblDOB_P"></span>&nbsp;</p>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12 col-xs-12 d-flex align-items-center">
+
+                            <div>
+                                <p><span class="labelname"> Gender:</span><span id="lblGender_P"></span>&nbsp;</p>
+                                <p><span class="labelname"> Tel:</span><span id="lblTel_P"></span>&nbsp;</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="dvMedData">
+                        <h2>Medications</h2>
+                    </div>
+                    <div id="dvInvData">
+                        <h2>Investigations</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@*<script src="~/dashboardAssets/js/off-canvas.js"></script>*@
+<script src="~/dashboardAssets/js/hoverable-collapse.js"></script>
+
+<script>
+    $(function () {
+        $(".content-wrapper").css('display', 'none');
+        $("#divPatientInfo").css('display', 'block');
+
+    });
+    $(".nav-link").click(function () {
+        $(".content-wrapper").css('display', 'none');
+        $("#" + $(this).attr('data-flag')).css({ 'display': 'block' });
+        $(".ui-jqgrid").setGridWidth($('.card-body').width() - 42, true);
+    });
+</script>
+<script>
+ var localization = {
+     VisitNumber: '@Localizer["VisitNumber"]',
+     AppointmentDate: '@Localizer["AppointmentDate"]',
+     MRN: '@Localizer["MRN"]',
+     PatientName: '@Localizer["PatientName"]',
+     Mobile: '@Localizer["Mobile"]',
+     Email: '@Localizer["Email"]',
+     VisitType: '@Localizer["VisitType"]',
+     AppointmentTime: '@Localizer["AppointmentTime"]',
+     Status: '@Localizer["Status"]',
+     Forms: '@Localizer["Forms"]',
+     PreOperative: '@Localizer["PreOperative"]',
+        FacilityStay: '@Localizer["FacilityStay"]',
+        FollowUpSurgical: '@Localizer["FollowUpSurgical"]',
+     FollowUpNutrition: '@Localizer["FollowUpNutrition"]',
+     TransactionDate: '@Localizer["TransactionDate"]',
+     SurgeryDate: '@Localizer["SurgeryDate"]',
+       Surgery: '@Localizer["Surgery"]',
+     VisitNumber: '@Localizer["VisitNumber"]',
+     FormType: '@Localizer["FormType"]',
+     Actions: '@Localizer["Actions"]',
+     ViewForm: '@Localizer["ViewForm"]',
+     CreatedBy: '@Localizer["CreatedBy"]',
+    }
+
+    $(document).ready(function () {
+        $(".nav-link.active").removeClass("active");
+        $(".sidebar-sticky .nav-link").first().addClass('active');
+        //$('#mainContent').offset().top = 0;
+        setTimeout(function () { fnsideBarSetup() }, 1000);
+        var docWidth = $(document).width();
+        if (docWidth <= 600) {
+            $('#mainContent').addClass('moveLeft');
+            $('.sidebar').addClass('hide');
+        }
+    });
+    $(window).on('resize', function () {
+        //location.reload();
+        // fnsideBarSetup();
+    });
+
+    $("ul").on('click', '.nav-link', function () {
+        var docWidth = $(document).width();
+        if (docWidth <= 600) {
+            $(".nav-link").removeClass("active");
+            $(this).addClass("active");
+            $('.tab-pane').removeClass('show active');
+            $('#mainContent').addClass('moveLeft');
+            $('.sidebar').addClass('hide');
+        }
+        else {
+            $(".nav-link").removeClass("active");
+            $(this).addClass("active");
+            $('.tab-pane').removeClass('show active');
+
+
+        }
+    });
+    $('#mainContent').on('click', 'h4', function () {
+        var docWidth = $(document).width();
+        if (docWidth <= 600) {
+            //$('#mainContent').toggleClass('moveLeft');
+            $('.sidebar').toggleClass('hide');
+        }
+        else {
+            $('.sidebar').removeClass('hide');
+        }
+
+    })
+    function fnsideBarSetup() {
+        var docWidth = $(document).width();
+        var marginLeft = $("#navbar-example2").outerWidth(true);
+        var winH = $(window).outerHeight(true);
+        var divHeight = Math.floor($(".divFixedBar").outerHeight(true) + $("section.header").outerHeight(true)) - 1;
+        var maxH = ($(window).outerHeight(true) - ($("section.header").outerHeight(true) + $(".divFixedBar").outerHeight(true)))
+        const headerH = $('section.header').outerHeight(true);
+        const headerBannerH = headerH + $('.banner').outerHeight(true);
+        const headerBannerFixedBarH = headerBannerH + $('.divFixedBar').outerHeight(true);
+        const tabContentH = headerBannerFixedBarH;
+
+
+        //$('.tab-content').css('padding-top', tabContentH);
+        $("#mainContent").css({
+            "top": 0,
+            'max-height': winH - tabContentH - 24,
+            'margin-left': marginLeft,
+            'overflow-y': 'auto'
+        });
+        $(".sidebar").css({
+            'top': divHeight,
+            'display': 'block',
+            'overflow-y': 'auto',
+            'max-height': maxH
+        });
+        $('.pageSection').css('min-height', winH - tabContentH - 24);
+    }
+
+
+    function fnPrintSummary() {
+        $('#lblPatientName_P').html($('#lblPatientName').html());
+        $('#lblGender_P').html($('#lblGender').html());
+        $('#lblAge_P').html($('#lblAge').html());
+        $('#lblDOB_P').html($('#lblDOB').html());
+        $('#lblPatientID_P').html($('#lblPatientID').html());
+        $('#lblTel_P').html($('#lblTel').html());
+        fnGetMedPrint();
+        fnGetInvPrint();
+        fnPrint();
+    }
+    function fnGetMedPrint() {
+        var tablestr = "<table width='95%'>";
+        tablestr += "<tr>"
+        tablestr += "<td>Medication</td>";
+        tablestr += "<td>Dose</td>";
+        tablestr += "<td>Frequency</td>";
+        tablestr += "<td>Duration</td>";
+        tablestr += "<td>Comment</td>";
+        tablestr += "</tr>";
+        var rowIds = $('#jqgMedication').jqGrid('getDataIDs');
+        console.log(_vNumber)
+        for (i = 0; i < rowIds.length; i++) {
+            rowData = $('#jqgMedication').jqGrid('getRowData', rowIds[i]);
+            console.log(rowData['VisitNumber'])
+            if (rowData['VisitNumber'] === _vNumber) {
+                console.log(rowData)
+            tablestr += "<tr>"
+            tablestr += "<td>" + rowData['MED-1'] + "</td>";
+            tablestr += "<td>" + rowData['MED-3'] + "</td>";
+            tablestr += "<td>" + rowData['MED-4'] + "</td>";
+            tablestr += "<td>" + rowData['MED-5'] + "</td>";
+            tablestr += "<td>" + rowData['MED-6'] + "</td>";
+            tablestr += "</tr>";
+            }
+
+        }
+        tablestr += "</table>";
+        $('#dvMedData').html($('#dvMedData').html() + tablestr);
+       }
+    function fnGetInvPrint() {
+        var tablestr = "<table width='95%'>";
+        tablestr += "<tr>"
+        tablestr += "<td>Type</td>";
+        tablestr += "<td>Test Name</td>";
+        tablestr += "<td>Findings</td>";
+        tablestr += "</tr>";
+        var rowIds = $('#jqgInvestigations').jqGrid('getDataIDs');
+        console.log(_vNumber)
+        for (i = 0; i < rowIds.length; i++) {
+            rowData = $('#jqgInvestigations').jqGrid('getRowData', rowIds[i]);
+            console.log(rowData['VisitNumber'])
+            if (rowData['VisitNumber'] === _vNumber) {
+                console.log(rowData)
+                tablestr += "<tr>"
+                tablestr += "<td>" + rowData['INV-1'] + "</td>";
+                tablestr += "<td>" + rowData['INV-2'] + "</td>";
+                tablestr += "<td>" + rowData['INV-4'] + "</td>";
+                tablestr += "</tr>";
+            }
+
+        }
+        tablestr += "</table>";
+        $('#dvInvData').html($('#dvInvData').html() + tablestr);
+    }
+    function fnPrint() {
+        $("#dvPrintArea").print({
+            // Use Global styles
+            globalStyles: false,
+
+            // Add link with attrbute media=print
+            mediaPrint: false,
+
+            //Custom stylesheet
+            stylesheet: "http://fonts.googleapis.com/css?family=Inconsolata",
+
+            //Print in a hidden iframe
+            iframe: true,
+
+            // Don't print this
+            noPrintSelector: ".avoid-this",
+
+            // Add this on top
+            //append: "Free jQuery Plugins<br/>",
+
+            //// Add this at bottom
+            //prepend: "<br/>jQueryScript.net",
+            // Manually add form values
+            manuallyCopyFormValues: false,
+
+            // resolves after print and restructure the code for better maintainability
+            deferred: $.Deferred(),
+            // timeout
+            timeout: 250,
+
+            // Custom title
+            title: null,
+            // Custom document type
+            doctype: '<!doctype html>'
+        });
+    }
+
+</script>

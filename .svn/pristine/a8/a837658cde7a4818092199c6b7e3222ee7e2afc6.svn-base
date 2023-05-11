@@ -1,0 +1,184 @@
+﻿
+@{
+    ViewData["Title"] = "V_28_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Scripts
+    {
+    <script src="~/js/Config/DocumentControl.js"></script>
+}
+
+<style>
+    #gbox_jqvDocContManagement th.ui-th-column div {
+        white-space: normal !important;
+        height: auto !important;
+        padding: 2px;
+    }
+</style>
+
+<!--Document Grid-->
+<div class="row">
+    <div class="col-lg-12">
+        <table id="jqvDocContManagement"></table>
+        <div id="jqpDocContManagement"></div>
+    </div>
+</div>
+
+
+<!--Document PopUp-->
+<div class="modal fade in" id="PopupDocContrManagement">
+    <div class="modal-dialog modal-lg  " role="document" style="box-shadow:none;">
+        <div class="modal-content ">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Add Document Control</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-5 col-md-5 col-sm-3 col-xs-12">
+                        <div class="form-group">
+                            <label>Form Name</label>
+
+                            <select class="selectpicker" data-live-search="true" id="cboformId" title="">
+                                <option value="0"> Select Form</option>
+
+                                @foreach (var form in ViewBag.formMasterlist)
+                                {
+
+                                    <option value="@form.FormID">@form.FormName</option>
+                                }
+
+                            </select>
+
+                        </div>
+                    </div>
+
+                    <div class="col-lg-5 col-md-5 col-sm-3 col-xs-12">
+                        <div class="form-group">
+                            <label>Document ID</label>
+                            <input id="txtDocumentId" class="form-control" type="text" autocomplete="off" maxlength="9" onkeypress="return AllowOnlyNumbers(event);" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12">
+                        <div class="form-group">
+                            <label>Document Code</label>
+                            <input id="txtDocumentCode" class="form-control" type="text" autocomplete="off" maxlength="4" />
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                        <div class="form-group">
+                            <label>Document Type</label>
+                            <input id="txtDocumentType" class="form-control" type="text" autocomplete="off" maxlength="1" />
+
+                        </div>
+                    </div>
+                    <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
+                        <div class="form-group">
+                            <label>Document Description</label>
+                            <input id="txtDocumentDesc" class="form-control" type="text" autocomplete="off" maxlength="50" />
+
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                        <div class="form-group marbot0">
+                            <label>Document Category</label>
+                            <input id="txtDocumentCategory" class="form-control" type="text" autocomplete="off" maxlength="4" />
+
+                        </div>
+                    </div>
+                    <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
+                        <div class="form-group marbot0">
+                            <label>Category Description</label>
+                            <input id="txtCategoryDescription" class="form-control" type="text" autocomplete="off" maxlength="50" />
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="default-checkbox checkbox-group">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsFinancialYear">
+                                <input type="checkbox" id="chkIsFinancialYear" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">Is Financial Year Applicable ?</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="default-checkbox checkbox-group">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsStoreLink">
+                                <input type="checkbox" id="chkIsStoreLink" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">Is Store Link  Applicable?</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="default-checkbox checkbox-group">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsTransactionMode">
+                                <input type="checkbox" id="chkIsTransactionMode" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">Is Transaction Mode  Applicable?</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="default-checkbox checkbox-group">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsCustomerGroup">
+                                <input type="checkbox" id="chkIsCustomerGroup" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">Is Customer Group  Applicable?</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="default-checkbox checkbox-group">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsLinkToDashboard">
+                                <input type="checkbox" id="chkIsLinkToDashboard" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">Is Link To Dashboard?</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="default-checkbox checkbox-group">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkUsageStatus">
+                                <input type="checkbox" id="chkUsageStatus" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">Usage Status</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-sm-3 col-md-3 col-xs-12">
+                        <div class="form-group">
+
+                            <label class="lable-color"> Status</label>
+                            <select class="selectpicker" id="cboActiveStatus">
+                                <option value="true">Active</option>
+                                <option value="false">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnsaveDocContrManagement" onclick="fnSaveDocumentControl()"> Save </button>
+
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="#"> Cancel</button>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+

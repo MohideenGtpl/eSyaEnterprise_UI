@@ -1,0 +1,237 @@
+﻿
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="google" content="notranslate">
+    <title>Get User ID</title>
+    @*<link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+        <script src="~/js/bootstrap-select.js"></script>
+        <link href="~/css/material.min.css" rel="stylesheet" />
+        <link href="~/css/all.min.css" rel="stylesheet" />
+        <link href="~/css/animate.css" rel="stylesheet" />
+        <link href="~/css/bootstrap-select.css" rel="stylesheet" />
+        <link href="~/css/login.css" rel="stylesheet" />*@
+
+    <script src="~/lib/bootstrap/dist/js/jquery-3.2.1.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/popper.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/js/material.min.js"></script>
+    <script src="~/js/all.min.js"></script>
+    <script src="~/js/jquery-ui.min.js"></script>
+    <script src="~/js/i18n/grid.locale-en.js"></script>
+    <script src="~/js/jquery.jqGrid.min.js"></script>
+    <script src="~/js/bootstrap-select.js"></script>
+    <script src="~/js/bootbox.min.js"></script>
+
+    <script src="~/js/Inputmask/inputmask.js"></script>
+    <script src="~/js/Inputmask/jquery.inputmask.js"></script>
+    <script src="~/js/Inputmask/bindings/inputmask.binding.js"></script>
+
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" media="all" />
+    <link href="~/css/animate.css" rel="stylesheet" media="all" />
+    <link href="~/css/material.min.css" rel="stylesheet" />
+    <link href="~/css/bootstrap-select.css" rel="stylesheet" />
+    <link href="~/css/login.css" rel="stylesheet" media="all" />
+    <link href="~/css/all.min.css" rel="stylesheet" />
+
+</head>
+<body>
+    <div class="loginContainer">
+        @*<div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12  text-center">
+                    <img src="~/images/logo/esya-logo-black.png" class="mainLogo" alt="eSya Logo"/>
+                </div>
+            </div>*@
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6 padright0">
+                <img src="~/images/esya-products-yellow.JPG" class="leftImage" alt="eSya Products" />
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 login-form pad0 ">
+                <div class="col-lg-12 pdngContent ">
+
+                    <div class="animated slideInDown">
+                        <h4 style="text-align:center;"> Get User ID</h4>
+                    </div>
+                    <form>
+                        <div class="text-danger validation-summary-errors" data-valmsg-summary="true">
+                            <div id="dvOTPError"></div>
+                        </div>
+                        <div class="row p-y-20">
+                            <div class="col-lg-12 animated slideInUp" id="dvMobileNumber">
+                                <div class="form-group animated fadeIn" style="width:100%">
+                                    <label class="lable-color" for="txtUsername" id="lblText">Register Mobile Number</label>
+                                    @await Component.InvokeAsync("IsdMobileInput", new { id = "UserMobile" })
+                                </div>
+                                <div style="margin-bottom:15px;">
+                                    <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="mobileNumber">
+                                        <input type="radio" id="rdoMobileNumber" class="mdl-radio__button" name="options" checked value="1" onchange="fnMobileNumber_checked()">
+                                        <span class="mdl-radio__label rad-btn">Send OTP To Registered  Mobile Number</span>
+                                    </label>
+                                </div>
+                                <div style="margin-bottom:15px;display:none">
+                                    <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="emailID">
+                                        <input type="radio" id="rdoEmailID" class="mdl-radio__button" name="options" value="2" onchange="fnEmail_checked()">
+                                        <span class="mdl-radio__label rad-btn">Send OTP To Registered  Email ID</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-lg-12 animated  slideInUp" style="display:none" id="dvOTP">
+                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" style="width:100%">
+                                    <input class="mdl-textfield__input" type="number" id="txtPassword" maxlength="50">
+                                    <label class="mdl-textfield__label" for="txtPassword">Enter OTP</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-12 animated slideInUp" style="display:none" id="textscf">
+                                <div class="alert alert-success alert-dismissible fade show">
+                                    @*<div>
+                                            <strong>User ID</strong>
+                                        </div>*@
+                                    <div style="font-size:12px;font-weight:500">
+                                        <i class="fa fa-check"></i> You have successfully generated User ID. <br />
+                                        <i class="fa fa-check"></i> User ID is  sent to your <span id="lblSuccessMessage"> mobile number.</span>
+                                    </div>
+                                </div>
+
+
+                                <div style="font-size:12px;font-weight:500">
+                                    To login with your newly generated  User ID
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="row p-y-20" style="padding-top:0px;">
+                            <div class=" col-lg-12 animated  slideInUp" style="display:none ;" id="dvConfirmOTP">
+
+                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored loginButton mar-savebtn">Resend OTP</button>
+                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored loginButton  mar-savebtn" onclick="fnConfirmOTP();return false;">
+                                    Go
+                                </button>
+
+                            </div>
+                            <div class="col-lg-12" style="display:none" id="dvLoginNow">
+                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored loginButton  fullwidth  mar-savebtn">
+                                    <a href="@Url.Action("Index","Account")" style="color:#fff"> Login Now</a>
+                                </button>
+                            </div>
+                            <div class="col-lg-12 " id="dvSendOTP">
+                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored loginButton  fullwidth " onclick="fnSendOTP();  return false;">
+                                    Go
+                                </button>
+                            </div>
+
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+            <div class="col-lg-6 col-md-6">
+                @*<p class="footernote"> &copy;@DateTime.Now.Year Gestalt Technologies Pvt. Ltd </p>*@
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var _cnfISDCode = @Configuration.GetSection("cnf").GetSection("ISDCode").Value;
+
+        function getBaseURL() {
+            var url = window.location.href.split('/');
+            var baseUrl = url[0] + '//' + url[2] + '@Url.Content("~")';
+            return baseUrl;
+        }
+
+        function fnMobileNumber_checked() {
+            if ($("#rdoMobileNumber").attr('checked', true)) {
+                $("#lblText").text("Registered Mobile Number");
+                $("#lblSuccessMessage").text("Mobile Number");
+            }
+        }
+        function fnEmail_checked() {
+            if ($("#rdoEmailID").attr('checked', true)) {
+                $("#lblText").text("Registered Email ID");
+                $("#lblSuccessMessage").text("Email ID");
+            }
+        }
+
+        function fnSendOTP() {
+
+            $("#dvOTPError").html("");
+            $.ajax({
+                url: getBaseURL() + '/Account/SendOTP?mobileNumber=' + $("#txtUserMobile").val(),
+                type: 'POST',
+                datatype: 'json',
+                contentType: 'application/json; charset=utf-8',
+                success: function (result) {
+
+                    if (result.Status) {
+                        
+                        $("#dvOTP").show();
+                        $("#dvConfirmOTP").show();
+                        $("#dvSendOTP").hide();
+                        $("#dvMobileNumber").hide();
+                    }
+                    else {
+                        if (result.StatusCode === "404") {
+                            $("#dvOTPError").html("<ul><li>Mobile does not exists</li></ul>");
+                        }
+                        if (result.StatusCode === "500") {
+                            $("#dvOTPError").html("<ul><li>Internal Error</li></ul>");
+                        }
+                    }
+                },
+                error: function (error) {
+                    $("#dvOTPError").html("<ul><li>Internal Error</li></ul>");
+                }
+            });
+
+        }
+
+
+        function getOPT() {
+            $("#dvOTP").show();
+            $("#dvConfirmOTP").show();
+            $("#dvSendOTP").hide();
+            $("#dvMobileNumber").hide();
+
+        };
+
+
+
+        function cancelUserIDBTN() {
+            $("#dvSendOTP").show();
+            $("#dvMobileNumber").show();
+            $("#dvOTP").hide();
+            $("#dvConfirmOTP").hide();
+            $("#inputtextdisable").val('');
+        };
+
+        function createNewPassword() {
+            $("#getPassword").modal('show');
+            $("#getUserID").modal('toggle');
+            cancelUserIDBTN();
+        }
+
+        function fnConfirmOTP() {
+            $("#textscf").show();
+            $("#dvLoginNow").show();
+            $("#dvConfirmOTP").hide();
+            $("#dvSendOTP").hide();
+            $("#dvOTP").hide();
+            $("#dvMobileNumber").hide();
+        }
+    </script>
+</body>
+</html>

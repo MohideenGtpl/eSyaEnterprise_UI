@@ -1,0 +1,171 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.Areas.PatientManagement.Data;
+using eSyaEnterprise_UI.Areas.PatientManagement.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+
+namespace eSyaEnterprise_UI.Areas.PatientManagement.Controllers
+{
+    public class OpBillingController : Controller
+    {
+        private readonly IPatientManagementAPIServices _patientManagementAPIServices;
+        private readonly ILogger<OpBillingController> _logger;
+
+        public OpBillingController(IPatientManagementAPIServices patientManagementAPIServices, ILogger<OpBillingController> logger)
+        {
+            _patientManagementAPIServices = patientManagementAPIServices;
+            _logger = logger;
+        }
+
+        [Area("PatientManagement")]
+        public IActionResult EPM_11_00()
+        {
+            return View();
+        }
+
+        public IActionResult RedirectToCreateOpBilling(long uhid, long opNumber, long? suspendBillKey)
+        {
+            TempData["uhid"] = uhid;
+            TempData["opNumber"] = opNumber;
+            TempData["suspendBillKey"] = suspendBillKey??0;
+            TempData.Keep();
+            return Json(true);
+        }
+
+        [Area("PatientManagement")]
+        public IActionResult EPM_12_00()
+        {
+            ViewBag.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+            ViewBag.UHID = TempData["uhid"];
+            ViewBag.OpNumber = TempData["opNumber"];
+            TempData.Keep();
+            return View();
+        }
+
+
+        [Area("PatientManagement")]
+        public IActionResult EPM_13_00()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> GetPatientRegisteredList(DateTime visitFromDate, DateTime visitTillDate,
+        int? clinicTypeId, int? patientTypeId, long? uhid)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&visitFromDate=" + visitFromDate.ToString("dd-MMM-yy");
+                parameter += "&visitTillDate=" + visitTillDate.ToString("dd-MMM-yy");
+                if (clinicTypeId != null)
+                    parameter += "&clinicTypeId=" + clinicTypeId;
+                if (patientTypeId != null)
+                    parameter += "&patientTypeId=" + patientTypeId;
+                if (uhid != null)
+                    parameter += "&uhid=" + uhid;
+
+                var serviceResponse = await _patientManagementAPIServices.HttpClientServices.GetAsync<List<DO_PatientRegisteredList>>("OpPatientVisitDetail/GetPatientRegisteredList" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetPatientRegisteredList");
+                    return Json(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetPatientRegisteredList");
+                throw ex;
+            }
+        }
+
+        public async Task<IActionResult> GetPatientOpVisitDetails(long uhid, long opNumber)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&uhid=" + uhid;
+                parameter += "&opNumber=" + opNumber;
+
+                var serviceResponse = await _patientManagementAPIServices.HttpClientServices.GetAsync<DO_PatientOpVisitDetails>("OpPatientVisitDetail/GetPatientOpVisitDetails" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetPatientRegisterDetails");
+                    return Json(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetPatientRegisterDetails");
+                throw ex;
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> CreateOpBill(DO_PatientBillHeader obj)
+        {
+            try
+            {
+                obj.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                var serviceResponse = await _patientManagementAPIServices.HttpClientServices.PostAsJsonAsync<DO_ResponseParameter>("OpBilling/CreateOpBill", obj);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data.Status)
+                        return Json(serviceResponse.Data);
+                    else
+                        return Json(new { Status = false, serviceResponse.Data.Warning, serviceResponse.Data.WarningMessage, serviceResponse.Data.Message });
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:CreateOpBill:params:" + JsonConvert.SerializeObject(obj));
+                    return Json(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:CreateOpBill:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Warning = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        public async Task<IActionResult> GetOpBillList(DateTime billFromDate, DateTime billTillDate)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&billFromDate=" + billFromDate;
+                parameter += "&billTillDate=" + billTillDate;
+
+                var serviceResponse = await _patientManagementAPIServices.HttpClientServices.GetAsync<List<DO_OpBillDetail>>("OpBilling/GetOpBillList" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetOpBillList");
+                    return Json(new DO_ResponseParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetOpBillList");
+                throw ex;
+            }
+        }
+
+        
+
+    }
+}

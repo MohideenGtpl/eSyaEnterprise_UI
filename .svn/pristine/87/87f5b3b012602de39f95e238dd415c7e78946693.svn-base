@@ -1,0 +1,492 @@
+2021-10-08 11:09:39.6969|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2021-10-08 11:09:52.4944|2|ERROR|Microsoft.AspNetCore.Server.IIS.Core.IISHttpServer|Connection ID "18014398519682531629", Request ID "8000012e-0002-fa00-b63f-84710c7967bb": An unhandled exception was thrown by the application. System.ObjectDisposedException: The CancellationTokenSource has been disposed.
+   at System.Threading.CancellationTokenSource.ThrowObjectDisposedException()
+   at System.Threading.CancellationTokenSource.Cancel()
+   at Microsoft.AspNetCore.Server.IIS.Core.IISHttpContext.<>c__DisplayClass314_0.<AbortIO>b__0(Object t)|url: |action: 
+2021-10-08 11:36:53.0946|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2021-10-08 11:37:09.6772|2|ERROR|Microsoft.AspNetCore.Server.IIS.Core.IISHttpServer|Connection ID "17365880169046213128", Request ID "8000020b-0001-f100-b63f-84710c7967bb": An unhandled exception was thrown by the application. System.ObjectDisposedException: The CancellationTokenSource has been disposed.
+   at System.Threading.CancellationTokenSource.ThrowObjectDisposedException()
+   at System.Threading.CancellationTokenSource.Cancel()
+   at Microsoft.AspNetCore.Server.IIS.Core.IISHttpContext.<>c__DisplayClass314_0.<AbortIO>b__0(Object t)|url: |action: 
+2021-10-08 11:56:19.5354||ERROR|eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.PatientClinicalInformationController|UD:InsertIntoPatientClinicalInformation:params:{"BusinessKey":111,"UHID":831,"IPNumber":568,"TransactionID":0,"TransactionDate":"2021-10-08T11:56:00+05:30","TransactionTime":"11:56:00","ChartNumber":0,"l_CL_ControlValue":null,"CLControlID":null,"ValueType":null,"Value":null,"ActiveStatus":true,"FormID":"0","UserID":0,"TerminalID":"192.168.1.3"} System.Exception: Internal Server Error|url: http://localhost/PatientClinicalInformation/InsertIntoPatientClinicalInformation|action: InsertIntoPatientClinicalInformation
+2021-10-08 15:49:32.8116|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2021-10-08 16:56:18.1538||ERROR|eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.PatientClinicalInformationController|UD:UpdatePatientClinicalInformation:params:{"BusinessKey":111,"UHID":831,"IPNumber":568,"TransactionID":11,"TransactionDate":"2021-10-08T00:00:00+05:30","TransactionTime":"15:50:00","ChartNumber":0,"l_CL_ControlValue":[{"CLType":"IO","CLControlID":"IO-I-1","ValueType":"float","Value":"454"},{"CLType":"IO","CLControlID":"IO-I-2","ValueType":"float","Value":"23"},{"CLType":"IO","CLControlID":"IO-I-3","ValueType":"float","Value":"3"},{"CLType":"IO","CLControlID":"IO-I-4","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-5-N","ValueType":"text","Value":"Infusion sd"},{"CLType":"IO","CLControlID":"IO-I-5-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-6-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-6-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-7-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-7-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-8-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-8-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-9-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-9-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-10-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-10-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-GT","ValueType":"float","Value":"480"},{"CLType":"IO","CLControlID":"IO-O-1","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-O-2","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-O-3","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-O-4","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-O-5","ValueType":"float","Value":"1"},{"CLType":"IO","CLControlID":"IO-O-GT","ValueType":"float","Value":"1"}],"CLControlID":null,"ValueType":null,"Value":null,"ActiveStatus":true,"FormID":"0","UserID":0,"TerminalID":"192.168.1.3"} System.Exception: Internal Server Error|url: http://localhost/PatientClinicalInformation/UpdatePatientClinicalInformation|action: UpdatePatientClinicalInformation
+2021-10-08 16:58:09.4660||ERROR|eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.PatientClinicalInformationController|UD:UpdatePatientClinicalInformation:params:{"BusinessKey":111,"UHID":831,"IPNumber":568,"TransactionID":11,"TransactionDate":"2021-10-08T00:00:00+05:30","TransactionTime":"15:50:00","ChartNumber":0,"l_CL_ControlValue":[{"CLType":"IO","CLControlID":"IO-I-1","ValueType":"float","Value":"454"},{"CLType":"IO","CLControlID":"IO-I-2","ValueType":"float","Value":"23"},{"CLType":"IO","CLControlID":"IO-I-3","ValueType":"float","Value":"3"},{"CLType":"IO","CLControlID":"IO-I-4","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-5-N","ValueType":"text","Value":"Infusion sd"},{"CLType":"IO","CLControlID":"IO-I-5-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-6-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-6-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-7-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-7-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-8-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-8-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-9-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-9-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-10-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-10-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-GT","ValueType":"float","Value":"480"},{"CLType":"IO","CLControlID":"IO-O-1","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-O-2","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-O-3","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-O-4","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-O-5","ValueType":"float","Value":"1"},{"CLType":"IO","CLControlID":"IO-O-GT","ValueType":"float","Value":"1"}],"CLControlID":null,"ValueType":null,"Value":null,"ActiveStatus":true,"FormID":"0","UserID":0,"TerminalID":"192.168.1.3"} System.Exception: Internal Server Error|url: http://localhost/PatientClinicalInformation/UpdatePatientClinicalInformation|action: UpdatePatientClinicalInformation
+2021-10-08 16:58:56.6167||ERROR|eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.PatientClinicalInformationController|UD:UpdatePatientClinicalInformation:params:{"BusinessKey":111,"UHID":831,"IPNumber":568,"TransactionID":11,"TransactionDate":"2021-10-08T00:00:00+05:30","TransactionTime":"15:50:00","ChartNumber":0,"l_CL_ControlValue":null,"CLControlID":null,"ValueType":null,"Value":null,"ActiveStatus":true,"FormID":"0","UserID":0,"TerminalID":"192.168.1.3"} System.Exception: Internal Server Error|url: http://localhost/PatientClinicalInformation/UpdatePatientClinicalInformation|action: UpdatePatientClinicalInformation
+2021-10-08 17:01:33.3034||ERROR|eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.PatientClinicalInformationController|UD:UpdatePatientClinicalInformation:params:{"BusinessKey":111,"UHID":831,"IPNumber":568,"TransactionID":11,"TransactionDate":"2021-10-08T00:00:00+05:30","TransactionTime":"15:50:00","ChartNumber":0,"l_CL_ControlValue":[{"CLType":"IO","CLControlID":"IO-I-1","ValueType":"float","Value":"454"},{"CLType":"IO","CLControlID":"IO-I-2","ValueType":"float","Value":"23"},{"CLType":"IO","CLControlID":"IO-I-3","ValueType":"float","Value":"3"},{"CLType":"IO","CLControlID":"IO-I-4","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-5-N","ValueType":"text","Value":"in"},{"CLType":"IO","CLControlID":"IO-I-5-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-6-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-6-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-7-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-7-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-8-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-8-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-9-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-9-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-10-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-10-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-GT","ValueType":"float","Value":"480"},{"CLType":"IO","CLControlID":"IO-O-1","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-O-2","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-O-3","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-O-4","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-O-5","ValueType":"float","Value":"1"},{"CLType":"IO","CLControlID":"IO-O-GT","ValueType":"float","Value":"1"}],"CLControlID":null,"ValueType":null,"Value":null,"ActiveStatus":true,"FormID":"0","UserID":0,"TerminalID":"192.168.1.3"} System.Threading.Tasks.TaskCanceledException: The operation was canceled. ---> System.IO.IOException: Unable to read data from the transport connection: The I/O operation has been aborted because of either a thread exit or an application request. ---> System.Net.Sockets.SocketException: The I/O operation has been aborted because of either a thread exit or an application request
+   --- End of inner exception stack trace ---
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.GetResult(Int16 token)
+   at System.Net.Security.SslStreamInternal.<FillBufferAsync>g__InternalFillBufferAsync|38_0[TReadAdapter](TReadAdapter adap, ValueTask`1 task, Int32 min, Int32 initial)
+   at System.Net.Security.SslStreamInternal.ReadAsyncInternal[TReadAdapter](TReadAdapter adapter, Memory`1 buffer)
+   at System.Net.Http.HttpConnection.SendAsyncCore(HttpRequestMessage request, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsyncCore(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithNtConnectionAuthAsync(HttpConnection connection, HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithRetryAsync(HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncBuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at eSyaEssentials_UI.HttpClientServices.PostAsJsonAsync[T](String url, Object value)
+   at eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.PatientClinicalInformationController.UpdatePatientClinicalInformation(DO_PatientClinicalInformation obj) in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNursingStation\Controllers\PatientClinicalInformationController.cs:line 173|url: http://localhost/PatientClinicalInformation/UpdatePatientClinicalInformation|action: UpdatePatientClinicalInformation
+2021-10-08 17:04:23.4536||ERROR|eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.PatientClinicalInformationController|UD:UpdatePatientClinicalInformation:params:{"BusinessKey":111,"UHID":831,"IPNumber":568,"TransactionID":11,"TransactionDate":"2021-10-08T00:00:00+05:30","TransactionTime":"15:50:00","ChartNumber":0,"l_CL_ControlValue":null,"CLControlID":null,"ValueType":null,"Value":null,"ActiveStatus":true,"FormID":"0","UserID":0,"TerminalID":"192.168.1.3"} System.Exception: Internal Server Error|url: http://localhost/PatientClinicalInformation/UpdatePatientClinicalInformation|action: UpdatePatientClinicalInformation
+2021-10-08 17:06:07.1748||ERROR|eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.PatientClinicalInformationController|UD:UpdatePatientClinicalInformation:params:{"BusinessKey":111,"UHID":831,"IPNumber":568,"TransactionID":11,"TransactionDate":"2021-10-08T00:00:00+05:30","TransactionTime":"15:50:00","ChartNumber":0,"l_CL_ControlValue":[{"CLType":"IO","CLControlID":"IO-I-1","ValueType":"float","Value":"454"},{"CLType":"IO","CLControlID":"IO-I-2","ValueType":"float","Value":"23"},{"CLType":"IO","CLControlID":"IO-I-3","ValueType":"float","Value":"3"},{"CLType":"IO","CLControlID":"IO-I-4","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-5-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-5-V","ValueType":"float","Value":"1"},{"CLType":"IO","CLControlID":"IO-I-6-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-6-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-7-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-7-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-8-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-8-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-9-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-9-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-10-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-10-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-GT","ValueType":"float","Value":"481"},{"CLType":"IO","CLControlID":"IO-O-1","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-O-2","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-O-3","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-O-4","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-O-5","ValueType":"float","Value":"1"},{"CLType":"IO","CLControlID":"IO-O-GT","ValueType":"float","Value":"1"}],"CLControlID":null,"ValueType":null,"Value":null,"ActiveStatus":true,"FormID":"0","UserID":0,"TerminalID":"192.168.1.3"} System.Net.Http.HttpRequestException: An error occurred while sending the request. ---> System.IO.IOException: Unable to read data from the transport connection: An existing connection was forcibly closed by the remote host. ---> System.Net.Sockets.SocketException: An existing connection was forcibly closed by the remote host
+   --- End of inner exception stack trace ---
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.GetResult(Int16 token)
+   at System.Net.Security.SslStreamInternal.<FillBufferAsync>g__InternalFillBufferAsync|38_0[TReadAdapter](TReadAdapter adap, ValueTask`1 task, Int32 min, Int32 initial)
+   at System.Net.Security.SslStreamInternal.ReadAsyncInternal[TReadAdapter](TReadAdapter adapter, Memory`1 buffer)
+   at System.Net.Http.HttpConnection.SendAsyncCore(HttpRequestMessage request, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsyncCore(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithNtConnectionAuthAsync(HttpConnection connection, HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithRetryAsync(HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncBuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at eSyaEssentials_UI.HttpClientServices.PostAsJsonAsync[T](String url, Object value)
+   at eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.PatientClinicalInformationController.UpdatePatientClinicalInformation(DO_PatientClinicalInformation obj) in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNursingStation\Controllers\PatientClinicalInformationController.cs:line 173|url: http://localhost/PatientClinicalInformation/UpdatePatientClinicalInformation|action: UpdatePatientClinicalInformation
+2021-10-08 17:11:28.9054||ERROR|eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.PatientClinicalInformationController|UD:GetClinicalInformationValueForPatient:params: businessKey:111,UHID:831,ipnumber:568 System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it ---> System.Net.Sockets.SocketException: No connection could be made because the target machine actively refused it
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.CreateConnectionAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.WaitForCreatedConnectionAsync(ValueTask`1 creationTask)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.SendWithRetryAsync(HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncBuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at eSyaEssentials_UI.HttpClientServices.GetAsync[T](String url)
+   at eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.PatientClinicalInformationController.GetClinicalInformationValueForPatient(Int32 UHID, Int32 ipNumber, String clType) in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNursingStation\Controllers\PatientClinicalInformationController.cs:line 49|url: http://localhost/PatientClinicalInformation/GetClinicalInformationValueForPatient|action: GetClinicalInformationValueForPatient
+2021-10-08 17:11:28.9311||ERROR|eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.NurseAssessmentController|UD:GetInPatientDetails System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it ---> System.Net.Sockets.SocketException: No connection could be made because the target machine actively refused it
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.CreateConnectionAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.WaitForCreatedConnectionAsync(ValueTask`1 creationTask)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.SendWithRetryAsync(HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncBuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at eSyaEssentials_UI.HttpClientServices.GetAsync[T](String url)
+   at eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.NurseAssessmentController.GetInPatientDetailsByIPNumber(Int32 ipNumber) in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNursingStation\Controllers\NurseAssessmentController.cs:line 77|url: http://localhost/NurseAssessment/GetInPatientDetailsByIPNumber|action: GetInPatientDetailsByIPNumber
+2021-10-08 17:11:29.6877|1|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An unhandled exception has occurred while executing the request. System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it ---> System.Net.Sockets.SocketException: No connection could be made because the target machine actively refused it
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.PatientClinicalInformationController.GetClinicalInformationValueForPatient(Int32 UHID, Int32 ipNumber, String clType) in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNursingStation\Controllers\PatientClinicalInformationController.cs:line 65
+   at lambda_method(Closure , Object )
+   at Microsoft.Extensions.Internal.ObjectMethodExecutorAwaitable.Awaiter.GetResult()
+   at Microsoft.AspNetCore.Mvc.Internal.ActionMethodExecutor.TaskOfActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeNextActionFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Rethrow(ActionExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeInnerFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResourceFilter()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeFilterPipelineAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeAsync()
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/PatientClinicalInformation/GetClinicalInformationValueForPatient|action: GetClinicalInformationValueForPatient
+2021-10-08 17:11:29.7148|1|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An unhandled exception has occurred while executing the request. System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it ---> System.Net.Sockets.SocketException: No connection could be made because the target machine actively refused it
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.NurseAssessmentController.GetInPatientDetailsByIPNumber(Int32 ipNumber) in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNursingStation\Controllers\NurseAssessmentController.cs:line 91
+   at lambda_method(Closure , Object )
+   at Microsoft.Extensions.Internal.ObjectMethodExecutorAwaitable.Awaiter.GetResult()
+   at Microsoft.AspNetCore.Mvc.Internal.ActionMethodExecutor.TaskOfActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeNextActionFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Rethrow(ActionExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeInnerFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResourceFilter()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeFilterPipelineAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeAsync()
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/NurseAssessment/GetInPatientDetailsByIPNumber|action: GetInPatientDetailsByIPNumber
+2021-10-08 17:11:30.6115|3|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An exception was thrown attempting to execute the error handler. System.ArgumentNullException: Value cannot be null.
+Parameter name: logger
+   at Microsoft.Extensions.Logging.LoggerExtensions.Log(ILogger logger, LogLevel logLevel, EventId eventId, Exception exception, String message, Object[] args)
+   at Microsoft.Extensions.Logging.LoggerExtensions.LogError(ILogger logger, Exception exception, String message, Object[] args)
+   at eSyaEnterprise_UI.Extension.ExceptionMiddlewareExtensions.<>c.<<ConfigureExceptionHandler>b__0_1>d.MoveNext() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Extension\ExceptionMiddlewareExtensions.cs:line 44
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/PatientClinicalInformation/GetClinicalInformationValueForPatient|action: GetClinicalInformationValueForPatient
+2021-10-08 17:11:30.6342|3|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An exception was thrown attempting to execute the error handler. System.ArgumentNullException: Value cannot be null.
+Parameter name: logger
+   at Microsoft.Extensions.Logging.LoggerExtensions.Log(ILogger logger, LogLevel logLevel, EventId eventId, Exception exception, String message, Object[] args)
+   at Microsoft.Extensions.Logging.LoggerExtensions.LogError(ILogger logger, Exception exception, String message, Object[] args)
+   at eSyaEnterprise_UI.Extension.ExceptionMiddlewareExtensions.<>c.<<ConfigureExceptionHandler>b__0_1>d.MoveNext() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Extension\ExceptionMiddlewareExtensions.cs:line 44
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/NurseAssessment/GetInPatientDetailsByIPNumber|action: GetInPatientDetailsByIPNumber
+2021-10-08 17:11:30.7502|1|ERROR|Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware|An unhandled exception has occurred while executing the request. System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it ---> System.Net.Sockets.SocketException: No connection could be made because the target machine actively refused it
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.NurseAssessmentController.GetInPatientDetailsByIPNumber(Int32 ipNumber) in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNursingStation\Controllers\NurseAssessmentController.cs:line 91
+   at lambda_method(Closure , Object )
+   at Microsoft.Extensions.Internal.ObjectMethodExecutorAwaitable.Awaiter.GetResult()
+   at Microsoft.AspNetCore.Mvc.Internal.ActionMethodExecutor.TaskOfActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeNextActionFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Rethrow(ActionExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeInnerFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResourceFilter()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeFilterPipelineAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeAsync()
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)|url: http://localhost/NurseAssessment/GetInPatientDetailsByIPNumber|action: GetInPatientDetailsByIPNumber
+2021-10-08 17:11:30.7831|1|ERROR|Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware|An unhandled exception has occurred while executing the request. System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it ---> System.Net.Sockets.SocketException: No connection could be made because the target machine actively refused it
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.PatientClinicalInformationController.GetClinicalInformationValueForPatient(Int32 UHID, Int32 ipNumber, String clType) in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNursingStation\Controllers\PatientClinicalInformationController.cs:line 65
+   at lambda_method(Closure , Object )
+   at Microsoft.Extensions.Internal.ObjectMethodExecutorAwaitable.Awaiter.GetResult()
+   at Microsoft.AspNetCore.Mvc.Internal.ActionMethodExecutor.TaskOfActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeNextActionFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Rethrow(ActionExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeInnerFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResourceFilter()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeFilterPipelineAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeAsync()
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)|url: http://localhost/PatientClinicalInformation/GetClinicalInformationValueForPatient|action: GetClinicalInformationValueForPatient
+2021-10-08 17:12:09.3178||ERROR|eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.PatientClinicalInformationController|UD:GetClinicalInformationValueForPatient:params: businessKey:111,UHID:831,ipnumber:568 System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it ---> System.Net.Sockets.SocketException: No connection could be made because the target machine actively refused it
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.CreateConnectionAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.WaitForCreatedConnectionAsync(ValueTask`1 creationTask)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.SendWithRetryAsync(HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncBuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at eSyaEssentials_UI.HttpClientServices.GetAsync[T](String url)
+   at eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.PatientClinicalInformationController.GetClinicalInformationValueForPatient(Int32 UHID, Int32 ipNumber, String clType) in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNursingStation\Controllers\PatientClinicalInformationController.cs:line 49|url: http://localhost/PatientClinicalInformation/GetClinicalInformationValueForPatient|action: GetClinicalInformationValueForPatient
+2021-10-08 17:12:09.5254||ERROR|eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.NurseAssessmentController|UD:GetInPatientDetails System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it ---> System.Net.Sockets.SocketException: No connection could be made because the target machine actively refused it
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.CreateConnectionAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.WaitForCreatedConnectionAsync(ValueTask`1 creationTask)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.SendWithRetryAsync(HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncBuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at eSyaEssentials_UI.HttpClientServices.GetAsync[T](String url)
+   at eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.NurseAssessmentController.GetInPatientDetailsByIPNumber(Int32 ipNumber) in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNursingStation\Controllers\NurseAssessmentController.cs:line 77|url: http://localhost/NurseAssessment/GetInPatientDetailsByIPNumber|action: GetInPatientDetailsByIPNumber
+2021-10-08 17:12:09.6686|1|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An unhandled exception has occurred while executing the request. System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it ---> System.Net.Sockets.SocketException: No connection could be made because the target machine actively refused it
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.PatientClinicalInformationController.GetClinicalInformationValueForPatient(Int32 UHID, Int32 ipNumber, String clType) in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNursingStation\Controllers\PatientClinicalInformationController.cs:line 65
+   at lambda_method(Closure , Object )
+   at Microsoft.Extensions.Internal.ObjectMethodExecutorAwaitable.Awaiter.GetResult()
+   at Microsoft.AspNetCore.Mvc.Internal.ActionMethodExecutor.TaskOfActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeNextActionFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Rethrow(ActionExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeInnerFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResourceFilter()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeFilterPipelineAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeAsync()
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/PatientClinicalInformation/GetClinicalInformationValueForPatient|action: GetClinicalInformationValueForPatient
+2021-10-08 17:12:09.9988|3|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An exception was thrown attempting to execute the error handler. System.ArgumentNullException: Value cannot be null.
+Parameter name: logger
+   at Microsoft.Extensions.Logging.LoggerExtensions.Log(ILogger logger, LogLevel logLevel, EventId eventId, Exception exception, String message, Object[] args)
+   at Microsoft.Extensions.Logging.LoggerExtensions.LogError(ILogger logger, Exception exception, String message, Object[] args)
+   at eSyaEnterprise_UI.Extension.ExceptionMiddlewareExtensions.<>c.<<ConfigureExceptionHandler>b__0_1>d.MoveNext() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Extension\ExceptionMiddlewareExtensions.cs:line 44
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/PatientClinicalInformation/GetClinicalInformationValueForPatient|action: GetClinicalInformationValueForPatient
+2021-10-08 17:12:10.0074|1|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An unhandled exception has occurred while executing the request. System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it ---> System.Net.Sockets.SocketException: No connection could be made because the target machine actively refused it
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.NurseAssessmentController.GetInPatientDetailsByIPNumber(Int32 ipNumber) in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNursingStation\Controllers\NurseAssessmentController.cs:line 91
+   at lambda_method(Closure , Object )
+   at Microsoft.Extensions.Internal.ObjectMethodExecutorAwaitable.Awaiter.GetResult()
+   at Microsoft.AspNetCore.Mvc.Internal.ActionMethodExecutor.TaskOfActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeNextActionFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Rethrow(ActionExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeInnerFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResourceFilter()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeFilterPipelineAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeAsync()
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/NurseAssessment/GetInPatientDetailsByIPNumber|action: GetInPatientDetailsByIPNumber
+2021-10-08 17:12:10.0611|1|ERROR|Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware|An unhandled exception has occurred while executing the request. System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it ---> System.Net.Sockets.SocketException: No connection could be made because the target machine actively refused it
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.PatientClinicalInformationController.GetClinicalInformationValueForPatient(Int32 UHID, Int32 ipNumber, String clType) in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNursingStation\Controllers\PatientClinicalInformationController.cs:line 65
+   at lambda_method(Closure , Object )
+   at Microsoft.Extensions.Internal.ObjectMethodExecutorAwaitable.Awaiter.GetResult()
+   at Microsoft.AspNetCore.Mvc.Internal.ActionMethodExecutor.TaskOfActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeNextActionFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Rethrow(ActionExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeInnerFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResourceFilter()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeFilterPipelineAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeAsync()
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)|url: http://localhost/PatientClinicalInformation/GetClinicalInformationValueForPatient|action: GetClinicalInformationValueForPatient
+2021-10-08 17:12:10.2942|3|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An exception was thrown attempting to execute the error handler. System.ArgumentNullException: Value cannot be null.
+Parameter name: logger
+   at Microsoft.Extensions.Logging.LoggerExtensions.Log(ILogger logger, LogLevel logLevel, EventId eventId, Exception exception, String message, Object[] args)
+   at Microsoft.Extensions.Logging.LoggerExtensions.LogError(ILogger logger, Exception exception, String message, Object[] args)
+   at eSyaEnterprise_UI.Extension.ExceptionMiddlewareExtensions.<>c.<<ConfigureExceptionHandler>b__0_1>d.MoveNext() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Extension\ExceptionMiddlewareExtensions.cs:line 44
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/NurseAssessment/GetInPatientDetailsByIPNumber|action: GetInPatientDetailsByIPNumber
+2021-10-08 17:12:10.3205|1|ERROR|Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware|An unhandled exception has occurred while executing the request. System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it ---> System.Net.Sockets.SocketException: No connection could be made because the target machine actively refused it
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.NurseAssessmentController.GetInPatientDetailsByIPNumber(Int32 ipNumber) in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNursingStation\Controllers\NurseAssessmentController.cs:line 91
+   at lambda_method(Closure , Object )
+   at Microsoft.Extensions.Internal.ObjectMethodExecutorAwaitable.Awaiter.GetResult()
+   at Microsoft.AspNetCore.Mvc.Internal.ActionMethodExecutor.TaskOfActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeNextActionFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Rethrow(ActionExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeInnerFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResourceFilter()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeFilterPipelineAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeAsync()
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)|url: http://localhost/NurseAssessment/GetInPatientDetailsByIPNumber|action: GetInPatientDetailsByIPNumber
+2021-10-08 17:12:42.2835||ERROR|eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.NurseAssessmentController|UD:GetInPatientDetails System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it ---> System.Net.Sockets.SocketException: No connection could be made because the target machine actively refused it
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.CreateConnectionAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.WaitForCreatedConnectionAsync(ValueTask`1 creationTask)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.SendWithRetryAsync(HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncBuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at eSyaEssentials_UI.HttpClientServices.GetAsync[T](String url)
+   at eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.NurseAssessmentController.GetInPatientDetails() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNursingStation\Controllers\NurseAssessmentController.cs:line 52|url: http://localhost/NurseAssessment/GetInPatientDetails|action: GetInPatientDetails
+2021-10-08 17:12:42.4725|1|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An unhandled exception has occurred while executing the request. System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it ---> System.Net.Sockets.SocketException: No connection could be made because the target machine actively refused it
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.NurseAssessmentController.GetInPatientDetails() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNursingStation\Controllers\NurseAssessmentController.cs:line 66
+   at lambda_method(Closure , Object )
+   at Microsoft.Extensions.Internal.ObjectMethodExecutorAwaitable.Awaiter.GetResult()
+   at Microsoft.AspNetCore.Mvc.Internal.ActionMethodExecutor.TaskOfActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeNextActionFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Rethrow(ActionExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeInnerFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResourceFilter()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeFilterPipelineAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeAsync()
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/NurseAssessment/GetInPatientDetails|action: GetInPatientDetails
+2021-10-08 17:12:42.6810|3|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An exception was thrown attempting to execute the error handler. System.ArgumentNullException: Value cannot be null.
+Parameter name: logger
+   at Microsoft.Extensions.Logging.LoggerExtensions.Log(ILogger logger, LogLevel logLevel, EventId eventId, Exception exception, String message, Object[] args)
+   at Microsoft.Extensions.Logging.LoggerExtensions.LogError(ILogger logger, Exception exception, String message, Object[] args)
+   at eSyaEnterprise_UI.Extension.ExceptionMiddlewareExtensions.<>c.<<ConfigureExceptionHandler>b__0_1>d.MoveNext() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Extension\ExceptionMiddlewareExtensions.cs:line 44
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/NurseAssessment/GetInPatientDetails|action: GetInPatientDetails
+2021-10-08 17:12:42.7043|1|ERROR|Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware|An unhandled exception has occurred while executing the request. System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it ---> System.Net.Sockets.SocketException: No connection could be made because the target machine actively refused it
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.NurseAssessmentController.GetInPatientDetails() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNursingStation\Controllers\NurseAssessmentController.cs:line 66
+   at lambda_method(Closure , Object )
+   at Microsoft.Extensions.Internal.ObjectMethodExecutorAwaitable.Awaiter.GetResult()
+   at Microsoft.AspNetCore.Mvc.Internal.ActionMethodExecutor.TaskOfActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeNextActionFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Rethrow(ActionExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeInnerFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResourceFilter()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeFilterPipelineAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeAsync()
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)|url: http://localhost/NurseAssessment/GetInPatientDetails|action: GetInPatientDetails
+2021-10-08 19:08:19.4507||ERROR|eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.PatientClinicalInformationController|UD:InsertIntoPatientClinicalInformation:params:{"BusinessKey":111,"UHID":831,"IPNumber":568,"TransactionID":0,"TransactionDate":"2021-10-08T07:00:00+05:30","TransactionTime":"07:00:00","ChartNumber":0,"l_CL_ControlValue":[{"CLType":"IO","CLControlID":"IO-I-1","ValueType":"float","Value":"250"},{"CLType":"IO","CLControlID":"IO-I-2","ValueType":"float","Value":"25"},{"CLType":"IO","CLControlID":"IO-I-3","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-4","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-5-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-5-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-6-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-6-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-7-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-7-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-8-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-8-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-9-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-9-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-10-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-10-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-GT","ValueType":"float","Value":"275"},{"CLType":"IO","CLControlID":"IO-O-1","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-O-2","ValueType":"float","Value":"25"},{"CLType":"IO","CLControlID":"IO-O-3","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-O-4","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-O-5","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-O-GT","ValueType":"float","Value":"25"}],"CLControlID":null,"ValueType":null,"Value":null,"ActiveStatus":true,"FormID":"0","UserID":0,"TerminalID":"192.168.1.3"} System.Net.Http.HttpRequestException: An error occurred while sending the request. ---> System.IO.IOException: Unable to read data from the transport connection: An existing connection was forcibly closed by the remote host. ---> System.Net.Sockets.SocketException: An existing connection was forcibly closed by the remote host
+   --- End of inner exception stack trace ---
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.GetResult(Int16 token)
+   at System.Net.Security.SslStreamInternal.<FillBufferAsync>g__InternalFillBufferAsync|38_0[TReadAdapter](TReadAdapter adap, ValueTask`1 task, Int32 min, Int32 initial)
+   at System.Net.Security.SslStreamInternal.ReadAsyncInternal[TReadAdapter](TReadAdapter adapter, Memory`1 buffer)
+   at System.Net.Http.HttpConnection.FillAsync()
+   at System.Net.Http.HttpConnection.ReadNextResponseHeaderLineAsync(Boolean foldedHeadersAllowed)
+   at System.Net.Http.HttpConnection.SendAsyncCore(HttpRequestMessage request, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsyncCore(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithNtConnectionAuthAsync(HttpConnection connection, HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithRetryAsync(HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncBuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at eSyaEssentials_UI.HttpClientServices.PostAsJsonAsync[T](String url, Object value)
+   at eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.PatientClinicalInformationController.InsertIntoPatientClinicalInformation(DO_PatientClinicalInformation obj) in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNursingStation\Controllers\PatientClinicalInformationController.cs:line 140|url: http://localhost/PatientClinicalInformation/InsertIntoPatientClinicalInformation|action: InsertIntoPatientClinicalInformation
+2021-10-08 19:19:25.6102||ERROR|eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.PatientClinicalInformationController|UD:InsertIntoPatientClinicalInformation:params:{"BusinessKey":111,"UHID":831,"IPNumber":568,"TransactionID":0,"TransactionDate":"2021-10-08T07:00:00+05:30","TransactionTime":"07:00:00","ChartNumber":0,"l_CL_ControlValue":null,"CLControlID":null,"ValueType":null,"Value":null,"ActiveStatus":true,"FormID":"0","UserID":0,"TerminalID":"192.168.1.3"} System.Exception: Internal Server Error|url: http://localhost/PatientClinicalInformation/InsertIntoPatientClinicalInformation|action: InsertIntoPatientClinicalInformation
+2021-10-08 19:26:12.3566||ERROR|eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.PatientClinicalInformationController|UD:InsertIntoPatientClinicalInformation:params:{"BusinessKey":111,"UHID":831,"IPNumber":568,"TransactionID":0,"TransactionDate":"2021-10-09T07:00:00+05:30","TransactionTime":"07:00:00","ChartNumber":0,"l_CL_ControlValue":[{"CLType":"IO","CLControlID":"IO-I-1","ValueType":"float","Value":"890"},{"CLType":"IO","CLControlID":"IO-I-2","ValueType":"float","Value":"25"},{"CLType":"IO","CLControlID":"IO-I-3","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-4","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-5-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-5-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-6-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-6-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-7-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-7-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-8-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-8-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-9-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-9-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-10-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-10-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-GT","ValueType":"float","Value":"915"},{"CLType":"IO","CLControlID":"IO-O-1","ValueType":"float","Value":"12"},{"CLType":"IO","CLControlID":"IO-O-2","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-O-3","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-O-4","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-O-5","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-O-GT","ValueType":"float","Value":"12"}],"CLControlID":null,"ValueType":null,"Value":null,"ActiveStatus":true,"FormID":"0","UserID":0,"TerminalID":"192.168.1.3"} System.Net.Http.HttpRequestException: An error occurred while sending the request. ---> System.IO.IOException: Unable to read data from the transport connection: An existing connection was forcibly closed by the remote host. ---> System.Net.Sockets.SocketException: An existing connection was forcibly closed by the remote host
+   --- End of inner exception stack trace ---
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.GetResult(Int16 token)
+   at System.Net.Security.SslStreamInternal.<FillBufferAsync>g__InternalFillBufferAsync|38_0[TReadAdapter](TReadAdapter adap, ValueTask`1 task, Int32 min, Int32 initial)
+   at System.Net.Security.SslStreamInternal.ReadAsyncInternal[TReadAdapter](TReadAdapter adapter, Memory`1 buffer)
+   at System.Net.Http.HttpConnection.SendAsyncCore(HttpRequestMessage request, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsyncCore(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithNtConnectionAuthAsync(HttpConnection connection, HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithRetryAsync(HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncBuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at eSyaEssentials_UI.HttpClientServices.PostAsJsonAsync[T](String url, Object value)
+   at eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.PatientClinicalInformationController.InsertIntoPatientClinicalInformation(DO_PatientClinicalInformation obj) in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNursingStation\Controllers\PatientClinicalInformationController.cs:line 140|url: http://localhost/PatientClinicalInformation/InsertIntoPatientClinicalInformation|action: InsertIntoPatientClinicalInformation
+2021-10-08 19:31:35.2135||ERROR|eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.PatientClinicalInformationController|UD:InsertIntoPatientClinicalInformation:params:{"BusinessKey":111,"UHID":831,"IPNumber":568,"TransactionID":0,"TransactionDate":"2021-10-07T19:29:00+05:30","TransactionTime":"19:29:00","ChartNumber":0,"l_CL_ControlValue":[{"CLType":"IO","CLControlID":"IO-I-1","ValueType":"float","Value":"800"},{"CLType":"IO","CLControlID":"IO-I-2","ValueType":"float","Value":"200"},{"CLType":"IO","CLControlID":"IO-I-3","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-4","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-5-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-5-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-6-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-6-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-7-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-7-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-8-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-8-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-9-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-9-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-10-N","ValueType":"text","Value":null},{"CLType":"IO","CLControlID":"IO-I-10-V","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-I-GT","ValueType":"float","Value":"1000"},{"CLType":"IO","CLControlID":"IO-O-1","ValueType":"float","Value":"45"},{"CLType":"IO","CLControlID":"IO-O-2","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-O-3","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-O-4","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-O-5","ValueType":"float","Value":null},{"CLType":"IO","CLControlID":"IO-O-GT","ValueType":"float","Value":"45"}],"CLControlID":null,"ValueType":null,"Value":null,"ActiveStatus":true,"FormID":"0","UserID":0,"TerminalID":"192.168.1.3"} System.Net.Http.HttpRequestException: An error occurred while sending the request. ---> System.IO.IOException: Unable to read data from the transport connection: An existing connection was forcibly closed by the remote host. ---> System.Net.Sockets.SocketException: An existing connection was forcibly closed by the remote host
+   --- End of inner exception stack trace ---
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.GetResult(Int16 token)
+   at System.Net.Security.SslStreamInternal.<FillBufferAsync>g__InternalFillBufferAsync|38_0[TReadAdapter](TReadAdapter adap, ValueTask`1 task, Int32 min, Int32 initial)
+   at System.Net.Security.SslStreamInternal.ReadAsyncInternal[TReadAdapter](TReadAdapter adapter, Memory`1 buffer)
+   at System.Net.Http.HttpConnection.FillAsync()
+   at System.Net.Http.HttpConnection.ReadNextResponseHeaderLineAsync(Boolean foldedHeadersAllowed)
+   at System.Net.Http.HttpConnection.SendAsyncCore(HttpRequestMessage request, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsyncCore(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithNtConnectionAuthAsync(HttpConnection connection, HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithRetryAsync(HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncBuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at eSyaEssentials_UI.HttpClientServices.PostAsJsonAsync[T](String url, Object value)
+   at eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.PatientClinicalInformationController.InsertIntoPatientClinicalInformation(DO_PatientClinicalInformation obj) in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNursingStation\Controllers\PatientClinicalInformationController.cs:line 140|url: http://localhost/PatientClinicalInformation/InsertIntoPatientClinicalInformation|action: InsertIntoPatientClinicalInformation
+2021-10-08 19:33:59.0785||ERROR|eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers.PatientClinicalInformationController|UD:InsertIntoPatientClinicalInformation:params:{"BusinessKey":111,"UHID":831,"IPNumber":568,"TransactionID":0,"TransactionDate":"2021-10-07T19:00:00+05:30","TransactionTime":"19:00:00","ChartNumber":0,"l_CL_ControlValue":null,"CLControlID":null,"ValueType":null,"Value":null,"ActiveStatus":true,"FormID":"0","UserID":0,"TerminalID":"192.168.1.3"} System.Exception: Internal Server Error|url: http://localhost/PatientClinicalInformation/InsertIntoPatientClinicalInformation|action: InsertIntoPatientClinicalInformation

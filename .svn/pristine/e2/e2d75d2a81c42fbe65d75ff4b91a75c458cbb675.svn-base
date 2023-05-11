@@ -1,0 +1,131 @@
+﻿
+$(document).ready(function () {
+    fnGridLoadItemMaster();
+});
+
+function fnGridLoadItemMaster() {
+    $("#jqgItemMaster").jqGrid('GridUnload');
+    $("#jqgItemMaster").jqGrid({
+        //url: URL,
+        //mtype: 'Post',
+        datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Item Description", "Pack Unit", "Pack Size", "Inventory class", "Item Class", "Item Source","Item Criticality","Is Inspector Required","Is Rate Contract Item","Is Quotation Required","Is Batch applicable","Accounting Store","Custodian Store","Active Status","Action"],
+        colModel: [
+            { name: "ItemDescription", width: 70, editable: true, align: 'left', hidden: false },
+            { name: "PackUnit", width: 40, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "PackSize", width: 40, editable: true, align: 'left', hidden: false },
+            { name: "InventoryClass", width: 40, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "ItemClass", width: 40, editable: true, align: 'left', hidden: false },
+            { name: "ItemSource", width: 40, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "ItemCriticality", width: 40, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "IsInspectorRequired", width: 70, editable: true, align: 'left', hidden: true },
+            { name: "IsRateContractorItem", width: 70, editable: false, hidden: true, align: 'left', resizable: true },
+            { name: "IsQuotationRequired", width: 70, editable: true, align: 'left', hidden: true },
+            { name: "IsBatchApplicable", width: 70, editable: true, align: 'left', hidden: true },
+            { name: "AccountingStore", width: 70, editable: true, align: 'left', hidden: true },
+            { name: "CustodianStore", width: 70, editable: true, align: 'left', hidden: true },
+            { name: "ActiveStatus", editable: true, width: 28, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: Inactive" } },
+            {
+                name: 'Action', search: false, align: 'left', width: 54, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" onclick="return fnEditItemMaster(event)"><i class="fa fa-edit"></i> Edit </button><button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnViewItemMaster(event)"><i class="fa fa-file"></i> View </button>'
+
+                }
+            },
+        ],
+        pager: "#jqpItemMaster",
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0
+    }).jqGrid('navGrid', '#jqpItemMaster', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpItemMaster', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshItemMaster
+    }).jqGrid('navButtonAdd', '#jqpItemMaster', {
+        caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Add', buttonicon: 'none', id: 'custAdd', position: 'first', onClickButton: fnGridAddItemMaster
+    });
+}
+
+function fnGridAddItemMaster() {
+    fnClearFields();
+    $("#btnSaveItem").html(' Save');
+    $('#PopupItemMaster').modal('show');
+    $('#PopupItemMaster').find('.modal-title').text("Add Item");
+}
+
+function fnClearFields() {
+    $('#txtItemDescription').val('');
+    $('#cboUnitOfMeasure').val('');
+    $('#cboUnitOfMeasure').selectpicker('refresh');
+    $('#cboPackUnit').val('');
+    $('#cboPackUnit').selectpicker('refresh');
+    $('#txtPackSize').val('');
+    $('#cboInventoryClass').val('');
+    $('#cboInventoryClass').selectpicker('refresh');
+    $('#cboItemClass').val('');
+    $('#cboItemClass').selectpicker('refresh');
+    $('#cboItemSource').val('');
+    $('#cboItemSource').selectpicker('refresh');
+    $('#cboItemCriticality').val('');
+    $('#cboItemCriticality').selectpicker('refresh');
+    $('#chkIsInspectionRequired').parent().removeClass("is-checked");
+    $('#chkIsRateContractItem').parent().removeClass("is-checked");
+    $('#chkIsQuotationRequired').parent().removeClass("is-checked");
+    $('#chkIsBatchApplicable').parent().removeClass("is-checked");
+    $('#cboAccountingStore').val('');
+    $('#cboAccountingStore').selectpicker('refresh');
+    $('#cboCustodianStore').val('');
+    $('#cboCustodianStore').selectpicker('refresh');
+}
+
+function fnGridRefreshItemMaster() {
+    $("#jqgItemMaster").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+function fnEditItemMaster(e) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgItemMaster').jqGrid('getRowData', rowid);
+    $("#btnSaveItem").html(' Update');
+    $('#PopupItemMaster').find('.modal-title').text("Edit Item");
+    $('#PopupItemMaster').modal('show');
+   
+}
+function fnViewItemMaster(e) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgItemMaster').jqGrid('getRowData', rowid);
+
+    $('#PopupItemMaster').modal('show');
+    $('#PopupItemMaster').find('.modal-title').text("View Item");
+   
+    $("#btnSaveItem").hide();
+    $("input,textarea").attr('readonly', true);
+    $("select").next().attr('disabled', true);
+    $("input[type=checkbox]").attr('disabled', true);
+    $("#PopupItemMaster").on('hidden.bs.modal', function () {
+        $("#btnSaveItem").show();
+        $("input,textarea").attr('readonly', false);
+        $("select").next().attr('disabled', false);
+        $("input[type=checkbox]").attr('disabled', false);
+    })
+}
+
+function fnSaveItemCreation() {
+
+    if ($('#txtItemDescription').val() == '') {
+        toastr.warning("Please Enter Item Name");
+        $('#txtItemDescription').focus();
+        return;
+    }
+   
+}
+
+ 

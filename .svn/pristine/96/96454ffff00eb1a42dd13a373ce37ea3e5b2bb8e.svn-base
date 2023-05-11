@@ -1,0 +1,218 @@
+﻿
+$(document).ready(function () {
+    fnLoadReportHeaderGrid();
+});
+var actiontype = "";
+function fnLoadReportHeaderGrid() {
+    var Bskey = $('#cboBusinesskey').val();
+    $("#jqgGeneralReport").GridUnload();
+
+    $("#jqgGeneralReport").jqGrid({
+        url: getBaseURL() + '/ReportHeader/GetReportHeaderList?Businesskey=' + Bskey,
+        mtype: 'POST',
+        datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["", "", "", "", "", localization.ReportHeader, localization.Active, localization.Actions],
+        colModel: [
+            { name: "BusinessKey", width: 70, editable: true, align: 'left', hidden: true },
+            { name: "ReportHeader", width: 70, editable: true, align: 'left', hidden: true },
+            { name: "ReportHeaderTemplate", width: 70, editable: true, align: 'left', hidden: true },
+            { name: "HeaderHeight", width: 70, editable: true, align: 'left', hidden: true },
+            { name: "IsHeaderInvisible", editable: true, width: 50, align: 'center !important', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, hidden: true },
+            
+            { name: "ReportHeaderDesc", width: 100, editable: true, align: 'left', hidden: false },
+            { name: "ActiveStatus", width: 35, editable: false, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+            {
+                name: 'edit', search: false, align: 'left', width: 100, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit", onclick="return fnEditGeneralReport(event,\'edit\')"><i class="fas fa-pencil-alt"></i>' + localization.Edit+' </button>'+
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnEditGeneralReport(event,\'view\')"><i class="far fa-eye"></i>' + localization.View+' </button>'
+
+                }
+            },
+        ],
+        rowNum: 10,
+        loadonce: true,
+        pager: "#jqpGeneralReport",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: true,
+        forceFit:true,
+        scrollOffset: 0,
+        loadComplete: function (data) {
+            SetGridControlByAction();
+        },
+    }).jqGrid('navGrid', '#jqpGeneralReport', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpGeneralReport', {
+        caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnRefresh
+    }).jqGrid('navButtonAdd', '#jqpGeneralReport', {
+        caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddGeneralReport
+        });
+    fnAddGridSerialNoHeading();
+}
+
+function fnAddGeneralReport() {
+    fnUserFormAction(false);
+    tinymce.activeEditor.setMode('design'); 
+    if ($("#cboBusinesskey").val() == "0") {
+
+        toastr.warning("Please Select Location");
+    }
+    else
+    {
+        fnClearFields();
+        $("#PopupGeneralReport").modal('show');
+        $(".modal-title").text("Add General Report Header");
+        $("#chkActiveStatus").parent().addClass("is-checked");
+        $("#btnSaveGeneralReport").text("Save");
+    }
+}
+
+function fnEditGeneralReport(e,actiontype) {
+    fnClearFields();
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgGeneralReport').jqGrid('getRowData', rowid);
+    $("#txtReportHeaderId").val(rowData.ReportHeader);
+    $("#txtBusinessKey").val(rowData.BusinessKey);
+    $("#txtReportHeaderDesc").val(rowData.ReportHeaderDesc);
+    tinyMCE.activeEditor.setContent(rowData.ReportHeaderTemplate);
+    $("#txtHeaderHeight").val(rowData.HeaderHeight);
+    if (rowData.IsHeaderInvisible == "true")
+        $("#chkIsHeaderInvisible").parent().addClass('is-checked'); 
+    else
+        $("#chkIsHeaderInvisible").parent().removeClass('is-checked');
+    if (rowData.ActiveStatus == 'true') {
+        $("#chkActiveStatus").parent().addClass("is-checked");
+    }
+    else {
+        $("#chkActiveStatus").parent().removeClass("is-checked");
+    }
+
+    $("#PopupGeneralReport").modal('show');
+   
+    if (actiontype.trim() == "edit") {
+        $("#chkActiveStatus").prop('disabled', false);
+        $(".modal-title").text("Edit General Report Header");
+        tinymce.activeEditor.setMode('design');
+        fnUserFormAction(false);
+        $("#btnSaveGeneralReport").text("Update").show();
+    }
+    if (actiontype.trim() == "view") {
+        $("#chkActiveStatus").prop('disabled', true);
+        fnUserFormAction(true);
+        $("#btnSaveGeneralReport").hide();
+        tinymce.activeEditor.setMode('readonly');
+        $(".modal-title").text("View General Report Header");
+         
+    }
+
+}
+
+function fnUserFormAction(status) {
+    $("input,textarea").attr('readonly', status);
+    $("select").next().attr('disabled', status);
+    $("#chkIsHeaderInvisible").prop("disabled", status);
+}
+
+function fnSaveGeneralReport() {
+
+    if (validationGeneralReport() === false) {
+        return;
+    }
+    var rpHeader = {
+        ReportHeader: $("#txtReportHeaderId").val() === '' ? 0 : $("#txtReportHeaderId").val(),
+        BusinessKey: $("#cboBusinesskey").val(),
+        ReportHeaderDesc: $("#txtReportHeaderDesc").val(),
+        ReportHeaderTemplate: tinyMCE.get('txtReportHeaderTemplate').getContent(),
+        HeaderHeight: $("#txtHeaderHeight").val(),
+        IsHeaderInvisible: $('#chkIsHeaderInvisible').parent().hasClass("is-checked"),
+        ActiveStatus: $("#chkActiveStatus").parent().hasClass("is-checked")
+    };
+    $.ajax({
+        url: getBaseURL() + '/ReportHeader/InsertOrUpdateReportHeader',
+        type: 'POST',
+        datatype: 'json',
+        data: { rpHeader },
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                fnClosePopUp();
+                fnClearFields();
+                $("#jqgGeneralReport").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+                return true;
+            }
+            else{
+                toastr.error(response.Message);
+                return false;
+            }
+        }
+    });
+}
+
+function validationGeneralReport() {
+    var reportheaderTemplate = tinyMCE.get('txtReportHeaderTemplate').getContent();
+    if (IsStringNullorEmpty($("#txtReportHeaderDesc").val())) {
+        toastr.warning("Please Enter Report Header Description");
+        return false;
+    }
+    if (IsStringNullorEmpty(reportheaderTemplate)) {
+        toastr.warning("Please Enter Report Header Template");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtHeaderHeight").val())) {
+        toastr.warning("Please Enter Header Height ");
+        return false;
+    }
+    if (isNaN($("#txtHeaderHeight").val())) {
+        toastr.warning("Header Height Should be Numbers Only");
+        return false;
+    }
+
+}
+
+function fnRefresh() {
+   
+    $("#jqgGeneralReport").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+ 
+function fnClosePopUp() {
+    fnClearFields();
+    $("#PopupGeneralReport").modal('hide');
+}
+
+function fnClearFields() {
+    $("#txtReportHeaderId").val('');
+    $("#txtBusinessKey").val('');
+    $("#txtReportHeaderDesc").val('');
+    $("#txtReportHeaderTemplate").val('');
+    tinyMCE.activeEditor.setContent('');
+    $("#txtHeaderHeight").val('');
+    $("#chkIsHeaderInvisible").parent().removeClass('is-checked');
+    $("#chkActiveStatus").prop('disabled', false);
+    $("#btnSaveGeneralReport").show();
+}
+
+function SetGridControlByAction() {
+    $('#jqgAdd').removeClass('ui-state-disabled');
+    var eleEnable = document.querySelectorAll('#jqgEdit');
+
+    for (var i = 0; i < eleEnable.length; i++) {
+        eleEnable[i].disabled = false;
+    }
+    if (_userFormRole.IsInsert === false) {
+        $('#jqgAdd').addClass('ui-state-disabled');
+    }
+    if (_userFormRole.IsEdit === false) {
+        var eleDisable = document.querySelectorAll('#jqgEdit');
+        for (var i = 0; i < eleDisable.length; i++) {
+            eleDisable[i].disabled = true;
+            eleDisable[i].className = "ui-state-disabled";
+        }
+    }
+}

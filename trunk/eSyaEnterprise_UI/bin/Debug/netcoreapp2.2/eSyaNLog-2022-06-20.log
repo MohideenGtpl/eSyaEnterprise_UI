@@ -1,0 +1,525 @@
+2022-06-20 11:47:57.2063|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2022-06-20 11:48:25.1648|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2022-06-20 11:54:32.1236||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 12:02:14.1137||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 12:08:26.0482||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 12:09:58.4351|1|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An unhandled exception has occurred while executing the request. System.NullReferenceException: Object reference not set to an instance of an object.
+   at AspNetCore.Areas_eSyaNatureCure_Views_CheckInGuest_V_ENC_04_00.ExecuteAsync() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNatureCure\Views\CheckInGuest\V_ENC_04_00.cshtml:line 40
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ActionContext actionContext, IView view, ViewDataDictionary viewData, ITempDataDictionary tempData, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeResultAsync(IActionResult result)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResultFilterAsync[TFilter,TFilterAsync]()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResultExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeResultFilters()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResourceFilter()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeFilterPipelineAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeAsync()
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/eSyaNatureCure/CheckInGuest/V_ENC_04_00|action: V_ENC_04_00
+2022-06-20 12:09:58.6675|3|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An exception was thrown attempting to execute the error handler. System.ArgumentNullException: Value cannot be null.
+Parameter name: logger
+   at Microsoft.Extensions.Logging.LoggerExtensions.Log(ILogger logger, LogLevel logLevel, EventId eventId, Exception exception, String message, Object[] args)
+   at Microsoft.Extensions.Logging.LoggerExtensions.LogError(ILogger logger, Exception exception, String message, Object[] args)
+   at eSyaEnterprise_UI.Extension.ExceptionMiddlewareExtensions.<>c.<<ConfigureExceptionHandler>b__0_1>d.MoveNext() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Extension\ExceptionMiddlewareExtensions.cs:line 44
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/eSyaNatureCure/CheckInGuest/V_ENC_04_00|action: V_ENC_04_00
+2022-06-20 12:09:58.6865|1|ERROR|Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware|An unhandled exception has occurred while executing the request. System.NullReferenceException: Object reference not set to an instance of an object.
+   at AspNetCore.Areas_eSyaNatureCure_Views_CheckInGuest_V_ENC_04_00.ExecuteAsync() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNatureCure\Views\CheckInGuest\V_ENC_04_00.cshtml:line 40
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ActionContext actionContext, IView view, ViewDataDictionary viewData, ITempDataDictionary tempData, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeResultAsync(IActionResult result)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResultFilterAsync[TFilter,TFilterAsync]()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResultExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeResultFilters()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResourceFilter()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeFilterPipelineAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeAsync()
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)|url: http://localhost/eSyaNatureCure/CheckInGuest/V_ENC_04_00|action: V_ENC_04_00
+2022-06-20 12:10:39.8014||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 12:13:48.7806||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 12:14:14.3273||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 12:14:33.6313||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 12:14:54.6439||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 12:15:14.8652||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 12:15:46.1757||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 12:43:02.3926|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2022-06-20 12:43:24.9840||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 12:48:59.6287||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 12:50:54.7405||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 12:51:26.8402||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 13:01:51.6281||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 13:06:39.6668||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 13:11:47.8852||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 13:12:52.3144||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 13:13:27.9503||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 13:13:44.1882||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 14:18:12.2433|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2022-06-20 14:21:49.1175||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 14:23:41.0505||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:CreateGuestCheckin:params:{"BusinessKey":111,"BookingKey":221112,"GuestId":1,"PackageId":0,"PackageDesc":null,"TotalPackageAmount":0.0,"CheckedInDate":"0001-01-01T00:00:00","CheckedOutDate":"0001-01-01T00:00:00","RoomTypeId":0,"RoomTypeName":null,"RoomNumber":null,"BedNumber":null,"OccupancyType":null,"PackagePrice":0.0,"UHID":null,"FirstName":"Mohideen","LastName":"Batcha","Gender":null,"AgeYy":40,"MobileNumber":"9606958591","EmailId":null,"Address":"302, Frazer Apartment,\nColes Road,","AreaCode":5053106,"StateCode":1000017,"CityCode":3000389,"Pincode":"560005","IsCheckedIn":false,"IsCheckedOut":false,"CheckInStatus":null,"FormID":"0","UserID":10,"TerminalID":"192.168.1.4","lst_Patient":null} System.Net.Http.HttpRequestException: An error occurred while sending the request. ---> System.IO.IOException: Unable to read data from the transport connection: An existing connection was forcibly closed by the remote host. ---> System.Net.Sockets.SocketException: An existing connection was forcibly closed by the remote host
+   --- End of inner exception stack trace ---
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.GetResult(Int16 token)
+   at System.Net.Security.SslStreamInternal.<FillBufferAsync>g__InternalFillBufferAsync|38_0[TReadAdapter](TReadAdapter adap, ValueTask`1 task, Int32 min, Int32 initial)
+   at System.Net.Security.SslStreamInternal.ReadAsyncInternal[TReadAdapter](TReadAdapter adapter, Memory`1 buffer)
+   at System.Net.Http.HttpConnection.FillAsync()
+   at System.Net.Http.HttpConnection.ReadNextResponseHeaderLineAsync(Boolean foldedHeadersAllowed)
+   at System.Net.Http.HttpConnection.SendAsyncCore(HttpRequestMessage request, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsyncCore(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithNtConnectionAuthAsync(HttpConnection connection, HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithRetryAsync(HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncBuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at eSyaEssentials_UI.HttpClientServices.PostAsJsonAsync[T](String url, Object value)
+   at eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController.CreateGuestCheckin(DO_GuestCheckInDetails obj) in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNatureCure\Controllers\CheckInGuestController.cs:line 120|url: http://localhost/CheckInGuest/CreateGuestCheckin|action: CreateGuestCheckin
+2022-06-20 14:24:22.1406|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2022-06-20 14:26:27.9066||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 14:28:33.6591||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:CreateGuestCheckin:params:{"BusinessKey":111,"BookingKey":221112,"GuestId":1,"PackageId":0,"PackageDesc":null,"TotalPackageAmount":0.0,"CheckedInDate":"0001-01-01T00:00:00","CheckedOutDate":"0001-01-01T00:00:00","RoomTypeId":0,"RoomTypeName":null,"RoomNumber":null,"BedNumber":null,"OccupancyType":null,"PackagePrice":0.0,"UHID":null,"FirstName":"Mohideen","LastName":"Batcha","Gender":null,"IsDOBApplicable":false,"DateOfBirth":"1982-01-06T00:00:00","AgeYy":40,"AgeMM":0,"AgeDD":0,"MobileNumber":"9606958591","EmailId":null,"Address":"302, Frazer Apartment,\nColes Road.","AreaCode":5053106,"StateCode":1000017,"CityCode":3000389,"Pincode":"560005","IsCheckedIn":false,"IsCheckedOut":false,"CheckInStatus":null,"FormID":"0","UserID":10,"TerminalID":"192.168.1.4","lst_Patient":null} System.Net.Http.HttpRequestException: An error occurred while sending the request. ---> System.IO.IOException: Unable to read data from the transport connection: An existing connection was forcibly closed by the remote host. ---> System.Net.Sockets.SocketException: An existing connection was forcibly closed by the remote host
+   --- End of inner exception stack trace ---
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.GetResult(Int16 token)
+   at System.Net.Security.SslStreamInternal.<FillBufferAsync>g__InternalFillBufferAsync|38_0[TReadAdapter](TReadAdapter adap, ValueTask`1 task, Int32 min, Int32 initial)
+   at System.Net.Security.SslStreamInternal.ReadAsyncInternal[TReadAdapter](TReadAdapter adapter, Memory`1 buffer)
+   at System.Net.Http.HttpConnection.FillAsync()
+   at System.Net.Http.HttpConnection.ReadNextResponseHeaderLineAsync(Boolean foldedHeadersAllowed)
+   at System.Net.Http.HttpConnection.SendAsyncCore(HttpRequestMessage request, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsyncCore(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithNtConnectionAuthAsync(HttpConnection connection, HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithRetryAsync(HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncBuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at eSyaEssentials_UI.HttpClientServices.PostAsJsonAsync[T](String url, Object value)
+   at eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController.CreateGuestCheckin(DO_GuestCheckInDetails obj) in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNatureCure\Controllers\CheckInGuestController.cs:line 120|url: http://localhost/CheckInGuest/CreateGuestCheckin|action: CreateGuestCheckin
+2022-06-20 14:30:28.6936|1|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An unhandled exception has occurred while executing the request. System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it ---> System.Net.Sockets.SocketException: No connection could be made because the target machine actively refused it
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.CreateConnectionAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.WaitForCreatedConnectionAsync(ValueTask`1 creationTask)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.SendWithRetryAsync(HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncBuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at eSyaEssentials_UI.HttpClientServices.GetAsync[T](String url)
+   at eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController.V_ENC_04_00(Int64 bookingKey, Int32 guestId) in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNatureCure\Controllers\CheckInGuestController.cs:line 39
+   at Microsoft.AspNetCore.Mvc.Internal.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeNextActionFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Rethrow(ActionExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeInnerFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResourceFilter()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeFilterPipelineAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeAsync()
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/eSyaNatureCure/CheckInGuest/V_ENC_04_00|action: V_ENC_04_00
+2022-06-20 14:30:28.9201|3|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An exception was thrown attempting to execute the error handler. System.ArgumentNullException: Value cannot be null.
+Parameter name: logger
+   at Microsoft.Extensions.Logging.LoggerExtensions.Log(ILogger logger, LogLevel logLevel, EventId eventId, Exception exception, String message, Object[] args)
+   at Microsoft.Extensions.Logging.LoggerExtensions.LogError(ILogger logger, Exception exception, String message, Object[] args)
+   at eSyaEnterprise_UI.Extension.ExceptionMiddlewareExtensions.<>c.<<ConfigureExceptionHandler>b__0_1>d.MoveNext() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Extension\ExceptionMiddlewareExtensions.cs:line 44
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/eSyaNatureCure/CheckInGuest/V_ENC_04_00|action: V_ENC_04_00
+2022-06-20 14:30:28.9480|1|ERROR|Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware|An unhandled exception has occurred while executing the request. System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it ---> System.Net.Sockets.SocketException: No connection could be made because the target machine actively refused it
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.CreateConnectionAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.WaitForCreatedConnectionAsync(ValueTask`1 creationTask)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.SendWithRetryAsync(HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncBuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at eSyaEssentials_UI.HttpClientServices.GetAsync[T](String url)
+   at eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController.V_ENC_04_00(Int64 bookingKey, Int32 guestId) in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNatureCure\Controllers\CheckInGuestController.cs:line 39
+   at Microsoft.AspNetCore.Mvc.Internal.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeNextActionFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Rethrow(ActionExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeInnerFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResourceFilter()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeFilterPipelineAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeAsync()
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)|url: http://localhost/eSyaNatureCure/CheckInGuest/V_ENC_04_00|action: V_ENC_04_00
+2022-06-20 14:31:20.0959||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 14:34:36.5418||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 14:37:11.9643||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:CreateGuestCheckin:params:{"BusinessKey":111,"BookingKey":221112,"GuestId":1,"PackageId":0,"PackageDesc":null,"TotalPackageAmount":0.0,"CheckedInDate":"0001-01-01T00:00:00","CheckedOutDate":"0001-01-01T00:00:00","RoomTypeId":0,"RoomTypeName":null,"RoomNumber":null,"BedNumber":null,"OccupancyType":null,"PackagePrice":0.0,"UHID":null,"FirstName":"Mohideen","LastName":"Batcha","Gender":null,"IsDOBApplicable":false,"DateOfBirth":"1982-01-06T00:00:00","AgeYy":40,"AgeMM":0,"AgeDD":0,"MobileNumber":"9606958591","EmailId":"rmohideen@gmail.com","Address":"#302, Frazer Apartment,\nColes Roads","AreaCode":5053106,"StateCode":1000017,"CityCode":3000389,"Pincode":"560005","IsCheckedIn":false,"IsCheckedOut":false,"CheckInStatus":null,"FormID":"0","UserID":10,"TerminalID":"192.168.1.4","lst_Patient":null} System.Net.Http.HttpRequestException: An error occurred while sending the request. ---> System.IO.IOException: Unable to read data from the transport connection: An existing connection was forcibly closed by the remote host. ---> System.Net.Sockets.SocketException: An existing connection was forcibly closed by the remote host
+   --- End of inner exception stack trace ---
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.GetResult(Int16 token)
+   at System.Net.Security.SslStreamInternal.<FillBufferAsync>g__InternalFillBufferAsync|38_0[TReadAdapter](TReadAdapter adap, ValueTask`1 task, Int32 min, Int32 initial)
+   at System.Net.Security.SslStreamInternal.ReadAsyncInternal[TReadAdapter](TReadAdapter adapter, Memory`1 buffer)
+   at System.Net.Http.HttpConnection.SendAsyncCore(HttpRequestMessage request, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsyncCore(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithNtConnectionAuthAsync(HttpConnection connection, HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithRetryAsync(HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncBuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at eSyaEssentials_UI.HttpClientServices.PostAsJsonAsync[T](String url, Object value)
+   at eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController.CreateGuestCheckin(DO_GuestCheckInDetails obj) in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNatureCure\Controllers\CheckInGuestController.cs:line 120|url: http://localhost/CheckInGuest/CreateGuestCheckin|action: CreateGuestCheckin
+2022-06-20 14:39:00.3875||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:CreateGuestCheckin:params:{"BusinessKey":111,"BookingKey":221112,"GuestId":1,"PackageId":0,"PackageDesc":null,"TotalPackageAmount":0.0,"CheckedInDate":"0001-01-01T00:00:00","CheckedOutDate":"0001-01-01T00:00:00","RoomTypeId":0,"RoomTypeName":null,"RoomNumber":null,"BedNumber":null,"OccupancyType":null,"PackagePrice":0.0,"UHID":null,"FirstName":"Mohideen","LastName":"Batcha","Gender":null,"IsDOBApplicable":false,"DateOfBirth":"1982-01-06T00:00:00","AgeYy":40,"AgeMM":0,"AgeDD":0,"MobileNumber":"9606958591","EmailId":"rmohideen@gmail.com","Address":"#302, Frazer Apartment,\nColes Roads","AreaCode":5053106,"StateCode":1000017,"CityCode":3000389,"Pincode":"560005","IsCheckedIn":false,"IsCheckedOut":false,"CheckInStatus":null,"FormID":"0","UserID":10,"TerminalID":"192.168.1.4","lst_Patient":null} System.Net.Http.HttpRequestException: An error occurred while sending the request. ---> System.IO.IOException: Unable to read data from the transport connection: An existing connection was forcibly closed by the remote host. ---> System.Net.Sockets.SocketException: An existing connection was forcibly closed by the remote host
+   --- End of inner exception stack trace ---
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.GetResult(Int16 token)
+   at System.Net.Security.SslStreamInternal.<FillBufferAsync>g__InternalFillBufferAsync|38_0[TReadAdapter](TReadAdapter adap, ValueTask`1 task, Int32 min, Int32 initial)
+   at System.Net.Security.SslStreamInternal.ReadAsyncInternal[TReadAdapter](TReadAdapter adapter, Memory`1 buffer)
+   at System.Net.Http.HttpConnection.FillAsync()
+   at System.Net.Http.HttpConnection.ReadNextResponseHeaderLineAsync(Boolean foldedHeadersAllowed)
+   at System.Net.Http.HttpConnection.SendAsyncCore(HttpRequestMessage request, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsyncCore(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithNtConnectionAuthAsync(HttpConnection connection, HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithRetryAsync(HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncBuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at eSyaEssentials_UI.HttpClientServices.PostAsJsonAsync[T](String url, Object value)
+   at eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController.CreateGuestCheckin(DO_GuestCheckInDetails obj) in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNatureCure\Controllers\CheckInGuestController.cs:line 120|url: http://localhost/CheckInGuest/CreateGuestCheckin|action: CreateGuestCheckin
+2022-06-20 14:43:50.1131||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:CreateGuestCheckin:params:{"BusinessKey":111,"BookingKey":221112,"GuestId":1,"PackageId":0,"PackageDesc":null,"TotalPackageAmount":0.0,"CheckedInDate":"0001-01-01T00:00:00","CheckedOutDate":"0001-01-01T00:00:00","RoomTypeId":0,"RoomTypeName":null,"RoomNumber":null,"BedNumber":null,"OccupancyType":null,"PackagePrice":0.0,"UHID":null,"FirstName":"Mohideen","LastName":"Batcha","Gender":null,"IsDOBApplicable":false,"DateOfBirth":"1982-01-06T00:00:00","AgeYy":40,"AgeMM":0,"AgeDD":0,"MobileNumber":"9606958591","EmailId":"rmohideen@gmail.com","Address":"#302, Frazer Apartment,\nColes Roads","AreaCode":5053106,"StateCode":1000017,"CityCode":3000389,"Pincode":"560005","IsCheckedIn":false,"IsCheckedOut":false,"CheckInStatus":null,"FormID":"0","UserID":10,"TerminalID":"192.168.1.4","lst_Patient":null} System.Threading.Tasks.TaskCanceledException: The operation was canceled. ---> System.IO.IOException: Unable to read data from the transport connection: The I/O operation has been aborted because of either a thread exit or an application request. ---> System.Net.Sockets.SocketException: The I/O operation has been aborted because of either a thread exit or an application request
+   --- End of inner exception stack trace ---
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.GetResult(Int16 token)
+   at System.Net.Security.SslStreamInternal.<FillBufferAsync>g__InternalFillBufferAsync|38_0[TReadAdapter](TReadAdapter adap, ValueTask`1 task, Int32 min, Int32 initial)
+   at System.Net.Security.SslStreamInternal.ReadAsyncInternal[TReadAdapter](TReadAdapter adapter, Memory`1 buffer)
+   at System.Net.Http.HttpConnection.FillAsync()
+   at System.Net.Http.HttpConnection.ReadNextResponseHeaderLineAsync(Boolean foldedHeadersAllowed)
+   at System.Net.Http.HttpConnection.SendAsyncCore(HttpRequestMessage request, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsyncCore(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithNtConnectionAuthAsync(HttpConnection connection, HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithRetryAsync(HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncBuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at eSyaEssentials_UI.HttpClientServices.PostAsJsonAsync[T](String url, Object value)
+   at eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController.CreateGuestCheckin(DO_GuestCheckInDetails obj) in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNatureCure\Controllers\CheckInGuestController.cs:line 120|url: http://localhost/CheckInGuest/CreateGuestCheckin|action: CreateGuestCheckin
+2022-06-20 14:45:05.0319||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 14:45:59.6002||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 14:50:57.0527||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 14:53:48.4206||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 14:54:11.7245||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 14:55:10.5362||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 14:56:27.2282|1|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An unhandled exception has occurred while executing the request. Microsoft.AspNetCore.Mvc.Razor.Compilation.CompilationFailedException: One or more compilation failures occurred:
+D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNatureCure\Views\CheckInGuest\V_ENC_04_00.cshtml(111,54): error CS1525: Invalid expression term '='
+   at Microsoft.AspNetCore.Mvc.Razor.Internal.RazorViewCompiler.CompileAndEmit(RazorCodeDocument codeDocument, String generatedCode)
+   at Microsoft.AspNetCore.Mvc.Razor.Internal.RazorViewCompiler.CompileAndEmit(String relativePath)
+   at Microsoft.AspNetCore.Mvc.Razor.Internal.RazorViewCompiler.OnCacheMiss(String normalizedPath)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Mvc.Razor.Internal.DefaultRazorPageFactoryProvider.CreateFactory(String relativePath)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorViewEngine.CreateCacheResult(HashSet`1 expirationTokens, String relativePath, Boolean isMainPage)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorViewEngine.OnCacheMiss(ViewLocationExpanderContext expanderContext, ViewLocationCacheKey cacheKey)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorViewEngine.LocatePageFromViewLocations(ActionContext actionContext, String pageName, Boolean isMainPage)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorViewEngine.FindView(ActionContext context, String viewName, Boolean isMainPage)
+   at Microsoft.AspNetCore.Mvc.ViewEngines.CompositeViewEngine.FindView(ActionContext context, String viewName, Boolean isMainPage)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.FindView(ActionContext actionContext, ViewResult viewResult)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeResultAsync(IActionResult result)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResultFilterAsync[TFilter,TFilterAsync]()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResultExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeResultFilters()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResourceFilter()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeFilterPipelineAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeAsync()
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/eSyaNatureCure/CheckInGuest/V_ENC_04_00|action: V_ENC_04_00
+2022-06-20 14:56:27.3269|3|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An exception was thrown attempting to execute the error handler. System.ArgumentNullException: Value cannot be null.
+Parameter name: logger
+   at Microsoft.Extensions.Logging.LoggerExtensions.Log(ILogger logger, LogLevel logLevel, EventId eventId, Exception exception, String message, Object[] args)
+   at Microsoft.Extensions.Logging.LoggerExtensions.LogError(ILogger logger, Exception exception, String message, Object[] args)
+   at eSyaEnterprise_UI.Extension.ExceptionMiddlewareExtensions.<>c.<<ConfigureExceptionHandler>b__0_1>d.MoveNext() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Extension\ExceptionMiddlewareExtensions.cs:line 44
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/eSyaNatureCure/CheckInGuest/V_ENC_04_00|action: V_ENC_04_00
+2022-06-20 14:56:27.3269|1|ERROR|Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware|An unhandled exception has occurred while executing the request. Microsoft.AspNetCore.Mvc.Razor.Compilation.CompilationFailedException: One or more compilation failures occurred:
+D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNatureCure\Views\CheckInGuest\V_ENC_04_00.cshtml(111,54): error CS1525: Invalid expression term '='
+   at Microsoft.AspNetCore.Mvc.Razor.Internal.RazorViewCompiler.CompileAndEmit(RazorCodeDocument codeDocument, String generatedCode)
+   at Microsoft.AspNetCore.Mvc.Razor.Internal.RazorViewCompiler.CompileAndEmit(String relativePath)
+   at Microsoft.AspNetCore.Mvc.Razor.Internal.RazorViewCompiler.OnCacheMiss(String normalizedPath)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Mvc.Razor.Internal.DefaultRazorPageFactoryProvider.CreateFactory(String relativePath)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorViewEngine.CreateCacheResult(HashSet`1 expirationTokens, String relativePath, Boolean isMainPage)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorViewEngine.OnCacheMiss(ViewLocationExpanderContext expanderContext, ViewLocationCacheKey cacheKey)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorViewEngine.LocatePageFromViewLocations(ActionContext actionContext, String pageName, Boolean isMainPage)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorViewEngine.FindView(ActionContext context, String viewName, Boolean isMainPage)
+   at Microsoft.AspNetCore.Mvc.ViewEngines.CompositeViewEngine.FindView(ActionContext context, String viewName, Boolean isMainPage)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.FindView(ActionContext actionContext, ViewResult viewResult)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeResultAsync(IActionResult result)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResultFilterAsync[TFilter,TFilterAsync]()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResultExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeResultFilters()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResourceFilter()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeFilterPipelineAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeAsync()
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)|url: http://localhost/eSyaNatureCure/CheckInGuest/V_ENC_04_00|action: V_ENC_04_00
+2022-06-20 14:56:47.3168||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 14:57:21.0633||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 14:58:19.0367||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 14:58:54.4559||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 14:59:35.2058||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 15:00:13.2914||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 15:01:07.8265||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 15:03:51.2330||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 15:04:34.8585|1|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An unhandled exception has occurred while executing the request. System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it ---> System.Net.Sockets.SocketException: No connection could be made because the target machine actively refused it
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.CreateConnectionAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.WaitForCreatedConnectionAsync(ValueTask`1 creationTask)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.SendWithRetryAsync(HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncBuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at eSyaEssentials_UI.HttpClientServices.GetAsync[T](String url)
+   at eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController.V_ENC_04_00(Int64 bookingKey, Int32 guestId) in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNatureCure\Controllers\CheckInGuestController.cs:line 39
+   at Microsoft.AspNetCore.Mvc.Internal.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeNextActionFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Rethrow(ActionExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeInnerFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResourceFilter()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeFilterPipelineAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeAsync()
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/eSyaNatureCure/CheckInGuest/V_ENC_04_00|action: V_ENC_04_00
+2022-06-20 15:04:34.9698|3|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An exception was thrown attempting to execute the error handler. System.ArgumentNullException: Value cannot be null.
+Parameter name: logger
+   at Microsoft.Extensions.Logging.LoggerExtensions.Log(ILogger logger, LogLevel logLevel, EventId eventId, Exception exception, String message, Object[] args)
+   at Microsoft.Extensions.Logging.LoggerExtensions.LogError(ILogger logger, Exception exception, String message, Object[] args)
+   at eSyaEnterprise_UI.Extension.ExceptionMiddlewareExtensions.<>c.<<ConfigureExceptionHandler>b__0_1>d.MoveNext() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Extension\ExceptionMiddlewareExtensions.cs:line 44
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/eSyaNatureCure/CheckInGuest/V_ENC_04_00|action: V_ENC_04_00
+2022-06-20 15:04:35.0349|1|ERROR|Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware|An unhandled exception has occurred while executing the request. System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it ---> System.Net.Sockets.SocketException: No connection could be made because the target machine actively refused it
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.CreateConnectionAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.WaitForCreatedConnectionAsync(ValueTask`1 creationTask)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at System.Net.Http.HttpConnectionPool.SendWithRetryAsync(HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncBuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at eSyaEssentials_UI.HttpClientServices.GetAsync[T](String url)
+   at eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController.V_ENC_04_00(Int64 bookingKey, Int32 guestId) in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNatureCure\Controllers\CheckInGuestController.cs:line 39
+   at Microsoft.AspNetCore.Mvc.Internal.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at System.Threading.Tasks.ValueTask`1.get_Result()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeNextActionFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Rethrow(ActionExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeInnerFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResourceFilter()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeFilterPipelineAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeAsync()
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)|url: http://localhost/eSyaNatureCure/CheckInGuest/V_ENC_04_00|action: V_ENC_04_00
+2022-06-20 15:11:50.3050||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 15:12:35.5183||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 15:13:03.3890||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 15:13:57.6722||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 15:15:31.6863||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 17:37:43.2890|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2022-06-20 17:45:23.8537|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2022-06-20 17:48:10.3748||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 17:57:32.3591||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 18:00:16.2830||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 18:00:35.5311||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 22:14:16.9491|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2022-06-20 22:14:47.5638||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 22:14:55.4422|1|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An unhandled exception has occurred while executing the request. System.NullReferenceException: Object reference not set to an instance of an object.
+   at AspNetCore.Areas_eSyaNatureCure_Views_CheckInGuest_V_ENC_04_00.ExecuteAsync() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNatureCure\Views\CheckInGuest\V_ENC_04_00.cshtml:line 40
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ActionContext actionContext, IView view, ViewDataDictionary viewData, ITempDataDictionary tempData, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeResultAsync(IActionResult result)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResultFilterAsync[TFilter,TFilterAsync]()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResultExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeResultFilters()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResourceFilter()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeFilterPipelineAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeAsync()
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/eSyaNatureCure/CheckInGuest/V_ENC_04_00|action: V_ENC_04_00
+2022-06-20 22:14:55.9384|3|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An exception was thrown attempting to execute the error handler. System.ArgumentNullException: Value cannot be null.
+Parameter name: logger
+   at Microsoft.Extensions.Logging.LoggerExtensions.Log(ILogger logger, LogLevel logLevel, EventId eventId, Exception exception, String message, Object[] args)
+   at Microsoft.Extensions.Logging.LoggerExtensions.LogError(ILogger logger, Exception exception, String message, Object[] args)
+   at eSyaEnterprise_UI.Extension.ExceptionMiddlewareExtensions.<>c.<<ConfigureExceptionHandler>b__0_1>d.MoveNext() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Extension\ExceptionMiddlewareExtensions.cs:line 44
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/eSyaNatureCure/CheckInGuest/V_ENC_04_00|action: V_ENC_04_00
+2022-06-20 22:14:55.9841|1|ERROR|Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware|An unhandled exception has occurred while executing the request. System.NullReferenceException: Object reference not set to an instance of an object.
+   at AspNetCore.Areas_eSyaNatureCure_Views_CheckInGuest_V_ENC_04_00.ExecuteAsync() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Areas\eSyaNatureCure\Views\CheckInGuest\V_ENC_04_00.cshtml:line 40
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ActionContext actionContext, IView view, ViewDataDictionary viewData, ITempDataDictionary tempData, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeResultAsync(IActionResult result)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResultFilterAsync[TFilter,TFilterAsync]()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResultExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeResultFilters()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResourceFilter()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeFilterPipelineAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeAsync()
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)|url: http://localhost/eSyaNatureCure/CheckInGuest/V_ENC_04_00|action: V_ENC_04_00
+2022-06-20 22:18:03.5619||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 22:21:04.2151||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 22:22:18.6158|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2022-06-20 22:24:07.1522||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 22:29:41.7088||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 22:31:19.3017||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 22:32:49.4951||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 22:33:28.9015||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 22:35:34.2192||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 22:37:17.4739||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 22:44:37.0375||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 22:46:22.4628||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList
+2022-06-20 22:47:12.0104||ERROR|eSyaEnterprise_UI.Areas.eSyaNatureCure.Controllers.CheckInGuestController|UD:GetServiceList System.Exception: Internal Server Error|url: http://localhost/CheckInGuest/GetServiceList|action: GetServiceList

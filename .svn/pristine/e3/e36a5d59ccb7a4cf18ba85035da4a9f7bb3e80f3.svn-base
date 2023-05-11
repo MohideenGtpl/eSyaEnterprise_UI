@@ -1,0 +1,123 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewData["Title"] = @Localizer["GuestActivities"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<link href="~/css/iconfont/sharp.css" rel="stylesheet" />
+<link href="~/css/iconfont/material-icons.css" rel="stylesheet" />
+<link href="~/css/eSyaNatureCure/GuestActivities.css" rel="stylesheet" />
+
+<input id="hdbookingKey" type="hidden" value="@ViewBag.bookingKey" />
+<input id="hdguestId" type="hidden" value="@ViewBag.guestId" />
+<input type="hidden" id="hdUHID" value="@ViewBag.UHID" />
+<section>
+    <div class="row">
+        <div class="col-lg-2 col-md-3 ga-sidebar">
+            <div class="ga-patientdetails ga-patientdetails-bg">
+                <img class="ga-usericon" src=@Model.ImageUrl>
+
+                <div class="ga-userinfo">
+                    <p class="ga-username">@Model.FirstName @Model.LastName</p>
+                    <p class="ga-agegender"><span class="f-11">@Model.AgeYy  / </span><span class="f-11" id="lblGender">@Model.Gender</span></p>
+                </div>
+            </div>
+
+            <div class="row m-0 ga-patientdetails-bg">
+                <div class="col-12 border-bottom border-top">
+                    <label class="ga-packagedetails f-11"> <span>@Model.PackageDesc</span></label>
+                </div>
+                <div class="col-6 ga-checkin border-right">
+                    <label class="ga-label"><i class="fa fa-building"></i> Room Type</label>
+                    <span class="number">@Model.RoomTypeName</span>
+                </div>
+                <div class="col-6 ga-checkout">
+                    <label class=""><i class="fa fa-bed"></i> Room No</label>
+                    <span class="number">@Model.RoomNumber</span>
+                </div>
+
+                @*<div class="col-12">
+                        <label class="ga-packagedetails"><i class="fa fa-bed"></i>Deluxe - <span>010101</span></label>
+                    </div>*@
+            </div>
+            <div class="row m-0 border-bottom  ga-patientdetails-bg">
+                <div class="col-6 ga-checkin border-right">
+                    <label class="ga-label"><i class="fa fa-calendar-check"></i> Check-in</label>
+                    <span class="number">@Model.CheckedInDate.ToString("dd-MMM-yyyy")</span>
+                </div>
+                <div class="col-6 ga-checkout">
+                    <label class=""><i class="fa fa-calendar-check"></i> Check-out</label>
+                    <span class="number">@Model.CheckedOutDate.ToString("dd-MMM-yyyy")</span>
+                </div>
+            </div>
+            <ul class="nav nav-tabs flex-column ga-menu">
+                <li class="nav-item" role="presentation"><button type="button" class="nav-link active" data-target="#personalinformation" data-toggle="tab" role="tab" aria-controls="home" aria-selected="true"><i class="fa fa-info-circle"></i> Personal Information</button></li>
+
+                <li class="nav-item" role="presentation"><button type="button" class="nav-link" data-target="#myactivities" data-toggle="tab" role="tab" aria-controls="myactivities" aria-selected="true"><i class="fa fa-file-alt"></i> My Activities</button></li>
+                <li class="nav-item" role="presentation"><button type="button" class="nav-link" data-target="#myvitals" data-toggle="tab" role="tab" aria-controls="myvitals" aria-selected="true"><i class="fa fa-file-alt"></i> Vital Signs</button></li>
+            </ul>
+        </div>
+        <main class="col-lg-10 col-md-9 p-0" id="ga-timeline">
+
+            <div class="tab-content">
+                @*personalinformation tab starts*@
+                <div class="tab-pane active" id="personalinformation" role="tabpanel" aria-labelledby="home-tab">
+                    @await Html.PartialAsync("~/Areas/esyaNatureCure/Views/FirstConsultation/_BasicInformation.cshtml")
+
+                </div>
+                @*personalinformation tab ends*@
+
+                @*projects tab starts*@
+                <div class="tab-pane" id="projects" role="tabpanel" aria-labelledby="projects-tab">
+                    <section>
+                        <div class="row m-0">
+                            <div class="col-lg-12">
+                                <h1 class="ga-heading">Projects</h1>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                @*projects tab starts*@
+
+                @*reports starts here*@
+                <div class="tab-pane" id="reports" role="tabpanel" aria-labelledby="reports-tab">
+                    <section>
+                        <div class="row m-0">
+                            <div class="col-lg-12">
+                                <h1 class="ga-heading">Reports</h1>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                @*reports ends here*@
+
+                @*myactivities starts here*@
+                <div class="tab-pane" id="myactivities" role="tabpanel" aria-labelledby="myactivities-tab">
+                    @await Html.PartialAsync("~/Areas/esyaNatureCure/Views/FirstConsultation/_Activities.cshtml")
+
+                </div>
+                @*vital signs starts here*@
+                <div class="tab-pane" id="myvitals" role="tabpanel" aria-labelledby="myvitals-tab">
+                    @await Html.PartialAsync("~/Areas/esyaNatureCure/Views/FirstConsultation/_VitalSigns.cshtml")
+
+                </div>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+        </main>
+    </div>
+</section>
+

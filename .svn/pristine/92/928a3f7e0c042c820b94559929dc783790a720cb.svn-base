@@ -1,0 +1,80 @@
+﻿$(function () {
+    fnLoadDependent();
+    $.contextMenu({
+        selector: "#btnDependent",
+        trigger: 'left',
+        items: {
+            jqgEdit: { name: localization.Edit, icon: "edit", callback: function (key, opt) { fnEditDependent(event, 'edit') } },
+            jqgView: { name: localization.View, icon: "view", callback: function (key, opt) { fnEditDependent(event, 'view') } },
+            jqgDelete: { name: localization.Delete, icon: "delete", callback: function (key, opt) { fnEditDependent(event, 'delete') } },
+        }
+    });
+    $(".context-menu-icon-edit").html("<span class='icon-contextMenu'><i class='fa fa-pen'></i>" + localization.Edit + " </span>");
+    $(".context-menu-icon-view").html("<span class='icon-contextMenu'><i class='fa fa-eye'></i>" + localization.View + " </span>");
+    $(".context-menu-icon-delete").html("<span class='icon-contextMenu'><i class='fa fa-trash'></i>" + localization.Delete + " </span>");
+})
+function fnLoadDependent() {
+    $("#jqgDependent").jqGrid('GridUnload');
+    $("#jqgDependent").jqGrid({
+        url: getBaseURL() + '',
+        datatype: 'json',
+        mtype: 'GET',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: [localization.DependentDesc, localization.ActiveStatus, localization.Actions],
+
+        colModel: [
+
+            { name: "DependentDesc", width: 300, editable: false, align: 'left', hidden: false },
+            {
+                name: "Status", width: 300, editable: true, align: 'center', hidden: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true }
+            },
+            {
+                name: 'edit', search: false, align: 'center', width: 35, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="mr-1 btn btn-outline" id="btnDependent"><i class="fa fa-ellipsis-v"></i></button>'
+                }
+            },
+        ],
+        rowNum: 10,
+        rowList: [10, 20, 30, 50],
+        emptyrecords: "No records to Veiw",
+        pager: "#jqpDependent",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: false,
+        height: 'auto',
+        width: null,
+        scroll: false,
+        autowidth: true,
+        shrinkToFit: true,
+        forceFit: true,
+        loadonce: true,
+        cellEdit: true,
+        
+        loadComplete: function (data) {
+           
+            $("#jqgDependent").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+        }
+    }).jqGrid('navGrid', '#jqpDependent', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpDependent', {
+        caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshDependent
+        }).jqGrid('navButtonAdd', '#jqpDependent', {
+            caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddDependent
+    });
+  
+    fnAddGridSerialNoHeading();
+    $("#jqgDependent").jqGrid('setGridWidth', $('.tab-pane').width());
+}
+$("#dependent-tab").click(function () {
+    $("#jqgDependent").jqGrid('setGridWidth', $(".tab-pane").width());
+});
+
+function fnAddDependent() {
+    $("#PopupDependent").modal('show');
+}
+function fnEditDependent(e,actiontype) {
+
+}
+function fnGridRefreshDependent() {
+
+}

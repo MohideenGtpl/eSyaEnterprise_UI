@@ -1,0 +1,287 @@
+﻿
+$(document).ready(function () {
+    fnLoadGridAreaController();
+});
+var actiontype = "";
+var _isInsert = true;
+
+function fnLoadGridAreaController() {
+
+    $("#jqgAreaController").GridUnload();
+
+    $("#jqgAreaController").jqGrid({
+        url: getBaseURL() + '/FormNames/GetAllAreaController',
+        datatype: 'json',
+        mtype: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        colNames: [localization.ID, localization.AreaName, localization.ControllerName, localization.Active, localization.Actions],
+        colModel: [
+            { name: "Id", width: 50, align: 'left', editable: true, editoptions: { maxlength: 10 }, resizable: false, hidden: true },
+            { name: "Area", width: 180, align: 'left', editable: true, editoptions: { maxlength: 150 }, resizable: false },
+            { name: "Controller", width: 180, align: 'left', editable: true, editoptions: { maxlength: 150 }, resizable: false },
+            { name: "ActiveStatus", width: 35, editable: true, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            {
+                name: 'edit', search: false, align: 'left', width: 88, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditAreaController(event,\'edit\');"><i class="fas fa-pen"></i> ' + localization.Edit + '</button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" id="jqgView" onclick="return fnEditAreaController(event,\'view\');"><i class="far fa-eye"></i> ' + localization.View + '</button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Delete" id="jqgDelete" onclick="return fnEditAreaController(event,\'delete\');"><i class="fas fa-trash"></i> ' + localization.Delete + '</button >'
+                }
+            },
+        ],
+
+        pager: "#jqpAreaController",
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        rownumWidth: '55',
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        scroll: false,
+        width: 'auto',
+        autowidth: true,
+        shrinkToFit: true,
+        forceFit: true, caption:'Area Controller',
+        loadComplete: function (data) {
+            SetGridControlByAction();
+        },
+
+    }).jqGrid('navGrid', '#jqpAreaController', { add: false, edit: false, search: false, del: false, refresh: false, refreshtext: 'Reload' }).jqGrid('navButtonAdd', '#jqpAreaController', {
+        caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshAreaController
+        }).jqGrid('navButtonAdd', '#jqpAreaController', {
+            caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddAreaController
+    });
+
+    $(window).on("resize", function () {
+        var $grid = $("#jqgAreaController"),
+            newWidth = $grid.closest(".Activitiescontainer").parent().width();
+        $grid.jqGrid("setGridWidth", newWidth, true);
+    });
+    fnAddGridSerialNoHeading();
+}
+
+function fnAddAreaController() {
+    _isInsert = true;
+    fnClearFields();
+    $('#PopupAreaController').modal('show');
+    $("#chkActiveStatus").parent().addClass("is-checked");
+    $('#PopupAreaController').find('.modal-title').text(localization.AddAreaController);
+    $("#btnSaveAreaController").html('<i class="fa fa-save"></i>' + localization.Save);
+    $("#chkActiveStatus").prop('disabled', true);
+    $("#btnSaveAreaController").show();
+    $("#btndeActiveAreaController").hide();
+    $('#txtId').val('');
+}
+
+function fnEditAreaController(e, actiontype) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgAreaController').jqGrid('getRowData', rowid);
+
+    $('#PopupAreaController').modal('show');
+    $('#txtId').val(rowData.Id);
+    $('#txtArea').val(rowData.Area);
+    $('#txtController').val(rowData.Controller);
+    if (rowData.ActiveStatus == 'true') {
+        $("#chkActiveStatus").parent().addClass("is-checked");
+    }
+    else {
+        $("#chkActiveStatus").parent().removeClass("is-checked");
+    }
+    $("#btnSaveAreaController").attr("disabled", false);
+
+    _isInsert = false;
+
+    if (actiontype.trim() == "edit") {
+        $('#PopupAreaController').find('.modal-title').text(localization.UpdateAreaController);
+        $("#btnSaveAreaController").html('<i class="fa fa-sync"></i>' + localization.Update);
+        $("#btndeActiveAreaController").hide();
+        $("#chkActiveStatus").prop('disabled', true);
+        $("#btnSaveAreaController").attr("disabled", false);
+    }
+
+    if (actiontype.trim() == "view") {
+        $('#PopupAreaController').find('.modal-title').text(localization.ViewAreaController);
+        $("#btnSaveAreaController").attr("disabled", false);
+        $("input,textarea").attr('readonly', true);
+        $("select").next().attr('disabled', true);
+        $("#btnSaveAreaController").hide();
+        $("#btndeActiveAreaController").hide();
+        $("#chkActiveStatus").prop('disabled', true);
+        $("#PopupAreaController").on('hidden.bs.modal', function () {
+            $("#btnSaveAreaController").show();
+            $("input,textarea").attr('readonly', false);
+            $("select").next().attr('disabled', false);
+        });
+    }
+    if (actiontype.trim() == "delete") {
+        $('#PopupAreaController').find('.modal-title').text("Activate/De Activate Area Controller");
+        $("#btnSaveAreaController").attr("disabled", false);
+        $("input,textarea").attr('readonly', true);
+        $("select").next().attr('disabled', true);
+        $("#btnSaveAreaController").hide();
+
+        if (rowData.ActiveStatus == 'true') {
+            $("#btndeActiveAreaController").html(localization.DActivate);
+        }
+        else {
+            $("#btndeActiveAreaController").html(localization.Activate);
+        }
+
+        $("#btndeActiveAreaController").show();
+        $("#chkActiveStatus").prop('disabled', true);
+        $("#PopupAreaController").on('hidden.bs.modal', function () {
+            $("#btnSaveAreaController").show();
+            $("input,textarea").attr('readonly', false);
+            $("select").next().attr('disabled', false);
+        });
+    }
+}
+
+
+function fnSaveAreaController() {
+
+    if (IsStringNullorEmpty($("#txtArea").val())) {
+        toastr.warning("Please Enter Area Name");
+        return;
+    }
+    if (IsStringNullorEmpty($("#txtController").val())) {
+        toastr.warning("Please Enter Controller Name");
+        return;
+    }
+    obj_area = {
+        Id: $("#txtId").val() === '' ? 0 : $("#txtId").val(),
+        Area: $("#txtArea").val(),
+        Controller: $("#txtController").val(),
+        ActiveStatus: $("#chkActiveStatus").parent().hasClass("is-checked")
+    };
+
+    $("#btnSaveAreaController").attr("disabled", true);
+
+    $.ajax({
+        url: getBaseURL() + '/FormNames/InsertOrUpdateAreaController',
+        type: 'POST',
+        datatype: 'json',
+        data: { isInsert: _isInsert, obj: obj_area },
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                $("#btnSaveAreaController").html('<i class="fa fa-spinner fa-spin"></i> wait');
+                $("#PopupAreaController").modal('hide');
+                fnClearFields();
+                fnGridRefreshAreaController();
+            }
+            else {
+                toastr.error(response.Message);
+                $("#btnSaveAreaController").attr("disabled", false);
+            }
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnSaveAreaController").attr("disabled", false);
+        }
+    });
+}
+
+function fnGridRefreshAreaController() {
+    $("#jqgAreaController").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+function fnClearFields() {
+    $("#txtId").val('');
+    $("#txtArea").val('');
+    $("#txtController").val('');
+    $("#chkActiveStatus").prop('disabled', false);
+    $("#btnSaveAreaController").attr("disabled", false);
+    $("#btndeActiveAreaController").attr("disabled", false);
+    $("input,textarea").attr('readonly', false);
+}
+
+$("#btnCancelActivities").click(function () {
+    $("#jqgAreaController").jqGrid('resetSelection');
+    $('#PopupAreaController').modal('hide');
+    fnClearFields();
+});
+
+function SetGridControlByAction() {
+
+    $('#jqgAdd').removeClass('ui-state-disabled');
+    var btn_editEnable = document.querySelectorAll('#jqgEdit');
+    var btn_viewEnable = document.querySelectorAll('#jqgView');
+    var btn_deleteEnable = document.querySelectorAll('#jqgDelete');
+    for (var i = 0; i < btn_editEnable.length; i++) {
+        btn_editEnable[i].disabled = false;
+    }
+    for (var j = 0; j < btn_viewEnable.length; j++) {
+        btn_viewEnable[j].disabled = false;
+    }
+    for (var k = 0; k < btn_deleteEnable.length; k++) {
+        btn_deleteEnable[k].disabled = false;
+    }
+
+
+    if (_userFormRole.IsInsert === false) {
+        $('#jqgAdd').addClass('ui-state-disabled');
+    }
+    if (_userFormRole.IsEdit === false) {
+        var btn_editDisable = document.querySelectorAll('#jqgEdit');
+        for (var i = 0; i < btn_editDisable.length; i++) {
+            btn_editDisable[i].disabled = true;
+            btn_editDisable[i].className = "ui-state-disabled";
+        }
+    }
+    if (_userFormRole.IsView === false) {
+        var btn_viewDisable = document.querySelectorAll('#jqgView');
+        for (var j = 0; j < btn_viewDisable.length; j++) {
+            btn_viewDisable[j].disabled = true;
+            btn_viewDisable[j].className = "ui-state-disabled";
+        }
+    }
+
+    if (_userFormRole.IsDelete === false) {
+        var btn_deleteDisable = document.querySelectorAll('#jqgDelete');
+        for (var k = 0; k < btn_deleteDisable.length; k++) {
+            btn_deleteDisable[k].disabled = true;
+            btn_deleteDisable[k].className = "ui-state-disabled";
+        }
+    }
+}
+
+function fnDeleteAreaController() {
+
+    var a_status;
+    //Activate or De Activate the status
+    if ($("#chkActiveStatus").parent().hasClass("is-checked") === true) {
+        a_status = false
+    }
+    else {
+        a_status = true;
+    }
+    $("#btndeActiveAreaController").attr("disabled", true);
+    $.ajax({
+        url: getBaseURL() + '/FormNames/ActiveOrDeActiveAreaController?status=' + a_status + '&Id=' + $("#txtId").val(),
+        type: 'POST',
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                $("#btndeActiveAreaController").html('<i class="fa fa-spinner fa-spin"></i> wait');
+                $("#PopupAreaController").modal('hide');
+                fnClearFields();
+                fnGridRefreshAreaController();
+                $("#btndeActiveAreaController").attr("disabled", false);
+            }
+            else {
+                toastr.error(response.Message);
+                $("#btndeActiveAreaController").attr("disabled", false);
+                $("#btndeActiveAreaController").html('De Activate');
+            }
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btndeActiveAreaController").attr("disabled", false);
+            $("#btndeActiveAreaController").html('De Activate');
+        }
+    });
+}

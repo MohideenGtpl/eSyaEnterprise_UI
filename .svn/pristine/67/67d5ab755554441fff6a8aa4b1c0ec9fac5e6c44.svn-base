@@ -1,0 +1,193 @@
+﻿
+$(document).ready(function () {
+    fnGridLoadCodeTypes();
+});
+var actiontype = "";
+function fnGridLoadCodeTypes() {
+    $("#jqgCodeType").jqGrid({
+        url: getBaseURL() + '/ApplicationCodes/GetCodeTypes',
+        datatype: 'json',
+        mtype: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        colNames: [localization.CodeType, localization.Description, localization.Control, localization.Active, localization.Actions],
+        colModel: [
+            { name: "CodeType", width: 40, align: 'left', editable: true, editoptions: { maxlength: 6 }, resizable: false, hidden: false },
+            { name: "CodeTypeDesc", width: 280, align: 'left', editable: true, editoptions: { maxlength: 50 }, resizable: false },
+            { name: "CodeTypeControl", editable: true, align: 'left', width: 120, edittype: "select", resizable: false, formatter: 'select', editoptions: { value: "S: System Defined;U: User Defined" } },
+            { name: "ActiveStatus", width: 35, editable: true, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            {
+                name: 'edit', search: false, align: 'left', width:88 , sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditCodeTypes(event,\'edit\');"><i class="fa fa-edit"></i>'  + localization.Edit +  '</button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnEditCodeTypes(event,\'view\');"><i class="far fa-eye"></i>' + localization.View +  '</button>'
+                }
+            },
+        ],
+
+        pager: "#jqpCodeType",
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        scroll: false,
+        width: 'auto',
+        autowidth: true,
+        shrinkToFit: false,
+        forceFit: false,
+        loadComplete: function (data) {
+            SetGridControlByAction();
+        },
+
+    }).jqGrid('navGrid', '#jqpCodeType', { add: false, edit: false, search: false, del: false, refresh: false, refreshtext: 'Reload' }).jqGrid('navButtonAdd', '#jqpCodeType', {
+        caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshCodeTypes
+    }).jqGrid('navButtonAdd', '#jqpCodeType', {
+        caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddCodeTypes
+    });
+
+    $(window).on("resize", function () {
+        var $grid = $("#jqgCodeType"),
+            newWidth = $grid.closest(".codetypecontainer").parent().width();
+        $grid.jqGrid("setGridWidth", newWidth, true);
+    });
+    fnAddGridSerialNoHeading();
+}
+
+function fnAddCodeTypes() {
+    _isInsert = true;
+    fnClearFields();
+    $('#PopupCodeTypes').modal('show');
+    $("#chkActiveStatus").parent().addClass("is-checked");
+    $('#PopupCodeTypes').find('.modal-title').text("Add Code Type");
+    $("#btnSaveCodeType").html('Save');
+
+}
+
+function fnEditCodeTypes(e, actiontype) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgCodeType').jqGrid('getRowData', rowid);
+    
+    $('#PopupCodeTypes').modal('show');
+    $('#txtCodeType').val(rowData.CodeType);
+    $('#txtCodeDescription').val(rowData.CodeTypeDesc);
+    $('#cboCodeTypeControl').val(rowData.CodeTypeControl);
+    $('#cboCodeTypeControl').selectpicker('refresh');
+    if (rowData.ActiveStatus == 'true') {
+        $("#chkActiveStatus").parent().addClass("is-checked");
+    }
+    else {
+        $("#chkActiveStatus").parent().removeClass("is-checked");
+    }
+    $("#btnSaveCodeType").attr("disabled", false);
+
+    $("#txtCodeType").attr("readonly", "readonly");
+    _isInsert = false;
+
+    if (actiontype.trim() == "edit") {
+        $('#PopupCodeTypes').find('.modal-title').text("Update Code Type");
+        $("#btnSaveCodeType").html(' Update');
+        $("#chkActiveStatus").prop('disabled', false);
+    }
+
+    if (actiontype.trim() == "view") {
+        $('#PopupCodeTypes').find('.modal-title').text("View Code Type");
+        $("#btnSaveCodeType").html(' Update');
+        $("#btnSaveCodeType").attr("disabled", false);
+        $("input,textarea").attr('readonly', true);
+        $("select").next().attr('disabled', true);
+        $("#btnSaveCodeType").hide();
+        $("#chkActiveStatus").prop('disabled', true);
+        $("#PopupCodeTypes").on('hidden.bs.modal', function () {
+            $("#btnSaveCodeType").show();
+            $("input,textarea").attr('readonly', false);
+            $("select").next().attr('disabled', false);
+        });
+    }
+}
+
+var _isInsert = true;
+function fnSaveCodeType() {
+    if (IsStringNullorEmpty($("#txtCodeType").val())) {
+        toastr.warning("Please Enter CodeType");
+        return;
+    }
+    if (IsStringNullorEmpty($("#txtCodeDescription").val())) {
+        toastr.warning("Please Enter CodeType Description");
+        return;
+    }
+    ct_type = {
+        CodeType: $("#txtCodeType").val() === '' ? 0 : $("#txtCodeType").val(),
+        CodeTypeDesc: $("#txtCodeDescription").val(),
+        CodeTypeControl: $("#cboCodeTypeControl").val(),
+        ActiveStatus: $("#chkActiveStatus").parent().hasClass("is-checked")
+    };
+    
+    $("#btnSaveCodeType").attr("disabled", true);
+
+    $.ajax({
+        url: getBaseURL() + '/ApplicationCodes/InsertOrUpdateCodeTypes',
+        type: 'POST',
+        datatype: 'json',
+        data: { isInsert: _isInsert, ct_type: ct_type },
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                $("#btnSaveCodeType").html('<i class="fa fa-spinner fa-spin"></i> wait');
+                $("#PopupCodeTypes").modal('hide');
+                fnClearFields();
+                fnGridRefreshCodeTypes();
+            }
+            else {
+                toastr.error(response.Message);
+                $("#btnSaveCodeType").attr("disabled", false);
+            }
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnSaveCodeType").attr("disabled", false);
+        }
+    });
+}
+
+function fnGridRefreshCodeTypes() {
+    $("#jqgCodeType").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+  
+function fnClearFields() {
+    $("#txtCodeType").removeAttr("readonly");
+    $("#txtCodeType").val('');
+    $("#txtCodeDescription").val('');
+    $('#cboCodeTypeControl').val("S");
+    $('#cboCodeTypeControl').selectpicker('refresh');
+    $('#chkDefaultStatus').prop('checked', true);
+    $("#chkActiveStatus").prop('disabled', false);
+    $("#btnSaveCodeType").attr("disabled", false);
+}
+
+$("#btnCancelCodeType").click(function () {
+    $("#jqgCodeType").jqGrid('resetSelection');
+    $('#PopupCodeTypes').modal('hide');
+    fnClearFields();
+});
+
+function SetGridControlByAction() {
+    $('#jqgAdd').removeClass('ui-state-disabled');
+    var eleEnable = document.querySelectorAll('#jqgEdit');
+
+    for (var i = 0; i < eleEnable.length; i++) {
+        eleEnable[i].disabled = false;
+    }
+    if (_userFormRole.IsInsert === false) {
+        $('#jqgAdd').addClass('ui-state-disabled');
+    }
+    if (_userFormRole.IsEdit === false) {
+        var eleDisable = document.querySelectorAll('#jqgEdit');
+        for (var i = 0; i < eleDisable.length; i++) {
+            eleDisable[i].disabled = true;
+            eleDisable[i].className = "ui-state-disabled";
+        }
+    }
+}

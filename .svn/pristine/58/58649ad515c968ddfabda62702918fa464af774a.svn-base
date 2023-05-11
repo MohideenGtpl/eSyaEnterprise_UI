@@ -1,0 +1,321 @@
+﻿
+@{
+    ViewData["Title"] = "EPM_12_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/bottom-sheets.css" rel="stylesheet" />
+<script src="~/js/bottom-sheets.js"></script>
+<style>
+    #cboServiceList button {
+        padding: 0px;
+    }
+</style>
+<script src="~/js/jquery.repeater.js"></script>
+<style>
+    .text-label {
+        width: auto !important;
+        display: inline-block;
+        font-size: 11px;
+        color: grey;
+    }
+</style>
+
+
+<section class="">
+    <div class="row m-0">
+        <div class="col-lg-3 col-md-6 col-sm-6 main-content-box d-flex align-items-center pos-rel">
+            <span class="box-icon"><i class="fas fa-user fa-2x"></i></span>
+            <div class="pl-2 d-flex justify-content-around flex-column">
+                <label class=""><span class="text-data" id="lblUHID"></span>&nbsp;&nbsp;<span class="text-data" id="lblPatientName"></span></label>
+                <label class=""><span class="text-data" id="lblPatientAge"></span>&nbsp; / &nbsp;<span class="text-data" id="lblPatientGender"></span></label>
+            </div>
+            <button type="button" class="btn btn-primary btn-sm" id="btnUHIDSearch"><i class="fa fa-search"></i> </button>
+            @*<p class="m-0 pl-2 d-inline"><span class="text-data"><label id="lblPatientName"></label> </span></p>*@
+            <input type="hidden" id="hdfBusinessKey" value=@ViewBag.BusinessKey />
+            <input type="hidden" id="hdfUHID" value=@ViewBag.UHID />
+            <input type="hidden" id="hdfOpNumber" value=@ViewBag.OpNumber />
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6 main-content-box">
+            <div class="d-flex">
+                <span class="box-icon"><i class="far fa-building  fa-2x"></i></span>
+                <div class="pl-2 d-flex justify-content-around flex-column">
+                    <label class=""><span class="text-label">Op Number:&nbsp;</span><span class="text-data" id="lblOpNumber"></span></label>
+                    <label class=""><span class="text-label"></span><span class="text-data" id="lblVisitDate"></span></label>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6 col-6 main-content-box">
+            <div class="d-flex">
+                <span class="box-icon"><i class="fas fa-user fa-2x"></i></span>
+                <div class="pl-2 d-flex justify-content-around flex-column">
+                    <label class=""><span class="text-label">Patient Type:&nbsp;</span><span class="text-data" id="lblPatientType"></span></label>
+                    <label class=""><span class="text-label">Rate Plan:&nbsp;</span><span class="text-data" id="lblRatePlan"></span></label>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-lg-3 col-md-6 col-sm-6 col-6 main-content-box">
+            <div class="d-flex justify-content-evenly">
+                <span class="box-icon"><i class="fa fa-user-md fa-2x"></i></span>
+                <div class="pl-2 d-flex justify-content-around flex-column">
+                    <label class=""><span class="text-label">Doctor Name:&nbsp;</span><span class="text-data" id="lblDoctorName"></span></label>
+                    <label class=""><span class="text-label">Specialty:&nbsp;</span><span class="text-data" id="lblSpecialtyDesc"></span></label>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="d-inline">
+    <div class="row m-0">
+        <div class="col-lg-9 col-md-8 col-sm-6 bg-lightgrey px-3 pb-10">
+            <div class="row pb-2">
+                <div class="col-lg-12 col-md-12 col-sm-6">
+                    <p class="subheading">Service details</p>
+                    <hr class="left" />
+                </div>
+                <div class="col-lg-5 col-md-5 col-sm-12 form-group">
+                    <label>Services</label>
+                    <select id="cboServiceList" data-live-search="true" class="form-control" onchange="fnService_onchange();"></select>
+                </div>
+                <div id="dvServiceProvider" class="col-lg-5 col-md-5 col-sm-12 form-group" style="display:none">
+                    <label>Provider</label>
+                    <select id="cboServiceProviderList" data-live-search="true" class="form-control"></select>
+                </div>
+                <div class="col-lg-2 col-md-2 d-flex align-items-center">
+                    <button type="button" class="btn btn-primary d-inline-block h-50" id="btnAddService" onclick="fnAddService();"><i class="fa fa-plus"></i> Add</button>
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-6">
+                    <table id="jgvServiceBill"></table>
+                    <div id="jpgServiceBill"></div>
+                    <hr />
+                </div>
+            </div>
+
+            <div class="row pb-2">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <p class="subheading">Payment details</p>
+                    <hr class="left" />
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    @await Html.PartialAsync("~/Areas/PatientManagement/Views/PaymentMode/_PaymentDetail.cshtml")
+                </div>
+            </div>
+            <div class="row pt-2 border-top">
+                <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+                    <button type="button" class="btn btn-primary mr-1" onclick="fnSubmitOpBilling()"><i class="fa fa-save"></i> Save</button>
+                    <button type="button" class="btn btn-primary"><i class="fa fa-times"></i> Cancel</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 bg-white pb-2 px-0">
+            <div class="total-box h-220 shadow-sm p-2">
+
+                <p class="subheading">Net Bill Amount</p>
+                <hr class="left" />
+                <div class="row">
+                    <label class="col-lg-6 pad-x-10 fontsize-12">Total Bill Amount</label>
+                    <div class="col-lg-6 pad-x-10">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label fullwidth" style="padding-top:0px !important; padding-bottom:10px !important">
+                            <input type="text" id="txtTotalBillAmount" class="mdl-textfield__input   currencyFormat  text-right" readonly style="display:inline-block  ">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-lg-6 pad-x-10 fontsize-12">Concession Amount</label>
+                    <div class="col-lg-6 pad-x-10">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label fullwidth" style="padding-top:0px !important; padding-bottom:10px !important">
+                            <input type="text" id="txtTotalConcessionAmount" class="mdl-textfield__input currencyFormat  text-right" onkeypress="return OnlyNumeric(event);" onblur="fnConcesssionAmount_onLeave()">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-lg-6 pad-x-10 fontsize-12">Net Bill Amount</label>
+                    <div class="col-lg-6 pad-x-10">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label fullwidth" style="padding-top:0px !important; padding-bottom:10px !important">
+                            <input type="text" id="txtNetBillAmount" class="mdl-textfield__input currencyFormat  text-right" readonly style="display:inline-block  ">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-lg-6 pad-x-10 fontsize-12">Collected Amount</label>
+                    <div class="col-lg-6 pad-x-10">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label fullwidth" style="padding-top:0px !important; padding-bottom:10px !important">
+                            <input type="text" id="txtTotalCollectedAmount" class="mdl-textfield__input currencyFormat  text-right" readonly style="display:inline-block  ">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row form-group m-0">
+                <label class="col-lg-6 pad-x-10 fontsize-12">Narration</label>
+                <div class="col-lg-12 pad-x-10">
+                    <textarea rows="3" id="txtNarration" maxlength="250" class="form-control"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="d-inline">
+    <div class="row m-0">
+
+    </div>
+</section>
+
+
+<div id="dvSearchSheet" class="sheet column items-center justify-end" aria-hidden="true">
+    <!-- Dark background for the sheet -->
+    <div class="overlay"></div>
+
+    <!-- The sheet itself -->
+    <div class="contents column border">
+        <!-- Sheet controls -->
+        <header class="controls border-bottom mb-3">
+            <!-- The thing to drag if you want to resize the sheet -->
+            <div class="draggable-area">
+                <div class="draggable-thumb"></div>
+            </div>
+            <div class=" d-block">
+                <h4 class="m-0">Patient Search</h4>
+                <button class="close-sheet" type="button" title="Close the sheet"><i class="fa fa-times"></i></button>
+            </div>
+        </header>
+
+        <!-- Body of the sheet -->
+        <main class="body fill column">
+            <div class="row">
+                <div class="col-lg-3 col-md-3">
+                    <div class="ui-widget">
+                        <label for="txtPatientSearch">Patient Name  </label>
+                        <input id="txtPatientSearch" class="form-control">
+                    </div>
+                </div>
+                
+            </div>
+
+
+        </main>
+    </div>
+</div>
+
+<script src="~/js/PatientManagement/op-billing.js"></script>
+
+<script>
+
+    $(function () {
+        fnBottomSheets('#btnUHIDSearch', '#dvSearchSheet');
+        fnProcessLoading(true);
+        populate_PatientRegisterDetails();
+        populate_ServiceDropDownList();
+    });
+    
+    $("#txtPatientSearch").autocomplete({
+       // source: availableTags
+    });
+
+    $("#jgvServiceBill").jqGrid({
+        datatype: "local",
+        colNames: ['ServiceTypeId', 'ServiceId', 'Service Desc', 'ServiceProviderId', 'Service Provider', 'ServiceRule', 'BaseRate', 'Quantity', 'Rate', 'Disc. Amount', 'Total Amount',''],
+        colModel: [
+            { name: 'ServiceTypeId', index: 'ServiceTypeId', hidden: true },
+            { name: 'ServiceId', index: 'ServiceId', hidden: true },
+            { name: 'ServiceDesc', index: 'ServiceDesc', width: 150 },
+            { name: 'ServiceProviderId', index: 'ServiceProviderId', hidden: true },
+            { name: 'ServiceProviderName', index: 'ServiceProviderIdName', width: 120 },
+            { name: 'ServiceRule', index: 'ServiceRule', hidden: true },
+            { name: 'BaseRate', index: 'BaseRate', hidden: true },
+            { name: 'Quantity', index: 'Quantity', width: 80, align: "right", editable: true, formatter: 'integer', formatoptions: { decimalSeparator: ".", decimalPlaces: 0, thousandsSeparator: ',' } },
+            { name: 'Rate', index: 'Rate', width: 80, align: "right", editable: true, formatter: 'integer', formatoptions: { decimalSeparator: ".", decimalPlaces: 2, thousandsSeparator: ',' } },
+            { name: 'DiscountAmount', index: 'DiscountAmount', width: 80, align: "right", formatter: 'integer', formatoptions: { decimalSeparator: ".", decimalPlaces: 2, thousandsSeparator: ',' } },
+            { name: 'TotalAmount', index: 'TotalAmount', width: 80, align: "right", formatter: 'integer', formatoptions: { decimalSeparator: ".", decimalPlaces: 2, thousandsSeparator: ',' } },
+            {
+                name: 'delete', search: false, align: 'center', width: 30, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title = "Delete" id="jqgDelete" onclick = "return fnDeleteService(event)" > <i class="fas fa-trash"></i></button>'
+
+                }
+            }
+        ],
+        rowNum: 1000,
+        rownumWidth: '45',
+        //pager: '#jpgServiceBill',
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        width: 'auto',
+        autowidth: true,
+        shrinkToFit: true,
+        forceFit: true,
+        loadonce: true,
+        editurl: 'url',
+        cellsubmit: 'clientArray',
+        cellEdit: true,
+        footerrow: true,
+        gridComplete: function () {
+
+            var rate = $("#jgvServiceBill").jqGrid('getCol', 'Rate', false, 'sum');
+            $("#jgvServiceBill").jqGrid('footerData', 'set', { Rate: rate });
+
+            var discountAmount = $("#jgvServiceBill").jqGrid('getCol', 'DiscountAmount', false, 'sum');
+            $("#jgvServiceBill").jqGrid('footerData', 'set', { DiscountAmount: discountAmount });
+
+            var totalAmount = $("#jgvServiceBill").jqGrid('getCol', 'TotalAmount', false, 'sum');
+            $("#jgvServiceBill").jqGrid('footerData', 'set', { TotalAmount: totalAmount });
+
+            Calculate_gvTotalAmount();
+
+        },
+        beforeEditCell: function (rowid, cellname, value, iRow, iCol) {
+            var rowData = $("#jgvServiceBill").getRowData(rowid);
+            if (cellname == "Rate") {
+                if (rowData.ServiceRule == "F") {
+                    $("#jgvServiceBill").removeClass('edit-cell').setCell(rowid, 'Rate', '', 'not-editable-cell');
+                    $("#jgvServiceBill").trigger("reloadGrid", [{ fromServer: false }]);
+                }
+            }
+        },
+        afterSaveCell: function (rowid, cellname, value, iRow, iCol) {
+            var rowData = $("#jgvServiceBill").getRowData(rowid);
+            if (cellname == "Rate") {
+                if (rowData.ServiceRule != "E")
+                    if (parseFloat(rowData.BaseRate) < parseFloat(rowData.Rate)) {
+                        $("#jgvServiceBill").jqGrid('setCell', rowid, iCol, rowData.BaseRate);
+                    }
+            }
+
+            var quantity = 0, rate = 0, discountAmount = 0, totalAmount = 0;
+            quantity = parseFloat(rowData.Quantity);
+            rate = parseFloat(rowData.Rate);
+            discountAmount = parseFloat(rowData.DiscountAmount);
+            totalAmount = (quantity * rate) - discountAmount;
+
+            $("#jgvServiceBill").jqGrid('setCell', rowid, 'TotalAmount', totalAmount);
+            Calculate_gvTotalAmount();
+
+            var rate = $("#jgvServiceBill").jqGrid('getCol', 'Rate', false, 'sum');
+            $("#jgvServiceBill").jqGrid('footerData', 'set', { Rate: rate });
+
+            var discountAmount = $("#jgvServiceBill").jqGrid('getCol', 'DiscountAmount', false, 'sum');
+            $("#jgvServiceBill").jqGrid('footerData', 'set', { DiscountAmount: discountAmount });
+
+            var totalAmount = $("#jgvServiceBill").jqGrid('getCol', 'TotalAmount', false, 'sum');
+            $("#jgvServiceBill").jqGrid('footerData', 'set', { TotalAmount: totalAmount });
+        }
+    });
+
+    $(document).on('focusout', '[role="gridcell"] *', function () {
+        $("#jgvServiceBill").jqGrid('editCell', 0, 0, false);
+
+    });
+
+    function fnDeleteService(e) {
+        var rowId = $(e.target).parents("tr.jqgrow").attr('id');
+        jQuery("#jgvServiceBill").delRowData(rowId);
+        Calculate_gvTotalAmount();
+    }
+
+
+</script>
+

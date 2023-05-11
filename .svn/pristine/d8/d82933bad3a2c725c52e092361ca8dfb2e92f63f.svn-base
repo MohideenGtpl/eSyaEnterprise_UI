@@ -1,0 +1,140 @@
+﻿$(document).ready(function () {
+    $("#txtfinancialyear").blur(function () {
+        var year = $("#txtfinancialyear").val();
+        $("#txtCalDefFRMDate").val(year + '-01-01');
+        $("#txtCalDefTillDate").val(year + '-12-31');
+    });
+    fnGridLoadCalendarDefinition();
+});
+
+$('#txtCalDefFRMDate').change(function () {
+    var date = this.valueAsDate;
+    date.setDate(date.getDate() + 364);
+    $('#txtCalDefTillDate')[0].valueAsDate = date;
+});
+
+function fnGridLoadCalendarDefinition() {
+    $("#jqgCalendarDefinition").jqGrid('GridUnload');
+    $("#jqgCalendarDefinition").jqGrid({
+        url: getBaseURL() + '/DocumentControl/GetCalendarHeaders',
+        mtype: 'Post',
+        datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Financial Year","From Date", "Till Date","Active"],
+        colModel: [
+            { name: "FinancialYear", width: 70, editable: true, align: 'left', hidden: false },
+            { name: "FromDate", editable: true, width: 90, align: 'left', formatter: 'date' },
+            { name: "TillDate", editable: true, width: 90, align: 'left', formatter: 'date' },
+            { name: "Status", width: 35, editable: false, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+        ],
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        pager: "#jqpCalendarDefinition",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0,
+        loadComplete: function (data) {
+            SetGridControlByAction();
+        },
+    }).jqGrid('navGrid', '#jqpCalendarDefinition', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpCalendarDefinition', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshCalendarDefinition
+    }).jqGrid('navButtonAdd', '#jqpCalendarDefinition', {
+        caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddCalendarDefinition
+    });
+}
+
+function fnAddCalendarDefinition() {
+    fnClearFields();
+    $('#PopupCalendarDefinition').modal('show');
+    $('#PopupCalendarDefinition').modal({ backdrop: 'static', keyboard: false });
+    $('#PopupCalendarDefinition').find('.modal-title').text("Add Calendar Definition");
+    $("#btnSaveApplicationCode").html(' Save');
+}
+
+function fnSaveCalendarDefinition() {
+    
+    if (ValidateCalendarDefinition() === false) {
+        return;
+    }
+    var calendarheader = {
+        FinancialYear: $("#txtfinancialyear").val(),
+        FromDate: $("#txtCalDefFRMDate").val(),
+        TillDate: $("#txtCalDefTillDate").val(),
+        Status: $("#chkActiveStatus").parent().hasClass("is-checked")
+    }
+    $.ajax({
+        url: getBaseURL() + '/DocumentControl/InsertCalendarHeaderAndDetails',
+        type: 'POST',
+        data: JSON.stringify(calendarheader),
+        contentType: "application/json",
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                fnClearFields();
+                $('#PopupCalendarDefinition').modal('hide');
+                fnGridLoadCalendarDefinition();
+                return true;
+            }
+            else
+            {
+                toastr.error(response.Message);
+                return false;
+            }
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+        }
+    })
+}
+
+function ValidateCalendarDefinition() {
+    if (IsStringNullorEmpty($("#txtfinancialyear").val())) {
+        toastr.warning("Please Enter Financial year");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtCalDefFRMDate").val())) {
+        toastr.warning("Please Enter Till Date");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtCalDefTillDate").val())) {
+        toastr.warning("Please Enter Till Date");
+        return false;
+    }
+}
+
+function fnGridRefreshCalendarDefinition() {
+    $("#jqgCalendarDefinition").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+function fnViewCalendarDefinition(e) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgCalendarDefinition').jqGrid('getRowData', rowid);
+    $('#PopupCalendarDefinition').modal('show');
+    $('#PopupCalendarDefinition').find('.modal-title').text("View Calendar Definition");
+
+}
+
+function fnClearFields() {
+    $('#txtfinancialyear').val('');
+    $('#txtCalDefFRMDate').val('');
+    $('#txtCalDefTillDate').val('');
+    $("#chkActiveStatus").prop('disabled', false);
+    $("#chkActiveStatus").parent().removeClass("is-checked");
+}
+
+function SetGridControlByAction() {
+    $('#jqgAdd').removeClass('ui-state-disabled');
+    
+    if (_userFormRole.IsInsert === false) {
+        $('#jqgAdd').addClass('ui-state-disabled');
+    }
+   
+}

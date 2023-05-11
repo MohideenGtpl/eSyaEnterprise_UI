@@ -1,0 +1,366 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_PatientLayout.cshtml";
+}
+
+
+<div class="row pt-2">
+    <div class="col-lg-12 col-md-12 col-sm-12 form-group">
+        <p class="subheading">Pre Registration</p>
+        <hr class="left" />
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6 form-group">
+        <label>First Name</label>
+        <input type="text" name="First name" class="form-control" id="txtFirstName" maxlength="50" />
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6 form-group">
+        <label>Middle Name</label>
+        <input type="text" name="Middle name" class="form-control" id="txtMiddleName" maxlength="50" />
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6 form-group">
+        <label>Last Name</label>
+        <input type="text" name="Last name" class="form-control" id="txtLastName" maxlength="50" />
+    </div>
+    <div class="col-lg-2 col-md-4 col-sm-6 form-group">
+        <label>Gender</label>
+        <select class="w-100 selectpicker" id="cboGender">
+            <option value="0" selected>Select</option>
+            <option value="M" selected>Male</option>
+            <option value="F">Female</option>
+        </select>
+    </div>
+    <div class="col-lg-2 col-md-4 col-sm-6 form-group">
+        <label>Age</label>
+        <input type="text" name="number"  class="form-control" id="txtAge" maxlength="5" />
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 form-group d-none">
+        <label>DOB</label>
+        <input type="text" name="DOB" class="form-control datepicker" id="dtDob" />
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6 form-group">
+        <label>Mother Tongue</label>
+        <select class="w-100 selectpicker" data-live-search="false" id="cboMotherTongue" title="Select" data-size="8" asp-items="@ViewBag.MotherTongueList">
+            <option value="0">Select</option>
+        </select>
+    </div>
+
+    <div class="col-lg-4 col-md-4 col-sm-6 form-group">
+        <label>Mobile</label>
+        @await Component.InvokeAsync("IsdMobileInput", new { id = "MobileNo" })
+
+    </div>
+    <div class="col-lg-4 col-md-8 col-sm-4 form-group pt-3_5">
+        <label>Email ID</label>
+        <input type="text" class="form-control" id="txtEmailId" maxlength="50" />
+    </div>
+    <div class="col-lg-4 col-md-4 form-group pt-3_5">
+        <label>Occupation</label>
+        <input type="text" name="Occupation" class="form-control" id="txtOccupation" maxlength="150" />
+    </div>
+
+    <div class="col-lg-4 col-md-8 col-sm-4 form-group">
+        <label>Address</label>
+        <textarea name="Address" rows="1" cols="30" class="form-control" id="txtAddress" maxlength="250"></textarea>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-4 form-group">
+        <label>City</label>
+        <input type="text" class="form-control" id="txtCity" />
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6 form-group">
+        <label>PinCode</label>
+        <input type="text" name="number" class="form-control" id="txtPinCode" maxlength="10" />
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6 form-group">
+        <label>Ref by:</label>
+        <select class="w-100 selectpicker" data-live-search="false" id="cboReffferedby" title="Select" data-size="8" asp-items="@ViewBag.RefferedByList">
+            <option value="0">Select</option>
+        </select>
+    </div>
+
+    <div class="col-lg-3 col-md-3 col-sm-6 default-checkbox d-none">
+
+        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActiveStatus">
+            <input type="checkbox" id="chkActiveStatus" class="mdl-checkbox__input">
+            <span class="mdl-checkbox__label"> Active Status</span>
+        </label>
+
+    </div>
+    <div class="col-lg-12 col-md-12 form-group">
+        <hr />
+        <label>Present Complaint</label>
+        <input type="text"  class="form-control" id="txtPresentComplaint" maxlength="150" />
+    </div>
+    <div class="col-lg-12 col-md-12 form-group">
+        <p class="subheading">Other Info</p>
+        <hr class="left" />
+    </div>
+    <div class="col-lg-6 col-md-12 col-sm-9 ">
+
+        <div class="row">
+            @if (ViewBag.ComplaintsList != null)
+            {
+                foreach (var complaint in ViewBag.ComplaintsList)
+                {
+
+                    <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                    <input type="checkbox" id="chkcomplaint_@complaint.Value" name="chkComplaintslistitem" value="@complaint.Value" class="ComplaintSelecteCheckBox">
+                    <span class="mdl-checkbox__label">@complaint.Text</span>
+                </div>
+
+                <div class="col-lg-6 col-md-6 col-sm-6 form-group vertical-center-end">
+                    <input type="text" name="txtPersonalInfo" class="form-control" disabled id="txtcomplaint_@complaint.Value" />
+                </div>
+
+                    
+                }
+            }
+
+        </div>
+    </div>
+
+
+
+
+    <div class="col-lg-6 col-md-12 col-sm-3">
+        <label>Language you can speak</label>
+        <div class="row ">
+            @if (ViewBag.SpeakingLanguageList != null)
+            {
+                foreach (var lang in ViewBag.SpeakingLanguageList)
+                {
+
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <input type="checkbox" id="chklang_@lang.Value" name="chkLanguagelistitem" value="@lang.Value">
+                        <span class="mdl-checkbox__label">@lang.Text</span>
+                    </div>
+
+
+                }
+            }
+        </div>
+    </div>
+
+    <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+        <hr />
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button mr-10" id="btnSavePatientRegistration" onclick="fnSavePatientRegistration()"> <i class="fa fa-save"></i>  Save</button>
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button" id="btnPatientRegistrationCancel">Cancel</button>
+    </div>
+</div>
+
+    <script>
+
+        $(document).ready(function () {
+            $("#chkActiveStatus").parent().addClass("is-checked");
+        });
+        $(".ComplaintSelecteCheckBox").change(function () {
+            var checkboxid = $(this).attr("id");
+            var txtboxid = checkboxid.substring(3);
+            if (this.checked) {
+                
+                $("#txt" + txtboxid).attr("disabled", false);
+            }
+            else {
+                $("#txt" + txtboxid).val('');
+                $("#txt" + txtboxid).attr("disabled", true);
+            }
+        });
+
+        $('input[name="number"]').keyup(function (e) {
+            if (/\D/g.test(this.value)) {
+                // Filter non-digits from input value.
+                this.value = this.value.replace(/\D/g, '');
+            }
+        });
+
+        function fnSavePatientRegistration() {
+
+            if (IsValidSavePatientRegistration() === false) {
+                return;
+            }
+
+            debugger;
+        
+
+            var Complaintschected = [];
+
+            $("[name='chkComplaintslistitem']").each(function (index, data) {
+                if (data.checked) {
+                    Complaintschected.push(data.value);
+                }
+            });
+
+            //Complaintschected = Complaintschected.toString();
+
+            var PersonalInfoList = [];
+
+            $("[name='txtPersonalInfo']").each(function (index, data) {
+                if (!IsStringNullorEmpty(data.value)) {
+                    PersonalInfoList.push(data.value);
+                }
+
+            });
+
+            //PersonalInfoList = PersonalInfoList.toString();
+
+            var StrPersonalInfo = [];
+            if (Complaintschected.length !== 0 && PersonalInfoList.length !== 0) {
+                var key = Complaintschected,
+                    value = PersonalInfoList,
+                    StrPersonalInfo = JSON.stringify(key.reduce((p, c, i) => { p[c] = value[i]; return p }, {}));
+            }
+            
+            var Languagechected = [];
+
+            $("[name='chkLanguagelistitem']").each(function (index, data) {
+                if (data.checked) {
+                    Languagechected.push(data.value);
+                }
+            });
+
+            Languagechected = Languagechected.toString();
+
+            var obj = {
+                BusinessKey: 0,
+                Prkey: 0,
+                //Prdate:0,
+                PatientFirstName: $("#txtFirstName").val(),
+                PatientMiddleName: $("#txtMiddleName").val(),
+                PatientLastName: $("#txtLastName").val(),
+                Gender: $("#cboGender").val(),
+                AgeYy: $("#txtAge").val(),
+                DateOfBirth: $("#dtDob").val(),
+                Isdcode: $("#cboMobileNo").val(),
+                MobileNumber: $("#txtMobileNo").val(),
+                EmailId: $("#txtEmailId").val(),
+                Occupation: $("#txtOccupation").val(),
+                MotherTongue: $("#cboMotherTongue").val(),
+                Address: $("#txtAddress").val(),
+                //City: $("#txtCity").val(),
+                City: 0,
+                Pincode: $("#txtPinCode").val(),
+                ReferredBy: $("#cboReffferedby").val(),
+                PresentComplaints: $("#txtPresentComplaint").val(), 
+                PersonalInfo: StrPersonalInfo,
+                SpeakingLanguages: Languagechected,
+                ActiveStatus: $("#chkActiveStatus").parent().hasClass("is-checked")
+
+            };
+            $("#btnSavePatientRegistration").attr('disabled', true);
+            $.ajax({
+                url: getBaseURL() + '/PreRegistration/InsertPatientPreRegistration',
+                type: 'POST',
+                datatype: 'json',
+                data: { obj },
+                success: function (response) {
+                    if (response.Status) {
+                        toastr.success(response.Message);
+                        $("#btnSavePatientRegistration").attr('disabled', false);
+                        fnClearPatientRegistrationFields();
+                        return true;
+                    }
+                    else {
+                        toastr.error(response.Message);
+                        $("#btnSavePatientRegistration").attr('disabled', false);
+                        return false;
+                    }
+
+                },
+                error: function (error) {
+                    toastr.error(error.statusText);
+                    $("#btnSavePatientRegistration").attr('disabled', false);
+                }
+            });
+
+        }
+
+        function IsValidSavePatientRegistration() {
+
+            var EmailPattern = /^\w+([-+.'][^\s]\w+)*@@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
+            if (IsStringNullorEmpty($("#txtFirstName").val())) {
+                toastr.warning("Please Enter First Name");
+                return false;
+            }
+            if (IsStringNullorEmpty($("#txtLastName").val())) {
+                toastr.warning("Please Enter Last Name");
+                return false;
+            }
+
+            if ($("#cboGender").val() == 0 || $("#cboGender").val() == "0") {
+                toastr.warning("Please Select Gender");
+                return false;
+            }
+            if (IsStringNullorEmpty($("#txtAge").val())) {
+                toastr.warning("Please Enter Age");
+                return false;
+            }
+            if ($("#cboMotherTongue").val() == 0 || $("#cboMotherTongue").val() == "0") {
+                toastr.warning("Please select Mother Tongue");
+                return false;
+            }
+            if (IsStringNullorEmpty($("#cboMobileNo").val()) || $("#cboMobileNo").val() == 0 || $("#cboMobileNo").val() == "0") {
+                toastr.warning("Please Select ISD Code");
+                return false;
+            }
+            if (IsStringNullorEmpty($("#txtMobileNo").val())) {
+                toastr.warning("Please Enter Mobile Number");
+                return false;
+            }
+            if (!IsStringNullorEmpty($("#txtEmailId").val())) {
+
+                if (!EmailPattern.test($("#txtEmailId").val())) {
+                    toastr.warning("Email ID is Not Valid");
+                    $('#txtEmailId').focus();
+                    return false;
+                }
+            }
+            if (IsStringNullorEmpty($("#txtAddress").val())) {
+                toastr.warning("Please Enter Address");
+                return false;
+            }
+            if ($("#cboReffferedby").val() == 0 || $("#cboReffferedby").val() == "0") {
+                toastr.warning("Please select Refffered By");
+                return false;
+            }
+
+        }
+
+        function fnClearPatientRegistrationFields() {
+            $("#txtFirstName").val('');
+            $("#txtMiddleName").val('');
+            $("#txtLastName").val('');
+            $("#cboGender").val('0').selectpicker('refresh');
+            $("#txtAge").val('');
+            $("#dtDob").val('');
+            $("#txtOccupation").val('');
+            $('#cboMobileNo').val("0").selectpicker('refresh');
+            $('#txtMobileNo').val('');
+            $("#cboMotherTongue").val('0').selectpicker('refresh');
+            $("#txtEmailId").val('');
+            $("#txtAddress").val('');
+            $("#txtCity").val('');
+            $("#txtPinCode").val('');
+            $('#cboReffferedby').val("0").selectpicker('refresh');
+            $("#txtPresentComplaint").val('');
+
+            $('input[name=chkComplaintslistitem]').prop('checked', false);
+
+            $('input[name=chkLanguagelistitem]').prop('checked', false);
+
+            $('input[name=txtPersonalInfo]').val('');
+
+            $('input[name=txtPersonalInfo]').attr("disabled", true);
+
+            $("#chkActiveStatus").parent().addClass("is-checked");
+
+            $("#btnSavePatientRegistration").attr("disabled", false);
+            $("#btnSavePatientRegistration").html('Save');
+        }
+
+        $("#btnPatientRegistrationCancel").click(function () {
+
+            fnClearPatientRegistrationFields();
+        });
+
+    </script>

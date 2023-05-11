@@ -1,0 +1,112 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model LoginViewModel
+@{
+    Layout = null;
+}
+
+@using System.Globalization
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="google" content="notranslate">
+    <title>Login Confirmation</title>
+    <environment>
+        <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+        @*<link href="~/css/material.min.css" rel="stylesheet" />*@
+        @*<link href="~/css/all.min.css" rel="stylesheet" />*@
+        <link href="~/css/bootstrap-select.css" rel="stylesheet" />
+        <link href="~/css/animate.css" rel="stylesheet" />
+        <link href="~/css/login.css" rel="stylesheet" />
+
+        @*<link href="~/css/master.css" rel="stylesheet" />*@
+        @if (CultureInfo.CurrentCulture.TextInfo.IsRightToLeft)
+        {
+            <link rel="stylesheet" type="text/css" href="~/css/rtl.css">
+        }
+    </environment>
+
+</head>
+<body>
+    <div class="loginContainer">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 d-sm-none d-md-block padright0 animated fadeIn">
+                <img src="~/images/esya-products-yellow-with-footer.jpg" class="leftImage" />
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-auto col-sm-12 col-xs-12 login-form">
+                <div class="text-center">
+                    <img src="~/images/logo/esya-logo-black.png" class="smallDeviceLogo" />
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12 padtop20">
+                    <h5 class="text-center">Hi <span class="c-red">@User.Identity.Name</span></h5>
+                    <span id="btnBack"><i class="fa fa-chevron-left c-grey"></i> Back</span>
+                    <form  id="BusinessLocation" asp-controller="Account" asp-action="Confirmation" method="post">
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                        <div class="row padtop30">
+                            <div class="col-lg-12 col-md-12 col-sm-12 p-y-10 padleft0 padright0">
+                                <div class="form-group">
+                                    <label class="lable-color">Business Segment</label>
+                                    <select class="selectpicker"
+                                            @*asp-for="BusinessKey" *@
+                                            id="BusinessKey" name="BusinessKey"
+                                            asp-items= "@ViewBag.BK">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 p-y-10 padleft0 padright0">
+                                <div class="form-group">
+                                    <label class="lable-color">Financial Year</label>
+                                    <select class="selectpicker" id="FinancialYear" name="FinancialYear" asp-items="@Model.l_FinancialYear">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row p-y-20">
+                            <div class="col-lg-4 animated flipInX delay-1s padleft0">
+                                <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored loginButton  fullwidth" tabindex="3">
+                                    @Localizer["Sign in"]  <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+            <div class="col-lg-6 col-md-6">
+                @*<p class="footernote"> &copy;@DateTime.Now.Year Gestalt Technologies Pvt. Ltd </p>*@
+            </div>
+        </div>
+    </div>
+    <environment>
+        <script src="~/lib/bootstrap/dist/js/jquery-3.2.1.slim.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/popper.min.js"></script>
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="~/js/material.min.js"></script>
+        <script src="~/js/all.min.js"></script>
+        <script src="~/js/bootstrap-select.js"></script>
+
+    </environment>
+    <script>
+
+        $("#btnBack").click(function () {
+            window.history.back();
+        })
+
+        function getBaseURL()
+        {
+            var url = window.location.href.split('/');
+
+            var baseUrl = url[0] + '//' + url[2] + '@Url.Content("~")';
+            return baseUrl;
+        }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+﻿
+var treeUG = $("#treeUG");
+var v_userTypeMUG = $("#cboUserType");
+var v_save = $("#saveMUG");
+v_save.prop('disabled', true);
+
+
+$(document).ready(function () {
+
+    var treeUG = $("#treeUG");
+
+    callingTree();
+    v_userTypeMUG.on('change', function () {
+
+        if ($(this)[0].selectedIndex != 0) {
+            v_save.prop('disabled', false);
+            treeUG.jstree().uncheck_all();
+            treeUG.jstree().enable_node(j1_1);
+            $("#j1_1").removeClass('jstree-leaf');
+            var uG = $("#cboUsergroup").val();
+            var uT = $("#cboUserType").val();
+            $.ajax({
+                url: getBaseURL() + '/UserManagement/GetMenuKeysbyUserGroupAndUserType?uG=' + uG + "&uT=" + uT,
+                type: 'POST',
+                datatype: 'json',
+                contentType: "application/json; charset=utf-8",
+                success: function (result) {
+                    treeUG.jstree('open_all');
+
+                    for (var i = 0; i < result.length; i++) {
+                        $("li").each(function (index) {
+                            if ($(this).hasClass('jstree-leaf')) {
+                                if ($(this).attr('data-value') == result[i]) {
+                                    treeUG.jstree().check_node($(this).attr('id'));
+                                }
+                            }
+                        });
+                    }
+                    v_save.prop('disabled', false);
+                },
+                error: function (error) { alert(error.status) }
+            });
+        }
+        else {
+            treeUG.jstree().uncheck_all();
+            callingTree();
+            v_save.prop('disabled', true);
+        }
+
+    });
+});
+
+function callingTree() {
+    $.ajax({
+        url: getBaseURL() + '/UserManagement/GetConfigureMenulist',
+        type: 'POST',
+        datatype: 'json',
+        success: function (result) {
+            treeUG.jstree({
+                "checkbox": {
+                    "keep_selected_style": false
+                },
+                "plugins": ["checkbox"],
+                core: {
+                    themes: {
+                        icons: false
+                    }
+                }
+            });
+            treeUG.jstree().disable_node(j1_1);
+            $("#j1_1").addClass('jstree-leaf');
+        },
+        error: function (error) { alert(error.status) }
+    });
+}
+function fnsaveUserGroup() {
+
+    var selArray = new Array();
+
+    $("li").each(function (index) {
+        if ($(this).hasClass("jstree-leaf")) {
+            if (treeUG.jstree().is_checked($(this).attr('id'))) {
+                selArray.push($(this).attr('data-value'));
+            }
+            else {
+                selArray.push("0" + $(this).attr('data-value'));
+            }
+        }
+    });
+
+
+    if ($("#cboUsergroup").val() == "0")
+    {
+        toastr.warning("Please select User Group");
+        return;
+    }
+    if ($("#cboUserType").val() == "0")
+    {
+        toastr.warning("Please select User Type");
+        return;
+    }
+    var selectedkeys = {
+        uG: $("#cboUsergroup").val(),
+        uT: $("#cboUserType").val(),
+        dataList: selArray
+    };
+    $.ajax({
+        url: getBaseURL() + '/UserManagement/InsertMenukeysIntoUserGroup',
+        type: 'POST',
+        data: JSON.stringify(selectedkeys),
+        contentType: 'application/json; charset=utf-8',
+
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                return true;
+            }
+            else {
+                toastr.error(response.Message);
+                return false;
+            }
+            v_userTypeMUG.trigger('change');
+
+        },
+
+    });
+}
+
+
+function fnResetUserType() {
+    $("#cboUserType").val('0');
+    $("#cboUserType").selectpicker('refresh');
+    treeUG.jstree().uncheck_all();
+    callingTree();
+    v_save.prop('disabled', true);
+}

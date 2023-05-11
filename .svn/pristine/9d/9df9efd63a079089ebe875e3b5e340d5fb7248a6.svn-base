@@ -1,0 +1,439 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
+using eSyaEnterprise_UI.Areas.Config.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+namespace eSyaEnterprise_UI.Areas.Config.Controllers
+{
+    public class BusinessStructureController : Controller
+    {
+        ESyaWebAPI _eSyaWebAPI = new ESyaWebAPI();
+
+        #region Business Entity
+        /// <summary>
+        /// Business Entity
+        /// </summary>
+        /// <returns></returns>
+       
+        [Area("Config")]
+        public IActionResult V_11_00()
+        {
+            return View();
+        }
+        /// <summary>
+        ///Get Business Entities for Grid
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetBusinessEntities()
+        {
+
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("BusinessStructure/GetBusinessEntities").Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<List<DO_BusinessEntity>>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+
+        }
+
+        /// <summary>
+        /// Insert or Update Business Entity
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertOrUpdateBusinessEntity([FromBody] DO_BusinessEntity businessentity)
+        {
+
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                businessentity.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                businessentity.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                if (businessentity.Isadd == 1)
+                {
+                    HttpResponseMessage response = client.PostAsJsonAsync<DO_BusinessEntity>("BusinessStructure/InsertBusinessEntity", businessentity).Result;
+                    string data = response.Content.ReadAsStringAsync().Result;
+                    var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(data);
+                    return Json(result);
+                }
+                else
+                {
+                    HttpResponseMessage response = client.PostAsJsonAsync<DO_BusinessEntity>("BusinessStructure/UpdateBusinessEntity", businessentity).Result;
+                    string data = response.Content.ReadAsStringAsync().Result;
+                    var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(data);
+                    return Json(result);
+                }
+               
+                
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+        #endregion Business Entity
+
+        #region Business Segment
+        /// <summary>
+        /// Business Segment
+        /// </summary>
+        /// <returns></returns>
+        [Area("Config")]
+        public IActionResult V_12_00()
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                /// Entities for Dropdown
+
+                HttpResponseMessage response = client.GetAsync("BusinessStructure/GetActiveBusinessEntities").Result;
+                string data = response.Content.ReadAsStringAsync().Result;
+                List<DO_BusinessEntity> entities = JsonConvert.DeserializeObject<List<DO_BusinessEntity>>(data);
+                ViewBag.entity_list = entities;
+
+                /// Tax Identification for Dropdown
+                HttpResponseMessage Taxresponse = client.GetAsync("Country/GetActiveTaxIdentification").Result;
+                string Taxdata = Taxresponse.Content.ReadAsStringAsync().Result;
+                List<DO_TaxIdentification> Tax_Identifications = JsonConvert.DeserializeObject<List<DO_TaxIdentification>>(Taxdata);
+                ViewBag.TaxIdentifications = Tax_Identifications;
+                /// ISD Codes for Dropdown
+                HttpResponseMessage Isdresponse = client.GetAsync("Country/GetActiveCountryCodes").Result;
+                string Isddata = Isdresponse.Content.ReadAsStringAsync().Result;
+                List<DO_CountryCodes> Isd_Codes = JsonConvert.DeserializeObject<List<DO_CountryCodes>>(Isddata);
+                ViewBag.IsdCodes = Isd_Codes;
+                return View();
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+
+        }
+        
+        /// <summary>
+        ///Get Business Segments by Business Id for Grid
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetBusinessSegmentByBusinessId(int BusinessId)
+        {
+
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("BusinessStructure/GetBusinessSegmentByBusinessId?BusinessId=" + BusinessId).Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<List<DO_BusinessSegment>>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+
+        }
+
+        /// <summary>
+        /// Insert or Update Business Segment
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertOrUpdateBusinessSegment([FromBody] DO_BusinessSegment BusinessSegment)
+        {
+
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                BusinessSegment.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                BusinessSegment.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                if (BusinessSegment.Isadd == 1)
+                {
+                    HttpResponseMessage response = client.PostAsJsonAsync<DO_BusinessSegment>("BusinessStructure/InsertBusinessSegment", BusinessSegment).Result;
+                    string data = response.Content.ReadAsStringAsync().Result;
+                    var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(data);
+                    return Json(result);
+                }
+                else
+                {
+                    HttpResponseMessage response = client.PostAsJsonAsync<DO_BusinessSegment>("BusinessStructure/UpdateBusinessSegment", BusinessSegment).Result;
+                    string data = response.Content.ReadAsStringAsync().Result;
+                    var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(data);
+                    return Json(result);
+                }
+               
+              
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+        /// <summary>
+        ///Get Currency Name by IsdCode
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetCurrencyNamebyIsdCode(int IsdCode)
+        {
+
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("Country/GetCurrencyNamebyIsdCode?IsdCode=" + IsdCode).Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<DO_CountryCodes>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+
+        }
+
+        #endregion Business Segment
+
+        #region Business Location
+        /// <summary>
+        /// Business Location
+        /// </summary>
+        /// <returns></returns>
+        /// 
+        [Area("Config")]
+        public IActionResult V_13_00()
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("BusinessStructure/GetActiveBusinessEntities").Result;
+                string data = response.Content.ReadAsStringAsync().Result;
+                List<DO_BusinessEntity> entities = JsonConvert.DeserializeObject<List<DO_BusinessEntity>>(data);
+                ViewBag.entity_list = entities;
+                return View();
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+
+        }
+        
+        /// <summary>
+        ///Get Business Segment by Business Id for drop down
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetActiveBusinessSegmentbyBusinessId(int BusinessId)
+        {
+
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                var parameter = "?BusinessId=" + BusinessId;
+                HttpResponseMessage response = client.GetAsync("BusinessStructure/GetActiveBusinessSegmentbyBusinessId" + parameter).Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<List<DO_BusinessSegment>>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+
+        }
+        /// <summary>
+        ///Get Business Location by Business Id & SegmentId for Grid
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetBusinessLocationByBusinessIdandSegmentId(int BusinessId, int SegmentId)
+        {
+
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                var parameter = "?BusinessId=" + BusinessId + "&SegmentId=" + SegmentId;
+                
+                HttpResponseMessage response = client.GetAsync("BusinessStructure/GetBusinessLocationByBusinessIdandSegmentId" + parameter).Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<List<DO_BusinessLocation>>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+
+        }
+
+        /// <summary>
+        /// Insert or Update Business Location
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertOrUpdateBusinessLocation([FromBody] DO_BusinessLocation location)
+        {
+
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                location.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                location.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                if(location.Isadd==1)
+                {
+                    HttpResponseMessage response = client.PostAsJsonAsync<DO_BusinessLocation>("BusinessStructure/InsertBusinessLocation", location).Result;
+                    string data = response.Content.ReadAsStringAsync().Result;
+                    var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(data);
+                    return Json(result);
+                }
+                else
+                {
+                    HttpResponseMessage response = client.PostAsJsonAsync<DO_BusinessLocation>("BusinessStructure/UpdateBusinessLocation", location).Result;
+                    string data = response.Content.ReadAsStringAsync().Result;
+                    var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(data);
+                    return Json(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+        #endregion Business Location
+
+        #region Business Stores
+        [Area("Config")]
+        public IActionResult V_14_00()
+        {
+            var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+            HttpResponseMessage response = client.GetAsync("StoreMaster/GetActiveStoreCodes").Result;
+            string data = response.Content.ReadAsStringAsync().Result;
+            List<DO_StoreMaster> codes = JsonConvert.DeserializeObject<List<DO_StoreMaster>>(data);
+            ViewBag.StoreMaster = codes;
+
+            HttpResponseMessage Bk_response = client.GetAsync("ConfigMasterData/GetBusinessKey").Result;
+            string Bk_data = Bk_response.Content.ReadAsStringAsync().Result;
+            List<DO_BusinessLocation> Bkeys = JsonConvert.DeserializeObject<List<DO_BusinessLocation>>(Bk_data);
+            ViewBag.BusinessKeys = Bkeys;
+            
+            return View();
+        }
+
+        /// <summary>
+        /// Insert or Update Business Stores
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertOrUpdateBusinessStores([FromBody] DO_BusinessStores postData)
+        {
+
+            try
+            {
+                if (postData.BusinessKey == 0)
+                {
+                    return Json(new { Status = false, Message = "Please Select Location" });
+                }
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                postData.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                postData.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                HttpResponseMessage Insertresponse = client.PostAsJsonAsync<DO_BusinessStores>("BusinessStructure/InsertOrUpdateBusinessStores", postData).Result;
+                string response = Insertresponse.Content.ReadAsStringAsync().Result;
+                var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(response);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+        /// <summary>
+        /// Get Business Stores
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetBusinessStores([FromQuery] int Businesskey)
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("BusinessStructure/GetBusinessStores?Businesskey="+ Businesskey).Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<List<DO_BusinessStores>>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+        #endregion Business Stores
+
+        #region Business Statutory Details
+        [Area("Config")]
+        public IActionResult V_15_00()
+        {
+            var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+            HttpResponseMessage response = client.GetAsync("Country/GetActiveStatutoryCodes").Result;
+            string data = response.Content.ReadAsStringAsync().Result;
+            List<DO_CountryStatutoryDetails> st_codes = JsonConvert.DeserializeObject<List<DO_CountryStatutoryDetails>>(data);
+            ViewBag.StatCodes = st_codes;
+
+            HttpResponseMessage Bk_response = client.GetAsync("ConfigMasterData/GetBusinessKey").Result;
+            string Bk_data = Bk_response.Content.ReadAsStringAsync().Result;
+            List<DO_BusinessLocation> Bkeys = JsonConvert.DeserializeObject<List<DO_BusinessLocation>>(Bk_data);
+            ViewBag.BusinessKeys = Bkeys;
+            return View();
+        }
+
+        /// <summary>
+        /// Insert or Update Business Statutory Details
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertOrUpdateBusinessStatutoryDetails([FromBody] DO_BusinessStatutoryDetails postData)
+        {
+
+            try
+            {
+                if (postData.BusinessKey == 0)
+                {
+                    return Json(new { Status = false, Message = "Please Select Location" });
+                }
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                postData.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                postData.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                HttpResponseMessage Insertresponse = client.PostAsJsonAsync<DO_BusinessStatutoryDetails>("BusinessStructure/InsertOrUpdateBusinessStatutoryDetails", postData).Result;
+                string response = Insertresponse.Content.ReadAsStringAsync().Result;
+                var result = JsonConvert.DeserializeObject<DO_ReturnParameter>(response);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+        /// <summary>
+        /// Get Business Statutory Details
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetBusinessStatutoryDetails(int Businesskey)
+        {
+            try
+            {
+                var client = _eSyaWebAPI.InitializeClient(HttpContext.RequestServices.GetRequiredService<IConfiguration>());
+                HttpResponseMessage response = client.GetAsync("BusinessStructure/GetBusinessStatutoryDetails?Businesskey=" + Businesskey).Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                var data = JsonConvert.DeserializeObject<List<DO_BusinessStatutoryDetails>>(stringData);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+        #endregion Business Statutory Details
+    }
+}

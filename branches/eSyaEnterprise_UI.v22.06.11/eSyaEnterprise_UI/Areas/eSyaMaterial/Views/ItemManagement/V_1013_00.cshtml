@@ -1,0 +1,105 @@
+﻿
+@{
+    ViewData["Title"] = "V_1013_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts{
+    <script src="~/js/eSyaMaterial/ItemStore.js"></script>
+}
+<div class="row padbot10">
+    <div class="col-lg-4 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label>Business Key</label>
+            <select class="selectpicker" data-live-search="true" id="" title="" data-size="8">
+                <option value="0"> Choose Business Key</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label>Store</label>
+            <select class="selectpicker" data-live-search="true" id="" title="" data-size="8">
+                <option value="0"> Choose Store</option>
+            </select>
+        </div>
+    </div>
+</div>
+<div class="row form-group">
+    <div class="col-lg-12 col-xl-12 col-sm-12">
+        <label>Choose Customer by alphabets</label>
+        <span class="dot">A</span>
+        <span class="dot">B</span>
+        <span class="dot">C</span>
+        <span class="dot">D</span>
+        <span class="dot">E</span>
+        <span class="dot">F</span>
+        <span class="dot">G</span>
+        <span class="dot">H</span>
+        <span class="dot">I</span>
+        <span class="dot">J</span>
+        <span class="dot">K</span>
+        <span class="dot">L</span>
+        <span class="dot">M</span>
+        <span class="dot">N</span>
+        <span class="dot">O</span>
+        <span class="dot">P</span>
+        <span class="dot">Q</span>
+        <span class="dot">R</span>
+        <span class="dot">S</span>
+        <span class="dot">T</span>
+        <span class="dot">U</span>
+        <span class="dot">V</span>
+        <span class="dot">W</span>
+        <span class="dot">X</span>
+        <span class="dot">Y</span>
+        <span class="dot">Z</span>
+        <span class="dot">All</span>
+    </div>
+</div>
+
+<div class="row padbot10">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <table id="jqgItemStoreMaster"></table>
+        <div id="jqpItemStoreMaster"></div>
+    </div>
+</div>
+
+<hr />
+<div class="row padbot10">
+    <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect marbot15" id="btnSave"><i class="fa fa-save"></i> Save </button>
+    </div>
+</div>
+<div class="modal fade" id="PopupStoreLink">
+    <div class="modal-dialog modal-md" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Store Link</h4>
+            </div>
+
+
+            <div class="modal-body">
+                <div class="row padbot4">
+                    <div class="col-sm-12 col-md-12 col-lg-12 form-group">
+                        <table id="jqgStoreLink"></table>
+                        <div id="jqpStoreLink"></div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveStoreLink">
+                            Save
+                        </button>
+                        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button" data-dismiss="modal"> Cancel</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+    </div>
+</div>

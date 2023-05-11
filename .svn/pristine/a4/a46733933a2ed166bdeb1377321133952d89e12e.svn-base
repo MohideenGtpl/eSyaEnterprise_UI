@@ -1,0 +1,136 @@
+﻿var NodeID;
+var prevSelectedID;
+
+$(document).ready(function () {
+    fnLoadGridItemCustodian();
+    fnLoadCustodianTree();
+    $("#pnlAddItemCustodian").hide();
+});
+
+function fnLoadGridItemCustodian() {
+    $("#jqgCustodianStore").jqGrid({
+        url: getBaseURL() + '/ItemManagement/GetCustodianStoreList',
+        mtype: 'Post',
+        datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Store Code", "Custodian Store", "Active"],
+        colModel: [
+            { name: "CustodianStore", width: 170, editable: true, align: 'left', hidden: true },
+            { name: "StoreDesc", width: 170, editable: true, align: 'left', hidden: false },
+            { name: "ActiveStatus", editable: true, width: 45, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: false } },
+        ],
+        rowNum: 100000,
+        pgtext: null,
+        pgbuttons: false,
+        loadonce: true,
+        rownumWidth: 25,
+        viewrecords: false,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+
+    }).jqGrid('navGrid', '#jqgCustodianStore', { add: false, edit: false, search: false, del: false, refresh: false });
+
+}
+
+function fnLoadCustodianTree() {
+
+    $.ajax({
+        url: getBaseURL() + '/ItemManagement/GetItemTree',
+        type: 'POST',
+        datatype: 'json',
+        success: function (result) {
+            fnGetBusinessLocation_Success(result);
+        },
+        error: function (error) {
+            toastr.error(error.status);
+        }
+    });
+
+    //$('#ItemCustodianTree').jstree({
+    //    'core': {
+    //        'data': [
+                
+    //            {
+    //                'text': 'Item',
+    //                'state': {
+    //                    'opened': true,
+    //                    'selected': true
+    //                },
+    //                'children': [
+    //                    { 'text': 'Item 1' },
+    //                    'Item 2'
+    //                ]
+    //            }
+    //        ]
+    //    }
+    //});
+}
+
+function fnGetBusinessLocation_Success(dataArray) {
+    $("#ItemCustodianTree").jstree({
+        "state": { "checkbox_disabled": true },
+        "checkbox": {
+            "keep_selected_style": false
+        },
+        //"plugins": ["checkbox"],
+        core: { 'data': dataArray, 'check_callback': true, 'multiple': true }
+
+    });
+
+    $("#ItemCustodianTree").on('loaded.jstree', function () {
+
+        $("#ItemCustodianTree").jstree('open_all');
+        $("#ItemCustodianTree").jstree()._open_to(prevSelectedID);
+        $('#ItemCustodianTree').jstree().select_node(prevSelectedID);
+
+    });
+
+    $('#ItemCustodianTree').on("changed.jstree", function (e, data) {
+
+        if (data.node != undefined) {
+            //if (prevSelectedID != data.node.id) {
+            prevSelectedID = data.node.id;
+
+            if (data.node.id == "0") {
+                fnClearFields();
+                $("#pnlAddItemCategory").hide();
+            }
+            else {
+                if (data.node.id.startsWith("IT")) {
+
+                    NodeID = 0;
+                    NodeID = data.node.id.substring(2).split(".")[3];
+                    $("#pnlAddItemCategory").show();
+                    //$(".mdl-card__title-text").text("Edit Business Segment");
+                    //$('#txtBusinessLocationId').val(NodeID);
+                    //$('#txtBusinessEntityId').val(data.node.id.substring(2).split(".")[0]);
+                    //$('#txtBusinessSegmentId').val(data.node.id.substring(2).split(".")[1]);
+
+                    //fnFillBusinessLocationInfo();
+                    //fnLoadParameterGrid();
+                    //$("#btnAddBusinessLocation").html('<i class="fa fa-sync"></i> Update');
+                }
+                else {
+                    fnClearFields();
+                    $("#pnlAddItemCategory").hide();
+                }
+            }
+        }
+    });
+
+    $('#ItemCustodianTree').on("close_node.jstree", function (node) {
+        var closingNode = node.handleObj.handler.arguments[1].node;
+        $('#ItemCustodianTree').jstree().deselect_node(closingNode.children);
+    });
+
+}
+
+function fnClearFields() {
+    
+}

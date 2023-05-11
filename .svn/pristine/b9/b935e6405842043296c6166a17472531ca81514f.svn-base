@@ -1,0 +1,120 @@
+﻿$(document).ready(function () {
+    fnGridPreviousJob();
+});
+
+var actiontype = "";
+function fnGridPreviousJob() {
+    $("#jqgPreviousJobs").jqGrid({
+        //url: getBaseURL() + '',
+        datatype: 'json',
+        mtype: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        colNames: ["Organization", "Service Period From", "Service Period Till", "Service Period Till", "Designation","Reason for Leaving"],
+        colModel: [
+            { name: "Organization", width: 50, align: 'left', editable: true, editoptions: { maxlength: 6 }, resizable: false, hidden: true },
+            { name: "ServicePeriodFrom", width: 80, align: 'left', editable: true, editoptions: { maxlength: 50 }, resizable: false, hidden: false },
+            { name: "ServicePeriodTill ", width: 90, align: 'left', editable: true, editoptions: { maxlength: 50 }, resizable: false },
+            { name: "Designation", width: 95, align: 'left', editable: true, editoptions: { maxlength: 50 }, resizable: false },
+            { name: "ReasonForLeaving", width: 55, align: 'left', editable: true, editoptions: { maxlength: 50 }, resizable: false },
+            {
+                name: 'edit', search: false, align: 'left', width: 88, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditPreviousJobs(event,\'edit\');"><i class="fa fa-edit"></i>' + localization.Edit + '</button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnEditPreviousJobs(event,\'view\');"><i class="far fa-eye"></i>' + localization.View + '</button>'
+                }
+            },
+        ],
+        pager: "#jqpPreviousJobs",
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        scroll: false,
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        forceFit: false,
+        loadComplete: function (data) {
+            SetGridControlByAction();
+        },
+    }).jqGrid('navGrid', '#jqpPreviousJobs', { add: false, edit: false, search: false, del: false, refresh: false, refreshtext: 'Reload' }).jqGrid('navButtonAdd', '#jqpPreviousJobs', {
+        caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshPreviousJob
+        }).jqGrid('navButtonAdd', '#jqpPreviousJobs', {
+        caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddPreviousJob
+    });
+
+    $(window).on("resize", function () {
+        var $grid = $("#jqgPreviousJobs"),
+            newWidth = $grid.closest(".PreviousJobcontainer").parent().width();
+        $grid.jqGrid("setGridWidth", newWidth, true);
+    });
+    fnAddGridSerialNoHeading();
+}
+
+function fnAddPreviousJob() {
+    _isInsert = true;
+    $("#divForm").css("display", "block");
+    $("#divGrid").hide();
+    fnClearFields();
+    $('#PopupPreviousJobs').find('.modal-title').text("Add Previous Job Details");
+    $('#PopupPreviousJobs').modal('show');
+    $("#btnSavePreviousJob").html('Save');
+}
+
+function fnEditEmployeeDetails(e, actiontype) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgPreviousJobs').jqGrid('getRowData', rowid);
+
+    $('#PopupPreviousJobs').modal('show');
+
+    $("#btnSavePreviousJob").attr("disabled", false);
+
+    $("#txtPreviousJob").attr("readonly", "readonly");
+    _isInsert = false;
+
+    if (actiontype.trim() == "edit") {
+        $('#PopupPreviousJob').find('.modal-title').text("Update Previous Job Details");
+        $("#btnSavePreviousJob").html(' Update');
+        $("#chkActiveStatus").prop('disabled', false);
+    }
+
+    if (actiontype.trim() == "view") {
+        $('#PopupPreviousJobs').find('.modal-title').text("View Previous Job Details");
+        $("#btnSavePreviousJob").html(' Update');
+        $("#btnSavePreviousJob").attr("disabled", false);
+        $("input,textarea").attr('readonly', true);
+        $("select").next().attr('disabled', true);
+        $("#btnSavePreviousJob").hide();
+        $("#chkActiveStatus").prop('disabled', true);
+        $("#PopupPreviousJobs").on('hidden.bs.modal', function () {
+            $("#btnSavePreviousJob").show();
+            $("input,textarea").attr('readonly', false);
+            $("select").next().attr('disabled', false);
+        });
+    }
+}
+
+var _isInsert = true;
+
+function fnGridRefreshPreviousJob() {
+    $("#jqgPreviousJobs").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+function fnClearFields() {
+    $("#txtPreviousJob").removeAttr("readonly");
+    $("#txtPreviousJob").val('');
+    $('#chkDefaultStatus').prop('checked', true);
+    $("#chkActiveStatus").prop('disabled', false);
+    $("#btnSavePreviousJob").attr("disabled", false);
+}
+
+$("#btnCancelPreviousJob").click(function () {
+    $("#jqgPreviousJobs").jqGrid('resetSelection');
+    $('#PopupPreviousJobs').modal('hide');
+    fnClearFields();
+});
+ 

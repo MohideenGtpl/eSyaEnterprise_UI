@@ -1,0 +1,292 @@
+﻿
+@{
+    ViewData["Title"] = "V_100_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts{ 
+<script src="~/js/eSyaFA/AssetRegister.js"></script>
+}
+
+<div class="row">
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="form-group">
+            <label>Asset Group</label>
+            <select class="form-control">
+                <option value="value">Choose Asset Group</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="form-group">
+            <label>Asset Sub Group</label>
+            <select class="form-control">
+                <option value="value">Choose Asset Sub Group</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+        <div class="form-group">
+            <label>Asset Description</label>
+            <input type="text" name="name" value="" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="form-group">
+            <label>Model</label>
+            <select class="form-control">
+                <option value="value">Choose Model</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="form-group">
+            <label>Manufacturer</label>
+            <select class="form-control">
+                <option value="value">Choose Manufacturer</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+        <div class="form-group">
+            <label>Asset Type</label>
+            <select class="form-control">
+                <option value="value">Choose Asset Type</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+        <div class="form-group">
+            <label>Asset Class</label>
+            <select class="form-control">
+                <option value="value">Choose Asset Class</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+        <div class="form-group">
+            <label>Asset Life</label>
+            <select class="form-control">
+                <option value="value">Choose Asset Life</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="form-group">
+            <label>Asset Specification</label>
+            <textarea rows="10" cols="10" class="form-control"></textarea>
+        </div>
+    </div>
+
+    <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+        <div class="form-group">
+            <label>Quantity</label>
+            <input type="text" name="name" value="" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+        <div class="form-group">
+            <label>PO Number</label>
+            <input type="text" name="name" value="" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+        <div class="form-group">
+            <label>PO Date</label>
+            <input type="date" name="name" value="" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+        <div class="form-group">
+            <label>GRN Number</label>
+            <input type="text" name="name" value="" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+        <div class="form-group">
+            <label>GRN Date</label>
+            <input type="date" name="name" value="" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <div class="form-group">
+            <label>Vendor Name</label>
+            <input type="text" name="name" value="" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+        <div class="form-group">
+            <label>Acquistion Date</label>
+            <input type="date" name="name" value="" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+        <div class="form-group">
+            <label>Acquistion Value</label>
+            <input type="text" name="name" value="" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+        <div class="form-group">
+            <label>Original Cost</label>
+            <input type="text" name="name" value="" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+            <div class="form-group">
+                <label>From Date</label>
+                <input type="date" name="name" value="" class="form-control" />
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+            <div class="form-group">
+                <label>To Date</label>
+                <input type="date" name="name" value="" class="form-control" />
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+            <div class="default-checkbox">
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsInsuranceApplicable">
+                    <input type="checkbox" id="chkIsInsuranceApplicable" class="mdl-checkbox__input">
+                    <span class="mdl-checkbox__label">Is Insurance Applicable</span>
+                </label>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+            <div class="default-checkbox">
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsCalibratoryApplicable">
+                    <input type="checkbox" id="chkIsCalibratoryApplicable" class="mdl-checkbox__input">
+                    <span class="mdl-checkbox__label">Is Calibratory Applicable</span>
+                </label>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+            <div class="default-checkbox">
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsPreventiveApplicable">
+                    <input type="checkbox" id="chkIsPreventiveApplicable" class="mdl-checkbox__input">
+                    <span class="mdl-checkbox__label">Is Preventive Main Applicable</span>
+                </label>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+            <div class="form-group">
+                <label> Status</label>
+
+                <select class="selectpicker" data-live-search="false" id="" title="">
+                    <option value="true">Active</option>
+                    <option value="false">Inactive</option>
+                </select>
+
+
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button mr-10" id="btnSaveAssetRegister" onclick="fnSaveAssetRegister()">
+                Save
+            </button>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="#"> Cancel</button>
+        </div>
+    </div>
+
+    <div class="modal fullscreen fade" id="PopupAssetRegister">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header popupHeader">
+                    <button type="button" class="close" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                    <h4 class="modal-title">Asset Register</h4>
+                </div>
+
+
+                <div class="modal-body">
+                    <div class="row padbot10">
+
+                        <div class="col-lg-12  col-md-12 col-sm-12">
+                            <table id="jqgAssetRegister"></table>
+                            <div id="jqpAssetRegister"></div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row" id="divAssetRegister">
+                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label> Asset Tag</label>
+                                <input id="" class="form-control" type="text" autocomplete="off" maxlength="50" />
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+                            <div class="form-group">
+                                <label> Installation Date</label>
+                                <input id="" class="form-control" type="date" autocomplete="off" maxlength="50" />
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label> Equipment SL No</label>
+                                <input id="" class="form-control" type="text" autocomplete="off" maxlength="50" />
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+                            <div class="default-checkbox">
+                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkApplicationDefaultStatus">
+                                    <input type="checkbox" id="chkApplicationDefaultStatus" class="mdl-checkbox__input">
+                                    <span class="mdl-checkbox__label">Is Custodian</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+                            <div class="form-group">
+                                <label class="lable-color"> Asset Condition</label>
+                                <div>
+                                    <select class="selectpicker" data-live-search="false" id="cboActiveStatus" title="">
+                                        <option value="true">Active</option>
+
+                                    </select>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+                            <div class="form-group">
+                                <label class="lable-color"> Asset Status</label>
+                                <div>
+                                    <select class="selectpicker" data-live-search="false" id="cboActiveStatus" title="">
+                                        <option value="true">Active</option>
+
+                                    </select>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+                            <div class="form-group">
+                                <label class="lable-color"> Active Status</label>
+                                 
+                                    <select class="selectpicker" data-live-search="false" id="cboActiveStatus" title="">
+                                        <option value="true">Active</option>
+
+                                    </select>
+
+                                
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button">
+                                Save
+                            </button>
+                            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button" data-dismiss="modal" onclick="fnClearFields()"> Cancel</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

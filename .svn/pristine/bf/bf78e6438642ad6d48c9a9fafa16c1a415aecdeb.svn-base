@@ -1,0 +1,181 @@
+﻿function populate_gvPatientRegisteredList() {
+    $.get(getBaseURL() + '/PatientInfo/GetPatientRegisteredList', {
+        visitFromDate: $('#dtVisitFromDate').val(),
+        visitTillDate: $('#dtVisitTillDate').val(),
+        clinicTypeId: $('#cboClinicTypeId').val(),
+        patientTypeId: $('#cboPatientTypeId').val(),
+        uhid: $('#txtUHID').val()
+    }, function (data, status) {
+        return data;
+    });
+    return null;
+}
+
+var _patient_op_details;
+function populate_PatientRegisterDetails() {
+    _patient_op_details = {};
+    $.get(getBaseURL() + '/OpBilling/GetPatientOpVisitDetails', {
+        uhid: $('#hdfUHID').val(),
+        opNumber: $('#hdfOpNumber').val()
+    }, function (data, status) {
+        _patient_op_details = data;
+        $('#lblUHID').text($('#hdfUHID').val());
+        $('#lblPatientName').text(_patient_op_details.PatientName);
+        $('#lblPatientAge').text(_patient_op_details.Age);
+        $('#lblPatientGender').text(_patient_op_details.Gender);
+        $('#lblOpNumber').text($('#hdfOpNumber').val());
+        $('#lblVisitDate').html(new Date(_patient_op_details.VisitDate).toLocaleDateString() +'<span class="lblInfo ml-1"> (DD/MM/YYYY)</span>');
+        $('#lblPatientType').text(_patient_op_details.PatientTypeDesc);
+        $('#lblRatePlan').text(_patient_op_details.RatePlanDesc);
+        $('#lblDoctorName').text(_patient_op_details.DoctorName);
+        $('#lblSpecialtyDesc').text(_patient_op_details.SpecialtyDesc);
+        });
+    fnProcessLoading(false);
+    return null;
+}
+
+function populate_ServiceDropDownList() {
+    $.get(getBaseURL() + '/ServiceRates/GetServiceList', {}, function (data, status) {
+        var s = '<option value="-1">select</option>';
+        for (var i = 0; i < data.length; i++) {
+            s += '<option data-ServiceTypeId=' + data[i].ServiceTypeId + ' value="' + data[i].ServiceId + '" >' + data[i].ServiceDesc + '</option>';
+        }
+        $("#cboServiceList").html(s);
+        $("#cboServiceList").selectpicker('refresh');
+    });
+}
+
+function fnAddService() {
+
+    $.get(getBaseURL() + '/ServiceRates/GetServiceRatesForOpBilling', {
+        serviceId: $("#cboServiceList").val(),
+        rateType: 620001,//_patient_op_details.RatePlan,
+        currencyCode: "EGP"//_cnfLocalCurrency
+    }, function (data) {
+        var sr = {
+            ServiceTypeId: $(':selected', $('#cboServiceList')).data('ServiceTypeId'),
+            ServiceId: $('#cboServiceList').val(),
+            ServiceDesc: data.ServiceDesc,
+            ServiceProviderId: null,
+            ServiceProviderName: null,
+            ServiceRule: data.ServiceRule,
+            BaseRate: parseFloat(data.ServiceRate),
+            Quantity: 1,
+            Rate: parseFloat(data.ServiceRate),
+            DiscountAmount: parseFloat(data.ServiceDiscount),
+            TotalAmount: parseFloat(data.ServiceRate) - parseFloat(data.ServiceDiscount)
+        };
+
+        var gv_data = jQuery("#jgvServiceBill").jqGrid('getDataIDs');
+        $("#jgvServiceBill").jqGrid("addRowData", gv_data.length + 1, sr);
+
+        Calculate_gvTotalAmount();
+
+    });
+}
+
+function Calculate_gvTotalAmount() {
+    var quantity = 0;
+    var totalAmount = 0;
+    var netBillAmount = 0;
+
+    var rowIds = $("#jgvServiceBill").getDataIDs();
+    for (var i = 0; i < rowIds.length; i++) {
+        quantity = parseFloat($("#jgvServiceBill").jqGrid('getCell', rowIds[i], 'Quantity'));
+        totalAmount += parseFloat($("#jgvServiceBill").jqGrid('getCell', rowIds[i], 'TotalAmount'));
+    }
+
+    $('#txtTotalBillAmount').val(totalAmount.toFixed(2));
+    var concessionAmount = 0;
+    if (!$.isEmptyObject($("#txtTotalConcessionAmount").val()) && $("#txtTotalConcessionAmount").val().length > 0) {
+        concessionAmount = parseFloat($('#txtTotalConcessionAmount').val()).toFixed(2);
+    }
+    else {
+        $('#txtTotalConcessionAmount').val(0);
+    }
+
+    if (concessionAmount > totalAmount) {
+        $('#txtTotalConcessionAmount').val(0);
+        concessionAmount = 0;
+    }
+    $('#txtTotalConcessionAmount').val(concessionAmount);
+    netBillAmount = totalAmount - concessionAmount;
+    $('#txtNetBillAmount').val(netBillAmount);
+
+}
+
+
+function fnSubmitOpBilling() {
+
+    if (parseFloat($("#txtTotalConcessionAmount").val()) > 0) {
+        if ($("#txtNarration").val().length <= 1) {
+            alert("please enter the narration for discount");
+            return;
+        }
+    }
+
+    $("#btnSaveOpBilling").prop('disabled', true);
+
+    var paymentResponse = getPaymentDetails();
+    if (!paymentResponse.status) {
+        return false;
+    }
+    var l_paymentData = paymentResponse.data;
+
+    var l_Services = [];
+    var gvServices = jQuery("#jgvServiceBill").jqGrid('getRowData');
+    for (var i = 0; i < gvServices.length; ++i) {
+        var serv = {};
+        serv.ServiceCode = gvServices[i]['ServiceCode'];
+        serv.Quantity = parseFloat(gvServices[i]['Quantity']);
+        serv.Rate = parseFloat(gvServices[i]['Rate']);
+        serv.DiscountAmount = parseFloat(gvServices[i]['DiscountAmount']);
+        serv.ConcessionAmount = 0;
+        serv.TotalAmount = parseFloat(gvServices[i]['TotalAmount']);
+        serv.PayableByPatient = parseFloat(gvServices[i]['TotalAmount']);
+        serv.PayableByInsurance = 0;
+        serv.ChargableToPatient = true;
+        l_Services.push(serv);
+    }
+    var obj_PatientBillHeader = {
+        UHID: _patient_op_details.UHID,
+        OPNumber: _patient_op_details.OPNumber,
+        TransCurrencyCode: _cnfLocalCurrency,
+        LocalCurrencyCode: _cnfLocalCurrency,
+        ExchangeRate: 1,
+        ConcessionOn: "N",
+        TotalBillAmount: $('#txtTotalBillAmount').val(),
+        TotalDiscountAmount: 0,
+        TotalConcessionAmount: $('#txtTotalConcessionAmount').val(),
+        RoundOff: 0,
+        NetBillAmount: $('#txtNetBillAmount').val(),
+        Narration: $('#txtNarration').val(),
+        l_PatientBillDetails: l_Services,
+        l_PaymentReceipt: l_paymentData
+    };
+
+    var URL = getBaseURL() + '/OpBilling/CreateOpBill';
+    $.ajax({
+        url: URL,
+        type: 'POST',
+        datatype: 'json',
+        contenttype: 'application/json; charset=utf-8',
+        data: obj_PatientBillHeader,
+        async: true,
+        success: function (response) {
+            if (response.Status) {
+                toastr.success("Bill Generated.");
+            }
+            else {
+                toastr.error(response.Message);
+            }
+            $("#btnSaveOpBilling").attr('disabled', false);
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnSaveOpBilling").attr('disabled', false);
+        }
+    });
+
+}
+

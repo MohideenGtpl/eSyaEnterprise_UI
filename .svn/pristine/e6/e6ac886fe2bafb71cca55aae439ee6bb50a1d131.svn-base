@@ -1,0 +1,16 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+<select class="one-fourth" data-live-search="true" id="@ViewBag.ID" title="" data-size="8">
+    <option value="0">select</option>
+    @if (ViewBag.ISDCodes != null)
+    {
+        foreach (var isd in ViewBag.ISDCodes)
+        {
+            <option value="@isd.Isdcode">@isd.Isdcode-@isd.CountryName</option>
+        }
+    }
+</select>
+<input type="text" id="txtMobileNumber" value="" class="form-control integerFormat three-fourth" />
+

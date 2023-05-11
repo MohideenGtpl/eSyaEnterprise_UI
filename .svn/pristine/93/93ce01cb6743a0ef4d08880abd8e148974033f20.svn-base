@@ -1,0 +1,173 @@
+﻿
+@{
+    ViewData["Title"] = "V_5010_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-lg-6 col-md-6 col-sm-12">
+        <div class="row">
+            <div class="col-lg-7 col-md-7 col-sm-12 form-group">
+                <label>Business Key</label>
+                @await Component.InvokeAsync("UserBusinessLocation")
+            </div>
+            <div class="col-lg-5 col-md-5 col-sm-12 form-group">
+                <label>Pay Period</label>
+                @*<input type="text" name="name" id="dtPayPeriod" value="" class="form-control" onchange="fnPayPeriod_onChange()" />*@
+                <select class="selectpicker" id="cboPayperiod" data-size="8" onchange="fnPayPeriod_onChange()"></select>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <hr />
+        <table id="jqgSalaryProcess"></table>
+        <div id="jqpSalaryProcess"></div>
+    </div>
+</div>
+
+
+<style>
+    .ui-datepicker-calendar {
+        display: none;
+    }
+</style>
+
+<script type="text/javascript">
+
+    var _payPeriod = null;
+
+    $(function () {
+
+        _payPeriod = null;
+
+        //$('#dtPayPeriod').datepicker({
+        //    changeMonth: true,
+        //    changeYear: true,
+        //    showButtonPanel: true,
+        //    dateFormat: 'MM yy',
+        //    onClose: function (dateText, inst) {
+        //        var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+        //        var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+        //        $(this).val($.datepicker.formatDate('MM yy', new Date(year, month, 1)));
+        //        _payPeriod = year + "" + padDigits(parseInt(month) + 1, 2);
+        //        $("#jqgSalaryProcess").jqGrid("setGridParam", { datatype: "json" })
+        //            .trigger("reloadGrid", [{ current: true }]);
+        //    },
+        //});
+
+        fnBusinessLocation_onChange();
+
+    });
+
+  
+
+    function fnBusinessLocation_onChange() {
+        fnBindPayPeriod();
+    }
+
+    function fnBindPayPeriod() {
+        $('#cboPayperiod').selectpicker('refresh');
+        $.ajax({
+            url: getBaseURL() + '/VariableEntry/GetPayPeriodbyBusinessKey?Businesskey=' + $("#cboBusinessLocation").val(),
+            datatype: 'json',
+            type: 'POST',
+            async: false,
+            contentType: 'application/json; charset=utf-8',
+            success: function (result) {
+                $('#cboPayperiod').empty();
+                //$("#cboPayperiod").append($("<option value='0'>Select</option>"));
+                if (result !== null) {
+                    for (var i = 0; i < result.length; i++) {
+
+                        $("#cboPayperiod").append($("<option></option>").val(result[i]["PayPeriod"]).html(result[i]["PayPeriod"]));
+                    }
+                }
+                $('#cboPayperiod').val($("#cboPayperiod option:first").val());
+                $('#cboPayperiod').selectpicker('refresh');
+                fnPayPeriod_onChange();
+            }
+        });
+    }
+
+    function fnPayPeriod_onChange() {
+        _payPeriod = $('#cboPayperiod').val();
+        $("#jqgSalaryProcess").jqGrid("setGridParam", { datatype: "json" })
+            .trigger("reloadGrid", [{ current: true }]);
+    }
+
+    $(function () {
+
+        $("#jqgSalaryProcess").jqGrid({
+            url: getBaseURL() + '/SalaryProcess/GetSalaryRegister',
+            datatype: "json",
+            contenttype: "application/json; charset-utf-8",
+            mtype: 'GET',
+            postData: {
+                businessKey: function () { return $("#cboBusinessLocation").val(); },
+                payPeriod: function () { return _payPeriod; }
+            },
+            jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+            colNames: ["EmployeeNumber", "Employee Name", 'Salary Curr.', 'Salary Amount', 'Att. Factor', 'Vacation Pay', 'Processed Amount', 'Ex. Rate', 'Amount (Local Currency)', 'Add Incentive Amount', 'Less Advance Amount', 'Net Salary Amount', 'Cash Amount', 'Bank Amount'],
+            colModel: [
+                { name: "EmployeeNumber", width: '100', align: 'left', editable: false, hidden: true },
+                { name: "EmployeeName", index: 'EmployeeName', width: '200', align: 'left', editable: false, sortable: true, },
+                { name: "SalaryCurrency", index: 'SalaryCurrency', width: '50', align: 'left', editable: false, sortable: true, },
+                { name: 'SalaryAmount', index: 'SalaryAmount', width: 80, align: "right", sorttype: "float", formatter: "number", formatoptions: { decimalPlaces: 0 } },
+                { name: 'AttendanceFactor', index: 'AttendanceFactor', width: 40, align: "right", sorttype: "float", formatter: "number", formatoptions: { decimalPlaces: 0 } },
+                { name: 'IsVacationPay', index: 'IsVacationPay', width: 50, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+                { name: 'ProcessedAmount', index: 'ProcessedAmount', width: 80, align: "right", sorttype: "float", formatter: "number", formatoptions: { decimalPlaces: 0 } },
+                { name: 'ExchangeRate', index: 'ExchangeRate', width: 50, align: "right", },
+                { name: 'AmountInLocalCurrency', index: 'AmountInLocalCurrency', width: 80, align: "right", sorttype: "float", formatter: "number", formatoptions: { decimalPlaces: 0 } },
+                { name: 'VariableIncentiveAmount', index: 'VariableIncentiveAmount', width: 70, align: "right", sorttype: "float", formatter: "number", formatoptions: { decimalPlaces: 0 } },
+                { name: 'AdvanceAmount', index: 'AdvanceAmount', width: 70, align: "right", sorttype: "float", formatter: "number", formatoptions: { decimalPlaces: 0 } },
+                { name: 'NetSalaryAmount', index: 'NetSalaryAmount', width: 80, align: "right", sorttype: "float", formatter: "number", formatoptions: { decimalPlaces: 0 } },
+                { name: 'CashAmount', index: 'CashAmount', width: 80, align: "right", sorttype: "float", formatter: "number", formatoptions: { decimalPlaces: 0 } },
+                { name: 'BankAmount', index: 'BankAmount', width: 80, align: "right", sorttype: "float", formatter: "number", formatoptions: { decimalPlaces: 0 } },
+            ],
+            rowNum: 100000,
+            rowList: [10, 20, 50, 100],
+            loadonce: true,
+            viewrecords: true,
+            gridview: true,
+            rownumbers: true,
+            height: 'auto',
+            scroll: false,
+            width: 'auto',
+            autowidth: false,
+            shrinkToFit: false,
+            forceFit: false,
+            footerrow: true,
+            loadComplete: function () {
+                var selectedRowsIds = $('#jqgSalaryProcess').jqGrid('getDataIDs');
+                var totalEmployee = 0;
+                var AmountInLocalCurrency = 0, VariableIncentiveAmount = 0, AdvanceAmount = 0, NetSalaryAmountSum = 0, CashAmount = 0, BankAmount = 0;
+
+                $.each(selectedRowsIds, function (index, selectedRowId) {
+                    totalEmployee += 1;
+                    AmountInLocalCurrency += parseInt($('#jqgSalaryProcess').jqGrid('getCell', selectedRowId, 'AmountInLocalCurrency'));
+                    VariableIncentiveAmount += parseInt($('#jqgSalaryProcess').jqGrid('getCell', selectedRowId, 'VariableIncentiveAmount'));
+                    AdvanceAmount += parseInt($('#jqgSalaryProcess').jqGrid('getCell', selectedRowId, 'AdvanceAmount'));
+                    NetSalaryAmountSum += parseInt($('#jqgSalaryProcess').jqGrid('getCell', selectedRowId, 'NetSalaryAmount'));
+                    CashAmount += parseInt($('#jqgSalaryProcess').jqGrid('getCell', selectedRowId, 'CashAmount'));
+                    BankAmount += parseInt($('#jqgSalaryProcess').jqGrid('getCell', selectedRowId, 'BankAmount'));
+                });
+
+                $('#jqgSalaryProcess').jqGrid('footerData', 'set', { 'EmployeeName': 'Total No. of Emp. : ' + totalEmployee });
+
+                $('#jqgSalaryProcess').jqGrid('footerData', 'set', { 'AmountInLocalCurrency': AmountInLocalCurrency });
+                $('#jqgSalaryProcess').jqGrid('footerData', 'set', { 'VariableIncentiveAmount': VariableIncentiveAmount });
+                $('#jqgSalaryProcess').jqGrid('footerData', 'set', { 'AdvanceAmount': AdvanceAmount });
+                $('#jqgSalaryProcess').jqGrid('footerData', 'set', { 'NetSalaryAmount': NetSalaryAmountSum });
+                $('#jqgSalaryProcess').jqGrid('footerData', 'set', { 'CashAmount': CashAmount });
+                $('#jqgSalaryProcess').jqGrid('footerData', 'set', { 'BankAmount': BankAmount });
+            },
+
+        });
+
+    });
+
+
+
+
+</script>

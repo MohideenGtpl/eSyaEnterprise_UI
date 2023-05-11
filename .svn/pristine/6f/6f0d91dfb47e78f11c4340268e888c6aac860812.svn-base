@@ -1,0 +1,155 @@
+﻿var txtBeneficiaryName = $("#txtBeneficiaryName").val();
+var txtBankName = $("#txtBankName").val();
+var cbostatusforBank = $("#cbostatusforBank").val();
+var txtBankacno = $("#txtBankacno").val();
+var txtSwiftCode = $("#txtSwiftCode").val();
+var txtIFSCCode = $("#txtIFSCCode").val();
+var chkDefaultBankDetails = $("#chkDefaultBankDetails").val();
+var chkPreferredPaymentMode = $("#chkPreferredPaymentMode").val();
+var cboPreferredPaymentMode = $("#cboPreferredPaymentMode").val();
+var BankId = 0;
+var SelectedBeneficiaryName;
+var SelectedBankName;
+var SelectedStatusforBank;
+var SelectedtxtBankacno;
+var SelectedtxtSwiftCode;
+var SelectedtxtIFSCCode;
+var SelectedchkPreferredPaymentMode;
+var SelectedcboPreferredPaymentMode;
+var cellValue;
+var cbostatusforBanktoGrid;
+
+
+
+
+
+
+function fnLoadBankDetails() {
+    $("#jqgVendorBankDetails").GridUnload();
+
+    $("#jqgVendorBankDetails").jqGrid({
+        //url:,
+        //mtype: 'POST',
+        datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        serializeGridData: function (postdata) {
+            postdata.Vendorcode = $("#txtVendorCode").val();
+            return JSON.stringify(postdata.Vendorcode);
+        },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["", "", "Beneficiary Name", "Bank Name", "Bank A/c No", "Swift Code", "IFSC Code", "Default Account", "Active Status","", ""],
+        colModel: [{ name: 'VendorCode', width: '40', resizable: false, hidden: true },
+        { name: 'BankId', width: '40', resizable: false, hidden: true },
+        { name: 'BeneficiaryName', width: '170', resizable: false },
+        { name: 'BeneficiaryBankName', width: '100', resizable: false },
+        { name: 'BeneficiaryBankAccountNo', width: '50', resizable: false },
+        { name: 'BankSwiftCode', width: '40', resizable: false },
+        { name: 'BankIfsccode', width: '40', resizable: false },
+        { name: 'IsDefaultAccount', width: '28', resizable: false, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+        //{ name: 'ActiveStatus', width: '60', resizable: false },
+            { name: "ActiveStatus", editable: true, width: 30, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: InActive" } },
+        { name: 'PreferredPaymentMode', width: '40', resizable: false, hidden: true },
+        {
+            name: '', width: '28', resizable: false,
+            formatter: function (cellValue, options, rowObject) {
+                var ret = '<button class="btn-xs ui-button ui- widget ui-corner-all" style="padding:2px 4px;background:#0b76bc !important;color:#fff !important; margin:3px;" title="Edit" onclick="loadDatainFields(event)\"><i class="fa fa-edit"></i> Edit </button>'
+                return ret;
+            },
+        }],
+        rowNum: 10,
+        rowList: [10, 20, 40],
+        pager: "#jqpVendorBankDetails",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        scroll: false,
+        loadonce: true,
+        width: 'auto',
+        height: 'auto',
+        autowidth: 'auto',
+        shrinkToFit: false,
+        forceFit: false,
+        onSelectRow: function (rowid, status, e) {
+            SelectedBeneficiaryName = $("#jqgVendorBankDetails").jqGrid('getCell', rowid, 'BeneficiaryName');
+            SelectedBankName = $("#jqgVendorBankDetails").jqGrid('getCell', rowid, 'BeneficiaryBankName');
+            SelectedStatusforBank = $("#jqgVendorBankDetails").jqGrid('getCell', rowid, 'ActiveStatus');
+            SelectedtxtBankacno = $("#jqgVendorBankDetails").jqGrid('getCell', rowid, 'BeneficiaryBankAccountNo');
+            SelectedtxtSwiftCode = $("#jqgVendorBankDetails").jqGrid('getCell', rowid, 'BankSwiftCode');
+            SelectedtxtIFSCCode = $("#jqgVendorBankDetails").jqGrid('getCell', rowid, 'BankIfsccode');
+            SelectedcboPreferredPaymentMode = $("#jqgVendorBankDetails").jqGrid('getCell', rowid, 'PreferredPaymentMode');
+        },
+     }).jqGrid('navGrid', '#jqpVendorBankDetails', { add: false, edit: false, search: false, del: false, refresh: false, refreshtext: 'Reload' }).jqGrid('navButtonAdd', '#jqpVendorBankDetails', {
+        caption: '<span class="fa fa-sync" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: 'none', id: 'custReload', position: 'first', onClickButton: toRefresh
+    });
+
+}
+ 
+function loadDatainFields(e) {
+     
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgVendorBankDetails').jqGrid('getRowData', rowid);
+    
+    
+}
+
+function toRefresh() {
+    $("#jqgVendorBankDetails").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+function fnSaveBankDetails() {
+    
+}
+
+function fnClearAllFieldsBankDetails() {
+    $("#txtBeneficiaryName").val('').parent().removeClass('is-dirty');
+    $("#txtBankName").val('').parent().removeClass('is-dirty');
+    //$("#cbostatusforBank").val(0);
+    $("#txtBankacno").val('').parent().removeClass('is-dirty');
+    $("#txtSwiftCode").val('').parent().removeClass('is-dirty');
+    $("#txtIFSCCode").val('').parent().removeClass('is-dirty');
+    $("#cbostatusforBank").val('true').selectpicker('refresh');
+    $("#chkDefaultBankDetails").parent().removeClass('is-checked');
+    $("#chkPreferredPaymentMode").parent().removeClass('is-checked');
+    $("#cboPreferredPaymentMode").val(0).selectpicker('refresh');
+    $("#txtBankId").val('');
+}
+
+function fnOnChangePreferredAmount() {
+    if ($("#chkPreferredPaymentMode").parent().hasClass('is-checked')) {
+        chkPreferredPaymentMode = false;
+    }
+    else {
+        chkPreferredPaymentMode = true;
+    }
+}
+
+
+//function IsvalidNameAccount(Bname,accno) {
+//    debugger;
+//    var isexists;
+//    var datafromgrid = $('#jqgVendorBankDetails').jqGrid('getGridParam', 'data');
+//    var rows = $("#jqgVendorBankDetails").jqGrid('getGridParam', 'records');
+
+//    for (var i = 0; i < rows; i++) {
+//        var bankname = datafromgrid[i].BeneficiaryBankName;
+//        var AccountNo = datafromgrid[i].BeneficiaryBankAccountNo;
+//        var bname = bankname.trim();
+//        var ano = AccountNo.trim();
+   
+   
+
+//        if (bname== Bname && ano == accno)
+//    {
+//        isexists = true;
+//        return isexists;
+//    }
+//    else
+//    {
+//        isexists = false;
+//        return isexists;
+//    }
+
+//    }
+//}
+
+

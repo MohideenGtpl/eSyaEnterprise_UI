@@ -1,0 +1,245 @@
+﻿$(document).ready(function () {
+
+    $("#jqgStoreMaster").jqGrid({
+        url: getBaseURL() + '/Inventory/GetStoreCodes',
+        datatype: 'json',
+        mtype: 'Post',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Store Codes", "Store Type", "Store Description", "Is Material?", "Is Pharmacy?", "Is Cafeteria?", "Is F and B?", "Is Stationary?", "Status", ""],
+
+        colModel: [
+
+            { name: "StoreCode", width: 300, editable: true, align: 'left', editoptions: { maxlength: 25 }, hidden: true },
+            { name: "StoreType", editable: true, width: 120, edittype: "select", align: 'left', formatter: 'select', editoptions: { value: "M:Main Store;S:Sub Store" } },
+            {
+                name: "StoreDesc", width: 280, editable: true, editoptions: { size: "40", maxlength: "25" }, edittype: "text", editrules: {
+                    custom_func: validateStoreDesc,
+                    custom: true,
+                }
+            },
+            { name: "IsMaterial", editable: true, width: 105, align: 'center !important', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            { name: "IsPharmacy", editable: true, width: 105, align: 'center !important', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+             { name: "IsCafeteria", editable: true, width: 105, align: 'center !important', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            { name: "IsFandB", editable: true, width: 105, align: 'center !important', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            { name: "IsStationary", editable: true, width: 105, align: 'center !important', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+
+            { name: "ActiveStatus", editable: true, width: 120, edittype: "select", align: 'left', formatter: 'select', editoptions: { value: "true:Active;false:Inactive" } },
+            
+            {
+                name: 'Delete', align: 'left', width: 70,
+                formatter: function (cellValue, option, rowdata, rowObject) {
+
+
+                    var ret = "<div style='text-align:left; margin:2px;'><button onclick=' return fnDeleteStoreCode(" + rowdata.StoreCode + ")' class='btn btn' style='padding:2px 4px;margin:3px;background-color:rgb(231,10,13);font-size:12px;color: #fff!important;box-shadow:0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12);'><i class='fa fa-trash'></i>  Delete</button></div>";
+                    return ret;
+                }
+            },
+
+        ],
+        rowNum: 10,
+        rowList: [10, 20, 40],
+        emptyrecords: "No records to Veiw",
+        pager: "#jqpStoreMaster",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        width: 'auto',
+        scroll: false,
+        autowidth: false,
+        shrinkToFit: false,
+        forceFit: false,
+        loadonce: true,
+      //  editurl:,
+        
+        
+
+        editurl: getBaseURL() + '/Inventory/InsertOrUpdateStoreCodes',
+
+        ajaxRowOptions: {
+            type: "POST",
+            contentType: "application/json",
+            dataType: "json"
+        },
+
+        serializeRowData: function (postData) {
+         
+            
+            if (postData.StoreCode == 0) {
+                postData.StoreCode = 0;
+            }
+            //if (postData.StoreDesc == "" || postData.StoreDesc == null) {
+            //    toastr.warning("Please Enter the Store description");
+            //    return false;
+               
+            //}
+
+            //if (postData.IsMaterial == "false" && postData.IsPharmacy == "false" && postData.IsCafeteria == "false"
+            //    && postData.IsFandB == "false" && postData.IsStationary == "false")
+            //{
+            //    toastr.warning("Please Check atleast one option");
+            //    return false;
+                
+            //}
+
+            return JSON.stringify(postData);
+        },
+        beforeSubmit: function (postdata, formid) {
+
+            return [success, message];
+        },
+
+        ondblClickRow: function (rowid) {
+            $("#jqgStoreMaster").trigger('click');
+        },
+
+    }).jqGrid('navGrid', '#jqpStoreMaster', { add: false, edit: false, search: false, del: false, refresh: false });
+    $("#jqgStoreMaster").jqGrid('inlineNav', '#jqpStoreMaster',
+        {
+            edit: true,
+            editicon: " fa fa-pen",
+            edittext: " Edit",
+            add: true,
+            addicon: "fa fa-plus",
+            addtext: " Add",
+            save: true,
+            savetext: " Save",
+            saveicon: "fa fa-save",
+            cancelicon: "fa fa-ban",
+            canceltext: " Cancel",
+            editParams: {
+                keys: false,
+                oneditfunc: function (formid) {
+
+                    $("#" + formid + "_StoreType").prop('disabled', true);
+
+                },
+                url: null,
+                
+                successfunc: function (result) {
+                    var resp = JSON.parse(result.responseText);
+                    if (resp.Status === true) {
+                        toastr.success(resp.Message);
+                        Refresh();
+                        return true;
+                    }
+
+                    if (resp.Status == false) {
+                       
+                        toastr.error(resp.Message);
+                        Refresh();
+                        return false;
+                    }
+                },
+                aftersavefun: null,
+                errorfun: null,
+                afterrestorefun: null,
+                restoreAfterError: true,
+                mtype: "POST",
+            },
+
+            addParams: {
+                useDefValues: true,
+                position: "last",
+                addRowParams: {
+                    keys: true,
+                    oneditfunc: null,
+                    successfunc: function (result) {
+
+                        var response = JSON.parse(result.responseText);
+                        if (response.Status === true) {
+                            toastr.success(response.Message);
+                            Refresh();
+                            return true;
+                        }
+
+                        if (response.Status == false) {
+                            toastr.error(response.Message);
+                            Refresh();
+                            return false;
+                        }
+
+                    },
+                }
+            },
+        });
+});
+
+
+function validateStoreDesc(value, StoreDesc) {
+    if (value == "" || value == null) {
+        toastr.warning("Please Enter the Store description");
+
+        return [false, "Please Enter the Store description"];
+
+    }
+    else {
+        return [true, ""];
+    }
+        
+}
+
+function fnDeleteStoreCode(id) {
+    
+    bootbox.confirm({
+        title: 'Store Code',
+        message: "Are you sure you want to delete ?",
+        buttons: {
+            confirm: {
+                label: 'Yes',
+                className: 'mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button'
+            },
+            cancel: {
+                label: 'No',
+                className: 'mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button'
+            }
+        },
+        callback: function (result) {
+            if (result == true) {
+
+
+                if (id == null || id == undefined || id == "0" || id == '') {
+                    alert("Could not Delete");
+                    return false;
+                }
+
+                $.ajax({
+                    type: 'POST',
+                    url: getBaseURL() + '/Inventory/DeleteStoreCode',
+                    data: { StoreCode: id },
+                    success: function (response) {
+
+                        if (response.Status == false) {
+                            toastr.error(response.Message);
+                            return false;
+                            Refresh();
+                        }
+
+                        if (response.Status == true) {
+                            toastr.success(response.Message);
+                            Refresh();
+
+                            return true;
+                        }
+
+                    },
+                    error: function (response) {
+                        alert("Couldn't Delete");
+                    }
+                });
+
+            }
+
+        }
+    });
+
+
+
+}
+
+function Refresh() {
+
+    $("#jqgStoreMaster").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}

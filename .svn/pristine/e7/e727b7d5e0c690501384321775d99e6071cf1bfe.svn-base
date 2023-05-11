@@ -1,0 +1,426 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<div class="row padbot4">
+    <input type="hidden" id="hdvDoctorId" value="" />
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label> @Localizer["DoctorShortName"]</label>
+            <input class="form-control" type="text" autocomplete="off" maxlength="10" id="txtDoctorShortName" />
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-8 col-sm-6">
+        <div class="form-group">
+            <label> @Localizer["DoctorName"]</label>
+            <input class="form-control" type="text" autocomplete="off" maxlength="50" id="txtDoctorName" />
+        </div>
+    </div>
+
+
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> @Localizer["Gender"]</label>
+            <select class="selectpicker" data-live-search="false" title="Choose Gender" id="cboGender">
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-8 col-sm-6">
+        <div class="form-group">
+            <label> @Localizer["Doctor Registration Number"]</label>
+            <input class="form-control" type="text" autocomplete="off" maxlength="25" id="txtDoctorRegnNo" />
+        </div>
+    </div>
+    @*<div class="col-lg-3 col-md-8 col-sm-6">
+            <div class="form-group">
+                <label> @Localizer["Qualification"]</label>
+                <input class="form-control" type="text" autocomplete="off" maxlength="50" id="txtQualification" />
+            </div>
+        </div>*@
+    <div class="col-lg-6 col-md-8 col-sm-6">
+        <div class="form-group">
+            <label> @Localizer["MobileNumber"]</label>
+            @*<select class="selectpicker one-fourth" data-live-search="true" id="cboISDCode" title="" data-size="8" asp-items="@ViewBag.ISDCodesList">
+                    <option value="0">Choose ISD Code</option>
+
+                </select>
+                <input class="form-control three-fourth" data-inputmask="'mask': '9', 'repeat': 10, 'greedy' : false" autocomplete="off" id="txtMobileNumber" />*@
+
+            @await Component.InvokeAsync("IsdMobileInput", new { id = "DoctorMobile" })
+
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label> @Localizer["EmailID"]</label>
+            <input class="form-control" type="text" autocomplete="off" maxlength="50" id="txtEMailId" />
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label> @Localizer["PatientCount/Hr"]</label>
+            <input class="form-control" type="text" autocomplete="off" maxlength="50" id="txtPatientCountPerHr" />
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> @Localizer["TimeSlotInMinutes"]</label>
+            <select class="selectpicker" data-live-search="false" title="" id="cboTimeSlotInMintues" data-size="5">
+                <option value='0'>Select</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+                <option value="25">25</option>
+                <option value="30">30</option>
+                <option value="45">45</option>
+                <option value="60">60</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> @Localizer["DoctorClass"]</label>
+            <select class="selectpicker" data-live-search="true" data-size="10" id="cboDoctorClass" asp-items="@ViewBag.doctorClassList">
+                @*<option value="0">Select</option>*@
+                @*@foreach (var dc in ViewBag.doctorClassList)
+                    {
+                        <option value="@dc.ApplicationCode">@dc.CodeDesc</option>
+                    }*@
+            </select>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> @Localizer["DoctorCategory"]</label>
+            <select class="selectpicker" data-live-search="true" data-size="10" id="cboDoctorCategory" asp-items="@ViewBag.doctorCategoryList">
+                @*<option value="0">Select</option>*@
+                @*@foreach (var dc in ViewBag.doctorCategoryList)
+                    {
+                        <option value="@dc.ApplicationCode">@dc.CodeDesc</option>
+                    }*@
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> @Localizer["PayoutType"]</label>
+            <select class="selectpicker" data-live-search="false" title="" id="cboPayoutType" data-size="5">
+                <option value='0'>Select</option>
+             </select>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> @Localizer["TraiffFrom"]</label>
+            <select class="selectpicker" data-live-search="false" title="Choose TraiffFrom" id="cboTraiffFrom">
+                <option value="0">Select</option>
+               </select>
+        </div>
+    </div>
+
+</div>
+
+@*<div class="row">*@
+
+    @*<div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="form-group">
+                <label> @Localizer["LanguageKnown"]</label>
+                <input class="form-control" type="text" autocomplete="off" maxlength="150" id="txtLanguageKnown" />
+            </div>
+        </div>*@
+    @*<div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="form-group">
+                <label> @Localizer["Experience"]</label>
+                <input class="form-control" type="text" autocomplete="off" maxlength="150" id="txtExperience" />
+            </div>
+        </div>*@ 
+    @*
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> @Localizer["DoctorPayout"]</label>
+            <select class="selectpicker" data-live-search="false" title="Choose DoctorPayout" id="cboDoctorPayout">
+                <option value="N">None</option>
+                <option value="F">Fixed</option>
+                <option value="S">RevenueShare</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-12 ">
+        <div class="form-group">
+            <label> @Localizer["DoctorRemarks"]</label>
+            <textarea id="txtDoctorRemarks" class="form-control" maxlength="150" rows="1" cols="40"></textarea>
+        </div>
+    </div>*@
+@*</div>*@
+
+
+
+
+
+<div class="row">
+
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="default-checkbox checkbox-group">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkAllowConsultation">
+                <input type="checkbox" id="chkAllowConsultation" class="mdl-checkbox__input">
+                <span class="mdl-checkbox__label"> @Localizer["AllowConsultation"]</span>
+            </label>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="default-checkbox checkbox-group">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkAllowSMS">
+                <input type="checkbox" id="chkAllowSMS" class="mdl-checkbox__input">
+                <span class="mdl-checkbox__label"> @Localizer["AllowSMS"]</span>
+            </label>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color"> @Localizer["SeniorityLevel"]</label>
+            <select class="selectpicker" data-live-search="false" title="Choose SeniorityLevel" id="cboSeniorityLevel">
+                <option value="N">None</option>
+                <option value="J">Junior</option>
+                <option value="S">Senior</option>
+            </select>
+        </div>
+    </div>
+    @*<div class="col-lg-3 col-md-4 col-sm-6 d-none">
+        <div class="default-checkbox checkbox-group">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsRevenueShareApplicable">
+                <input type="checkbox" id="chkIsRevenueShareApplicable" class="mdl-checkbox__input">
+                <span class="mdl-checkbox__label"> @Localizer["IsRevenueShareApplicable"]</span>
+            </label>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="default-checkbox checkbox-group">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActiveStatus">
+                <input type="checkbox" id="chkActiveStatus" class="mdl-checkbox__input">
+                <span class="mdl-checkbox__label"> @Localizer["Active"]</span>
+            </label>
+        </div>
+    </div>*@
+
+
+
+</div>
+
+<div class="row form-group">
+    <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+        <hr />
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent btn-back mr-10 c-white" onclick="fnCloseDoctorProfile()"><i class="fas fa-chevron-left"></i> @Localizer["Back"]</button>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button mr-10" id="btnSaveDoctorProfile" onclick="fnSaveDoctorProfile()"><i class="far fa-save"></i> @Localizer["Save"]</button>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" id="btnClearDoctor" onclick="fnClearFields()"><i class="fa fa-redo"></i> @Localizer["Clear"]</button>
+    </div>
+</div>
+
+<script>
+
+    var sizeLimit = 1024 * 2;
+    function readPhotoimage(input) {
+        if (input.files && input.files[0]) {
+
+            var sizeInMb = input.files[0].size / 1024;
+
+            if (!(input.files[0].type.match(/image.*/))) {
+                toastr.warning("Invalid format file uploaded");
+                input.value = null;
+                return;
+            }
+            if (sizeInMb > sizeLimit) {
+                toastr.warning("User Photo file size should be smaller than 2 MB");
+                input.value = null;
+                return;
+            }
+
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('imgPhotoimageblah').src = e.target.result;
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+    $(document).ready(function () {
+        fnGridLoadDoctorProfile("0");
+        $(".dot").click(function () {
+            $('.dot').removeClass('active');
+            var doctorNamePrefix = $(this).text();
+            if (doctorNamePrefix === "All")
+                doctorNamePrefix = "";
+            fnGridLoadDoctorProfile(doctorNamePrefix);
+            $(this).addClass('active');
+        });
+        $(window).on('resize', function () {
+            if ($(window).width() < 1025) {
+                fnJqgridSmallScreen('jqgDoctorProfile');
+            }
+        });
+        $.contextMenu({
+            // define which elements trigger this menu
+            selector: "#btnDoctorProfile",
+            trigger: 'left',
+            // define the elements of the menu
+            items: {
+                jqgEdit: { name: localization.Edit, icon: "edit", callback: function (key, opt) { fnEditDoctorProfile(event) } }, 
+                jqgView: { name: localization.View, icon: "view", callback: function (key, opt) { fnViewDoctorProfile(event) } },
+                jqgDelete: { name: localization.Delete, icon: "delete", callback: function (key, opt) { fnDeActivateDoctorProfile(event) } },
+            }
+            // there's more, have a look at the demos and docs...
+        });
+        $(".context-menu-icon-edit").html("<span class='icon-contextMenu'><i class='fa fa-pen'></i>" + localization.Edit + " </span>");
+        $(".context-menu-icon-view").html("<span class='icon-contextMenu'><i class='fa fa-eye'></i>" + localization.View + " </span>");
+        $(".context-menu-icon-delete").html("<span class='icon-contextMenu'><i class='fa fa-trash'></i>" + localization.Delete + " </span>");
+    });
+
+    function fnGridLoadDoctorProfile(doctorPrefix) {
+        $("#jqgDoctorProfile").jqGrid('GridUnload');
+        $("#jqgDoctorProfile").jqGrid({
+            url: '',
+            datatype: 'json',
+            mtype: 'Get',
+            ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+            jsonReader: { repeatDoctors: false, root: "rows", page: "page", total: "total", records: "records" },
+            ignoreCase: true,
+            colNames: ["Doctor Id", localization.DoctorShortName, localization.DoctorName, "Doctor Registration No", localization.Gender, localization.Qualification, localization.MobileNumber, localization.DoctorClassCode, localization.DoctorClass, localization.DoctorCategoryCode, localization.DoctorCategory, localization.TimeSlotInMins, localization.AllowConsultation, localization.AllowSMS, localization.IsRevenueShareAppicable, localization.TraiffFrom, localization.DoctorRemarks, localization.TimeSlotInMintues, localization.Active, localization.Actions],
+            colModel: [
+                { name: "DoctorId", width: 40, editable: true, align: 'left', hidden: true },
+                { name: "DoctorShortName", width: 35, editable: true, align: 'left', hidden: true },
+                { name: "DoctorName", width: 70, editable: false, hidden: false, align: 'left', resizable: true },
+                { name: "DoctorRegnNo", width: 70, editable: false, hidden: true, align: 'left', resizable: true },
+                { name: "Gender", width: 25, editable: true, align: 'left', hidden: false, editoptions: { value: "M: Male;F: Female" } },
+                { name: "Qualification", width: 40, editable: false, hidden: false, align: 'left', resizable: true },
+                { name: "MobileNumber", width: 35, editable: false, hidden: true, align: 'left', resizable: true },
+                { name: "DoctorClass", width: 40, editable: false, hidden: true, align: 'left', resizable: true },
+                { name: "DoctorClassDesc", width: 40, editable: false, hidden: false, align: 'left', resizable: true },
+                { name: "DoctorCategory", width: 60, editable: false, hidden: true, align: 'left', resizable: true },
+                { name: "DoctorCategoryDesc", width: 60, editable: false, hidden: false, align: 'left', resizable: true },
+                { name: "TimeSlotInMins", width: 60, editable: false, hidden: false, align: 'left', resizable: true },
+                { name: "AllowConsultation", width: 40, editable: true, align: 'left', hidden: true },
+                { name: "AllowSMS", width: 40, editable: false, hidden: true, align: 'left', resizable: true },
+                { name: "IsRevenueShareAppicable", width: 40, editable: true, align: 'left', hidden: true },
+                { name: "TraiffFrom", width: 10, editable: true, align: 'left', hidden: true, editoptions: { value: "N: None;R: Service Rate;S: Specialty;D: Doctor" } },
+                //{ name: "LanguageKnown", width: 70, editable: true, align: 'left', hidden: true },
+                //{ name: "Experience", width: 70, editable: true, align: 'left', hidden: true },
+                { name: "DoctorRemarks", width: 70, editable: true, align: 'left', hidden: true },
+                { name: "TimeSlotInMintues", width: 10, editable: true, align: 'left', hidden: true, editoptions: { value: "5: 5 Minutes;10: 10 Minutes;15: 15 Minutes;20: 20 Minutes;25: 25 Minutes;30: 30 Minutes;45: 45 Minutes;60: 60 Minutes" } },
+                { name: "ActiveStatus", editable: true, width: 20, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+                //{
+                //    name: 'Action', search: false, align: 'left', width: 100, sortable: false, resizable: false,
+                //    formatter: function (cellValue, options, rowdata, action) {
+                //        return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgDMEdit" onclick="return fnEditDoctorProfile(event)"><i class="fas fa-pen"></i> ' + localization.Edit + ' </button>' +
+                //            '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title = "View" id="jqgDMView" onclick = "return fnViewDoctorProfile(event)" > <i class="far fa-eye"></i> ' + localization.View + ' </button > ' +
+                //            '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid cancel-button" id="jqgDMDelete", onclick="return fnDeActivateDoctorProfile(event)"><i class="fas fa-trash"></i>' + localization.DeActivate + '</button>'
+
+                //    }
+                //}
+                {
+                    name: 'edit', search: false, align: 'left', width: 35, sortable: false, resizable: false,
+                    formatter: function (cellValue, options, rowdata, action) {
+                        return '<button class="mr-1 btn btn-outline" id="btnDoctorProfile"><i class="fa fa-ellipsis-v"></i></button>'
+                    }
+                },
+
+            ],
+            pager: "#jqpDoctorProfile",
+            rowNum: 10,
+            rowList: [10, 20, 50, 100],
+            rownumWidth: 55,
+            loadonce: true,
+            viewrecords: true,
+            gridview: true,
+            rownumbers: true,
+            height: 'auto',
+            align: "left",
+            width: 'auto',
+            autowidth: true,
+            shrinkToFit: true,
+            forceFit: true,
+            scrollOffset: 0,
+            loadComplete: function (data) {
+                SetDoctorProfileGridControlByAction();
+                fnJqgridSmallScreen('jqgDoctorProfile');
+            },
+
+            onSelectRow: function (rowid, status, e) {
+                var $self = $(this), $target = $(e.target),
+                    p = $self.jqGrid("getGridParam"),
+                    rowData = $self.jqGrid("getLocalRow", rowid),
+                    $td = $target.closest("tr.jqgrow>td"),
+                    iCol = $td.length > 0 ? $td[0].cellIndex : -1,
+                    cmName = iCol >= 0 ? p.colModel[iCol].name : "";
+
+                switch (cmName) {
+                    case "id":
+                        if ($target.hasClass("myedit")) {
+                            alert("edit icon is clicked in the row with rowid=" + rowid);
+                        } else if ($target.hasClass("mydelete")) {
+                            alert("delete icon is clicked in the row with rowid=" + rowid);
+                        }
+                        break;
+                    case "serial":
+                        if ($target.hasClass("mylink")) {
+                            alert("link icon is clicked in the row with rowid=" + rowid);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
+            },
+
+        }).jqGrid('navGrid', '#jqpDoctorProfile', { add: false, edit: false, search: true, del: false, refresh: false }, {}, {}, {}, {
+            closeOnEscape: true,
+            caption: "Search...",
+            multipleSearch: true,
+            Find: "Find",
+            Reset: "Reset",
+            odata: [{ oper: 'eq', text: 'Match' }, { oper: 'cn', text: 'Contains' }, { oper: 'bw', text: 'Begins With' }, { oper: 'ew', text: 'Ends With' }]
+            }).jqGrid('navButtonAdd', '#jqpDoctorProfile', {
+                caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshDoctorProfile
+            }).jqGrid('navButtonAdd', '#jqpDoctorProfile', {
+                caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgDMAdd', position: 'first', onClickButton: fnGridAddDoctorProfile
+        });
+
+        fnAddGridSerialNoHeading();
+    }
+
+    function fnGridAddDoctorProfile() {
+        $("#btnSaveDoctorProfile").html('<i class="far fa-save"></i> ' + localization.Save);
+        $("#btnClearDoctor").show();
+        $("#divGrid").hide();
+        $('#divDoctorProfileForm').css('display', 'block');
+
+        $('#Photoimage').val('');
+        $('#imgPhotoimageblah').removeAttr('src');
+    }
+    function fnGridRefreshDoctorProfile() {
+        $("#jqgDoctorProfile").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+    }
+    function fnEditDoctorProfile(e) {
+        $("#divGrid").hide();
+        $('#divDoctorCodesForm').css('display', 'block');
+        $("#btnSaveDoctorProfile").html('<i class="far fa-save"></i> ' + localization.Update);
+        $("#btnClearDoctor").hide();
+    }
+
+
+    function fnCloseDoctorProfile() {
+        $("#divGrid").show();
+        $('#divDoctorProfileForm').css('display', 'none');
+        $('.tab-pane').removeClass('active show');
+        $("#doctorprofile").addClass('active show');
+        $('#v-pills-tab a').removeClass('active');
+        $('#doctorprofile-tab').addClass('active');
+
+    }
+</script>

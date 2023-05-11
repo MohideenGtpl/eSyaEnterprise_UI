@@ -1,0 +1,102 @@
+﻿
+function fnLoadDoctorSchedulerGrid() {
+
+    $("#jqgDoctorSchedule").GridUnload();
+
+    $("#jqgDoctorSchedule").jqGrid({
+
+        //url: getBaseURL() + '',
+        //mtype: 'POST',
+        datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+
+        serializeGridData: function (postdata) {
+            postdata.doctorId = $('#txtDoctorId').val();
+            return JSON.stringify(postdata.doctorId);
+        },
+        colNames: ["", "", "", "", "Location", "Specialty", "Day of the week", "Number of Patient", "Week1", "Week2", "Week3", "Week4", "Week5", "From Time", "To Time", " Status", ""],
+        colModel: [
+
+            { name: "DoctorId", width: 70, editable: true, align: 'left', hidden: true },
+            { name: "BusinessKey", width: 70, editable: true, align: 'left', hidden: true },
+            { name: "SpecialtyId", width: 70, editable: true, align: 'left', hidden: true },
+            { name: "SerialNumber", width: 70, editable: true, align: 'left', hidden: true },
+            { name: "PrintDesc1", width: 100, editable: true, align: 'left' },
+            { name: "SpecialtyDescription", width: 100, editable: true, align: 'left' },
+            { name: "DayofWeek", width: 80, editable: true, align: 'left' },
+            { name: "NumberofPatients", width: 50, editable: true, align: 'left', hidden: false },
+            { name: "Week1", editable: true, width: 50, align: 'center !important', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            { name: "Week2", editable: true, width: 50, align: 'center !important', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            { name: "Week3", editable: true, width: 50, align: 'center !important', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            { name: "Week4", editable: true, width: 50, align: 'center !important', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            { name: "Week5", editable: true, width: 50, align: 'center !important', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            { name: 'ScheduleFromTime', index: 'Tid', width: 65, editable: true, formatoptions: { mask: 'ShortTime' }, editrules: { time: true }, formatoptions: { srcformat: 'Y-m-d H:i:s', newformat: 'm/d/Y h:i:s A' } },
+            { name: 'ScheduleToTime', index: 'Tid', width: 65, editable: true, formatoptions: { mask: 'ShortTime' }, editrules: { time: true }, formatoptions: { srcformat: 'Y-m-d H:i:s', newformat: 'm/d/Y h:i:s A' } },
+            { name: "ActiveStatus", editable: true, width: 60, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            {
+                name: 'edit', search: false, align: 'center', width: 50, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all" style="padding: 2px 4px; background: #0b76bc!important; color: #fff!important; margin: 3px; " title="Edit" onclick="return Fn_EditDoctorScheduler(event)"><i class="fa fa-edit"></i> Edit </button>'
+
+                }
+            },
+
+        ],
+
+        rowList: [10, 20, 30, 50, 100],
+        rowNum: 10,
+        loadonce: true,
+        pager: "#jqpDoctorSchedule",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+
+
+
+    }).jqGrid('navGrid', '#jqpDoctorSchedule', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpDoctorSchedule', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: toRefresh
+    });
+
+}
+
+function fnRefreshDoctorSchedule() {
+    $("#jqgDoctorSchedule").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid')
+}
+
+function fnLoadScheduleSpecialty() {
+
+    if ($('#cboBusinessKey').val() == '')
+        return;
+
+    $.ajax({
+        url: getBaseURL() + '/Specialty/GetSpecialtyListForBusinessKey?businessKey=' + $('#cboBusinessKey').val(),
+        type: 'POST',
+        datatype: 'json',
+        async: false,
+        success: function (response) {
+            if (response != null) {
+                var options = $("#cboDoctorScheduleSpecialty");
+                $("#cboDoctorScheduleSpecialty").empty();
+
+                $.each(response, function () {
+                    options.append($("<option />").val(this.SpecialtyID).text(this.SpecialtyDesc));
+                });
+                $('#cboDoctorScheduleSpecialty').selectpicker('refresh');
+                $('#chkScheduleActive').parent().addClass("is-checked");
+            }
+            else {
+
+            }
+
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+
+        }
+    });
+}

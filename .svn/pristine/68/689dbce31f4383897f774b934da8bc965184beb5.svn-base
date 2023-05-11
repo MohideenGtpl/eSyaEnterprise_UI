@@ -1,0 +1,54 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>ETM_06_00</title>
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/material.min.css" rel="stylesheet" />
+    <link href="~/css/all.min.css" rel="stylesheet" />
+    <link href="~/css/animate.css" rel="stylesheet" />
+    <link href="~/css/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/css/ui.jqgrid.css" rel="stylesheet" />
+    <link href="~/css/bootstrap-select.css" rel="stylesheet" />
+    <link href="~/css/jqgridcustomstyle.css" rel="stylesheet" />
+    <link href="~/css/site.css" rel="stylesheet" />
+    <link href="~/css/master.css" rel="stylesheet" />
+    <link href="~/css/esyafonts.css" rel="stylesheet" />
+    <link href="~/css/esyaTheme.css" rel="stylesheet" />
+    <link href="~/css/TokenSystem/tokensystem.css" rel="stylesheet" />
+</head>
+<body>
+    <header>
+        <img src="~/images/logo/esya-logo-whitebg.jpeg" class="img-responsive" />
+    </header>
+    <main class="divTK_panel">
+        <h1 class="text-center">Token Management System</h1>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 form-group">
+                    <label>Please enter the mobile number</label>
+                    <input type="text" class="form-control" name="mobilenumber" value="" />
+                </div>
+                <div class="col-lg-12 form-group">
+                    <button type="button" class="btn btn-primary w-100">Confirm</button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+    <footer>
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <p class="text-small text-center m-0">Instruction : Please click on the one of the button for your required Service</p>
+                <p class="m-0">Powered by Gestalt Technologies Pvt. Ltd.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

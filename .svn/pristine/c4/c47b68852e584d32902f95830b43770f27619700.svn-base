@@ -1,0 +1,769 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = "Business Segment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    var userFormRole = (eSyaEnterprise_UI.Models.DO_UserFormRole)ViewBag.UserFormRole;
+}
+<script>
+    var _userFormRole = JSON.parse('@Html.Raw(Json.Serialize(userFormRole))');
+
+    var localization = {
+        AddBusinessSegment: '@Localizer["AddBusinessSegment"]',
+        BusinessSegment: '@Localizer["BusinessSegment"]',
+        EditBusinessSegment: '@Localizer["EditBusinessSegment"]',
+        Save: '@Localizer["Save"]',
+        Update: '@Localizer["Update"]',
+        Currency: '@Localizer["Currency"]',
+        Status: '@Localizer["Status"]',
+    };
+</script>
+
+<link href="~/css/jsTree.css" rel="stylesheet" />
+@section scripts{
+    <script src="~/js/jsTree.js"></script>
+}
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-6">
+        <div id="jstBusinessSegment"></div>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6">
+        <div class="mdl-card mdl-shadow--2dp" id="pnlMainMenu" style="width: 100%; display:none">
+            <div id="pnlMainModuleHeading" class="mdl-card__title mdl-card--expand padleft0 padtop0 h-60 d-block">
+                <h5 class="mdl-card__title-text">Add Business Segment</h5>
+            </div>
+            <div class="mdl-card__supporting-text fullwidth pad0 marbot15">
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <input type="text" class="form-control" id="txtBusinessId" style="display:none">
+                    </div>
+                </div>
+
+
+                <div class="row padbot4 mar0">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group collapse">
+                            <label for="txtBusinessEntityId">Busienss Entity Id</label>
+                            <input id="txtBusinessEntityId" class="form-control" maxlength="10" type="text" data-inputmask="'mask': '9', 'repeat': 10, 'greedy' : false" />
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group collapse">
+                            <label for="txtBusinessSegmentId">Segment Id</label>
+                            <input id="txtBusinessSegmentId" class="form-control" maxlength="10" type="text" data-inputmask="'mask': '9', 'repeat': 10, 'greedy' : false" />
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group">
+                            @*<label for="txtSegmentDescription">Segment Description</label>*@
+                            <label> @Localizer["SegmentDescription"] </label>
+                            <input id="txtSegmentDescription" class="form-control" maxlength="75" type="text" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            @*<label class="lable-color">ISD Code </label>*@
+                            <label> @Localizer["ISDCode"] </label>
+                            <div>
+                                <select class="selectpicker" data-live-search="false" id="cboIsdcode" title="Select" asp-items="@ViewBag.ISDCodeList" onchange="fnGetCurrencyNamebyIsdCode()">
+                                    <option value="0">Select</option>
+                                    @*@if (ViewBag.IsdCodes != null)
+                {
+
+                    foreach (var code in ViewBag.IsdCodes)
+                    {
+                        <option value="@code.Isdcode">@code.Isdcode-@code.CountryName</option>
+                    }
+                }*@
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+
+                        <div class="form-group">
+                            @*<label for="txtCurrencyName">Currency Name</label>*@
+                            <label> @Localizer["CurrencyName"] </label>
+                            <input id="txtCurrencyName" class="form-control" maxlength="50" type="text" readonly />
+                            <input id="txtCurrencyCode" class="form-control" maxlength="5" type="text" style="display:none" />
+                        </div>
+
+                    </div>
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            @*<label class="lable-color">Date Format </label>*@
+                            <label> @Localizer["DateFormat"] </label>
+                            <select class="selectpicker" data-live-search="false" id="cboDateFormat" title="Select">
+                                <option value="0">Select</option>
+                                <option>dd-MMM-yy</option>
+                                <option>dd-MMM-yyyy</option>
+                                <option>mm/dd/yy</option>
+                                <option>mm/dd/yyyy</option>
+                                <option>dd.mm.yy</option>
+                                <option>dd.mm.yyyy</option>
+                                <option>yy/mm/dd</option>
+                                <option>yyyy/mm/dd</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            @*<label class="lable-color">Tax Identification</label>*@
+                            <label> @Localizer["TaxIdentification"] </label>
+                            <div>
+                                <select class="selectpicker" data-live-search="false" id="cboTaxIdentification" title="Select" asp-items="@ViewBag.TaxList">
+                                    <option value="0">Select</option>
+                                    @*@if (ViewBag.TaxIdentifications != null)
+                {
+                    foreach (var tax in ViewBag.TaxIdentifications)
+                    {
+                        <option value="@tax.TaxIdentificationId">@tax.TaxIdentificationDesc</option>
+                    }
+                }*@
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            @*<label class="lable-color">License Type</label>*@
+                            <label> @Localizer["LicenseType"] </label>
+                            <div>
+                                <select class="selectpicker" data-live-search="false" id="cboLicenseType" title="Select">
+                                    <option value="0">Select</option>
+                                    <option value="P">Perpetual</option>
+                                    <option value="S">Subscription</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                        <div class="form-group lbl-right">
+                            @*<label class="lable-color">User Licenses </label>*@
+                            <label> @Localizer["UserLicenses"] </label>
+                            <input type="text" id="txtUserLicenses" name="name" value="" class="form-control integerFormat" maxlength="5" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                        <div class="default-checkbox padtop0 padbot15">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsLocationApplicable">
+                                <input type="checkbox" id="chkIsLocationApplicable" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">@Localizer["IsLocationApplicable?"]</span>
+                                @*<span class="mdl-checkbox__label">Is Location Applicable ?</span>*@
+                            </label>
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                        <div class="default-checkbox padtop0 padbot15">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActiveStatus">
+                                <input type="checkbox" id="chkActiveStatus" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">@Localizer["Active"]</span>
+                                @*<span class="mdl-checkbox__label"> Active</span>*@
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12"></div>
+                    <hr />
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                        <div class="default-checkbox padtop0 padbot15">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkToLocalCurrency">
+                                <input type="checkbox" id="chkToLocalCurrency" class="mdl-checkbox__input" onchange="fnToLocalCurrency(this)">
+                                <span class="mdl-checkbox__label">@Localizer["ToLocalCurrency"]</span>
+                                @*<span class="mdl-checkbox__label">To Local Currency</span>*@
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                        <div class="default-checkbox padtop0 padbot15">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkToCurrCurrency">
+                                <input type="checkbox" id="chkToCurrCurrency" class="mdl-checkbox__input" onchange="fnToCurrCurrency(this)">
+                                <span class="mdl-checkbox__label">@Localizer["ToCurrConversion"]</span>
+                                @*<span class="mdl-checkbox__label">To Curr Conversion</span>*@
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                        <div class="default-checkbox padtop0 padbot15">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkToRealCurrency">
+                                <input type="checkbox" id="chkToRealCurrency" class="mdl-checkbox__input" onchange="fnToRealCurrency(this)">
+                                <span class="mdl-checkbox__label">@Localizer["ToRealCurrency"]</span>
+                                @*<span class="mdl-checkbox__label"> To Real Currency</span>*@
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12 col-md-12 col-sm-12 padbot10 padtop15">
+                        <div class="BSCurrencyContainer">
+                            <table id="jqgBSCurrency"></table>
+                            <div id="jqpBSCurrency"></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="mdl-card__actions mdl-card--border padtop15" style="text-align: center;">
+                <button class="mdl-button mdl-js-button mdl-button--raised primary-button" id="btnAddBusinessSegment" onclick="fnSaveBusinessSegment()">
+                    @Localizer["Save"]
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-6">
+        <div>
+            <h5>Action</h5>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 btn_pdnTop">
+                <button class="mdl-button mdl-js-button mdl-button--raised cancel-button btn_wdth" id="btnDeleteNode" onclick="fnDeleteNode()">
+                    <i class="fa fa-times" style="color:#fff !important"></i>     @Localizer["DeleteNode"]
+                </button>
+            </div>
+
+            <div class="col-lg-12 btn_pdnTop">
+                <button class="mdl-button mdl-js-button mdl-button--raised primary-button btn_wdth" id="btnExpandAll" onclick="fnExpandAll()">
+                    <i class="fas fa-expand"></i>   @Localizer["ExpandAll"]
+                </button>
+            </div>
+            <div class="col-lg-12 btn_pdnTop">
+                <button class="mdl-button mdl-js-button mdl-button--raised primary-button btn_wdth" id="btnCollapseAll" onclick="fnCollapseAll()">
+                    <i class="fas fa-compress"></i>   @Localizer["CollapseAll"]
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script>
+    var NodeID;
+    var prevSelectedID;
+
+    $(document).ready(function () {
+
+        $("#pnlMainMenu").hide();
+        fnTreeSize();
+        LoadBusinessSegmentTree();
+        $("#btnDeleteNode").attr("disabled", _userFormRole.IsDelete === false);
+    });
+
+    function LoadBusinessSegmentTree() {
+        $.ajax({
+            url: getBaseURL() + '/BusinessStructure/GetBusinessSegmentforTreeView',
+            //type: 'POST',
+            //datatype: 'json',
+            success: function (result) {
+                fnGetBusinessSegment_Success(result);
+            },
+            error: function (error) {
+                toastr.error(error.status);
+            }
+        });
+    }
+
+    var editRow = false;
+    function fnGetBusinessSegment_Success(dataArray) {
+        $("#jstBusinessSegment").jstree({
+            "state": { "checkbox_disabled": true },
+            "checkbox": {
+                "keep_selected_style": false
+            },
+            //"plugins": ["checkbox"],
+            core: { 'data': dataArray, 'check_callback': true, 'multiple': true }
+
+        });
+
+        $("#jstBusinessSegment").on('loaded.jstree', function () {
+
+            $("#jstBusinessSegment").jstree('open_all');
+            $("#jstBusinessSegment").jstree()._open_to(prevSelectedID);
+            $('#jstBusinessSegment').jstree().select_node(prevSelectedID);
+
+        });
+
+        $('#jstBusinessSegment').on("changed.jstree", function (e, data) {
+
+            if (data.node != undefined) {
+                if (prevSelectedID != data.node.id) {
+                    prevSelectedID = data.node.id;
+
+                    if (data.node.id == "0") {
+                        fnClearFields();
+                        $("#pnlMainMenu").hide();
+                    }
+                    else {
+
+                        $('#View').remove();
+                        $('#Edit').remove();
+                        $('#Add').remove();
+
+                        $("#pnlMainMenu").hide();
+
+                        if (data.node.parent == "MM") {
+                            $('#' + data.node.id + "_anchor").html($('#' + data.node.id + "_anchor").html() + '<span id="Add" style="padding-left:10px;padding-right:10px">&nbsp;<i class="fa fa-plus" style="color:#337ab7"aria-hidden="true"></i></span>')
+
+                            $('#Add').on('click', function () {
+                                if (_userFormRole.IsInsert === false) {
+                                    $('#pnlMainMenu').hide();
+                                    toastr.warning(errorMsgCS["E003"]);
+                                    return;
+                                }
+                                editRow = true;
+                                $("#pnlMainMenu").show();
+                                $(".mdl-card__title-text").text(localization.AddBusinessSegment);
+                                fnClearFields();
+                                fnGridBSCurrency();
+                                $('.BSCurrencyContainer').hide();
+                                $('#txtBusinessEntityId').val(data.node.id.substring(2));
+
+                                $("#btnAddBusinessSegment").show();
+                                $("input,textarea").attr('readonly', false);
+                                $("select").next().attr('disabled', false);
+                                $("input[type=checkbox]").attr('disabled', false);
+                                $("#btnAddBusinessSegment").html('<i class="fa fa-plus"></i> ' + localization.Save);
+                                //$("#btnAddBusinessSegment").attr("disabled", _userFormRole.IsInsert === false);
+                            });
+                        }
+                        else if (data.node.id.startsWith("SM")) {
+
+                            NodeID = 0;
+                            NodeID = data.node.id.substring(2).split("_")[1];
+
+                            $('#' + data.node.id + "_anchor").html($('#' + data.node.id + "_anchor").html() + '<span id="View" style="padding-left:10px">&nbsp;<i class="fa fa-eye" style="color:#337ab7"aria-hidden="true"></i></span>')
+                            $('#' + data.node.id + "_anchor").html($('#' + data.node.id + "_anchor").html() + '<span id="Edit" style="padding-left:10px">&nbsp;<i class="fa fa-pen" style="color:#337ab7"aria-hidden="true"></i></span>')
+
+                            $('#View').on('click', function () {
+
+                                if (_userFormRole.IsView === false) {
+                                    $('#pnlMainMenu').hide();
+                                    toastr.warning(errorMsgCS["E001"]);
+                                    return;
+                                }
+                                editRow = false;
+                                $("#pnlMainMenu").show();
+                                $(".mdl-card__title-text").text(localization.BusinessSegment);
+                                $('#txtBusinessSegmentId').val(NodeID);
+                                $('#txtBusinessEntityId').val(data.node.id.substring(2).split("_")[0]);
+
+                                fnFillBusinessSegmentInfo();
+
+                                $("#btnAddBusinessSegment").hide();
+                                $("input,textarea").attr('readonly', true);
+                                $("select").next().attr('disabled', true);
+                                $("input[type=checkbox]").attr('disabled', true);
+                            });
+
+                            $('#Edit').on('click', function () {
+                                if (_userFormRole.IsEdit === false) {
+                                    $('#pnlMainMenu').hide();
+                                    toastr.warning(errorMsgCS["E002"]);
+                                    return;
+                                }
+                                editRow = true;
+                                $("#pnlMainMenu").show();
+                                $(".mdl-card__title-text").text(localization.EditBusinessSegment);
+                                $('#txtBusinessSegmentId').val(NodeID);
+                                $('#txtBusinessEntityId').val(data.node.id.substring(2).split("_")[0]);
+
+                                fnFillBusinessSegmentInfo();
+
+                                $("#btnAddBusinessSegment").show();
+                                $("input,textarea").attr('readonly', false);
+                                $("select").next().attr('disabled', false);
+                                $("input[type=checkbox]").attr('disabled', false);
+                                $("#btnAddBusinessSegment").html('<i class="fa fa-sync"></i> ' + localization.Update);
+                                //$("#btnAddBusinessSegment").attr("disabled", _userFormRole.IsEdit === false);
+                            });
+
+
+                        }
+                        else {
+                            fnClearFields();
+                            $("#pnlMainMenu").hide();
+                        }
+                    }
+                }
+            }
+        });
+
+        $('#jstBusinessSegment').on("close_node.jstree", function (node) {
+            var closingNode = node.handleObj.handler.arguments[1].node;
+            $('#jstBusinessSegment').jstree().deselect_node(closingNode.children);
+        });
+
+    };
+
+    function fnFillBusinessSegmentInfo() {
+        if ($("#txtBusinessSegmentId").val() != '' && $("#txtBusinessSegmentId").val() != undefined) {
+            $.ajax({
+                async: false,
+                url: getBaseURL() + "/BusinessStructure/GetBusinessSegmentInfo?BusinessId=" + $("#txtBusinessEntityId").val() + "&SegmentId=" + $("#txtBusinessSegmentId").val(),
+                type: 'post',
+                datatype: 'json',
+                contentType: 'application/json; charset=utf-8',
+                success: function (result) {
+                    $('#txtSegmentDescription').val(result.SegmentDesc);
+
+                    if (result.IsLocationApplicable == 1) {
+                        $("#chkIsLocationApplicable").parent().addClass("is-checked");
+                    }
+                    else { $('#chkIsLocationApplicable').parent().removeClass("is-checked"); }
+
+                    $('#cboIsdcode').val(result.Isdcode);
+                    $('#cboIsdcode').selectpicker('refresh');
+                    $('#txtCurrencyCode').val(result.CurrencyCode);
+                    $('#txtCurrencyName').val(result.CurrencyName).attr('readonly', true);
+                    $('#cboTaxIdentification').val(result.TaxIdentification);
+                    $('#cboTaxIdentification').selectpicker('refresh');
+
+                    $('#cboLicenseType').val(result.LicenseType);
+                    $('#cboLicenseType').selectpicker('refresh');
+                    $('#txtUserLicenses').val(result.UserLicenses);
+
+                    $('#cboDateFormat').val(result.OrgnDateFormat);
+                    $('#cboDateFormat').selectpicker('refresh');
+
+                    $('.BSCurrencyContainer').hide();
+
+                    if (result.ToLocalCurrency == 1) {
+                        $("#chkToLocalCurrency").parent().addClass("is-checked");
+
+                        $(".BSCurrencyContainer").hide();
+                    }
+                    else { $('#chkToLocalCurrency').parent().removeClass("is-checked"); }
+
+                    if (result.ToCurrCurrency == 1) {
+                        $("#chkToCurrCurrency").parent().addClass("is-checked");
+
+                        $('.BSCurrencyContainer').show();
+                    }
+                    else { $('#chkToCurrCurrency').parent().removeClass("is-checked"); }
+
+                    if (result.ToRealCurrency == 1) {
+                        $("#chkToRealCurrency").parent().addClass("is-checked");
+
+                        $('.BSCurrencyContainer').show();
+                    }
+                    else { $('#chkToRealCurrency').parent().removeClass("is-checked"); }
+
+                    if (result.ActiveStatus == 1) {
+                        $("#chkActiveStatus").parent().addClass("is-checked");
+                    }
+                    else { $('#chkActiveStatus').parent().removeClass("is-checked"); }
+
+                    fnGridBSCurrency();
+                }
+            });
+        }
+    }
+
+    function fnGetCurrencyNamebyIsdCode() {
+        var IsdCode = $("#cboIsdcode").val();
+        $.ajax({
+            type: 'POST',
+            url: getBaseURL() + '/BusinessStructure/GetCurrencyNamebyIsdCode?IsdCode=' + IsdCode,
+            success: function (response) {
+                if (response !== null) {
+                    $("#txtCurrencyName").val('');
+                    $("#txtCurrencyCode").val('');
+                    $("#txtCurrencyName").val(response.CurrencyName);
+                    $("#txtCurrencyCode").val(response.CurrencyCode);
+                }
+                else {
+                    $("#txtCurrencyName").val('');
+                    $("#txtCurrencyCode").val('');
+                }
+            },
+            error: function (response) {
+            }
+        });
+    }
+
+    function validationBusinessSegment() {
+        if (IsStringNullorEmpty($("#txtBusinessEntityId").val())) {
+            toastr.warning("Please Select Business Entity");
+            return false;
+        }
+        if (IsStringNullorEmpty($("#txtSegmentDescription").val())) {
+            toastr.warning("Please Enter Segment Description");
+            return false;
+        }
+        if ($("#cboIsdcode").val() === "0" || $("#cboIsdcode").val() === "") {
+            toastr.warning("Please Select ISD Code");
+            return false;
+        }
+        if ($("#cboDateFormat").val() === "0" || $("#cboDateFormat").val() === "") {
+            toastr.warning("Please Select Date Format");
+            return false;
+        }
+        if ($("#cboTaxIdentification").val() === "0" || $("#cboTaxIdentification").val() === "") {
+            toastr.warning("Please Select Tax Identification");
+            return false;
+        }
+        if ($("#cboLicenseType").val() === "0" || $("#cboLicenseType").val() === "") {
+            toastr.warning("Please Select License Type");
+            return false;
+        }
+    }
+
+    function fnSaveBusinessSegment() {
+
+        if (validationBusinessSegment() === false) {
+            return;
+        }
+        $("#btnAddBusinessSegment").attr('disabled', true);
+        var SegmentID = $("#txtBusinessSegmentId").val();
+        var bs;
+        if (SegmentID == null || SegmentID == "") {
+            bs = {
+                BusinessId: $("#txtBusinessEntityId").val(),
+                SegmentId: 0,
+                SegmentDesc: $("#txtSegmentDescription").val(),
+                IsLocationApplicable: $("#chkIsLocationApplicable").parent().hasClass("is-checked"),
+                Isdcode: $("#cboIsdcode").val(),
+                CurrencyCode: $("#txtCurrencyCode").val(),
+                TaxIdentification: $("#cboTaxIdentification").val(),
+                OrgnDateFormat: $("#cboDateFormat").val(),
+                LicenseType: $("#cboLicenseType").val(),
+                UserLicenses: $("#txtUserLicenses").val(),
+                ToLocalCurrency: $("#chkToLocalCurrency").parent().hasClass("is-checked"),
+                ToCurrCurrency: $("#chkToCurrCurrency").parent().hasClass("is-checked"),
+                ToRealCurrency: $("#chkToRealCurrency").parent().hasClass("is-checked"),
+                ActiveStatus: $("#chkActiveStatus").parent().hasClass("is-checked")
+
+            };
+
+        }
+        else {
+            bs = {
+                BusinessId: $("#txtBusinessEntityId").val(),
+                SegmentId: $("#txtBusinessSegmentId").val(),
+                SegmentDesc: $("#txtSegmentDescription").val(),
+                IsLocationApplicable: $("#chkIsLocationApplicable").parent().hasClass("is-checked"),
+                Isdcode: $("#cboIsdcode").val(),
+                CurrencyCode: $("#txtCurrencyCode").val(),
+                TaxIdentification: $("#cboTaxIdentification").val(),
+                OrgnDateFormat: $("#cboDateFormat").val(),
+                LicenseType: $("#cboLicenseType").val(),
+                UserLicenses: $("#txtUserLicenses").val(),
+                ToLocalCurrency: $("#chkToLocalCurrency").parent().hasClass("is-checked"),
+                ToCurrCurrency: $("#chkToCurrCurrency").parent().hasClass("is-checked"),
+                ToRealCurrency: $("#chkToRealCurrency").parent().hasClass("is-checked"),
+                ActiveStatus: $("#chkActiveStatus").parent().hasClass("is-checked")
+            };
+        }
+
+        var bsCurrency = [];
+        var jqgBSCurrency = jQuery("#jqgBSCurrency").jqGrid('getRowData');
+
+        for (var i = 0; i < jqgBSCurrency.length; ++i) {
+            if (parseFloat(jqgBSCurrency[i]["CurrencyCode"]) != '') {
+                bsCurrency.push({
+                    CurrencyCode: jqgBSCurrency[i]["CurrencyCode"],
+                    ActiveStatus: jqgBSCurrency[i]["ActiveStatus"]
+                });
+            }
+        }
+
+
+
+        bs.l_BSCurrency = bsCurrency;
+
+        $.ajax({
+            url: getBaseURL() + '/BusinessStructure/InsertOrUpdateBusinessSegment',
+            type: 'POST',
+            datatype: 'json',
+            data: { BusinessSegment: bs },
+            async: false,
+            success: function (response) {
+                if (response.Status) {
+                    toastr.success(response.Message);
+                    location.reload();
+                    return true;
+                }
+                else {
+                    toastr.error(response.Message);
+                    $("#btnAddBusinessSegment").attr('disabled', false);
+                    return false;
+                }
+            },
+            error: function (error) {
+                $("#btnAddBusinessSegment").attr('disabled', false);
+                toastr.error(error.statusText);
+            }
+        });
+    }
+
+    function fnClearFields() {
+        $("#txtBusinessEntityId").val('');
+        $("#txtBusinessSegmentId").val('');
+        $("#txtSegmentDescription").val('');
+        $("#chkIsLocationApplicable").parent().removeClass("is-checked");
+        $("#cboIsdcode").val('0');
+        $("#cboIsdcode").selectpicker('refresh');
+        $("#txtCurrencyCode").val('');
+        $("#txtCurrencyName").val('').attr('readonly', true);
+        $("#cboTaxIdentification").val('0');
+        $("#cboTaxIdentification").selectpicker('refresh');
+        $("#chkActiveStatus").parent().addClass("is-checked");
+        $("#cboLicenseType").val('0');
+        $("#cboLicenseType").selectpicker('refresh');
+        $("#txtUserLicenses").val('0');
+        $("#cboDateFormat").val('0');
+        $("#cboDateFormat").selectpicker('refresh');
+        $("#chkToRealCurrency").parent().removeClass("is-checked");
+        $("#chkToCurrCurrency").parent().removeClass("is-checked");
+        $("#chkToLocalCurrency").parent().removeClass("is-checked");
+    }
+
+    function validationBusinessSegmentOnDelete() {
+
+        if (IsStringNullorEmpty($("#txtBusinessEntityId").val())) {
+            toastr.warning("Please Select Business Entity");
+            return false;
+        }
+        if (IsStringNullorEmpty($("#txtBusinessSegmentId").val())) {
+            toastr.warning("Please Select Business Segment");
+            return false;
+        }
+        if (IsStringNullorEmpty($("#txtSegmentDescription").val())) {
+            toastr.warning("Please Enter Segment Description");
+            return false;
+        }
+    }
+
+    function fnDeleteNode() {
+
+        if (validationBusinessSegmentOnDelete() === false) {
+            return;
+        }
+        $("#btnDeleteNode").attr('disabled', true);
+        $.ajax({
+            url: getBaseURL() + '/BusinessStructure/DeleteBusinessSegment?BusinessId=' + $("#txtBusinessEntityId").val() + "&SegmentId=" + $("#txtBusinessSegmentId").val(),
+            type: 'POST',
+            datatype: 'json',
+            success: function (response) {
+                if (response.Status) {
+                    toastr.success(response.Message);
+                    location.reload();
+                    return true;
+                }
+                else {
+                    toastr.error(response.Message);
+                    return false;
+                }
+
+            },
+            error: function (error) {
+                toastr.error(error.statusText);
+            }
+        });
+    }
+
+    function fnExpandAll() {
+        $('#jstBusinessSegment').jstree('open_all');
+    }
+
+    function fnCollapseAll() {
+        fnClearFields();
+        $("#pnlMainMenu").hide();
+        $('#jstBusinessSegment').jstree('close_all');
+    }
+
+    function fnTreeSize() {
+        $("#jstBusinessSegment").css({
+            'height': $(window).innerHeight() - 136,
+            'overflow': 'auto'
+        });
+    }
+
+    function fnToLocalCurrency(elem) {
+        if (elem.checked) {
+            $('#chkToCurrCurrency').parent().removeClass("is-checked");
+            $('#chkToRealCurrency').parent().removeClass("is-checked");
+            $(".BSCurrencyContainer").hide();
+        }
+    }
+
+    function fnToCurrCurrency(elem) {
+        if (elem.checked) {
+            $('#chkToLocalCurrency').parent().removeClass("is-checked");
+            $('#chkToRealCurrency').parent().removeClass("is-checked");
+            $('.BSCurrencyContainer').show();
+        }
+        else {
+            $('.BSCurrencyContainer').hide();
+        }
+    }
+
+    function fnToRealCurrency(elem) {
+        if (elem.checked) {
+            $('#chkToLocalCurrency').parent().removeClass("is-checked");
+            $('#chkToCurrCurrency').parent().removeClass("is-checked");
+            $('.BSCurrencyContainer').show();
+        }
+        else {
+            $('.BSCurrencyContainer').hide();
+        }
+    }
+
+    //var actiontype = "";
+    function fnGridBSCurrency() {
+        var URL = getBaseURL() + '/BusinessStructure/GetBSCurrency?BusinessId=' + $("#txtBusinessEntityId").val() + "&SegmentId=" + $("#txtBusinessSegmentId").val();
+
+        $("#jqgBSCurrency").jqGrid('GridUnload');
+        $("#jqgBSCurrency").jqGrid({
+            url: URL,
+            mtype: 'Post',
+            datatype: 'json',
+            ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+            //jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+            colNames: ["Currency Code", localization.Currency, localization.Status],
+            colModel: [
+                { name: "CurrencyCode", width: 70, editable: false, align: 'left', hidden: true },
+                { name: "CurrencyName", editable: false, width: 120, align: 'left', resizable: false },
+                { name: "ActiveStatus", editable: true, width: 30, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } }
+            ],
+            caption: "",
+            height: 'auto',
+            width: '200',
+            rowNum: 15,
+            rownumbers: true,
+            viewrecords: true,
+            gridview: true,
+            autowidth: false,
+            shrinkToFit: false,
+            forceFit: false,
+            cellEdit: true,
+            //loanonce: true,
+            //onSelectRow: function (id) {
+            //    if (id) { $('#jqgBSCurrency').jqGrid('editRow', id, true); }
+            //},
+            loadComplete: function () {
+                var ids = $('#jqgBSCurrency').jqGrid('getDataIDs');
+                var i = 0;
+                if (editRow) {
+                    for (i = 0; i < ids.length; i++) {
+                        if (ids[i])
+                            $('#jqgBSCurrency').jqGrid('editRow', ids[i]);
+                    }
+                }
+            }
+
+        });
+    }
+</script>
+
+
+

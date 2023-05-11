@@ -1,0 +1,318 @@
+﻿@*@using Microsoft.Extensions.Localization
+    @using Microsoft.AspNetCore.Mvc.Localization*@
+
+@using Microsoft.AspNetCore.Builder
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Localization
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.Extensions.Options
+
+@inject IOptions<RequestLocalizationOptions> LocOptions
+
+@inject IViewLocalizer Localizer
+
+@{
+    var requestCulture = Context.Features.Get<IRequestCultureFeature>();
+}
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts{
+    <link rel="stylesheet" href="~/css/jsTree.css" />
+    <script src="~/js/jsTree.js"></script>
+
+}
+
+
+@DateTime.Today.ToString()
+
+@Localizer["Welcome"]
+
+@Localizer["Hello"]
+
+
+<div class="col-lg-4  col-md-4 col-sm-12 col-xs-12" style="display:none">
+    <div class="form-group">
+        <div>
+            <label class="lable-color">Culture</label>
+            <select class="selectpicker" data-live-search="false" id="cboCulture" title="" onchange="fnCultureChanged()">
+                <option value="en-US">en-US</option>
+                <option value="ar-EG">ar-EG</option>
+                <option value="de-DE">de-DE</option>
+            </select>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+        <div class="form-group">
+            <label>Date</label>
+            <input type="text" class="form-control datepicker" id="myDate">
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+        <div class="form-group">
+            <label>Amount</label>
+            <input type="text" class="form-control currencyFormatAllowMinus">
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+        <div class="form-group">
+            <label>Pattern 1</label>
+            <input data-inputmask="'mask': '99XX', 'repeat': 10, 'greedy' : false" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+        <div class="form-group">
+            <label>Pattern 2</label>
+            <input id="txtPattent2" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+        <div class="form-group">
+            <label>Percentage</label>
+            <input id="txtPercentage" class="form-control perctFormatAllowMinus" />
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+        <div class="form-group">
+            <label>Percentage Decimal</label>
+            <input id="txtPercentageDecimal" class="form-control perctDecimalFormat" />
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+        <div class="form-group">
+            <label>Integer</label>
+            <input id="txtPattent3" class="form-control integerFormat" />
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="row" style="display:none">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <table id="gvSample"></table>
+        <div id="pgSample"></div>
+    </div>
+</div>
+
+<table class="table culture-table" style="display:none">
+    <tr>
+        <td>Culture</td>
+        <td>
+            @requestCulture.RequestCulture.Culture.Name
+        </td>
+    </tr>
+    <tr>
+        <td>UICulture</td>
+        <td>
+            @requestCulture.RequestCulture.UICulture.Name
+        </td>
+    </tr>
+    <tr>
+        <td>Date</td>
+        <td>
+            @DateTime.Now.ToLongDateString()
+        </td>
+    </tr>
+    <tr>
+        <td>Currency</td>
+        <td>
+            @(98765.00.ToString("c"))
+        </td>
+    </tr>
+    <tr>
+        <td>Number</td>
+        <td>
+            @(987.87m.ToString("F2"))
+        </td>
+    </tr>
+</table>
+
+<div class="row">
+
+    <div class="col-6">
+        @await Component.InvokeAsync("eSyaParameter", new { parameterType = "SC" })
+
+        <button onclick="SetParameterValue()">Set Value</button>
+        <button onclick="GetParameterValue()">Get Value</button>
+        <button onclick="ClearParameterValue()">Clear Value</button>
+    </div>
+
+    <div id="container" class="col-6"></div>
+</div>
+
+<script>
+    $(function () {
+        $('#container').jstree({
+            //"checkbox": {
+            //    three_state: false,
+            //    //whole_node: false,
+            //    //tie_selection: false
+            //},
+            //"checkbox": { "keep_selected_style": false},
+
+            //"plugins": ["checkbox"],
+            'core': {
+                'data': [
+                    {
+                        "text": "Root node", "children": [
+                            { "text": "Child node 1", },
+                            {
+                                "text": "Child node 2", "icon": "/images/jsTree/checkedstate.jpg", "state": {  "selected": true, "checkbox_disabled": true} }
+                        ]
+                    }
+                ]
+            },
+        });
+
+    });
+</script>
+
+<script>
+
+    function SetParameterValue() {
+        var json = [
+            { "ParameterID": "1", "ParameterValue": "true" },
+            { "ParameterID": "2", "ParameterValue": "true" },
+            { "ParameterID": "7", "ParameterValue": "12" }
+        ];
+
+        eSyaParams.SetValue(json);
+    }
+
+    function GetParameterValue() {
+        alert(JSON.stringify(eSyaParams.GetValue()));
+    }
+
+    function ClearParameterValue() {
+        eSyaParams.ClearValue();
+    }
+
+    // document.getElementById("myDate").value = "2014-02-09";
+
+    $(function () {
+
+
+        $("#txtPattent2").inputmask({ "mask": "999-9999" });
+
+        $("#txtPattent2").val("9999.99999");
+        // alert($("#txtPattent2").inputmask("isComplete"));
+
+        //  $('#myDate').datepicker({ format: 'dd-mm-yyyy' });
+
+        setDate($('#myDate'), new Date());
+        console.info(getDate($('#myDate')));
+        // setDate($('#myDate'), "01/08/2020");
+
+
+        //$.ajax({
+        //        url: getBaseURL() + '/Common/GetApplicationCode',
+        //        type: 'POST',
+        //        datatype: 'json',
+        //        async: false,
+        //        success: function (response) {
+        //            if (response.Status === true) {
+        //                toastr.success("Changes");
+
+        //                location.reload();
+        //            }
+        //            else {
+        //                toastr.error(response.Message);
+        //            }
+        //        },
+        //        error: function (error) {
+        //            toastr.error(error.statusText);
+        //        }
+        //    });
+
+    })
+
+    function fnCultureChanged() {
+        $.ajax({
+            url: getBaseURL() + '/Common/ChangeCultureFormat',
+            type: 'POST',
+            datatype: 'json',
+            data: { cultureFormat: $("#cboCulture").val(), dtDatePicker: $("#myDate").val() },
+            async: false,
+            success: function (response) {
+                if (response.Status === true) {
+                    toastr.success("Changes");
+
+                    location.reload();
+                }
+                else {
+                    toastr.error(response.Message);
+                }
+            },
+            error: function (error) {
+                toastr.error(error.statusText);
+            }
+        });
+    }
+
+    var gvdata = [
+        { id: "1", invdate: "2010-05-24", name: "test", note: "note", tax: "10.00", total: "2111.00" },
+        { id: "2", invdate: "2010-05-25", name: "test2", note: "note2", tax: "20.00", total: "320.00" },
+        { id: "3", invdate: "2007-09-01", name: "test3", note: "note3", tax: "30.00", total: "430.00" },
+        { id: "4", invdate: "2007-10-04", name: "test", note: "note", tax: "10.00", total: "210.00" },
+        { id: "5", invdate: "2007-10-05", name: "test2", note: "note2", tax: "20.00", total: "320.00" },
+        { id: "6", invdate: "2007-09-06", name: "test3", note: "note3", tax: "30.00", total: "430.00" },
+        { id: "7", invdate: "2007-10-04", name: "test", note: "note", tax: "10.00", total: "210.00" }
+    ]
+
+    $(function () {
+
+        jQuery("#gvSample").jqGrid({
+            data: gvdata,
+            datatype: "local",
+            height: 150,
+            rowNum: 10,
+            rowList: [10, 20, 30],
+            colNames: ['Inv No', 'Date', 'Client', 'Amount', 'Tax', 'Total', 'Notes'],
+            colModel: [
+                { name: 'id', index: 'id', width: 60, sorttype: "int" },
+                {
+                    name: 'invdate', index: 'invdate', width: 90, sorttype: "date", formatter: "date", formatoptions:
+                        { newformat: _cnfjqgDateFormat },
+                    editable: true, editoptions: {
+                        size: 20,
+                        dataInit: function (el) {
+                            $(el).datepicker({ dateFormat: _cnfDateFormat });
+                        }
+                    }
+                },
+                { name: 'name', index: 'name', width: 100, hidden: true },
+                { name: 'amount', index: 'amount', width: 80, align: "right", sorttype: "float", formatter: "number" },
+                { name: 'tax', index: 'tax', width: 80, align: "right", sorttype: "float" },
+                { name: 'total', index: 'total', width: 80, align: "right", sorttype: "float" },
+                { name: 'note', index: 'note', width: 150, sortable: false }
+            ],
+            pager: "#pgSample",
+            viewrecords: true,
+            caption: "Sample",
+            cellEdit: true,
+            ondblClickRow: function (rowid) {
+                $('#gvSample_iledit').trigger('click');
+            }
+        });
+
+        jQuery("#gvSample").jqGrid('navGrid', '#pgSample', { edit: false, add: false, del: false, search: true, refresh: true }, {}, {}, {}, { multipleSearch: true });
+
+        jQuery("#gvSample").jqGrid('navButtonAdd', '#pgSample', {
+            caption: "Columns", title: "Reorder Columns",
+            onClickButton: function () {
+                jQuery("#gvSample").jqGrid('columnChooser');
+            }
+        });
+
+    });
+
+
+
+</script>

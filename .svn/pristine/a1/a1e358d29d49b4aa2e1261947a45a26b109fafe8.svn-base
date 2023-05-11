@@ -1,0 +1,54 @@
+﻿
+$(document).ready(function () {
+    fnGridLoadUserCreation();
+});
+function fnGridLoadUserCreation() {
+    //var codeType = $("#cboCodeType").val();
+    //var URL = getBaseURL() + '/UserCreation/GetUserCreationByCodeType?codeType=' + codeType;
+    $("#jqgUserCreation").jqGrid('GridUnload');
+    $("#jqgUserCreation").jqGrid({
+        url: URL,
+        mtype: 'Post',
+        datatype: 'json',
+        data: [{ CodeDesc: '1000', DefaultStatus: 'True', ActiveStatus: 'True' }],
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Login ID", "Login Description", "User Group", "Last Activity Date", "Is Active", ""],
+        colModel: [
+            { name: "LoginID", width: 70, editable: true, align: 'left', hidden: false },
+            { name: "LoginDescription", width: 170, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "UserGroup", width: 370, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            { name: "LastActivityDate", editable: true, width: 105, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            { name: "ActiveStatus", editable: true, width: 95, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: Inactive" } },
+            {
+                name: 'Edit', search: false, align: 'center', width: 50, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" onclick="return fnEditUserCreation(event)"><i class="fa fa-edit"></i> Edit </button>'
+
+                }
+            },
+        ],
+        rowNum: 10,
+        loadonce: false,
+        pager: "#jqpUserCreation",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0
+    }).jqGrid('navGrid', '#jqpUserCreation', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpUserCreation', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshUserCreation
+        }).jqGrid('navButtonAdd', '#jqpUserCreation', {
+        caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Add', buttonicon: 'none', id: 'custAdd', position: 'first', onClickButton: fnGridAddUserCreation
+    });
+}
+function fnGridRefreshUserCreation() {
+
+}
+function fnGridAddUserCreation() {
+    location.href = getBaseURL() + "/Config/UserManagement/_UserCreation";
+}

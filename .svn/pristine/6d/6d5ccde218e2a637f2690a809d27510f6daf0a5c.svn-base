@@ -1,0 +1,133 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.Areas.eSyaNursingStation.Data;
+using eSyaEnterprise_UI.Areas.eSyaNursingStation.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+
+namespace eSyaEnterprise_UI.Areas.eSyaNursingStation.Controllers
+{
+    public class PreOperativeController : Controller
+    {
+        private readonly IeSyaNursingStationAPIServices _eSyaNursingStationAPIServices;
+        private readonly ILogger<OperativeAnaesthesiaCareController> _logger;
+
+        private readonly IHostingEnvironment _hostingEnvironment;
+
+        public PreOperativeController(IeSyaNursingStationAPIServices eSyaNursingStationAPIServices, ILogger<OperativeAnaesthesiaCareController> logger, IHostingEnvironment hostingEnvironment)
+        {
+            _eSyaNursingStationAPIServices = eSyaNursingStationAPIServices;
+            _logger = logger;
+            //_hostingEnvironment = hostingEnvironment;
+        }
+
+
+
+        [Area("eSyaNursingStation")]
+        public IActionResult index(int UHID, int vNumber, int TransactionKey)
+        {
+            ViewBag.UHID = UHID;
+            ViewBag.IpNumber = vNumber;
+            ViewBag.TransactionID = TransactionKey;
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> InsertIntoPreOperativeInformation(DO_PreOperativeInformation obj)
+        {
+            try
+            {
+                obj.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                obj.ActiveStatus = true;
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+
+                obj.TransactionDate = System.DateTime.Now; 
+
+                var serviceResponse = await _eSyaNursingStationAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("PreOperative/InsertIntoPreOperativeInformation", obj);
+                if (serviceResponse.Status)
+                {
+                    if (serviceResponse.Data.Status)
+                        return Json(new { Status = true, serviceResponse.Data.Message });
+                    else
+                        return Json(new { Status = false, serviceResponse.Data.Message });
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:InsertIntoPreOperativeInformation:params:" + JsonConvert.SerializeObject(obj));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertIntoPreOperativeInformation:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Warning = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        public async Task<JsonResult> GetPreOperativeInformationValueByTransaction(int UHID, int vNumber, int transactionID)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&UHID=" + UHID.ToString();
+                parameter += "&vNumber=" + vNumber.ToString();
+                parameter += "&transactionID=" + transactionID.ToString();
+
+                var serviceResponse = await _eSyaNursingStationAPIServices.HttpClientServices.GetAsync<List<DO_PreOperativeInformation>>("PreOperative/GetPreOperativeInformationValueByTransaction" + parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), string.Format("UD:GetPreOperativeInformationValueByTransaction:params: businessKey:{0},UHID:{1},visitnumber:{2},transactionID:{3}",
+                        AppSessionVariables.GetSessionBusinessKey(HttpContext).ToString(), UHID, vNumber, transactionID));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, string.Format("UD:GetPreOperativeInformationValueByTransaction:params: businessKey:{0},UHID:{1},visitnumber:{2},transactionID:{3}",
+                        AppSessionVariables.GetSessionBusinessKey(HttpContext).ToString(), UHID, vNumber, transactionID));
+                throw ex;
+            }
+        }
+
+        public async Task<JsonResult> GetInformationValueView(int UHID, int vNumber, string clType)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&UHID=" + UHID.ToString();
+                parameter += "&vNumber=" + vNumber.ToString();
+                parameter += "&clType=" + clType.ToString();
+
+                var serviceResponse = await _eSyaNursingStationAPIServices.HttpClientServices.GetAsync<List<DO_PreOperativeInformation>>("PreOperative/GetInformationValueView" + parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), string.Format("UD:GetClinicalInformationValueView:params: businessKey:{0},UHID:{1},vnumber:{2}",
+                        AppSessionVariables.GetSessionBusinessKey(HttpContext).ToString(), UHID, vNumber));
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, string.Format("UD:GetClinicalInformationValueView:params: businessKey:{0},UHID:{1},vnumber:{2}",
+                        AppSessionVariables.GetSessionBusinessKey(HttpContext).ToString(), UHID, vNumber));
+                throw ex;
+            }
+        }
+    }
+}

@@ -1,0 +1,133 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "RoomUpgrade";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+    var localization = {
+         Actions: '@Localizer["Actions"]',
+        Edit: '@Localizer["Edit"]',
+        View: '@Localizer["View"]',
+        Update: '@Localizer["Update"]',
+        UpdateRoomUpgrade:'@Localizer["UpdateRoomUpgrade"]',
+        ViewRoomUpgrade:'@Localizer["ViewRoomUpgrade"]'
+    }
+    </script>
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-12">
+            <table id="jqgRoomUpgrade"></table>
+            <div id="jqpRoomUpgrade"></div>
+        </div>
+    </div>
+        <div class="modal fade in" id="PopupRoomUpgrade" data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog modal-md" role="document" style="box-shadow:none;">
+                <div class="modal-content ">
+                    <div class="modal-header popupHeader">
+                        <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                        <h4 class="modal-title">Add Room Upgrade</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12 form-group">
+                                <label>Member Type</label>
+                                <select class=" selectpicker w-100" name="membertype" id="cboMemberType">
+                                    <option value="select">Select </option>
+                                </select>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12 form-group">
+                                <label>Room Type</label>
+                                <select class=" selectpicker w-100" name="roomtype" id="cboRoomType">
+                                    <option value="select">Select </option>
+                                </select>
+                            </div>
+                            <div class="col-lg-6  col-md-6 col-sm-12 col-xs-12 d-flex align-items-center">
+                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkUpgradeAllowed">
+                                    <input type="checkbox" id="chkUpgradeAllowed" class="mdl-checkbox__input">
+                                        <span class="mdl-checkbox__label">Upgrade Allowed</span>
+                        </label>
+                    </div>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <button class="mdl-button  primary-button" id="btnSaveRoomUpgrade"><i class="fa fa-save"></i> Save </button>
+                                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="btnCancelCodeType"><i class="fa fa-times"></i> Cancel </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                $(function () {
+                    fnLoadGridRoomUpgrade();
+                });
+    function fnLoadGridRoomUpgrade() {
+                    $("#jqgRoomUpgrade").jqGrid('GridUnload');
+                $("#jqgRoomUpgrade").jqGrid({
+                    data: [{RoomType: 'Deluxe', ConsumptionDays: '1.5 Days', Actions: '' }],
+                datatype: "local",
+                colNames: ["Room Type", "Consumption Days", "Action"],
+                colModel: [
+                {name: "RoomType", width: 150, editable: true, align: 'left', hidden: false },
+                {name: "ConsumptionDays", width: 150, editable: true, align: 'left', hidden: false },
+                {
+                    name: 'Actions', search: false, align: 'left', width: 120, sortable: false, resizable: false,
+                    formatter: function (cellValue, options, rowdata, action) {
+                        return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditRoomUpgrade(event,\'edit\')"> <i class="fas fa-pen"></i> ' + localization.Edit + '</button>' +
+                            '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" id="jqgView" onclick="return fnEditRoomUpgrade(event,\'view\')"><i class="far fa-eye"></i> ' + localization.View + '</button>'
+                    }
+                }
+            ],
+            pager: "#jqpRoomUpgrade",
+            rowNum: 10000,
+            loadonce: false,
+            viewrecords: true,
+            gridview: true,
+            rownumbers: true,
+            rownumWidth: '55',
+            height: 'auto',
+            width: 'auto',
+            autowidth: true,
+            shrinkToFit: true,
+            forceFit: true,
+            loadComplete: function () {
+                    //fnPanelSetup();
+                },
+        }).jqGrid('navGrid', '#jqpRoomUpgrade', {add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpRoomUpgrade', {
+                    caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshRoomUpgrade
+        }).jqGrid('navButtonAdd', '#jqpRoomUpgrade', {
+                    caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddRoomUpgrade
+            });
+        }
+    function fnAddRoomUpgrade() {
+                    $("#PopupRoomUpgrade").modal("show");
+                }
+    function fnGridRefreshRoomUpgrade() {
+
+                }
+    function fnEditRoomUpgrade(e, actiontype) {
+            var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+            var rowData = $('#jqgRoomUpgrade').jqGrid('getRowData', rowid);
+            $('#PopupRoomUpgrade').modal('show');
+            if (actiontype.trim() == "edit") {
+                $('#PopupRoomUpgrade').find('.modal-title').text(localization.UpdateRoomUpgrade);
+                $("#btnSaveRoomUpgrade").html('<i class="fa fa-sync"></i> '+localization.Update);
+                $("#btnSaveRoomUpgrade").show();
+                $("#cboMemberType,#cboRoomType,#chkUpgradeAllowed").attr('disabled', false);      
+                $("#chkActiveStatus").prop('disabled', true);
+        }
+        if (actiontype.trim() == "view") {
+            $('#PopupRoomUpgrade').find('.modal-title').text(localization.ViewRoomUpgrade);
+            $("#cboMemberType,#cboRoomType,#chkUpgradeAllowed").attr('disabled', true);  
+            $("#btnSaveRoomUpgrade").hide();
+        }
+    }
+</script>

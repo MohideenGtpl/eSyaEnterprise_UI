@@ -1,0 +1,233 @@
+﻿var _isInsert = true;
+var actiontype = "";
+  function fnLoadDocumentUpload() {
+      $("#jqgDocumentUpload").GridUnload();
+
+      $("#jqgDocumentUpload").jqGrid({
+          url: getBaseURL() + '/CheckInGuest/GetGuestDocumentUploadDetailsByBookingKey?bookingKey=' + $("#hdBookingKey").val() + '&guestId=' + $("#hdGuestId").val(),
+            datatype: "json",
+            contenttype: "application/json; charset-utf-8",
+            mtype: 'GET',
+            jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+            colNames: ["BusinessKey", "BookingKey", "GuestId", "SerialNo", "DocumentName", "DocumentUrl","Active","Action"],
+            colModel: [
+                { name: "BusinessKey", width: 50, editable: false, editoptions: { disabled: true }, align: 'left', edittype: 'text', hidden: true },
+                { name: "BookingKey", width: 50, editable: true, align: 'left', edittype: 'text', hidden: true },
+                { name: "GuestId", width: 50, editable: true, align: 'left', edittype: 'text', hidden: true },
+                { name: "SerialNo", width: 100, editable: true, align: 'left', edittype: 'text', hidden: false },
+                { name: "DocumentName", width: 200, editable: true, align: 'left', edittype: 'text', hidden: false },
+                { name: "DocumentUrl", width: 100, editable: true, align: 'left', edittype: 'text', hidden: true },
+                { name: "ActiveStatus", width: 50, editable: true, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+                {
+                    name: 'edit', search: false, align: 'left', width: 150, sortable: false, resizable: false,
+                    formatter: function (cellValue, options, rowdata, action) {
+                        return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditDocumentUpload(event,\'edit\');"><i class="fas fa-pen"></i> ' + localization.Edit + '</button>' +
+                            '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" id="jqgView" onclick="return fnEditDocumentUpload(event,\'view\');"><i class="far fa-eye"></i> ' + localization.View + '</button>'
+                            // +'<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Delete" id="jqgDelete" onclick="return fnEditDocumentUpload(event,\'delete\');"><i class="fas fa-trash"></i> ' + localization.Delete + '</button >'
+                    }
+                },
+                
+            ],
+            rowNum: 10,
+          pager: "#jqpDocumentUpload",
+
+            viewrecords: true,
+            gridview: true,
+            rownumbers: true,
+            height: 'auto',
+            width: 'auto',
+            autowidth: true,
+            shrinkToFit: true,
+            forceFit: true,
+            loadonce: true,
+            loadComplete: function (data) {
+            },
+      }).jqGrid('navGrid', '#jqpDocumentUpload', { add: false, edit: false, search: false, del: false, refresh: false, refreshtext: 'Reload' }).jqGrid('navButtonAdd', '#jqpDocumentUpload', {
+          caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshDocumentUpload
+          }).jqGrid('navButtonAdd', '#jqpDocumentUpload', {
+          caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddDocumentUpload
+      });
+    }
+function fnGridRefreshDocumentUpload() {
+    $("#jqgDocumentUpload").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+function fnAddDocumentUpload() {
+    _isInsert = true;
+    $('#PopupDocumentUpload').modal('show');
+    fnClearDocumentUpload();
+    $('#txtSerialNumber').val('');
+    $('#txtSerialNumber').attr('readonly', false);
+    $('#chkActiveStatus').parent().addClass("is-checked");
+    $('#PopupDocumentUpload').find('.modal-title').text(localization.AddDocumentUpload);
+}
+
+function fnClearDocumentUpload() {
+    $('#txtSerialNumber').val('');
+    $('#txtDocumentName').val('');
+    $('#imgPhotoimageblah').attr('src', '');
+    document.getElementById('Photoimage').value = "";
+    $('#chkActiveStatus').parent().addClass("is-checked");
+    $("#btnSaveDocumentUpload").html('<i class="far fa-save"></i> ' + localization.Save);
+    $("#btnSaveDocumentUpload").show();
+    $("#btnSaveDocumentUpload").attr('disabled', false);
+    $("input,textarea").attr('readonly', false);
+    $("input[type=checkbox]").attr('disabled', false);
+    $('#Photoimage').removeAttr('disabled');
+
+}
+
+function fnEditDocumentUpload(e, actiontype) {
+ 
+    _isInsert = false;
+
+    $('#txtSerialNumber').val('')
+    fnClearDocumentUpload();
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgDocumentUpload').jqGrid('getRowData', rowid);
+    
+
+    fnGetDocumentUploadbySerialNumber(rowData);
+
+    if (actiontype.trim() == "edit") {
+        $('#PopupDocumentUpload').modal('show');
+        $('#PopupDocumentUpload').find('.modal-title').text(localization.EditDocumentUpload);
+        $("#btnSaveDocumentUpload").show();
+        $("#btnSaveDocumentUpload").attr('disabled', false);
+        $("input,textarea").attr('readonly', false);
+        $("input[type=checkbox]").attr('disabled', false);
+        $('#Photoimage').removeAttr('disabled');
+    }
+
+    if (actiontype.trim() == "view") {
+        $('#PopupDocumentUpload').modal('show');
+        $('#PopupDocumentUpload').find('.modal-title').text(localization.ViewDocumentUpload);
+        $("#btnSaveDocumentUpload").hide();
+        $("#btnSaveDocumentUpload").attr('disabled', true);
+        $("input,textarea").attr('readonly', true);
+        $("input[type=checkbox]").attr('disabled', true);
+        $('#Photoimage').attr('disabled', 'disabled');
+    }
+}
+
+function fnGetDocumentUploadbySerialNumber(data) {
+    if (data != null) {
+
+        $.ajax({
+            url: getBaseURL() + '/CheckInGuest/GetDocumentUploadbySerialNumber?businessKey=' + data.BusinessKey + '&bookingKey=' + data.BookingKey
+                + '&guestId=' + data.GuestId + '&serialno=' + data.SerialNo,
+            type: 'POST',
+            datatype: 'json',
+            success: function (response) {
+
+                if (response != null) {
+
+                    fnFillDocumentUpload(response);
+                }
+                else {
+                    fnClearDocumentUpload();
+
+                }
+
+            },
+            error: function (error) {
+                toastr.error(error.statusText);
+
+            }
+        });
+    }
+}
+
+function fnFillDocumentUpload(data) {
+    debugger;
+    $('#txtSerialNumber').val('');
+    $('#txtSerialNumber').val(data.SerialNo);
+    $('#txtSerialNumber').attr('readonly', true);
+    $('#txtDocumentName').val(data.DocumentName);
+   
+    if (data.DocumentUrl != null) {
+        $('#imgPhotoimageblah').attr('src', data.DocumentUrl);
+
+
+    }
+    else {
+        $('#imgPhotoimageblah').attr('src', '');
+
+    }
+    
+    $('#Photoimage').fileContents = data.DocumentUrl;
+   // document.getElementById('Photoimage').value = data.DocumentUrl;
+    if (data.ActiveStatus == true)
+        $('#chkActiveStatus').parent().addClass("is-checked");
+    else
+        $('#chkActiveStatus').parent().removeClass("is-checked");
+    $("#btnSaveDocumentUpload").html('<i class="fa fa-sync"></i>' + localization.Update);
+}
+
+
+function fnSaveDocumentUpload() {
+
+    if (IsStringNullorEmpty($("#hdBookingKey").val())) {
+        toastr.warning("Please Add BookingKey");
+        return;
+    }
+    
+    if (IsStringNullorEmpty($("#hdGuestId").val())) {
+        toastr.warning("Please Add GuestId");
+        return;
+    }
+    if (IsStringNullorEmpty($("#txtSerialNumber").val())) {
+        toastr.warning("Please Enter Serial Number");
+        return;
+    }
+    if (IsStringNullorEmpty($("#txtDocumentName").val())) {
+        toastr.warning("Please Enter Document Name");
+        return;
+    }
+    if (IsStringNullorEmpty($("#Photoimage").val())) {
+        toastr.warning("Please Select Document");
+        return;
+    }
+    $("#btnSaveDocumentUpload").attr('disabled', true);
+    var obj = new FormData();
+    //appending  file object
+    obj.append("Imagefile", $("#Photoimage").get(0).files[0]);
+    obj.append("BookingKey", document.getElementById("hdBookingKey").value);
+    obj.append("GuestId", document.getElementById("hdGuestId").value);
+    obj.append("SerialNo", document.getElementById("txtSerialNumber").value);
+    obj.append("DocumentName", document.getElementById("txtDocumentName").value);
+    obj.append("ActiveStatus", $('#chkActiveStatus').parent().hasClass("is-checked"));
+    obj.append("isInsert", _isInsert);
+    $.ajax({
+        url: getBaseURL() + '/CheckInGuest/InsertOrUpdateDocumentUpload',
+        type: "POST",
+        data: obj,
+        dataType: "json",
+        contentType: false,
+        processData: false,
+        success: function (response) {
+            if (response !== null) {
+                if (response.Status) {
+                    toastr.success(response.Message);
+                    $('#PopupDocumentUpload').modal('hide');
+                    $("#btnSaveDocumentUpload").attr('disabled', false);
+                    fnClearDocumentUpload();
+                    fnGridRefreshDocumentUpload();
+                }
+                else {
+                    toastr.error(response.Message);
+                    $("#btnSaveDocumentUpload").attr('disabled', false);
+                }
+            }
+            else {
+                toastr.error(response.Message);
+                $("#btnSaveDocumentUpload").attr('disabled', false);
+            }
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnSaveDocumentUpload").attr("disabled", false);
+        }
+    });
+    $("#btnSaveDocumentUpload").attr('disabled', false);
+}
+

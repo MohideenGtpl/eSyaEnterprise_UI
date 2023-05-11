@@ -1,0 +1,35 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.ActionFilter;
+using eSyaEnterprise_UI.Areas.ConfigureWardRoom.Data;
+//using eSyaEnterprise_UI.Areas.ConfigureWardRoom.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+
+namespace eSyaEnterprise_UI.Areas.ConfigureWardRoom.Controllers
+{
+    [SessionTimeout]
+    public class RoomLocationController : Controller
+    {
+        private readonly IConfigureWardRoomAPIServices _eSyaConfigureWardRoomAPIServices;
+        private readonly ILogger<RoomLocationController> _logger;
+        public RoomLocationController(IConfigureWardRoomAPIServices eSyaConfigureWardRoomAPIServices, ILogger<RoomLocationController> logger)
+        {
+            _eSyaConfigureWardRoomAPIServices = eSyaConfigureWardRoomAPIServices;
+            _logger = logger;
+        }
+        //define room locations
+        [Area("ConfigureWardRoom")]
+        public IActionResult EWR_03()
+        {
+            return View();
+        }
+    }
+}

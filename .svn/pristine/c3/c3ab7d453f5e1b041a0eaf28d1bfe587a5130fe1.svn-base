@@ -1,0 +1,88 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.Areas.eSyaCustomer.Data;
+using eSyaEnterprise_UI.Areas.eSyaCustomer.Models;
+using eSyaEnterprise_UI.Models;
+using Microsoft.AspNetCore.Mvc;
+
+namespace eSyaEnterprise_UI.Areas.eSyaCustomer.Controllers
+{
+    public class CustomerCodesController : Controller
+    {
+        private readonly IeSyaCustomerAPIServices _eSyaCustomerAPIServices;
+        public CustomerCodesController(IeSyaCustomerAPIServices eSyaCustomerAPIServices)
+        {
+            _eSyaCustomerAPIServices = eSyaCustomerAPIServices;
+        }
+
+        [Area("eSyaCustomer")]
+        public IActionResult Create()
+        {
+            ViewBag.formName = "Customer Codes";
+            return View();
+        }
+
+        /// <summary>
+        ///Get Parameters Information By Parameter Type
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetCustomerCodesByNamePrefix(string customerNamePrefix)
+        {
+            try
+            {
+                var serviceResponse = _eSyaCustomerAPIServices.HttpClientServices.GetAsync<List<DO_CustomerCodes>>("CustomerMaster/GetCustomerCodesByNamePrefix?customerNamePrefix=" + customerNamePrefix).Result;
+                return Json(serviceResponse.Data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        [Area("eSyaCustomer")]
+        public IActionResult _CustomerDetails()
+        {
+            ViewBag.formName = "Customer Codes";
+            return View();
+        }
+        [Area("eSyaCustomer")]
+        public IActionResult _CustomerContact()
+        {
+            ViewBag.formName = "Customer Codes";
+            return View();
+        }
+        [Area("eSyaCustomer")]
+        public IActionResult _BusinessLink()
+        {
+            ViewBag.formName = "Customer Codes";
+            return View();
+        }
+        [Area("eSyaCustomer")]
+        public IActionResult _StatutoryDetails()
+        {
+            ViewBag.formName = "Customer Codes";
+            return View();
+        }
+
+        [Area("eSyaCustomer")]
+        public IActionResult _BankDetails()
+        {
+            ViewBag.formName = "Customer Codes";
+            return View();
+        }
+        [Area("eSyaCustomer")]
+        public IActionResult _ItemLink()
+        {
+            ViewBag.formName = "Customer Codes";
+            return View();
+        }
+        [Area("eSyaCustomer")]
+        public IActionResult _PartNumber()
+        {
+            ViewBag.formName = "Customer Codes";
+            return View();
+        }
+    }
+}

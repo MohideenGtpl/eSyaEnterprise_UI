@@ -1,0 +1,170 @@
+﻿var Isadd = 0;
+$(document).ready(function () {
+    fnGridLoadInventoryRules();
+});
+
+function fnGridLoadInventoryRules() {
+   
+    $("#jqgInventoryRules").jqGrid('GridUnload');
+    $("#jqgInventoryRules").jqGrid({
+        url: getBaseURL() + '/Inventory/GetInventoryRules',
+        mtype: 'Post',
+        datatype: 'json',
+        data: [{ InventoryRuleId: 'F', InventoryRuleDesc: 'Fast Moving', InventoryRule: '30', ApplyToSrn:'N', ActiveStatus: true,edit:'' }],
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Inventory Rule ID", "Rule Description", "Rule in Days", "Apply To SRN", "Status", ""],
+        colModel: [
+            { name: "InventoryRuleId", width: 70, editable: true, align: 'left', hidden: false },
+            { name: "InventoryRuleDesc", width: 170, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "InventoryRule", width: 45, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            { name: "ApplyToSrn", editable: true, width: 45, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            { name: "ActiveStatus", editable: true, width: 45, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: Inactive" } },
+            {
+                name: 'edit', search: false, align: 'center', width: 45, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" onclick="return fnEditInventoryRules(event)"><i class="fa fa-edit"></i> Edit </button>'
+
+                }
+            },
+        ],
+        rowNum: 10,
+        loadonce: false,
+        pager: "#jqpInventoryRules",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0
+    }).jqGrid('navGrid', '#jqpInventoryRules', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqgInventoryRules', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshInventoryRules
+    }).jqGrid('navButtonAdd', '#jqpInventoryRules', {
+        caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Add', buttonicon: 'none', id: 'custAdd', position: 'first', onClickButton: fnAddInventoryRules
+    });
+}
+
+function fnAddInventoryRules() {
+   fnClearFields();
+   Isadd = 1;
+   $('#PopupInventoryRules').modal('show');
+   $('#PopupInventoryRules').modal({ backdrop: 'static', keyboard: false });
+   $('#PopupInventoryRules').find('.modal-title').text("Add Inventory Rules");
+   $("#btnSaveInventoryRules").html(' Save');
+}
+
+function fnEditInventoryRules(e) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgInventoryRules').jqGrid('getRowData', rowid);
+    $('#cboInventoryRule').val(rowData.InventoryRuleId);
+    $('#cboInventoryRule').selectpicker('refresh');
+    $("#cboInventoryRule").prop('disabled', true);
+    $('#cboInventoryRule').selectpicker('refresh');
+    $('#txtRuleDescription').val(rowData.InventoryRuleDesc);
+    $('#txtRuleInDays').val(rowData.InventoryRule);
+    if (rowData.ApplyToSrn == 'true') {
+        $("#chkApplyToSRN").parent().addClass("is-checked");
+    }
+    else {
+        $("#chkApplyToSRN").parent().removeClass("is-checked");
+    }
+    $('#cboActiveStatus').val(rowData.ActiveStatus);
+    $('#cboActiveStatus').selectpicker('refresh');
+
+    Isadd = 0;
+    $('#PopupInventoryRules').modal('show');
+    $('#PopupInventoryRules').find('.modal-title').text("Update Inventory Rules");
+    $("#btnSaveInventoryRules").html(' Update');
+
+}
+
+function fnSaveInventoryRules() {
+
+    if (validateInventoryRules() === false) {
+        return;
+    }
+    if (Isadd === 1) {
+        rule = {
+            InventoryRuleId: $('#cboInventoryRule').val(),
+            InventoryRuleDesc: $("#txtRuleDescription").val(),
+            InventoryRule: $("#txtRuleInDays").val(),
+            ApplyToSrn: $("#chkApplyToSRN").parent().hasClass("is-checked"),
+            ActiveStatus: $("#cboActiveStatus").val(),
+            Isadd: 1
+        };
+
+    }
+
+    if (Isadd === 0) {
+        var rule = {
+            InventoryRuleId: $('#cboInventoryRule').val(),
+            InventoryRuleDesc: $("#txtRuleDescription").val(),
+            InventoryRule: $("#txtRuleInDays").val(),
+            ApplyToSrn: $("#chkApplyToSRN").parent().hasClass("is-checked"),
+            ActiveStatus: $("#cboActiveStatus").val(),
+            Isadd: 0
+        };
+    }
+    $.ajax({
+        url: getBaseURL() + '/Inventory/InsertOrUpdateInventoryRules',
+        type: 'POST',
+        datatype: 'json',
+        data: { rule },
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                fnClearFields();
+                $('#PopupInventoryRules').modal('hide');
+                fnGridLoadInventoryRules();
+                return true;
+            }
+            else {
+                toastr.error(response.Message);
+                return false;
+            }
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnSaveApplicationCode").attr("disabled", false);
+        }
+    });
+}
+
+function validateInventoryRules() {
+
+    if ($("#cboInventoryRule").val() === "0" || $("#cboInventoryRule").val() === '0') {
+        toastr.warning("Please Select Inventory Rule");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtRuleDescription").val())) {
+        toastr.warning("Please Enter Rule Description");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtRuleInDays").val())) {
+        toastr.warning("Please Enter Rule in days");
+        return false;
+    }
+}
+
+function fnGridRefreshInventoryRules() {
+    $("#jqgInventoryRules").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+function fnClearFields() {
+    $("#txtRuleDescription").val("");
+    $("#txtRuleInDays").val("");
+    $("#chkApplyToSRN").parent().removeClass("is-checked");
+    $("#cboInventoryRule").prop('disabled', false);
+    $('#cboInventoryRule').val("0");
+    $('#cboInventoryRule').selectpicker('refresh');
+    $('#cboActiveStatus').val("true");
+    $('#cboActiveStatus').selectpicker('refresh');
+}
+
+
+
+
+

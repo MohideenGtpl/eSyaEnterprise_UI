@@ -1,0 +1,31 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.Areas.eSyaPayrollExpat.Data;
+using eSyaEnterprise_UI.Areas.eSyaPayrollExpat.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+
+namespace eSyaEnterprise_UI.Areas.eSyaPayrollExpat.Controllers
+{
+    public class BankMasterController : Controller
+    {
+        private readonly IeSyaPayrollExpatAPIServices _eSyaPayrollExpatAPIServices;
+        private readonly ILogger<BankMasterController> _logger;
+
+        public BankMasterController(IeSyaPayrollExpatAPIServices eSyaPayrollExpatAPIServices, ILogger<BankMasterController> logger)
+        {
+            _eSyaPayrollExpatAPIServices = eSyaPayrollExpatAPIServices;
+            _logger = logger;
+        }
+
+        [Area("eSyaPayrollExpat")]
+        public IActionResult V_5500_00()
+        {
+            var serviceResponse = _eSyaPayrollExpatAPIServices.HttpClientServices.GetAsync<List<DO_BankMaster>>("BankMaster/GetAllBankMaster");
+
+            return View();
+        }
+    }
+}

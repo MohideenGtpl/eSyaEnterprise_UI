@@ -1,0 +1,99 @@
+﻿$(function () {
+    fnGridLoadDonorRegistration();
+    $.contextMenu({
+        selector: "#btnDonorRegistration",
+        trigger: 'left',
+        items: {
+            jqgEdit: { name: localization.Edit, icon: "edit", callback: function (key, opt) { fnEditDonorRegistration(event, 'edit') } },
+            jqgView: { name: localization.View, icon: "view", callback: function (key, opt) { fnEditDonorRegistration(event, 'view') } },
+            jqgDelete: { name: localization.Delete, icon: "delete", callback: function (key, opt) { fnEditDonorRegistration(event, 'delete') } },
+        }
+    });
+    $(".context-menu-icon-edit").html("<span class='icon-contextMenu'><i class='fa fa-pen'></i>" + localization.Edit + " </span>");
+    $(".context-menu-icon-view").html("<span class='icon-contextMenu'><i class='fa fa-eye'></i>" + localization.View + " </span>");
+    $(".context-menu-icon-delete").html("<span class='icon-contextMenu'><i class='fa fa-trash'></i>" + localization.Delete + " </span>");
+})
+
+function fnGridLoadDonorRegistration() {
+    $("#jqgDonorRegistration").jqGrid({
+        //  url:'',
+        // mtype: 'Post',
+        datatype: 'local',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: [localization.DonorID, localization.DonorRegistrationNo, localization.DonorType, localization.DonorFirstName, localization.DonorMiddleName, localization.DonorLastName,
+            localization.AgeYY, localization.Gender, localization.ISDCode, localization.RegisteredMobileNumber, localization.EmailID, localization.Address, localization.Country, localization.State, localization.City,
+            localization.ZIPcode, localization.Area, localization.RoomType, localization.NoOfPersons, localization.ValidFrom, localization.ValidTill, localization.DiscountPercentage,
+            localization.DonatedSoFar, localization.Active, localization.Actions],
+        colModel: [
+            { name: "DonorID", width: 50, editable: true, align: 'left', hidden: true },
+            { name: "DonorRegistrationNo", width: 50, editable: true, align: 'left', hidden: false },
+            { name: "DonorType", width: 50, editable: true, align: 'left', hidden: true },
+            { name: "DonorFirstName", width: 70, editable: true, align: 'left', hidden: false },
+            { name: "DonorMiddleName", width: 70, editable: true, align: 'left', hidden: true },
+            { name: "DonorLastName", width: 70, editable: true, align: 'left', hidden: false },
+            { name: "AgeYY", width: 50, editable: true, align: 'left', hidden: false },
+            { name: "Gender", width: 50, editable: true, align: 'left', hidden: false },
+            { name: "ISDCode", width: 50, editable: true, align: 'left', hidden: true },
+            { name: "RegisteredMobileNumber", width: 70, editable: true, align: 'left', hidden: false },
+            { name: "EmailID", width: 50, editable: true, align: 'left', hidden: false },
+            { name: "Address", width: 50, editable: true, align: 'left', hidden: true },
+            { name: "Country", width: 50, editable: true, align: 'left', hidden: true },
+            { name: "State", width: 50, editable: true, align: 'left', hidden: true },
+            { name: "City", width: 50, editable: true, align: 'left', hidden: true },
+            { name: "ZIPcode", width: 50, editable: true, align: 'left', hidden: true },
+            { name: "Area", width: 50, editable: true, align: 'left', hidden: true },
+            { name: "RoomType", width: 50, editable: true, align: 'left', hidden: true },
+            { name: "NoOfPersons", width: 50, editable: true, align: 'left', hidden: true },
+            { name: "ValidFrom", width: 50, editable: true, align: 'left', hidden: true },
+            { name: "ValidTill", width: 50, editable: true, align: 'left', hidden: true },
+            { name: "DiscountPercentage", width: 50, editable: true, align: 'left', hidden: true },
+            { name: "DonatedSoFar", width: 50, editable: true, align: 'left', hidden: true },
+            { name: "ActiveStatus", width: 35, editable: false, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+            {
+                name: 'edit', search: false, align: 'left', width: 35, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="mr-1 btn btn-outline" id="btnReferralDoctor"><i class="fa fa-ellipsis-v"></i></button>'
+                }
+            },
+        ],
+        pager: "#jqpDonorRegistration",
+        rowNum: 10000,
+        rownumWidth: '55',
+        pgtext: null,
+        pgbuttons: null,
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: true,
+        shrinkToFit: true,
+        forceFit: true,
+        scrollOffset: 0, caption: 'Donor Registration',
+        loadComplete: function () {
+            fnAddGridSerialNoHeading();
+            fnJqgridSmallScreen("jqgDonorRegistration");
+        },
+    }).jqGrid('navGrid', '#jqpDonorRegistration', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpDonorRegistration', {
+        caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshDonorRegistration
+    }).jqGrid('navButtonAdd', '#jqpDonorRegistration', {
+        caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddDonorRegistration
+    });
+
+}
+function fnGridRefreshDonorRegistration() {
+
+}
+function fnAddDonorRegistration() {
+    $("#PopupDonorRegistration").modal('show');
+   $("#section-grid").css('display', 'none');
+   $("#section-donoregistration").css('display', 'block');
+}
+
+function fnClearFields() {
+    $("#section-grid").css('display', 'block');
+    $("#section-donoregistration").css('display', 'none');
+}

@@ -1,0 +1,165 @@
+﻿
+$(document).ready(function () {
+    
+    $('#txtCodeDescription').on('input', function (e) {
+        var _text = $("#txtCodeDescription").val();      //Get Current Text
+        if (_text.length > 50)       //If it is more than your character restriction
+        {
+            _text = _text.substring(0, _text.length - 1); // Remove Last character
+            $("#txtCodeDescription").val(_text);        //Set the Old value
+        }
+
+    });
+
+    fnGridLoadCodeTypes();
+});
+
+function fnGridLoadCodeTypes() {
+    $("#jqgCodeType").jqGrid({
+        url: getBaseURL() + '/ApplicationCodes/GetCodeTypes',
+        datatype: 'json',
+        mtype: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        colNames: ["", "Description", "Control", "Status", ""],
+        colModel: [
+            { name: "CodeType", width: 40, align: 'left', editable: true, editoptions: { maxlength: 4 }, resizable: false, hidden: true },
+            { name: "CodeTypeDesc", width: 280, align: 'left', editable: true, editoptions: { maxlength: 50 }, resizable: false },
+            { name: "CodeTypeControl", editable: true, align: 'left', width: 120, edittype: "select", resizable: false, formatter: 'select', editoptions: { value: "S: System Defined;U: User Defined" } },
+            { name: "ActiveStatus", editable: true, width: 85, align: "left", edittype: "select", resizable: false, formatter: 'select', editoptions: { value: "true: Active;false: Inactive" } },
+            {
+                name: 'edit', search: false, align: 'center', width: 50, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all" style="padding: 2px 4px; background: #0b76bc!important; color: #fff!important; margin: 3px; " title="Edit" onclick="return fnEditCodeTypes(event)"><i class="fa fa-edit"></i> Edit </button>'
+                }
+            },
+        ],
+
+        pager: "#jqpCodeType",
+        rowList: [10, 20, 30, 50, 100],
+        rowNum: 10,
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        scroll: false,
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        forceFit: false
+
+    }).jqGrid('navGrid', '#jqpCodeType', { add: false, edit: false, search: false, del: false, refresh: false, refreshtext: 'Reload' }).jqGrid('navButtonAdd', '#jqpCodeType', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshCodeTypes
+    }).jqGrid('navButtonAdd', '#jqpCodeType', {
+        caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Add', buttonicon: 'none', id: 'custAdd', position: 'first', onClickButton: fnGridAddCodeTypes
+    });
+
+    $(window).on("resize", function () {
+        var $grid = $("#jqgCodeType"),
+            newWidth = $grid.closest(".codetypecontainer").parent().width();
+        $grid.jqGrid("setGridWidth", newWidth, true);
+    });
+}
+
+function fnGridRefreshCodeTypes() {
+    $("#jqgCodeType").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+function fnGridAddCodeTypes() {
+    fnResetInputFields();
+    $('#PopupCodeTypes').modal('show');
+    $('#PopupCodeTypes').find('.modal-title').text("Add Code Type");
+    $("#btnSaveCodeType").html('Save');
+}
+
+function fnResetInputFields() {
+    $("#txtCodeType").val('');
+    $("#txtCodeDescription").val('');
+    $('#cboCodeTypeControl').val("S");
+    $('#cboCodeTypeControl').selectpicker('refresh');
+    $('#chkDefaultStatus').prop('checked', true);
+    $('#cboActiveStatus').val("true");
+    $('#cboActiveStatus').selectpicker('refresh');
+    $("#btnSaveCodeType").attr("disabled", false);
+}
+
+function fnSaveCodeType() {
+    if ($("#txtCodeDescription").val().trim().length <= 0) {
+        toastr.warning("Please Enter CodeType Description");
+        return;
+    }
+
+    var codeType = $("#txtCodeType").val();
+
+    if (codeType === null || codeType === "") {
+        var ct_type = {
+            CodeType:0,
+            CodeTypeDesc: $("#txtCodeDescription").val(),
+            CodeTypeControl: $("#cboCodeTypeControl").val(),
+            ActiveStatus: $('#cboActiveStatus').val()
+        };
+    }
+    else {
+        ct_type = {
+            CodeType: $("#txtCodeType").val(),
+            CodeTypeDesc: $("#txtCodeDescription").val(),
+            CodeTypeControl: $("#cboCodeTypeControl").val(),
+            ActiveStatus: $('#cboActiveStatus').val()
+        };
+    }
+    $("#btnSaveCodeType").attr("disabled", true);
+
+    $.ajax({
+        url: getBaseURL() + '/ApplicationCodes/InsertOrUpdateCodeTypes',
+        type: "POST",
+        datatype: 'json',
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify(ct_type),
+        async: false,
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                $("#btnSaveCodeType").html('<i class="fa fa-spinner fa-spin"></i> wait');
+                fnClosePopUp();
+                fnGridRefreshCodeTypes();
+               
+            }
+            else {
+                toastr.error(response.Message);
+                $("#btnSaveCodeType").attr("disabled", false);
+            }
+            function fnClosePopUp() {
+                setTimeout(function () {
+                    $("#PopupCodeTypes").modal('hide');
+                }, 1000);
+            }
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnSaveCodeType").attr("disabled", false);
+        }
+    });
+}
+
+function fnEditCodeTypes(e) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgCodeType').jqGrid('getRowData', rowid);
+
+    $('#PopupCodeTypes').modal('show');
+    $('#PopupCodeTypes').find('.modal-title').text("Update Code Type");
+    $('#txtCodeType').val(rowData.CodeType);
+    $('#txtCodeDescription').val(rowData.CodeTypeDesc);
+    $('#cboCodeTypeControl').val(rowData.CodeTypeControl);
+    $('#cboCodeTypeControl').selectpicker('refresh');
+    $('#cboActiveStatus').val(rowData.ActiveStatus);
+    $('#cboActiveStatus').selectpicker('refresh');
+    $("#btnSaveCodeType").html(' Update');
+    $("#btnSaveCodeType").attr("disabled", false);
+}
+
+$("#btnCancelCodeType").click(function () {
+    $("#jqgCodeType").jqGrid('resetSelection');
+    $('#PopupCodeTypes').modal('hide');
+    fnResetInputFields();
+});

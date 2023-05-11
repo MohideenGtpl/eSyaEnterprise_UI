@@ -1,0 +1,367 @@
+﻿$(document).ready(function () {
+    fnLoadShortResult();
+    fnLoadLongResult();
+    fnTestMethod();
+});
+
+function fnLoadGrid() {
+    if ($('#cboBusinessKey').val() != '' && $('#cboServiceClass').val() != '') {
+        fnLoadServiceTemplateCreator();
+    }
+}
+
+function fnLoadServiceTemplateCreator() {
+    $("#jqgServiceTemplateCreator").jqGrid('GridUnload');
+    $("#jqgServiceTemplateCreator").jqGrid({
+        url: getBaseURL() + '/ServiceTemplateCreator/GetServiceTemplateByBKeyServiceClass?businessKey=' + $('#cboBusinessKey').val() + '&serviceClass=' + $('#cboServiceClass').val() ,
+        datatype: 'json',
+        mtype: 'GET',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Service ID", localization.ServiceShortName, localization.ServiceDescription, localization.ResultType,localization.ResultType, localization.SampleType, localization.PrintSequence, localization.ReportingTime,"",""],
+
+        colModel: [
+
+            { name: "ServiceId", width: 10, editable: false, align: 'left', hidden: true },  
+            { name: "ServiceShortDesc", width: 40, editable: false, align: 'left' },
+            { name: "ServiceDesc", width: 80, editable: false, align: 'left' },
+            { name: "ResultType", editable: false, width: 30, align: 'left', hidden: true },
+            { name: "ResultTypeDesc", editable: false, width: 30, align: 'left' },
+            { name: "SampleTypeDesc", editable: false, width: 30, align: 'left' },
+            { name: "LabPrintSequence", width: 30, editable: true, align: 'left', edittype: 'text' },
+            { name: "TimeRequiredForReport", width: 30, editable: true, align: 'left', edittype: 'text' },
+            {
+                name: "Button", width: 80, editable: false, align: 'center', hidden: false, formatter: function (cellValue, options, rowObject) {
+                    return "<button type='button'  class='btn btn-primary' onclick=fnCreateTemplateMaster('" + rowObject.IsResultCreated + "','" + rowObject.ServiceId + "')><i class='fas fa-pen c-white'></i> Edit </button> "+
+                        " <button type = 'button'  class='btn btn-primary' onclick=fnCreateTemplate('" + rowObject.IsResultCreated + "')> <i class='fas fa-external-link-alt c-white'></i> Template Creator </button>";
+                }
+            },
+            { name: "IsResultCreated", editable: false, width: 30, align: 'left', hidden: true },
+
+        ],
+        rowNum: 10,
+        rowList: [10, 20, 30, 50],
+        emptyrecords: "No records to Veiw",
+        pager: "#jqpServiceTemplateCreator",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: false,
+        height: 'auto',
+        width: 'auto',
+        scroll: false,
+        autowidth: false,
+        shrinkToFit: false,
+        forceFit: false,
+        loadonce: true,
+        cellEdit: true,
+        editurl: 'url',
+
+        cellsubmit: 'clientArray',
+
+        loadComplete: function (data) {
+            $(this).find(">tbody>tr.jqgrow:odd").addClass("myAltRowClassEven");
+            $(this).find(">tbody>tr.jqgrow:even").addClass("myAltRowClassOdd");
+            $("#jqgServiceTemplateCreator").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+           
+        }
+    }).jqGrid('navGrid', '#jqpServiceTemplateCreator', { add: false, edit: false, search: false, del: false, refresh: false });   
+    
+}
+
+
+
+
+function fnCreateTemplateMaster(resultcreated,serviceid) {
+    fnClearFields();
+    $("#txtServiceID").val(serviceid);
+    //$("#txtServiceDesc").val(servicedesc);
+    if (resultcreated === 'true') {
+        fnLoadServiceServiceTemplateMaster(serviceid);
+    }
+    else {
+        $('#PopupServiceTemplateMaster').modal('show');
+    }
+}
+
+function fnClearFields() {
+    $("#txtServiceID").val('');
+    $("#txtServiceDesc").val('');
+    $("#cboPopResultType").val('0');
+    $('#cboPopResultType').selectpicker('refresh');
+    $("#cboPopSampleType").val('0');
+    $('#cboPopSampleType').selectpicker('refresh');
+    $("#txtPrintSequence").val('0');
+    $("#txtReportingTime").val('0');
+    $('#chkActiveStatus').parent().addClass("is-checked");
+}
+function fnLoadServiceServiceTemplateMaster(serviceid) {
+   var businesskey = $("#cboBusinessKey").val();
+    $.ajax({
+        url: getBaseURL() + '/ServiceTemplateCreator/GetServiceTemplateByBKeyServiceID',
+        data: {
+            businessKey: businesskey,
+            serviceID: serviceid
+        },
+        success: function (result) {
+            $("#cboPopResultType").val(result.ResultType);
+            $('#cboPopResultType').selectpicker('refresh');
+            $("#cboPopSampleType").val(result.SampleType);
+            $('#cboPopSampleType').selectpicker('refresh');
+            $("#txtPrintSequence").val(result.LabPrintSequence);
+            $("#txtReportingTime").val(result.TimeRequiredForReport);
+            //if (result.ActiveStatus == true) {
+            //    $('#chkActiveStatus').parent().addClass("is-checked");
+            //}
+            //else {
+            //    $('#chkActiveStatus').parent().removeClass("is-checked");
+            //};
+            $('#PopupServiceTemplateMaster').modal('show');
+        }
+    });
+}
+function fnAddOrUpdateServiceTemplateMaster() {
+   
+    var cboResultType = $("#cboPopResultType").val();
+    if (cboResultType == "0" || cboResultType == undefined) {
+        toastr.error("Please Select Result Type");
+        return false;
+    }
+    var cboSampleType = $("#cboPopSampleType").val();
+    if (cboSampleType == "0" || cboSampleType == undefined) {
+        toastr.error("Please Select Sample Type");
+        return false;
+    }
+    var txtPrintSequence = $("#txtPrintSequence").val();
+    if (txtPrintSequence == " " ||txtPrintSequence == "0" || txtPrintSequence == undefined) {
+        toastr.error("Please enter Print Sequence");
+        return false;
+    }
+    var txtReportingTime = $("#txtReportingTime").val();
+    if (txtReportingTime == " " || txtReportingTime == "0" || txtReportingTime == undefined) {
+        toastr.error("Please enter Reporting Time");
+        return false;
+    }
+    var businesskey = $("#cboBusinessKey").val();
+    var txtServiceID = $("#txtServiceID").val();
+
+    $("#btnPopSave").attr("disabled", true);
+        var obj = {
+            BusinessKey: businesskey,
+            ServiceId: txtServiceID,
+            ResultType: cboResultType,
+            SampleType: cboSampleType,
+            TimeRequiredForReport: txtReportingTime,
+            LabPrintSequence: txtPrintSequence,
+            ActiveStatus: $("#chkActiveStatus").parent().hasClass("is-checked"),
+
+        }
+        $.ajax({
+            url: getBaseURL() + '/ServiceTemplateCreator/AddOrUpdateServiceTemplateMaster',
+            type: 'POST',
+            datatype: 'json',
+            data: {
+                obj
+            },
+            success: function (response) {
+                if (response.Status == true) {
+
+                        toastr.success("Service Template Master Updated");
+
+                    $('#PopupServiceTemplateMaster').modal('hide');
+                    $("#jqgServiceTemplateCreator").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+                }
+                else {
+                    toastr.error(response.Message);
+                }
+                $("#btnPopSave").attr("disabled", false);
+            },
+            error: function (error) {
+                toastr.error(error.statusText);
+                $("#btnPopSave").attr("disabled", false);
+            }
+        });
+    }
+
+//After Create Template Button Clicked
+function fnCreateTemplate(resultcreated) {
+    if (resultcreated === 'true') {
+        $("#divServiceTemplate").hide();
+        $("#divShortResult,#divLongResult").css('display', 'none');
+        $("#divShortResult").css('display', 'block');
+        $("#divServiceFields,#divInputFields").css('display', 'block');
+    }
+    else {
+        toastr.error("Please create Service Template Master first");
+        return false;
+    }
+    
+}
+
+//After Cancel Button Clicked
+function fnServiceTemplateCreator() {
+    $("#divServiceTemplate").show();
+    
+    $("#divShortResult,#divLongResult").css('display', 'none');
+    $("#divServiceFields,#divInputFields").css('display', 'none');
+}
+
+// If the result type is short Call fnLoadShortResult() method
+// If the result type is Long Call fnLoadLongResult() method
+
+
+function fnLoadShortResult() {
+    
+    $("#jqgShortResult").jqGrid('GridUnload');
+    $("#jqgShortResult").jqGrid({
+        //url: getBaseURL() + '',
+        datatype: 'json',
+        //mtype: 'GET',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Test Parameter", "Gender", "Start Age", "Start Age Type", "Gender", "End Age", "End Age Type", "Hype", "Min Value", "Max Value", "Hyper", "Normal Value", ""],
+
+        colModel: [
+
+            { name: "TestParameter", width: 10, editable: false, align: 'left', hidden: true },
+            { name: "Gender", width: 50, editable: false, align: 'left' },
+            { name: "StartAge", width: 80, editable: false, align: 'left' },
+            { name: "StartAgeType", editable: true, width: 60, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "0: Select" } },
+            { name: "Gender", width: 50, editable: false, align: 'left' },
+            { name: "EndAge", width: 80, editable: false, align: 'left' },
+            { name: "EndAgeType", width: 80, editable: false, align: 'left' },
+            { name: "Hype", width: 80, editable: false, align: 'left' },
+            { name: "MinValue", width: 80, editable: false, align: 'left' },
+            { name: "MaxValue", width: 80, editable: false, align: 'left' },
+            { name: "Hyper", width: 80, editable: false, align: 'left' },
+            { name: "NormalValue", width: 80, editable: false, align: 'left' },
+            {
+                name: "Button", width: 80, editable: false, align: 'center', hidden: false, formatter: function (cellValue, options, rowObject) {
+                    return "<button type='button'  class='btn btn-primary'><i class='fas fa-pen c-white'></i> Edit </button> " +
+                        " <button type='button'  class='btn btn-primary'><i class='fas fa-pen c-white'></i> View </button>";
+                }
+            }
+
+        ],
+        rowNum: 10,
+        rowList: [10, 20, 30, 50],
+        emptyrecords: "No records to Veiw",
+        pager: "#jqpShortResult",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: false,
+        height: 'auto',
+        width: 'auto',
+        scroll: false,
+        autowidth: false,
+        shrinkToFit: false,
+        forceFit: false,
+        loadonce: true,
+        cellEdit: true,
+      
+         
+    }).jqGrid('navGrid', '#jqpShortResult', { add: false, edit: false, search: false, del: false, refresh: false })
+        .jqGrid('navButtonAdd', '#jqpShortResult', {
+            caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddShortResult
+        });
+}
+function fnAddShortResult() {
+
+}
+
+function fnLoadLongResult() {
+    $("#jqgLongResult").jqGrid('GridUnload');
+    $("#jqgLongResult").jqGrid({
+        //url: getBaseURL() + '',
+        datatype: 'json',
+        //mtype: 'GET',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Template Code", "Description", "Reporting Sequence",""],
+
+        colModel: [
+
+            { name: "TemplateCode", width: 100, editable: false, align: 'left'},
+            { name: "Description", width: 150, editable: false, align: 'left' },
+            { name: "Reporting Sequence", width: 80, editable: false, align: 'left' },
+            {
+                name: "Button", width: 80, editable: false, align: 'center', hidden: false, formatter: function (cellValue, options, rowObject) {
+                    return "<button type='button'  class='btn btn-primary'><i class='fas fa-pen c-white'></i> Edit </button> " +
+                        " <button type='button'  class='btn btn-primary'><i class='fas fa-pen c-white'></i> View </button>";
+                }
+            }
+        ],
+        rowNum: 10,
+        rowList: [10, 20, 30, 50],
+        emptyrecords: "No records to Veiw",
+        pager: "#jqpLongResult",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: false,
+        height: 'auto',
+        width: 'auto',
+        scroll: false,
+        autowidth: false,
+        shrinkToFit: false,
+        forceFit: false,
+        loadonce: true,
+        cellEdit: true,
+       
+
+        loadComplete: function (data) {
+            $("#jqgLongResult").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+        }
+    }).jqGrid('navGrid', '#jqpLongResult', { add: false, edit: false, search: false, del: false, refresh: false })
+     .jqGrid('navButtonAdd', '#jqpLongResult', {
+        caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddLongResult
+    });
+}
+function fnAddLongResult() {
+
+}
+
+
+function fnTestMethod() {
+    $("#jqgTestMethod").jqGrid('GridUnload');
+    $("#jqgTestMethod").jqGrid({
+        //url: getBaseURL() + '',
+        datatype: 'json',
+        //mtype: 'GET',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Test Method", "Active Status", ""],
+
+        colModel: [
+            { name: "TestMethod", width: 100, editable: false, align: 'left' },
+            { name: "ActiveStatus", width: 150, editable: false, align: 'left', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+            {
+                name: "Button", width: 80, editable: false, align: 'center', hidden: false, formatter: function (cellValue, options, rowObject) {
+                    return "<button type='button'  class='btn btn-primary'><i class='fas fa-pen c-white'></i> Edit </button> " +
+                        " <button type='button'  class='btn btn-primary'><i class='fas fa-pen c-white'></i> View </button>";
+                }
+            }
+        ],
+        rowNum: 100000,
+        pgtext:null,
+        pgbuttons:null,
+        emptyrecords: "No records to Veiw",
+        pager: "#jqpTestMethod",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: false,
+        height: 'auto',
+        width: 'auto',
+        scroll: false,
+        autowidth: false,
+        shrinkToFit: false,
+        forceFit: false,
+        loadonce: true,
+        cellEdit: true,
+       
+         }).jqGrid('navGrid', '#jqpTestMethod', { add: false, edit: false, search: false, del: false, refresh: false })
+        .jqGrid('navButtonAdd', '#jqpTestMethod', {
+            caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddTestMethod
+        });
+}
+function fnAddTestMethod() {
+
+}

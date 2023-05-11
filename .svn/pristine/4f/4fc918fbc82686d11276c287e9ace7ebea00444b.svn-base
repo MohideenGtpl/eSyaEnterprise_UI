@@ -1,0 +1,85 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.Areas.Facilities.Models;
+using eSyaEnterprise_UI.Areas.PatientManagement.Data;
+using eSyaEnterprise_UI.Areas.PatientManagement.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+
+namespace eSyaEnterprise_UI.Areas.PatientManagement.Controllers
+{
+    public class DoctorDeskController : Controller
+    {
+        private readonly IPatientManagementAPIServices _patientManagementAPIServices;
+        private readonly ILogger<RegistrationController> _logger;
+
+        public DoctorDeskController(IPatientManagementAPIServices patientManagementAPIServices, ILogger<RegistrationController> logger)
+        {
+            _patientManagementAPIServices = patientManagementAPIServices;
+            _logger = logger;
+        }
+
+        [Area("PatientManagement")]
+        public IActionResult DoctorDesk()
+        {
+            return View();
+        }
+        [Area("PatientManagement")]
+        public IActionResult _TodaysAppointment()
+        {
+            return View();
+        }
+
+        [Area("PatientManagement")]
+        public IActionResult _DoctorSchedule()
+        {
+            return View();
+        }
+        [Area("PatientManagement")]
+        public IActionResult _DoctorLeave()
+        {
+            return View();
+        }
+        [Area("PatientManagement")]
+        public IActionResult _SearchPatient()
+        {
+            return View();
+        }
+        [Area("PatientManagement")]
+        public IActionResult _InPatient()
+        {
+            return View();
+        }
+
+
+        public async Task<IActionResult> GetAppointmentDetailByDate(DateTime startDate, DateTime endDate)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                parameter += "&startDate=" + startDate.ToString("dd-MMM-yyyy");
+                parameter += "&endDate=" + endDate.ToString("dd-MMM-yyyy");
+                var serviceResponse = await _patientManagementAPIServices.HttpClientServices.GetAsync<List<DO_PatientAppointmentDetail>>("DoctorDesk/GetAppointmentDetailByDate" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetAppointmentDetailByDate:params:businessKey:{0},startDate:{1},endDate:{2},status:{3}" + AppSessionVariables.GetSessionBusinessKey(HttpContext), startDate, endDate);
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetAppointmentDetailByDate:params:businessKey:{0},startDate:{1},endDate:{2},status:{3}" + AppSessionVariables.GetSessionBusinessKey(HttpContext), startDate, endDate);
+                throw ex;
+            }
+
+
+        }
+
+
+    }
+}

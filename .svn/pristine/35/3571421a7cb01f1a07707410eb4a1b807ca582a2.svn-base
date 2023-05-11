@@ -1,0 +1,138 @@
+﻿
+$(document).ready(function () {
+    //fnGridLoadBedMaster();
+    fnFillWardDescription();
+});
+
+function fnFillWardDescription() {
+
+    if (!IsStringNullorEmpty($('#cboBusinessLocation').val())) {
+        $.getJSON(getBaseURL() + '/WardServices/GetWardListByBusinessId?businessKey=' + $('#cboBusinessLocation').val(), function (result) {
+            var options = $("#cboWards");
+            $("#cboWards").empty();
+
+            $.each(result, function () {
+                options.append($("<option />").val(this.WardId).text(this.WardDesc));
+            });
+            $('#cboWards').selectpicker('refresh');
+        });
+    }
+}
+
+function fnFillRoomDescription() {
+
+    if (!IsStringNullorEmpty($('#cboBusinessLocation').val()) && !IsStringNullorEmpty($('#cboWards').val())) {
+        $.getJSON(getBaseURL() + '/WardServices/GetRoomListByBkWardId?businessKey=' + $('#cboBusinessLocation').val() + '&wardId=' + $('#cboWards').val(), function (result) {
+            var options = $("#cboRooms");
+            $("#cboRooms").empty();
+
+            $.each(result, function () {
+                options.append($("<option />").val(this.RoomId).text(this.RoomDesc));
+            });
+            $('#cboRooms').selectpicker('refresh');
+        });
+    }
+}
+
+function fnFillStoreList() {
+
+    if (!IsStringNullorEmpty($('#cboBusinessLocation').val())) {
+        $.getJSON(getBaseURL() + '/WardServices/GetStoreList?businessKey=' + $('#cboBusinessLocation').val(), function (result) {
+            var options = $("#cboStore");
+            $("#cboStore").empty();
+
+            $.each(result, function () {
+                options.append($("<option />").val(this.StoreCode).text(this.StoreDesc));
+            });
+            $('#cboStore').selectpicker('refresh');
+        });
+    }
+}
+
+var actiontype = "";
+function fnGridLoadBedMaster() {
+    $("#jqgBedMaster").jqGrid('GridUnload');
+    $("#jqgBedMaster").jqGrid({
+        url: getBaseURL() + '/WardServices/GetBedMasterByBkRmId?businessKey=' + $('#cboBusinessLocation').val() + '&roomId=' + $('#cboRooms').val(),
+        datatype: 'json',
+        mtype: 'Post',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Room Number", "Bed Number", "Store Code", "Location ID", "Gender", "Hospital Number", "Bed Status", "Remark", "Actions"],
+        colModel: [
+            { name: "RoomNumber", width: 30, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            { name: "BedNumber", width: 30, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            { name: "StoreCode", width: 30, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            { name: "LocationID", width: 30, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            { name: "Gender", width: 30, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            { name: "HospitalNumber", width: 40, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            { name: "BedStatus", width: 40, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            { name: "Remark", width: 170, editable: true, align: 'left', hidden: true, resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            {
+                name: 'edit', search: false, align: 'left', width: 54, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditBedMaster(event,\'edit\')"><i class="fas fa-pencil-alt"></i> ' + localization.Edit + ' </button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnEditBedMaster(event,\'view\')"><i class="far fa-file-alt"></i> ' + localization.View + ' </button>'
+                }
+            }
+        ],
+        pager: "#jqpBedMaster",
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0,
+        loadComplete: function (data) {
+            SetGridControlByAction();
+        },
+    }).jqGrid('navGrid', '#jqpBedMaster', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpBedMaster', {
+        caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshBedMaster
+    }).jqGrid('navButtonAdd', '#jqpBedMaster', {
+        caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddBedMaster
+    });
+    fnAddGridSerialNoHeading();
+}
+
+function fnGridRefreshBedMaster() {
+
+}
+
+function fnAddBedMaster() {
+    $("#PopupBedMaster").modal('show');
+    $(".modal-title").text("Add Bed Details");
+    $("#btnSaveBedMaster").html("<i class='fa fa-save'></i> Save");
+    fnEnableAction(false);
+    fnFillStoreList();
+}
+
+function fnEditBedMaster(e, actiontype) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgBedMaster').jqGrid('getRowData', rowid);
+
+    $("#PopupBedMaster").modal('show');
+    $(".modal-title").text("Edit Bed Details");
+    $("#btnSaveBedMaster").html("<i class='fa fa-save'></i> Save");
+    fnFillStoreList();
+    if (actiontype.trim() == "edit") {
+        $('#PopupBedMaster').find('.modal-title').text("Update Bed Master");
+        $("#btnSaveBedMaster").html(' Update');
+        $("#btnSaveBedMaster").show();
+    }
+    if (actiontype.trim() == "view") {
+        $('#PopupBedMasters').find('.modal-title').text("View Bed Master");
+        $("#btnSaveBedMaster").hide();
+        fnEnableAction(true);
+    }
+}
+
+function fnEnableAction(val) {
+    $("input,textarea").attr('readonly', val);
+    $("select").next().attr('disabled', val);
+}

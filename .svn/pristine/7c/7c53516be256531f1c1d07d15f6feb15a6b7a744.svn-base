@@ -1,0 +1,186 @@
+﻿
+$(document).ready(function () {
+    $('#cboPayperiod').selectpicker('refresh');
+    fnGridLoadAttendanceProcess();
+});
+
+function fnBindPayPeriod() {
+    $('#cboPayperiod').selectpicker('refresh');
+    $.ajax({
+        url: getBaseURL() + '/AttendanceProcess/GetPayPeriodbyBusinessKey?Businesskey=' + $("#cboBusinesskey").val(),
+        datatype: 'json',
+        type: 'POST',
+        async: false,
+        contentType: 'application/json; charset=utf-8',
+        success: function (result) {
+            $('#cboPayperiod').empty();
+            $("#cboPayperiod").append($("<option value='0'>Select</option>"));
+            if (result != null) {
+                for (var i = 0; i < result.length; i++) {
+
+                    $("#cboPayperiod").append($("<option></option>").val(result[i]["PayPeriod"]).html(result[i]["PayPeriod"]));
+                }
+            }
+            $('#cboPayperiod').val($("#cboPayperiod option:first").val());
+            $('#cboPayperiod').selectpicker('refresh');
+            fnGridLoadAttendanceProcess();
+        }
+    });
+}
+
+function fnGridLoadAttendanceProcess() {
+    $("#jqgAttandanceProcess").GridUnload();
+    $("#jqgAttandanceProcess").jqGrid({
+        url: getBaseURL() + '/AttendanceProcess/GetAttendanceProcessbyBusinessKey?Businesskey=' + $("#cboBusinesskey").val() + "&Payperiod=" + $("#cboPayperiod").val(),
+        datatype: "json",
+        contenttype: "application/json; charset-utf-8",
+        mtype: 'POST',
+        colNames: ["Business Key", "Pay Period", "Employee Name", "Employee Number", "Working days", "Lop days", "Attended days", "Attendance Factor","Is Vacation Pay","Status"],
+        colModel: [
+            { name: "BusinessKey", width: 70, align: 'left', editable: true, editoptions: { maxlength: 6 }, resizable: false, hidden: true },
+            { name: "PayPeriod", width: 70, editable: false, editoptions: { disabled: true }, align: 'left', edittype: 'text' },
+            { name: "EmployeeName", width: 70, editable: false, editoptions: { disabled: true }, align: 'left', edittype: 'text' },
+            { name: "EmployeeNumber", width: 70, editable: false, editoptions: { disabled: true }, align: 'left', edittype: 'text', hidden: true },
+            { name: "Workingdays", width: 80, editable: false, editoptions: { disabled: true }, align: 'left', edittype: 'text' },
+            { name: "Lopdays", editable: true, width: 80, align: 'left', resizeable: false, editoptions: { onkeypress: 'return OnlyNumeric(event)' } },
+            { name: "AttendedDays", width: 80, editable: false, editoptions: { disabled: true }, align: 'left', edittype: 'text' },
+            { name: "AttendanceFactor", width: 80, editable: false, editoptions: { disabled: true }, align: 'left', edittype: 'text'},
+            { name: "IsVacationPay", width: 80, editable: true, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            { name: "ActiveStatus", width: 80, editable: true, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+        ],
+        rowNum: 10000,
+        pager: "#jqpAttandanceProcess", 
+        pgtext: null,
+        pgbuttons: null,
+        viewrecords: false,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        width: 'auto',
+        autowidth: true,
+        shrinkToFit: false,
+        forceFit: false,
+        loadonce: true,
+        cellEdit: true,
+        editurl: 'url',
+        cellsubmit: 'clientArray',
+        onSelectRow: function (id) {
+            if (id) { $('#jqgAttandanceProcess').jqGrid('editRow', id, true); }
+           
+        },
+        ondblClickRow: function (id) {
+          
+            fnCalculateFactorGrid(id);
+        },
+      
+        loadComplete: function (data) {
+            $(this).find(">tbody>tr.jqgrow:odd").addClass("myAltRowClassEven");
+            $(this).find(">tbody>tr.jqgrow:even").addClass("myAltRowClassOdd");
+            $("#jqgAttandanceProcess").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+            //SetGridControlByAction();
+        }
+    }).jqGrid('navGrid', '#jqpAttandanceProcess', { add: false, edit: false, search: false, del: false, refresh: false });
+
+}
+
+function fnCalculateFactorGrid(rowId) {
+   
+    var working_days = parseFloat($('#jqgAttandanceProcess').jqGrid('getCell', rowId, 'Workingdays'));
+    var lop_days = parseFloat($('#jqgAttandanceProcess').jqGrid('getCell', rowId, 'Lopdays'));
+
+   if (isNaN(lop_days)) {
+        return;
+    }
+
+    if (lop_days >= working_days) {
+        $("#jqgAttandanceProcess").jqGrid("setCell", rowId, "AttendedDays", 0);
+        $("#jqgAttandanceProcess").jqGrid("setCell", rowId, "AttendanceFactor", 0);
+        $("#jqgAttandanceProcess").jqGrid("setCell", rowId, "Lopdays", 0);
+        return;
+    }
+    else {
+        var attend_days = (working_days - lop_days).toFixed(1);
+
+        var attandance_factor = (working_days / attend_days).toFixed(1);
+
+        //var attandance_factor = (attend_days / working_days).toFixed(1);
+        $("#jqgAttandanceProcess").jqGrid("setCell", rowId, "AttendedDays", attend_days);
+        $("#jqgAttandanceProcess").jqGrid("setCell", rowId, "AttendanceFactor", attandance_factor);
+    }
+}
+
+function OnlyNumeric(e) {
+    
+    if ((e.which < 48 || e.which > 57)) {
+        if (e.which == 8 || e.which == 46 || e.which == 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+}
+
+function fnSaveAttandanceProcess() {
+  
+    var $grid = $("#jqgAttandanceProcess");
+    var att_process = [];
+    var ids = jQuery("#jqgAttandanceProcess").jqGrid('getDataIDs');
+    for (var i = 0; i < ids.length; i++) {
+        var rowId = ids[i];
+        var rowData = jQuery('#jqgAttandanceProcess').jqGrid('getRowData', rowId);
+
+        if (!IsStringNullorEmpty(rowData.Lopdays)) {
+            att_process.push({
+                BusinessKey: $("#cboBusinesskey").val(),
+                PayPeriod: $("#cboPayperiod").val(),
+                EmployeeNumber: rowData.EmployeeNumber,
+                Lopdays: rowData.Lopdays,
+                AttendedDays: rowData.AttendedDays,
+                AttendanceFactor: rowData.AttendanceFactor,
+                IsVacationPay: rowData.IsVacationPay,
+                ActiveStatus: rowData.ActiveStatus,
+            });
+        }
+    }
+    if (att_process.length > 0)
+    {
+    $("#btnSave").attr("disabled", true);
+    $.ajax({
+        url: getBaseURL() + '/AttendanceProcess/InsertOrUpdateAttandanceProcess',
+        type: 'POST',
+        datatype: 'json',
+        data: { obj: att_process },
+        async: false,
+        success: function (response) {
+            if (response.Status === true) {
+                toastr.success("saved");
+                $("#jqgAttandanceProcess").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+            }
+            else {
+                toastr.error(response.Message);
+            }
+            $("#btnSave").attr("disabled", false);
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnSave").attr("disabled", false);
+        }
+        });
+
+    }
+}
+
+$(document).on('focusout', '[role="gridcell"] *', function () {
+    $("#jqgAttandanceProcess").jqGrid('editCell', 0, 0, false);
+});
+
+//function SetGridControlByAction() {
+//    $("#btnSave").attr("disabled", false);
+//    if (_userFormRole.IsEdit === false) {
+//        $("#btnSave").attr("disabled", true);
+//    }
+//    if (_userFormRole.IsInsert === false) {
+//        $("#btnSave").attr("disabled", true);
+//    }
+//}

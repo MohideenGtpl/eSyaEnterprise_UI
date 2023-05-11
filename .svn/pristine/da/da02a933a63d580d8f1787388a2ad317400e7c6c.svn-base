@@ -1,0 +1,31 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Warning"
+    }
+  },
+  "Localization": {
+    "Culture": "ar-YE",
+    "UICulture": "ar-YE"
+  },
+  "AllowedHosts": "*",
+
+  "eSyaGateway_API": "https://localhost:44384/api/",
+
+  //"eSyaWebAPIUrl": "https://product.esyahealth.com/eSyaENTConfig_WebAPI/api/",
+  "eSyaWebAPIUrl": "http://localhost:56328/api/",
+  "eSyaClinicalSevices_API": "http://localhost:59936/API/",
+  "eSyaFA_API": "http://localhost:64949/API/",
+  "eSyaVendor_API": "http://localhost:59936/API/",
+  "eSyaMaterial_API": "http://localhost:59936/API/",
+  "eSyaUserMgmt_API": "http://localhost:59936/API/",
+  "Apikey": "1",
+
+  "dbContextType": "prod",
+
+  "ConnectionStrings": {
+    "dbConn_eSyaEnterprise": "Server=103.227.97.123,1433;Database=eSyaEnterprise_Prod;user id=esya;password=Gt@pl#20;"
+  }
+
+}
+ 

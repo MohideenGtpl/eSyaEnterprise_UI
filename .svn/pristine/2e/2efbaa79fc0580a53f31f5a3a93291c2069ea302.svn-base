@@ -1,0 +1,116 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@{
+    ViewData["Title"] = "EWR_04";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/jquery.contextMenu.min.css" rel="stylesheet" />
+
+<script>
+    var localization = {
+        BusinessKey: '@Localizer["BusinessKey"]',
+        WardId: '@Localizer["WardId"]',
+        WardDesc: '@Localizer["WardDescription"]',
+        RoomId: '@Localizer["RoomId"]',
+        RoomDesc: '@Localizer["RoomDescription"]',
+        LocationId: '@Localizer["LocationId"]',
+        NoOfBeds: '@Localizer["NoOfBeds"]',
+        OccupiedBeds: '@Localizer["OccupiedBeds"]',
+        Active: '@Localizer["Active"]',
+        ActiveStatus: '@Localizer["ActiveStatus"]',
+        Actions: '@Localizer["Actions"]',
+        Edit: '@Localizer["Edit"]',
+        View: '@Localizer["View"]',
+        AddWardRoomLink: '@Localizer["AddWardRoomLink"]',
+        UpdateWardRoomLink: '@Localizer["UpdateWardRoomLink"]',
+        ViewWardRoomLink: '@Localizer["ViewWardRoomLink"]',
+        ClassParameters: '@Localizer["ClassParameters"]',
+    }
+</script>
+@section scripts{
+    <script src="~/js/ConfigureWardRoom/WardRoomLink.js"></script>
+    <script src="~/js/jquery.contextMenu.min.js"></script>
+}
+
+<div class="row">
+    <div class="col-lg-3  col-md-4 col-sm-12 col-xs-12">
+        <div class="form-group">
+            <label>@Localizer["BusinessLocation"] </label>
+            <select class="w-100 selectpicker">
+                <option value="value">Select</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <table id="jqgWardRoomLink"></table>
+        <div id="jqpWardRoomLink"></div>
+    </div>
+</div>
+
+<div class="modal fade in" id="PopupWardRoomLink" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document" style="box-shadow:none;">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">@Localizer["AddRoomLocation"]</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row padbot4">
+                    <div class="col-lg-6  col-md-6 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label>@Localizer["WardDescription"] </label>
+                            <select class="w-100 selectpicker">
+                                <option value="value">Select</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-6  col-md-6 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label>@Localizer["RoomDescription"] </label>
+                            <select class="w-100 selectpicker">
+                                <option value="value">Select</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-12">
+                        <div class="form-group">
+                            <label for="txtNoOfBeds"> @Localizer["NoOfBeds"]</label>
+                            <input id="txtNoOfBeds" class="form-control" type="text" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-md-3 col-sm-12 col-xs-12 d-flex align-items-center">
+                        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActiveStatus">
+                            <input type="checkbox" id="chkActiveStatus" class="mdl-checkbox__input">
+                            <span class="mdl-checkbox__label">@Localizer["Active"]</span>
+                        </label>
+                    </div>
+                    <div id="dvParameters" class="col-lg-12 col-md-12 col-sm-12">
+                        <p class="subheading">
+                            @Localizer["ClassParameters"]
+                        </p>
+                        <hr class="left" />
+                        @await Component.InvokeAsync("eSyaParameter", new { parameterType = "6" })
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button primary-button" id="btnSaveWardRoomLink">
+                            <i class="fa fa-save"></i> @Localizer[" Save "]
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" data-dismiss="modal" id="btnCancelWardRoomLink">
+                            <i class="fa fa-times"></i> @Localizer["Cancel"]
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

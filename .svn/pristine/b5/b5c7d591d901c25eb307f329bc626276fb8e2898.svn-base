@@ -1,0 +1,246 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.ActionFilter;
+using eSyaEnterprise_UI.Areas.Config.Models;
+using eSyaEnterprise_UI.Areas.eSyaCustomer.Data;
+using eSyaEnterprise_UI.Areas.eSyaCustomer.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+
+namespace eSyaEnterprise_UI.Areas.eSyaCustomer.Controllers
+{
+    public class CustomerAttributesController : Controller
+    {
+        private readonly IeSyaCustomerAPIServices _eSyaCustomerAPIServices;
+        private readonly ILogger<CustomerController> _logger;
+        public CustomerAttributesController(IeSyaCustomerAPIServices eSyaCustomerAPIServices, ILogger<CustomerController> logger)
+        {
+            _eSyaCustomerAPIServices = eSyaCustomerAPIServices;
+            _logger = logger;
+        }
+        [Area("eSyaCustomer")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public async Task<IActionResult> V_273_00()
+        {
+            try
+            {
+                var parameter = "?CodeType=" + 72;
+                var serviceResponse = await _eSyaCustomerAPIServices.HttpClientServices.GetAsync<List<DO_ApplicationCodes>>("CommonData/GetApplicationCodesByCodeType" + parameter);
+                if (serviceResponse.Status)
+                {
+                    ViewBag.PatientCategory = serviceResponse.Data.Select(b => new SelectListItem
+                    {
+                        Value = b.ApplicationCode.ToString(),
+                        Text = b.CodeDesc,
+                    }).ToList();
+
+                    return View();
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetApplicationCodesByCodeType");
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:ActiveCodeTypes");
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        ///Get Patient Types for Tree View
+        /// </summary>
+        [Produces("application/json")]
+        [HttpGet]
+        public async Task<JsonResult> GetAllPatientTypesforTreeView()
+        {
+            try
+            {
+                List<jsTreeObject> jsTree = new List<jsTreeObject>();
+
+                jsTreeObject jsObj = new jsTreeObject
+                {
+                    id = "MM",
+                    parent = "#",
+                    text = "Patient Types",
+                    state = new stateObject { opened = true, selected = false }
+                };
+                jsTree.Add(jsObj);
+                var parameter = "?CodeType=" + 71;
+                var serviceResponse = await _eSyaCustomerAPIServices.HttpClientServices.GetAsync<DO_CustomerAttributes>("CustomerAttributes/GetAllPatientTypesforTreeView" + parameter);
+                if (serviceResponse.Status)
+                {
+                    var PatientTypes = serviceResponse.Data;
+                    if (PatientTypes != null)
+                    {
+                        foreach (var f in PatientTypes.l_PatientType.OrderBy(o => o.PatientTypeId))
+                        {
+                            jsObj = new jsTreeObject
+                            {
+                                id = "MM" + f.PatientTypeId.ToString(),
+                                text = f.Description,
+                                GroupIndex = f.PatientTypeId.ToString(),
+                                parent = "MM",
+                                state = new stateObject { opened = true, selected = false }
+                            };
+                            jsTree.Add(jsObj);
+                        }
+
+                        foreach (var f in PatientTypes.l_PatienTypeCategory.OrderBy(o => o.PatientTypeId))
+                        {
+                            jsObj = new jsTreeObject
+                            {
+                                id = "SM" + f.PatientTypeId.ToString() + "_" + f.PatientCategoryId.ToString(),
+                                text = f.Description,
+                                GroupIndex = f.PatientTypeId.ToString(),
+                                parent = "MM" + f.PatientTypeId.ToString(),
+                                state = new stateObject { opened = true, selected = false }
+                            };
+                            jsTree.Add(jsObj);
+                        }
+                    }
+                    return Json(jsTree);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetAllPatientTypesforTreeView");
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetAllPatientTypesforTreeView");
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        ///Get Patient Category Info
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetPatientCategoryInfo(int PatientTypeId, int PatientCategoryId)
+        {
+            try
+            {
+                var parameter = "?PatientTypeId=" + PatientTypeId + "&PatientCategoryId=" + PatientCategoryId;
+                var serviceResponse = await _eSyaCustomerAPIServices.HttpClientServices.GetAsync<DO_PatientTypeCategory>("CustomerAttributes/GetPatientCategoryInfo" + parameter);
+                if (serviceResponse.Status)
+                {
+                    return Json(serviceResponse.Data);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetPatientCategoryInfo:For PatientTypeId {0} with PatientCategoryId entered {1}", PatientTypeId, PatientCategoryId);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetPatientCategoryInfo:For PatientTypeId {0} with PatientCategoryId entered {1}", PatientTypeId, PatientCategoryId);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        ///Get Patient Specialty  by PatientTypeId and  PatientCategoryId for Grid
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> GetSpecialtyByPatientTypeAndCategory(int PatientTypeId, int PatientCategoryId)
+        {
+            try
+            {
+                var serviceResponse = await _eSyaCustomerAPIServices.HttpClientServices.GetAsync<List<DO_SpecialtyMaster>>("CustomerAttributes/GetSpecialtyMaster");
+                List<DO_SpecialtyMaster> specialtyMaster = serviceResponse.Data;
+                var parameter = "?PatientTypeId=" + PatientTypeId + "&PatientCategoryId=" + PatientCategoryId;
+                var serviceResp = await _eSyaCustomerAPIServices.HttpClientServices.GetAsync<List<DO_PatientTypeSpecialty>>("CustomerAttributes/GetSpecialtyByPatientTypeAndCategory" + parameter);
+                List<DO_PatientTypeSpecialty> specialtydata = serviceResp.Data;
+
+                if (serviceResponse.Status && serviceResp.Status)
+                {
+                    foreach (var obj in specialtyMaster)
+                    {
+                        if (PatientCategoryId != 0)
+                        {
+                            if (specialtydata.Count > 0)
+                            {
+                                var isSpecialty = specialtydata
+                                      .Where(c => c.PatientTypeId == PatientTypeId && c.PatientCategoryId==PatientCategoryId && c.SpecialtyId == obj.SpecialtyId).FirstOrDefault();
+
+                                if (isSpecialty != null)
+                                {
+                                    obj.ActiveStatus = true;
+                                }
+                                else
+                                {
+                                    obj.ActiveStatus = false;
+                                }
+
+                            }
+                        }
+                    }
+                    return Json(specialtyMaster);
+                }
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetSpecialtyByPatientTypeAndCategory:For PatientTypeId {0} with PatientCategoryId entered {1}", PatientTypeId, PatientCategoryId);
+                    return Json(new { Status = false, StatusCode = "500" });
+                }
+            }
+
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetSpecialtyByPatientTypeAndCategory:For PatientTypeId {0} with PatientCategoryId entered {1}", PatientTypeId, PatientCategoryId);
+                throw ex;
+            }
+
+        }
+
+
+
+
+        /// <summary>
+        /// Insert or Update Patient Category
+        /// </summary>
+        [HttpPost]
+        public async Task<JsonResult> InsertOrUpdatePatientCategory(DO_PatientTypeCategory obj)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(obj.PatientCategoryId.ToString()) || obj.PatientCategoryId == 0)
+                {
+                    return Json(new DO_ReturnParameter() { Status = false, Message = "Please Select Patient Category" });
+                }
+               
+                else
+                {
+                    obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+                    obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                    obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                   
+                        var serviceResponse = await _eSyaCustomerAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("CustomerAttributes/InsertOrUpdatePatientCategory", obj);
+                        if (serviceResponse.Status)
+                            return Json(serviceResponse.Data);
+                        else
+                        {
+                            _logger.LogError(new Exception(serviceResponse.Message), "UD:InsertOrUpdatePatientCategory:params:" + JsonConvert.SerializeObject(obj));
+                            return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                        }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:InsertOrUpdatePatientCategory:params:" + JsonConvert.SerializeObject(obj));
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+    }
+}

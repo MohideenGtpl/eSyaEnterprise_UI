@@ -1,0 +1,164 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = "EPM_13_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/bottom-sheets.css" rel="stylesheet" />
+<script src="~/js/bottom-sheets.js"></script>
+<script>
+    var localization = {
+            UHID: '@Localizer["UHID"]',
+            VisitDate: '@Localizer["Visit Date"]',
+            PatientName: '@Localizer["Patient Name"]',
+            Gender: '@Localizer["Gender"]',
+            Age: '@Localizer["Age"]',
+            PatientTypeDesc: '@Localizer["Patient Type"]',
+            PatientCategoryDesc: '@Localizer["Patient Category"]',
+            RatePlanDesc: '@Localizer["Rate Plan"]',
+            SpecialtyDesc: '@Localizer["Specialty"]',
+            DoctorName: '@Localizer["Doctor Name"]',
+            Actions:'@Localizer["Actions"]'
+    }
+</script>
+<div class="row m-0 py-2">
+    <div class="col-lg-1 offset-lg-11 col-md-1 col-sm-2 d-flex justify-content-end pr-0">
+        <button type="button" class="btn btn-primary" id="btnFilter"> <i class="fa fa-filter"></i></button>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+        <table id="jgvOpBillList"></table>
+        <div id="jpgOpBillList"></div>
+    </div>
+</div>
+
+
+<div id="dvsheet" class="sheet column items-center justify-end" aria-hidden="true">
+    <!-- Dark background for the sheet -->
+    <div class="overlay"></div>
+
+    <!-- The sheet itself -->
+    <div class="contents column border">
+        <!-- Sheet controls -->
+        <header class="controls border-bottom mb-3">
+            <!-- The thing to drag if you want to resize the sheet -->
+            <div class="draggable-area">
+                <div class="draggable-thumb"></div>
+            </div>
+            <div class=" d-block">
+                <h4 class="m-0">Filter</h4>
+                <button class="close-sheet" type="button" title="Close the sheet"><i class="fa fa-times"></i></button>
+            </div>
+        </header>
+
+        <!-- Body of the sheet -->
+        <main class="body fill column">
+            <div class="row">
+                <div class="col-lg-2 col-md-2 col-sm-3">
+                    <div class="card">
+                        <div class="card-header">
+                            Bill Date
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-12 form-group">
+                                    <label>From</label>
+                                    <input id="dtBillFromDate" type="date" name="fromdate" class="form-control" value="" />
+                                </div>
+                                <div class="col-lg-12 col-md-12 col-12 form-group">
+                                    <label>Till</label>
+                                    <input id="dtBillTillDate" type="date" name="todate" class="form-control" value="" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-3">
+                    <div class="card">
+                        <div class="card-header">
+                            ID Filter
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                               
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </main>
+    </div>
+</div>
+<script>
+
+    document.getElementById("dtBillFromDate").valueAsDate = new Date();
+    document.getElementById("dtBillTillDate").valueAsDate = new Date();
+
+    $(function () {
+        fnBottomSheets("#btnFilter","#dvsheet");
+        fnGridLoadOpBillList()
+    });
+
+    function fnGridLoadOpBillList() {
+       // var gridData = [{ UHID: '10021', OpNumber: '3000213', VisitNumber: '5404031', VisitDate: '02/02/2022', PatientName: 'Arya', PatientTypeDesc: 'Inpatient', DoctorName: 'Dr.Pandian', edit: '' }];
+        $("#jgvOpBillList").jqGrid({
+            url: getBaseURL() + '/OpBilling/GetOpBillList',
+            datatype: "json",
+           // data:gridData,
+            contenttype: "application/json; charset-utf-8",
+            mtype: 'GET',
+            postData: {
+                billFromDate: function () { return $('#dtBillFromDate').val() },
+                billTillDate: function () { return $('#dtBillTillDate').val() },
+            },
+            jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+            colNames: ['Bill No.', 'Bill Date', 'UHID', 'Op Number', localization.PatientName, 'TotalBillAmount', 'TotalDiscountAmount', 'TotalConcessionAmount','NetBillAmount', localization.Actions],
+            colModel: [
+                { name: "BillDocumentKey", width: 70, align: 'left' },
+                { name: "DocumentDate", width: 70, resizable: true, width: 150, sortable: true, formatter: "date", formatoptions: { newformat: _cnfjqgDateFormat } },
+                { name: "UHID", width: 70, align: 'left' },
+                { name: "OpNumber", width: 70, align: 'left' },
+                { name: "PatientName", width: 160, resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+                { name: 'TotalBillAmount', index: 'TotalBillAmount', width: 80, align: "right", editable: true, formatter: 'integer', formatoptions: { decimalSeparator: ".", decimalPlaces: 2, thousandsSeparator: ',' } },
+                { name: 'TotalDiscountAmount', index: 'TotalDiscountAmount', width: 80, align: "right", formatter: 'integer', formatoptions: { decimalSeparator: ".", decimalPlaces: 2, thousandsSeparator: ',' } },
+                { name: 'TotalConcessionAmount', index: 'TotalConcessionAmount', width: 80, align: "right", formatter: 'integer', formatoptions: { decimalSeparator: ".", decimalPlaces: 2, thousandsSeparator: ',' } },
+                { name: 'NetBillAmount', index: 'NetBillAmount', width: 80, align: "right", formatter: 'integer', formatoptions: { decimalSeparator: ".", decimalPlaces: 2, thousandsSeparator: ',' } },
+                {
+                    name: 'print', search: false, align: 'center', width: 78, sortable: false, resizable: false,
+                    formatter: function (cellValue, options, rowdata, action) {
+                        //return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Op Bill" id="jqgCreateOpBill" onclick="return fnCreateOpBill(event)"><i class="fas fa-file-invoice"></i></button>';
+                        return '<ul class="navbar-nav"><li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a><div class="dropdown-menu" data-container="body" aria-labelledby="navbarDropdownMenuLink"><a class="dropdown-item" href="#">Action</a><a class="dropdown-item" href="#">Action</a><a class="dropdown-item" href="#">Action</a></div></li></ul>' +
+                        '<i class="fa fa-arrow-right"></i>'
+                    }
+                }
+            ],
+            pager: "#jpgOpBillList",
+            rowNum: 10000,
+            rownumWidth: '55',
+            pgtext: null,
+            pgbuttons: null,
+            loadonce: true,
+            viewrecords: true,
+            gridview: true,
+            rownumbers: true,
+            height: 'auto',
+            align: "left",
+            width: 'auto',
+            autowidth: true,
+            shrinkToFit: true,
+            forceFit: true,
+            scrollOffset: 0,
+            loadComplete: function (data) {
+                fnJqgridSmallScreen("jgvOpBillList");
+            },
+
+        });
+        fnAddGridSerialNoHeading();
+    }
+
+</script>
+
+

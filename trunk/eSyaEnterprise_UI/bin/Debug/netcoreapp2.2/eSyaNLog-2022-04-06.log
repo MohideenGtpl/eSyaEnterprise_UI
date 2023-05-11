@@ -1,0 +1,262 @@
+2022-04-06 21:39:39.7938|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/|action: 
+2022-04-06 21:39:39.9787|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2022-04-06 21:39:49.0846|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/images/esya-products-yellow-with-footer.jpg|action: 
+2022-04-06 21:39:49.0104|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/images/logo/esya-logo-black.png|action: 
+2022-04-06 21:39:49.1461|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/lib/bootstrap/dist/css/bootstrap.min.css|action: 
+2022-04-06 21:39:49.2751|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/js/Inputmask/bindings/inputmask.binding.js|action: 
+2022-04-06 21:39:49.2751|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/css/material.min.css|action: 
+2022-04-06 21:39:49.7907|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/css/esyafonts.css|action: 
+2022-04-06 21:39:49.3176|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/css/animate.css|action: 
+2022-04-06 21:39:49.9098|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/css/all.min.css|action: 
+2022-04-06 21:39:49.9055|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/css/esyaTheme.css|action: 
+2022-04-06 21:39:50.0781|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/css/bootstrap-select.css|action: 
+2022-04-06 21:39:50.3152|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/css/login.css|action: 
+2022-04-06 21:39:51.2087|2|ERROR|Microsoft.AspNetCore.Server.IIS.Core.IISHttpServer|Connection ID "18086456118015426640", Request ID "80000051-0003-fb00-b63f-84710c7967bb": An unhandled exception was thrown by the application. System.ObjectDisposedException: The CancellationTokenSource has been disposed.
+   at System.Threading.CancellationTokenSource.ThrowObjectDisposedException()
+   at System.Threading.CancellationTokenSource.Cancel()
+   at Microsoft.AspNetCore.Server.IIS.Core.IISHttpContext.<>c__DisplayClass314_0.<AbortIO>b__0(Object t)|url: |action: 
+2022-04-06 21:39:51.3545|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/fonts/fa-solid-900.woff2|action: 
+2022-04-06 21:39:51.3772|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/fonts/esyaFonts/Roboto/Roboto-Regular.ttf|action: 
+2022-04-06 21:39:51.5225|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/favicon.ico|action: 
+2022-04-06 21:40:39.0743|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/|action: 
+2022-04-06 21:40:55.0107|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/|action: 
+2022-04-06 21:40:56.6861|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/Home|action: 
+2022-04-06 21:40:58.9482|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/css/jquery-ui.min.css|action: 
+2022-04-06 21:40:58.9738|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/css/jqgridcustomstyle.css|action: 
+2022-04-06 21:40:59.0211|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/css/ui.jqgrid.css|action: 
+2022-04-06 21:40:58.9128|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/images/logo/esya-logo-whitebg.jpeg|action: 
+2022-04-06 21:40:59.6751|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/css/master.css|action: 
+2022-04-06 21:40:59.7650|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/js/jquery.sessionTimeout.js|action: 
+2022-04-06 21:41:00.0982|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/css/site.css|action: 
+2022-04-06 21:41:00.2447|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/fonts/fa-regular-400.woff2|action: 
+2022-04-06 21:41:00.3718|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/json/errormessage.json|action: 
+2022-04-06 21:41:00.3992|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/json/menuitem.json|action: 
+2022-04-06 21:41:00.3178|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/js/Inputmask/inputmask-userdefined.js|action: 
+2022-04-06 21:41:12.4858|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/Account/Logout|action: 
+2022-04-06 21:41:13.0736|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/css/sessionTimeout.css|action: 
+2022-04-06 21:41:26.7547|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/|action: 
+2022-04-06 21:41:32.9030|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/|action: 
+2022-04-06 21:41:54.9052|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/Home|action: 
+2022-04-06 21:43:40.1097|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/|action: 
+2022-04-06 21:43:40.2016|3|WARN|Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware|Failed to determine the https port for redirect. |url: http://localhost/|action: 
+2022-04-06 21:43:43.6782|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/images/esya-products-yellow-with-footer.jpg|action: 
+2022-04-06 21:43:43.7066|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/images/logo/esya-logo-black.png|action: 
+2022-04-06 21:44:25.4822|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/|action: 
+2022-04-06 21:44:30.5096|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/Home|action: 
+2022-04-06 21:44:57.9335|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/eSyaOutPatient/PatientClinicalForms/PreOperative|action: 
+2022-04-06 21:45:05.2102|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/css/eSyaNursingStation/patientClinicalInformation.css|action: 
+2022-04-06 21:45:05.4299|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/js/eSyaOutPatient/PatientClinicalForms/preoperative.js|action: 
+2022-04-06 21:45:05.6606|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/PatientRegistration/GetPatientByUHID|action: 
+2022-04-06 21:45:11.3134|1|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An unhandled exception has occurred while executing the request. System.AggregateException: An error occurred while writing to logger(s). (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Invalid format string. Expected 2 format parameters, but failed to lookup parameter index 1) (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Invalid format string. Expected 2 format parameters, but failed to lookup parameter index 1) ---> System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list.
+   at System.Text.StringBuilder.AppendFormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.Format(IFormatProvider provider, String format, Object[] args)
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.Format(Object[] values)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.ToString()
+   at Microsoft.Extensions.Logging.LoggerExtensions.MessageFormatter(Object state, Exception error)
+   at Microsoft.Extensions.Logging.Console.ConsoleLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   --- End of inner exception stack trace ---
+---> (Inner Exception #0) System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list.
+   at System.Text.StringBuilder.AppendFormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.Format(IFormatProvider provider, String format, Object[] args)
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.Format(Object[] values)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.ToString()
+   at Microsoft.Extensions.Logging.LoggerExtensions.MessageFormatter(Object state, Exception error)
+   at Microsoft.Extensions.Logging.Console.ConsoleLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)<---
+
+---> (Inner Exception #1) System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list.
+   at System.Text.StringBuilder.AppendFormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.Format(IFormatProvider provider, String format, Object[] args)
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.Format(Object[] values)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.ToString()
+   at Microsoft.Extensions.Logging.LoggerExtensions.MessageFormatter(Object state, Exception error)
+   at Microsoft.Extensions.Logging.Debug.DebugLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)<---
+
+---> (Inner Exception #2) System.FormatException: Invalid format string. Expected 2 format parameters, but failed to lookup parameter index 1 ---> System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.GetValue(Object[] values, Int32 index)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.get_Item(Int32 index)
+   at NLog.Extensions.Logging.NLogMessageParameterList.TryGetParameterName(IReadOnlyList`1 parameterList, Int32 i, Nullable`1& originalMessageIndex, String& parameterKey)
+   --- End of inner exception stack trace ---
+   at NLog.Extensions.Logging.NLogMessageParameterList.TryGetParameterName(IReadOnlyList`1 parameterList, Int32 i, Nullable`1& originalMessageIndex, String& parameterKey)
+   at NLog.Extensions.Logging.NLogMessageParameterList.IsValidParameterList(IReadOnlyList`1 parameterList, Nullable`1& originalMessageIndex, Boolean& hasMessageTemplateCapture, Boolean& isMixedPositional, Boolean& isPositional)
+   at NLog.Extensions.Logging.NLogMessageParameterList..ctor(IReadOnlyList`1 parameterList)
+   at NLog.Extensions.Logging.NLogMessageParameterList.TryParse(IReadOnlyList`1 parameterList)
+   at NLog.Extensions.Logging.NLogLogger.TryParseMessageTemplate(LogLevel nLogLogLevel, IReadOnlyList`1 messageProperties, NLogMessageParameterList& messageParameters)
+   at NLog.Extensions.Logging.NLogLogger.CreateLogEventInfo[TState](LogLevel nLogLogLevel, TState state, Exception exception, Func`3 formatter)
+   at NLog.Extensions.Logging.NLogLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)<---
+|url: http://localhost/PatientRegistration/GetPatientByUHID|action: GetPatientByUHID
+2022-04-06 21:45:11.5262|3|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An exception was thrown attempting to execute the error handler. System.ArgumentNullException: Value cannot be null.
+Parameter name: logger
+   at Microsoft.Extensions.Logging.LoggerExtensions.Log(ILogger logger, LogLevel logLevel, EventId eventId, Exception exception, String message, Object[] args)
+   at Microsoft.Extensions.Logging.LoggerExtensions.LogError(ILogger logger, Exception exception, String message, Object[] args)
+   at eSyaEnterprise_UI.Extension.ExceptionMiddlewareExtensions.<>c.<<ConfigureExceptionHandler>b__0_1>d.MoveNext() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Extension\ExceptionMiddlewareExtensions.cs:line 44
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/PatientRegistration/GetPatientByUHID|action: GetPatientByUHID
+2022-04-06 21:45:11.5705|1|ERROR|Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware|An unhandled exception has occurred while executing the request. System.AggregateException: An error occurred while writing to logger(s). (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Invalid format string. Expected 2 format parameters, but failed to lookup parameter index 1) (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Invalid format string. Expected 2 format parameters, but failed to lookup parameter index 1) ---> System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list.
+   at System.Text.StringBuilder.AppendFormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.Format(IFormatProvider provider, String format, Object[] args)
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.Format(Object[] values)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.ToString()
+   at Microsoft.Extensions.Logging.LoggerExtensions.MessageFormatter(Object state, Exception error)
+   at Microsoft.Extensions.Logging.Console.ConsoleLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   --- End of inner exception stack trace ---
+---> (Inner Exception #0) System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list.
+   at System.Text.StringBuilder.AppendFormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.Format(IFormatProvider provider, String format, Object[] args)
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.Format(Object[] values)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.ToString()
+   at Microsoft.Extensions.Logging.LoggerExtensions.MessageFormatter(Object state, Exception error)
+   at Microsoft.Extensions.Logging.Console.ConsoleLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)<---
+
+---> (Inner Exception #1) System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list.
+   at System.Text.StringBuilder.AppendFormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.Format(IFormatProvider provider, String format, Object[] args)
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.Format(Object[] values)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.ToString()
+   at Microsoft.Extensions.Logging.LoggerExtensions.MessageFormatter(Object state, Exception error)
+   at Microsoft.Extensions.Logging.Debug.DebugLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)<---
+
+---> (Inner Exception #2) System.FormatException: Invalid format string. Expected 2 format parameters, but failed to lookup parameter index 1 ---> System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.GetValue(Object[] values, Int32 index)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.get_Item(Int32 index)
+   at NLog.Extensions.Logging.NLogMessageParameterList.TryGetParameterName(IReadOnlyList`1 parameterList, Int32 i, Nullable`1& originalMessageIndex, String& parameterKey)
+   --- End of inner exception stack trace ---
+   at NLog.Extensions.Logging.NLogMessageParameterList.TryGetParameterName(IReadOnlyList`1 parameterList, Int32 i, Nullable`1& originalMessageIndex, String& parameterKey)
+   at NLog.Extensions.Logging.NLogMessageParameterList.IsValidParameterList(IReadOnlyList`1 parameterList, Nullable`1& originalMessageIndex, Boolean& hasMessageTemplateCapture, Boolean& isMixedPositional, Boolean& isPositional)
+   at NLog.Extensions.Logging.NLogMessageParameterList..ctor(IReadOnlyList`1 parameterList)
+   at NLog.Extensions.Logging.NLogMessageParameterList.TryParse(IReadOnlyList`1 parameterList)
+   at NLog.Extensions.Logging.NLogLogger.TryParseMessageTemplate(LogLevel nLogLogLevel, IReadOnlyList`1 messageProperties, NLogMessageParameterList& messageParameters)
+   at NLog.Extensions.Logging.NLogLogger.CreateLogEventInfo[TState](LogLevel nLogLogLevel, TState state, Exception exception, Func`3 formatter)
+   at NLog.Extensions.Logging.NLogLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)<---
+|url: http://localhost/PatientRegistration/GetPatientByUHID|action: GetPatientByUHID
+2022-04-06 21:48:40.3464|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/eSyaOutPatient/PatientClinicalForms/PreOperative|action: 
+2022-04-06 21:52:08.1758|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/lib/bootstrap/dist/js/jquery-3.2.1.min.js|action: 
+2022-04-06 21:52:08.2269|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/lib/jquery/dist/jquery.js|action: 
+2022-04-06 21:52:08.2269|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/lib/bootstrap/dist/js/bootstrap.min.js|action: 
+2022-04-06 21:52:08.2018|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/lib/bootstrap/dist/js/popper.min.js|action: 
+2022-04-06 21:52:08.7233|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/js/material.min.js|action: 
+2022-04-06 21:52:08.7508|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/js/all.min.js|action: 
+2022-04-06 21:52:08.7838|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/js/jquery-ui.min.js|action: 
+2022-04-06 21:52:09.3332|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/js/jquery.jqGrid.min.js|action: 
+2022-04-06 21:52:09.3938|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/js/bootstrap-select.js|action: 
+2022-04-06 21:52:09.5361|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/js/bootbox.min.js|action: 
+2022-04-06 21:52:09.3668|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/js/i18n/grid.locale-en.js|action: 
+2022-04-06 21:52:09.7234|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/js/jquery.sessionTimeout.js|action: 
+2022-04-06 21:52:10.0061|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/images/logo/esya-logo-whitebg.jpeg|action: 
+2022-04-06 21:52:10.1162|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/js/Inputmask/inputmask.js|action: 
+2022-04-06 21:52:10.1532|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/js/Inputmask/jquery.inputmask.js|action: 
+2022-04-06 21:52:10.3530|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/js/Inputmask/inputmask-userdefined.js|action: 
+2022-04-06 21:52:10.5156|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/js/Inputmask/bindings/inputmask.binding.js|action: 
+2022-04-06 21:52:10.5611|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/js/eSyaOutPatient/PatientClinicalForms/preoperative.js|action: 
+2022-04-06 21:52:10.8661|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/js/utility/cf-input-validation.js|action: 
+2022-04-06 21:52:11.2344|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/js/utility/cf-input-validation.js|action: 
+2022-04-06 21:52:11.4566|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/PatientRegistration/GetPatientByUHID|action: 
+2022-04-06 21:52:11.5009|1|WARN|Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware|CookieRequestCultureProvider returned the following unsupported cultures 'en-US'. |url: http://localhost/js/material.min.js|action: 
+2022-04-06 21:52:12.4503|1|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An unhandled exception has occurred while executing the request. System.AggregateException: An error occurred while writing to logger(s). (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Invalid format string. Expected 2 format parameters, but failed to lookup parameter index 1) (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Invalid format string. Expected 2 format parameters, but failed to lookup parameter index 1) ---> System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list.
+   at System.Text.StringBuilder.AppendFormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.Format(IFormatProvider provider, String format, Object[] args)
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.Format(Object[] values)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.ToString()
+   at Microsoft.Extensions.Logging.LoggerExtensions.MessageFormatter(Object state, Exception error)
+   at Microsoft.Extensions.Logging.Console.ConsoleLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   --- End of inner exception stack trace ---
+---> (Inner Exception #0) System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list.
+   at System.Text.StringBuilder.AppendFormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.Format(IFormatProvider provider, String format, Object[] args)
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.Format(Object[] values)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.ToString()
+   at Microsoft.Extensions.Logging.LoggerExtensions.MessageFormatter(Object state, Exception error)
+   at Microsoft.Extensions.Logging.Console.ConsoleLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)<---
+
+---> (Inner Exception #1) System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list.
+   at System.Text.StringBuilder.AppendFormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.Format(IFormatProvider provider, String format, Object[] args)
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.Format(Object[] values)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.ToString()
+   at Microsoft.Extensions.Logging.LoggerExtensions.MessageFormatter(Object state, Exception error)
+   at Microsoft.Extensions.Logging.Debug.DebugLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)<---
+
+---> (Inner Exception #2) System.FormatException: Invalid format string. Expected 2 format parameters, but failed to lookup parameter index 1 ---> System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.GetValue(Object[] values, Int32 index)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.get_Item(Int32 index)
+   at NLog.Extensions.Logging.NLogMessageParameterList.TryGetParameterName(IReadOnlyList`1 parameterList, Int32 i, Nullable`1& originalMessageIndex, String& parameterKey)
+   --- End of inner exception stack trace ---
+   at NLog.Extensions.Logging.NLogMessageParameterList.TryGetParameterName(IReadOnlyList`1 parameterList, Int32 i, Nullable`1& originalMessageIndex, String& parameterKey)
+   at NLog.Extensions.Logging.NLogMessageParameterList.IsValidParameterList(IReadOnlyList`1 parameterList, Nullable`1& originalMessageIndex, Boolean& hasMessageTemplateCapture, Boolean& isMixedPositional, Boolean& isPositional)
+   at NLog.Extensions.Logging.NLogMessageParameterList..ctor(IReadOnlyList`1 parameterList)
+   at NLog.Extensions.Logging.NLogMessageParameterList.TryParse(IReadOnlyList`1 parameterList)
+   at NLog.Extensions.Logging.NLogLogger.TryParseMessageTemplate(LogLevel nLogLogLevel, IReadOnlyList`1 messageProperties, NLogMessageParameterList& messageParameters)
+   at NLog.Extensions.Logging.NLogLogger.CreateLogEventInfo[TState](LogLevel nLogLogLevel, TState state, Exception exception, Func`3 formatter)
+   at NLog.Extensions.Logging.NLogLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)<---
+|url: http://localhost/PatientRegistration/GetPatientByUHID|action: GetPatientByUHID
+2022-04-06 21:52:12.6199|3|ERROR|Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware|An exception was thrown attempting to execute the error handler. System.ArgumentNullException: Value cannot be null.
+Parameter name: logger
+   at Microsoft.Extensions.Logging.LoggerExtensions.Log(ILogger logger, LogLevel logLevel, EventId eventId, Exception exception, String message, Object[] args)
+   at Microsoft.Extensions.Logging.LoggerExtensions.LogError(ILogger logger, Exception exception, String message, Object[] args)
+   at eSyaEnterprise_UI.Extension.ExceptionMiddlewareExtensions.<>c.<<ConfigureExceptionHandler>b__0_1>d.MoveNext() in D:\eSya Project\Solution\eSyaEnterprise_UI\trunk\eSyaEnterprise_UI\Extension\ExceptionMiddlewareExtensions.cs:line 44
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.Invoke(HttpContext context)|url: http://localhost/PatientRegistration/GetPatientByUHID|action: GetPatientByUHID
+2022-04-06 21:52:12.7251|1|ERROR|Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware|An unhandled exception has occurred while executing the request. System.AggregateException: An error occurred while writing to logger(s). (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Invalid format string. Expected 2 format parameters, but failed to lookup parameter index 1) (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Index (zero based) must be greater than or equal to zero and less than the size of the argument list.) (Invalid format string. Expected 2 format parameters, but failed to lookup parameter index 1) ---> System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list.
+   at System.Text.StringBuilder.AppendFormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.Format(IFormatProvider provider, String format, Object[] args)
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.Format(Object[] values)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.ToString()
+   at Microsoft.Extensions.Logging.LoggerExtensions.MessageFormatter(Object state, Exception error)
+   at Microsoft.Extensions.Logging.Console.ConsoleLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   --- End of inner exception stack trace ---
+---> (Inner Exception #0) System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list.
+   at System.Text.StringBuilder.AppendFormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.Format(IFormatProvider provider, String format, Object[] args)
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.Format(Object[] values)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.ToString()
+   at Microsoft.Extensions.Logging.LoggerExtensions.MessageFormatter(Object state, Exception error)
+   at Microsoft.Extensions.Logging.Console.ConsoleLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)<---
+
+---> (Inner Exception #1) System.FormatException: Index (zero based) must be greater than or equal to zero and less than the size of the argument list.
+   at System.Text.StringBuilder.AppendFormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
+   at System.String.Format(IFormatProvider provider, String format, Object[] args)
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.Format(Object[] values)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.ToString()
+   at Microsoft.Extensions.Logging.LoggerExtensions.MessageFormatter(Object state, Exception error)
+   at Microsoft.Extensions.Logging.Debug.DebugLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)<---
+
+---> (Inner Exception #2) System.FormatException: Invalid format string. Expected 2 format parameters, but failed to lookup parameter index 1 ---> System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Microsoft.Extensions.Logging.Internal.LogValuesFormatter.GetValue(Object[] values, Int32 index)
+   at Microsoft.Extensions.Logging.Internal.FormattedLogValues.get_Item(Int32 index)
+   at NLog.Extensions.Logging.NLogMessageParameterList.TryGetParameterName(IReadOnlyList`1 parameterList, Int32 i, Nullable`1& originalMessageIndex, String& parameterKey)
+   --- End of inner exception stack trace ---
+   at NLog.Extensions.Logging.NLogMessageParameterList.TryGetParameterName(IReadOnlyList`1 parameterList, Int32 i, Nullable`1& originalMessageIndex, String& parameterKey)
+   at NLog.Extensions.Logging.NLogMessageParameterList.IsValidParameterList(IReadOnlyList`1 parameterList, Nullable`1& originalMessageIndex, Boolean& hasMessageTemplateCapture, Boolean& isMixedPositional, Boolean& isPositional)
+   at NLog.Extensions.Logging.NLogMessageParameterList..ctor(IReadOnlyList`1 parameterList)
+   at NLog.Extensions.Logging.NLogMessageParameterList.TryParse(IReadOnlyList`1 parameterList)
+   at NLog.Extensions.Logging.NLogLogger.TryParseMessageTemplate(LogLevel nLogLogLevel, IReadOnlyList`1 messageProperties, NLogMessageParameterList& messageParameters)
+   at NLog.Extensions.Logging.NLogLogger.CreateLogEventInfo[TState](LogLevel nLogLogLevel, TState state, Exception exception, Func`3 formatter)
+   at NLog.Extensions.Logging.NLogLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)
+   at Microsoft.Extensions.Logging.Logger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter)<---
+|url: http://localhost/PatientRegistration/GetPatientByUHID|action: GetPatientByUHID

@@ -1,0 +1,62 @@
+﻿
+@{
+    ViewData["Title"] = "V_51_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts{
+    <script src="~/js/Config/UserGroup.js"></script>
+    <script src="~/js/jsTree.js"></script>
+}
+    <link href="~/css/jsTree.css" rel="stylesheet" />
+<div class="row padbot10">
+    <div class="col-lg-8 col-md-8 col-sm-12">
+        <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-6">
+                <div class="form-group">
+                    <label class="lable-color"> User Group</label>
+
+                    <select class="selectpicker" data-live-search="true" id="" title="" data-size="8">
+                        <option value="0"> Choose User Group</option>
+
+                    </select>
+
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6">
+                <div class="form-group">
+                    <label class="lable-color"> User Type</label>
+
+                    <select class="selectpicker" data-live-search="true" id="" title="" data-size="8">
+                        <option value="0"> Choose User Type</option>
+
+                    </select>
+
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-12">
+        <div id="treeUG" style="overflow:auto; height:500px;">
+            <ul>
+                <li>
+                    eSya Menu
+
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $('a.mdl-layout__tab').click(function () {
+            $('a.mdl-layout__tab').removeClass('is-active');
+            $(this).addClass("is-active");
+            
+        })
+        
+        $('a[href="#fixed-tab-2"]').addClass('is-active');
+    })
+</script>

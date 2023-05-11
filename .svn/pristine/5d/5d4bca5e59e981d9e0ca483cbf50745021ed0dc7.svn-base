@@ -1,0 +1,261 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+<div class="row">
+    <div class="col-lg-10 col-md-10 col-sm-10 pad0">
+        <div class="row mar0">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <p class="subheading">@Localizer["EmployeeDetails"] </p>
+                <hr class="left" />
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                <label>@Localizer["BusinessKey"] </label>
+
+                <select class="selectpicker" data-live-search="true" id="cboBusinessKey" title="Select" data-size="8">
+                    <option value="0"> @Localizer["Select"]</option>
+                    @foreach (var bk in ViewBag.Businesskey)
+                    {
+                        <option value="@bk.BusinessKey">@bk.LocationDescription</option>
+                    }
+                </select>
+
+            </div>
+
+
+            <input type="text" class="form-control" id="txtEmployeenumber" style="display:none" />
+            <input type="text" class="form-control" id="txtBusinesskey" style="display:none" />
+
+            <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                <label>@Localizer["EmployeeID"] </label>
+                <input type="text" class="form-control" id="txtEmployeeId" maxlength="15" />
+            </div>
+            <div class="col-lg-2 col-md-6 col-sm-6 form-group">
+                <label>@Localizer["Title"] </label>
+                <select class="form-control selectpicker" id="cboTitle">
+                    <option value="0">@Localizer["Select"] </option>
+                    <option value="Mr">@Localizer["Mr"] </option>
+                    <option value="Mrs">@Localizer["Mrs"] </option>
+                    <option value="Miss">@Localizer["Miss"] </option>
+                    <option value="Dr">@Localizer["Dr"] </option>
+                </select>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-6 form-group">
+                <label>@Localizer["EmployeeName"] </label>
+                <input type="text" class="form-control" id="txtEmployeename" maxlength="75" pattern="^[a-zA-Z _]+$" autocomplete="off" />
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6 form-group">
+                <label>@Localizer["BiometricCode"] </label>
+                <input type="text" class="form-control" id="txtBiometriccode" maxlength="15" />
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6 form-group">
+                <label>@Localizer["Gender"] </label>
+                <select class="form-control selectpicker" id="cboGender">
+                    <option value="0">@Localizer["Select"] </option>
+                    <option value="M">@Localizer["Male"] </option>
+                    <option value="F">@Localizer["Female"] </option>
+                </select>
+            </div>
+
+            <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                <label>@Localizer["EmailID"] </label>
+                <input type="text" class="form-control" id="txtEmailId" />
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6 form-group">
+                <label>@Localizer["MobileNo"] </label>
+                <input type="text" class="form-control" id="txtMobilenumber" maxlength="15" />
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6 form-group">
+                <div class="default-checkbox">
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkWillingtoworkinshifts">
+                        <input type="checkbox" id="chkWillingtoworkinshifts" class="mdl-checkbox__input">
+                        <span class="mdl-checkbox__label">@Localizer["Willingnesstoworkinshifts"] </span>
+                    </label>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6 form-group">
+                <div class="default-checkbox separate">
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkExemptedfromATT">
+                        <input type="checkbox" id="chkExemptedfromATT" class="mdl-checkbox__input">
+                        <span class="mdl-checkbox__label">@Localizer["IsExemptedfromATT"]</span>
+                    </label>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6 form-group">
+                <div class="default-checkbox separate">
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActiveStatus">
+                        <input type="checkbox" id="chkActiveStatus" class="mdl-checkbox__input">
+                        <span class="mdl-checkbox__label">@Localizer["Active"] </span>
+                    </label>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-2">
+        <div class="form-group">
+            <label>@Localizer["Photo"] </label>
+            <div class="imagedig" style="border:thin; padding-bottom:5px;" id="imgPhoto">
+                <img id="imgPhotoimageblah" src="">
+                <input class="mdl-textfield__input fullwidth FileUpload" id="Photoimage" type="file" name="file" onchange="readPhotoimage(this);" accept='image/*' enctype="multipart/form-data" style="border-bottom:none !important" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+
+    <div class="col-lg-3 col-md-6 col-sm-6 form-group">
+        <label>@Localizer["EmployeeClass"] </label>
+        <select class="selectpicker" data-live-search="true" id="cboEmployeeclass" title="" data-size="8">
+            <option value="0"> @Localizer["Select"] </option>
+            @foreach (var empclass in ViewBag.EmployeeClass)
+            {
+                <option value="@empclass.EmployeeClass">@empclass.ClassDesc</option>
+            }
+        </select>
+    </div>
+    <div class="col-lg-2 col-md-6 col-sm-6 form-group">
+        <label>@Localizer["EmployeeGroup"] </label>
+        <select class="selectpicker" data-live-search="true" id="cboEmployeegroup" title="" data-size="8">
+            <option value="0"> @Localizer["Select"] </option>
+            @foreach (var empgroup in ViewBag.EmployeeGroup)
+            {
+                <option value="@empgroup.ApplicationCode">@empgroup.CodeDesc</option>
+            }
+        </select>
+    </div>
+    <div class="col-lg-2 col-md-6 col-sm-6 form-group">
+        <label>@Localizer["EmployeePayCategory"] </label>
+        <select class="selectpicker" data-live-search="true" id="cboEmployeepaycategory" title="" data-size="8">
+            <option value="0"> @Localizer["Select"] </option>
+            @foreach (var empgroup in ViewBag.EmployeePayCategory)
+            {
+                <option value="@empgroup.ApplicationCode">@empgroup.CodeDesc</option>
+            }
+        </select>
+    </div>
+
+    <div class="col-lg-2 col-md-6 col-sm-6 form-group">
+        <label>@Localizer["ProbationTillDate"] </label>
+        <input type="text" class="form-control datepicker" id="txtDateofProbationTill" />
+    </div>
+    <div class="col-lg-2 col-md-6 col-sm-6 form-group">
+        <label>@Localizer["EmployeeStatus"] </label>
+        <input type="text" class="form-control" id="txtEmployeeStatus" maxlength="1" />
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <p class="subheading">@Localizer["EmployeeStatus"] </p>
+        <hr class="left" />
+    </div>
+    <div class="col-lg-2 col-md-6 col-sm-6 form-group">
+        <label>@Localizer["DateofJoining"] </label>
+        <input type="text" class="form-control datepicker" id="txtDateofjoining" />
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-6 form-group">
+        <label>@Localizer["DateofConfirmation"] </label>
+        <input type="text" class="form-control datepicker" id="txtDateofconfirmation" />
+    </div>
+    <div class="col-lg-2 col-md-6 col-sm-6 form-group">
+        <label>@Localizer["DateofResignation"] </label>
+        <input type="text" class="form-control datepicker" id="txtDateofresignation" />
+    </div>
+    <div class="col-lg-2 col-md-6 col-sm-6 form-group">
+        <label>@Localizer["DateofRelieving"] </label>
+        <input type="text" class="form-control datepicker" id="txtDateofrelieving" />
+    </div>
+    <div class="col-lg-2 col-md-6 col-sm-6 form-group">
+        <label>@Localizer["DateofTermination"] </label>
+        <input type="text" class="form-control datepicker" id="txtDateoftermination" />
+    </div>
+
+    <div class="col-lg-5 col-md-6 col-sm-6 form-group">
+        <label>@Localizer["CurrentDepartment"] </label>
+        <input type="text" class="form-control integerFormat" id="txtCurrentdepartment" />
+    </div>
+    <div class="col-lg-2 col-md-6 col-sm-6 form-group">
+        <label>@Localizer["CurrentLocationPosted"] </label>
+        <input type="text" class="form-control integerFormat" id="txtCurrentlocationposted" />
+    </div>
+    <div class="col-lg-2 col-md-6 col-sm-6 form-group lbl-right">
+        <label>@Localizer["CurrentBasic"] </label>
+        <input type="text" class="form-control decimalFormat" id="txtCurrentbasic" />
+    </div>
+    <div class="col-lg-2 col-md-6 col-sm-6 form-group lbl-right">
+        <label>@Localizer["CurrentGross"] </label>
+        <input type="text" class="form-control decimalFormat" id="txtCurrentgross" />
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-6 form-group">
+        <div class="default-checkbox separate">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkSuspensionemploymenttenure">
+                <input type="checkbox" id="chkSuspensionemploymenttenure" class="mdl-checkbox__input">
+                <span class="mdl-checkbox__label">@Localizer["AnySuspensionduringemploymentTenure"] </span>
+            </label>
+        </div>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+        <hr />
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent btn-back mr-10 c-white" onclick="fnCloseEmployeeDetails()"><i class="fas fa-chevron-left"></i>@Localizer["Back"] </button>
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button mr-10" id="btnSaveEmployeeDetails" onclick="fnSaveEmployeeDetails()">
+            <i class="fa fa-save"></i> @Localizer["Save"]  
+        </button>
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button" id="btnCancel" onclick="fnCloseEmployeeDetails()"><i class="fa fa-redo"></i>@Localizer["Cancel"] </button>
+    </div>
+</div>
+
+
+
+<script>
+
+    var sizeLimit = 1024 * 2;
+
+    function readPhotoimage(input) {
+        if (input.files && input.files[0]) {
+
+            var sizeInMb = input.files[0].size / 1024;
+
+            if (!(input.files[0].type.match(/image.*/))) {
+                toastr.warning("Invalid format file uploaded");
+                input.value = null;
+                return;
+            }
+            if (sizeInMb > sizeLimit) {
+                toastr.warning("User Photo file size should be smaller than 2 MB");
+                input.value = null;
+                return;
+            }
+
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('imgPhotoimageblah').src = e.target.result;
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    //function readDSimage(input) {
+    //    if (input.files && input.files[0]) {
+
+    //        var sizeInMb = input.files[0].size / 1024;
+
+    //        if (!(input.files[0].type.match(/image.*/))) {
+    //            toastr.warning("Invalid format file uploaded");
+    //            input.value = null;
+    //            return;
+    //        }
+    //        if (sizeInMb > sizeLimit) {
+    //            toastr.warning("User Signature file size should be smaller than 2 MB");
+    //            input.value = null;
+    //            return;
+    //        }
+
+    //        var reader = new FileReader();
+    //        reader.onload = function (e) {
+    //            document.getElementById('imgDSimageblah').src = e.target.result;
+    //        }
+    //        reader.readAsDataURL(input.files[0]);
+    //    }
+    //}
+
+
+</script>

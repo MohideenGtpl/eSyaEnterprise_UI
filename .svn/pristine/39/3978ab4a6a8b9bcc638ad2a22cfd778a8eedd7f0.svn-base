@@ -1,0 +1,200 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Net.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using eSyaEnterprise_UI.Utility;
+using eSyaEnterprise_UI.Areas.Config.Models;
+using eSyaEnterprise_UI.Areas.eSyaFA.Models;
+using eSyaEnterprise_UI.Areas.eSyaFA.Data;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.ActionFilter;
+
+namespace eSyaEnterprise_UI.Areas.eSyaFA.Controllers
+{
+    public class AssetRegisterController : Controller
+    {
+        ESyaFA_WebAPI _eSyaFAWebAPI = new ESyaFA_WebAPI();
+        ESyaWebAPI _eSyaWebAPI = new ESyaWebAPI();
+
+        private readonly IeSyaFixedAssetsAPIServices _eSyaFixedAssetsAPIServices;
+        public AssetRegisterController(IeSyaFixedAssetsAPIServices eSyaFixedAssetsAPIServices)
+        {
+            _eSyaFixedAssetsAPIServices = eSyaFixedAssetsAPIServices;
+        }
+
+        [Area("eSyaFixedAssets")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public IActionResult V_2011_00()
+        {
+            var response = _eSyaFixedAssetsAPIServices.HttpClientServices.GetAsync<List<DO_AssetGroup>>("AssetGroup/GetAssetGroupAndSubGroup").Result;
+            List<DO_AssetGroup> dtAssetGroup = response.Data;
+            List<DO_AssetGroup> a_grp = dtAssetGroup.Select(x => new DO_AssetGroup { AssetGroupID = x.AssetGroupID, AssetGroup = x.AssetGroup }).GroupBy(y => y.AssetGroupID, (key, grp) => grp.FirstOrDefault()).ToList();
+            ViewBag.AGroup = a_grp;
+
+            List<int> l_ac = new List<int>();
+            l_ac.Add(CodeTypeValues.Model);
+            l_ac.Add(CodeTypeValues.Manufacturer);
+            var response2 = _eSyaFixedAssetsAPIServices.HttpClientServices.PostAsJsonAsync<List<DO_ApplicationCodes>>("CommonData/GetApplicationCodesByCodeTypeList", l_ac).Result;
+            if (response2.Status)
+            {
+                List<DO_ApplicationCodes> ac = response2.Data.Where(x => x.CodeType == CodeTypeValues.Model).ToList();
+                ViewBag.MDappcodes = ac;
+                ac = response2.Data.Where(x => x.CodeType == CodeTypeValues.Manufacturer).ToList();
+                ViewBag.MGappcodes = ac;
+            }
+            else
+            {
+                ViewBag.MDappcodes = null;
+                ViewBag.MGappcodes = null;
+            }
+
+            ViewBag.formName = "Asset Register";
+            return View();
+        }
+
+        /// <summary>
+        /// Get Asset Sub Group for the given Asset group
+        /// </summary>
+        public JsonResult GetAssetSubGroup(int assetGroup)
+        {
+            var response = _eSyaFixedAssetsAPIServices.HttpClientServices.GetAsync<List<DO_AssetGroup>>("AssetGroup/GetAssetGroupAndSubGroup").Result;
+            List<DO_AssetGroup> dtAssetGroup = response.Data;
+            List<DO_AssetGroup> asg = dtAssetGroup.Where(x => x.AssetGroupID == assetGroup && x.ActiveStatus == true).ToList();
+
+            return Json(asg);
+        }
+        
+        /// <summary>
+        /// Insert Asset Register
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertAssetRegisterHeader(DO_AssetRegister obj)
+        {
+
+            try
+            {
+                obj.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+
+                var result = _eSyaFixedAssetsAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("AssetRegister/InsertAssetRegisterHeader", obj).Result;
+                return Json(result.Data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        /// <summary>
+        /// Create Asset Register Detail data based on header data
+        /// </summary>
+        public JsonResult GetAssetRegisterDetail(int internalAssetnumber)
+        {
+            var response = _eSyaFixedAssetsAPIServices.HttpClientServices.GetAsync<List<DO_AssetRegisterDetail>>("AssetRegister/GetAssetRegisterDetail?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext) + "&internalAssetANumber=" + internalAssetnumber).Result;
+            List<DO_AssetRegisterDetail> asd = response.Data;
+            return Json(asd);
+        }
+
+        /// <summary>
+        /// Update Asset Register
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertUpdateAssetRegisterDetail(DO_AssetRegisterDetail obj)
+        {
+
+            try
+            {
+                
+                obj.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+                obj.FormID = AppSessionVariables.GetSessionFormInternalID(HttpContext);
+
+                var result = _eSyaFixedAssetsAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("AssetRegister/InsertUpdateAssetRegisterDetail", obj).Result;
+                return Json(result.Data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+
+        [Area("eSyaFixedAssets")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public IActionResult V_2012_00()
+        {
+            var response = _eSyaFixedAssetsAPIServices.HttpClientServices.GetAsync<List<DO_AssetGroup>>("AssetGroup/GetAssetGroupAndSubGroup").Result;
+            List<DO_AssetGroup> dtAssetGroup = response.Data;
+            List<DO_AssetGroup> a_grp = dtAssetGroup.Select(x => new DO_AssetGroup { AssetGroupID = x.AssetGroupID, AssetGroup = x.AssetGroup }).GroupBy(y => y.AssetGroupID, (key, grp) => grp.FirstOrDefault()).ToList();
+            ViewBag.AGroup = a_grp;
+
+            List<int> l_ac = new List<int>();
+            l_ac.Add(CodeTypeValues.Model);
+            l_ac.Add(CodeTypeValues.Manufacturer);
+            var response2 = _eSyaFixedAssetsAPIServices.HttpClientServices.PostAsJsonAsync<List<DO_ApplicationCodes>>("CommonData/GetApplicationCodesByCodeTypeList", l_ac).Result;
+            if (response2.Status)
+            {
+                List<DO_ApplicationCodes> ac = response2.Data.Where(x => x.CodeType == CodeTypeValues.Model).ToList();
+                ViewBag.MDappcodes = ac;
+                ac = response2.Data.Where(x => x.CodeType == CodeTypeValues.Manufacturer).ToList();
+                ViewBag.MGappcodes = ac;
+            }
+            else
+            {
+                ViewBag.MDappcodes = null;
+                ViewBag.MGappcodes = null;
+            }
+
+            ViewBag.formName = "Asset Register Edit";
+            return View();
+        }
+
+        /// <summary>
+        /// Get Asset Register header records as List
+        /// </summary>
+        public JsonResult GetAssetRegisterHeaderList()
+        {
+            var response = _eSyaFixedAssetsAPIServices.HttpClientServices.GetAsync<List<DO_AssetRegister>>("AssetRegister/GetAssetRegisterHeaderList?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext)).Result;
+            List<DO_AssetRegister> asd = response.Data;
+            return Json(asd);
+        }
+
+        /// <summary>
+        /// Get Register Header data for Internal Asset Number
+        /// </summary>
+        public JsonResult GetAssetRegisterHeader(int internalAssetnumber)
+        {
+            var response = _eSyaFixedAssetsAPIServices.HttpClientServices.GetAsync<DO_AssetRegister>("AssetRegister/GetAssetRegisterHeader?businessKey=" + AppSessionVariables.GetSessionBusinessKey(HttpContext) + "&internalAssetANumber=" + internalAssetnumber).Result;
+            DO_AssetRegister asd = response.Data;
+            return Json(asd);
+        }
+
+        /// <summary>
+        /// Update Asset Register
+        /// </summary>
+        [HttpPost]
+        public JsonResult UpdateAssetRegisterHeader(DO_AssetRegister obj)
+        {
+            try
+            {
+                obj.BusinessKey = AppSessionVariables.GetSessionBusinessKey(HttpContext);
+                obj.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                obj.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                var result = _eSyaFixedAssetsAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("AssetRegister/UpdateAssetRegisterHeader", obj).Result;
+                return Json(result.Data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.InnerException == null ? ex.Message.ToString() : ex.InnerException.Message });
+            }
+        }
+    }
+}

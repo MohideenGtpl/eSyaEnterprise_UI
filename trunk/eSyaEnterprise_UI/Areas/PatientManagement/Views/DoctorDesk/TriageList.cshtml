@@ -1,0 +1,247 @@
+﻿
+@{
+    ViewData["Title"] = "TriageList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<link href="~/dashboardAssets/vendors/mdi/css/materialdesignicons.min.css" rel="stylesheet" />
+<link href="~/dashboardAssets/vendors/css/vendor.bundle.base.css" rel="stylesheet" />
+<link href="~/dashboardAssets/css/style.css" rel="stylesheet" />
+<script src="~/js/jquery.jqGrid.min.js"></script>
+<link href="~/css/jquery.contextMenu.min.css" rel="stylesheet" />
+
+@section scripts{
+    <script src="~/js/jquery-ui.min.js"></script>
+    <script src="~/js/i18n/grid.locale-en.js"></script>
+    <script src="~/js/jquery.jqGrid.min.js"></script>
+    <script src="~/js/jquery.contextMenu.min.js"></script>
+}
+
+<script src="~/dashboardAssets/js/off-canvas.js"></script>
+<script src="~/dashboardAssets/js/hoverable-collapse.js"></script>
+<script src="~/dashboardAssets/js/misc.js"></script>
+
+<!-- endinject -->
+<!-- Custom js for this page -->
+<script src="~/dashboardAssets/js/dashboard.js"></script>
+<script src="~/dashboardAssets/js/todolist.js"></script>
+
+
+<div class="">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-2 col-md-4 col-sm-6 form-group">
+                <label class="lable-color"> @Localizer["FromDate"]</label>
+                <input type="date" name="fromdate" value="" class="form-control" id="txtfromdate" onchange="fnLoadAppointmentDetail()" />
+            </div>
+            <div class="col-lg-2 col-md-4 col-sm-6 form-group">
+                <label class="lable-color">  @Localizer["ToDate"]</label>
+                <input type="date" name="todate" value="" class="form-control" id="txttodate" onchange="fnLoadAppointmentDetail()" />
+            </div>
+        </div>
+        <div class="row padbot10">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <table id="jqgAppointmentDetail"></table>
+                <div id="jqpAppointmentDetail"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $(".content-wrapper").css('display', 'none');
+        $("#divTodaysAppointment").css('display', 'block');
+    });
+    $(".nav-link").click(function () {
+        console.log("Clicked: " + $(this).attr('data-flag'));
+        $(".content-wrapper").css('display', 'none');
+        $("#" + $(this).attr('data-flag')).css({ 'display': 'block' });
+        $(".ui-jqgrid").setGridWidth($('.card-body').width() - 42, true);
+    });
+    var localization = {
+        VisitNumber: '@Localizer["VisitNumber"]',
+        MRN: '@Localizer["MRN"]',
+        PatientName: '@Localizer["PatientName"]',
+        DoctorName: '@Localizer["DoctorName"]',
+        Mobile: '@Localizer["Mobile"]',
+        Email: '@Localizer["Email"]',
+        AppointmentDate: '@Localizer["AppointmentDate"]',
+        AppointmentTime: '@Localizer["AppointmentTime"]',
+        Status: '@Localizer["Status"]',
+        CreatedBy: '@Localizer["CreatedBy"]',
+        Triage: '@Localizer["Triage"]',
+
+    }
+
+    $(document).ready(function () {
+        fnSetCurrentdate();
+        fnLoadAppointmentDetail();
+
+        $(window).on('resize', function () {
+            if ($(window).width() < 1025) {
+                fnJqgridSmallScreen('jqgAppointmentDetail');
+            }
+        });
+        $.contextMenu({
+            // define which elements trigger this menu
+            selector: ".btnEMRTriage",
+            trigger: 'left',
+            // define the elements of the menu
+            items: {
+                triageEMR: { name: 'Triage EMR', icon: "view", callback: function (key, opt) { fnOpenTriage(event) } }
+            }
+            // there's more, have a look at the demos and docs...
+        });
+        $(".context-menu-icon-edit").html("<span class='icon-contextMenu'><i class='fa fa-eye'></i> View EMR</span>");
+        $(".context-menu-icon-view").html("<span class='icon-contextMenu'><i class='fa fa-bell'></i> Triage Form </span>");
+
+    });
+
+    function fnSetCurrentdate() {
+        var date = new Date();
+
+        var day = date.getDate();
+        var month = date.getMonth() + 1;
+        var year = date.getFullYear();
+
+        if (month < 10) month = "0" + month;
+        if (day < 10) day = "0" + day;
+
+        var today = year + "-" + month + "-" + day;
+        document.getElementById("txtfromdate").value = today;
+        document.getElementById("txttodate").value = today;
+    }
+    function fnLoadAppointmentDetail() {
+
+        $("#jqgAppointmentDetail").jqGrid('GridUnload');
+        var fromdate = $("#txtfromdate").val();
+        var todate = $("#txttodate").val();
+
+        if (fromdate == "" || fromdate == null) {
+            fnAlert("Please select From Date", "e");
+            return false;
+        }
+        if (todate == "" || todate == null) {
+            fnAlert("Please select To Date", "e");
+            return false;
+        }
+        $("#jqgAppointmentDetail").jqGrid(
+            {
+                url: getBaseURL() + '/DoctorDesk/GetAppointmentDetailByDate',
+                datatype: "json",
+                contentType: "application/json; charset-utf-8",
+                mtype: 'GET',
+                postData: {
+                    doctorId: -1,
+                    startDate: fromdate,
+                    endDate: todate,
+                },
+                ajaxGridOptions: { contentType: 'application/json; charset=utf-8', async: true },
+                colNames: [localization.VisitNumber, localization.DoctorName, localization.MRN, localization.MRN, localization.PatientName, localization.Mobile, localization.Email, localization.AppointmentDate, localization.AppointmentTime, localization.Status, localization.CreatedBy, localization.Triage],
+                colModel: [
+                    { name: "AppointmentKey", width: 60, editable: true, align: 'left', hidden: false },
+                    { name: "DoctorName", width: 100, editable: true, align: 'left', hidden: false },
+                    { name: "PatientID", width: 60, editable: true, align: 'left', hidden: false },
+                    { name: "UHID", width: 60, editable: true, align: 'left', hidden: true },
+
+                    { name: "PatientName", width: 100, editable: true, align: 'left', hidden: false },
+                    { name: "PatientMobileNumber", width: 55, editable: true, align: 'left', hidden: false },
+                    { name: "PatientEmailID", width: 100, editable: true, align: 'left', hidden: true },
+
+
+                    { name: "AppointmentDate", width: 50, editable: true, align: 'center', hidden: false, formatter: 'date', formatoptions: { srcformat: 'Y/m/d H:i:s', newformat: 'd/m/Y' } },
+                    { name: "AppointmentFromTime", width: 50, editable: true, align: 'center', hidden: false },
+                    {
+                        name: "AppointmentStatus", width: 50,hidden: true, editable: true, formatter: 'select',
+                        edittype: 'select', editoptions: {
+                            //value: l_status
+                        },
+                    },
+                    { name: "StrCreatedBy", width: 60, editable: true, align: 'left', hidden: true },
+                    //{
+                    //    name: "Button", width: 60, editable: false, align: 'left', hidden: false, formatter: function (cellValue, options, rowObject) {
+                    //        var i = options.rowId;
+                    //        return "<button id=btnEMR_" + i + " type='button' style='margin-right: 5px;' class='btn btn-primary' onclick=fnOpenEMR('" + rowObject.UHID + "') > <i class='fas fa-edit c-white'></i> View EMR </button >"
+                    //            +
+                    //            "<button id=btnTriage_" + i + " type='button' style='margin-right: 5px;' class='btn btn-primary' onclick=fnOpenTriage('" + rowObject.AppointmentKey + "','" + rowObject.UHID + "') > <i class='fas fa-edit c-white'></i> Triage Form </button >";
+
+                    //    }
+                    //},
+                    {
+                        name: 'edit', search: false, align: 'left', width: 35, sortable: false, resizable: false,
+                        formatter: function (cellValue, options, rowdata, action) {
+                            var i = options.rowId;
+                            return '<button class="mr-1 btn btn-outline btnEMRTriage" id="btnEMRTriage' + i +'"><i class="fa fa-ellipsis-v"></i></button>'
+                        }
+                    },
+                ],
+                loadBeforeSend: function () {
+                    $("[id*='_edit']").css('text-align', 'center');
+                },
+                rowNum: 100000,
+                viewrecords: true,
+                colnumwidth:50,
+                gridview: true,
+                rownumbers: false,
+                scroll: false,
+                loadonce: true,
+                width: 'auto',
+                height: 'auto',
+                autowidth: true,
+                shrinkToFit: true,
+                forceFit: false,
+                pager: "#jqpAppointmentDetail",
+                onSelectRow: function (rowid) {
+
+                },
+                loadComplete: function (data) {
+                    fnJqgridSmallScreen('jqgAppointmentDetail');
+                    var rows = jQuery("#jqgAppointmentDetail").getDataIDs();
+                    console.log(rows);
+                    for (a = 0; a < rows.length; a++) {
+                        row = jQuery("#jqgAppointmentDetail").getRowData(rows[a]);
+                        console.log(row['UHID']);
+
+                        //$("#btnTriage_" + rows[a]).hide();
+                        //if (row['UHID'] > 0) {
+                        //    $("#btnEMRTriage" + rows[a]).show();
+                        //    //$("#btnTriage_" + rows[a]).show();
+                        //}
+
+                        if (row['UHID'] < 0 || row['UHID'] == "" || row['UHID'] == undefined) {
+                            $("#btnEMRTriage" + rows[a]).hide();
+                        }
+                    }
+
+                }
+            });
+
+
+    }
+    function fnOpenEMR(e) {
+        var rowid = $("#jqgAppointmentDetail").jqGrid('getGridParam', 'selrow');
+        var rowData = $('#jqgAppointmentDetail').jqGrid('getRowData', rowid);
+
+        var url = getBaseURL() + '/PatientManagement/ClinicalForms/PatientEMR?UHID=' + rowData.UHID;
+        window.open(
+            url,
+            '_blank'
+            // <- This is what makes it open in a new window.
+            , ''
+        );
+    }
+    function fnOpenTriage(e) {
+        var rowid = $("#jqgAppointmentDetail").jqGrid('getGridParam', 'selrow');
+        var rowData = $('#jqgAppointmentDetail').jqGrid('getRowData', rowid);
+        var url = getBaseURL() + '/PatientManagement/ClinicalForms/Triage?AppKey=' + rowData.AppointmentKey + '&UHID=' + rowData.UHID;
+        window.open(
+            url,
+            '_blank'
+            // <- This is what makes it open in a new window.
+            , ''
+        );
+    }
+</script>

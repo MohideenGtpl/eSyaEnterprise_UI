@@ -1,0 +1,1148 @@
+﻿
+@{
+    ViewData["Title"] = "V_3010_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Scripts{
+
+    <link href="~/css/eSyaOutPatient/Scheduler.css" rel="stylesheet" />
+
+    <link href="~/js/fullcalendar/core/main.css" rel="stylesheet" />
+    <link href="~/js/fullcalendar/daygrid/main.css" rel="stylesheet" />
+    <link href="~/js/fullcalendar/timegrid/main.css" rel="stylesheet" />
+    <link href="~/js/fullcalendar/list/main.css" rel="stylesheet" />
+
+    <link href="~/js/fullcalendar/pm/timeline/main.css" rel="stylesheet" />
+    <link href="~/js/fullcalendar/pm/resource-timeline/main.css" rel="stylesheet" />
+
+    <link href="~/js/fullcalendar/bootstrap/main.css" rel="stylesheet" />
+
+    <script src="~/js/fullcalendar/core/main.js"></script>
+    <script src="~/js/fullcalendar/core/locales-all.min.js"></script>
+    <script src="~/js/fullcalendar/daygrid/main.js"></script>
+    <script src="~/js/fullcalendar/timegrid/main.js"></script>
+    <script src="~/js/fullcalendar/interaction/main.js"></script>
+    <script src="~/js/fullcalendar/bootstrap/main.js"></script>
+    <script src="~/js/fullcalendar/list/main.js"></script>
+    <script src="~/js/fullcalendar/moment/main.js"></script>
+
+    <script src='~/js/fullcalendar/pm/resource-common/main.js'></script>
+    <script src='~/js/fullcalendar/pm/resource-daygrid/main.js'></script>
+    <script src='~/js/fullcalendar/pm/resource-timegrid/main.js'></script>
+    <script src='~/js/fullcalendar/pm/timeline/main.js'></script>
+
+}
+
+<style>
+    hr {
+        border-top: 1px solid #ececec !important;
+    }
+
+    .doctorname {
+        font-size: 16px !important;
+        font-weight: 600 !important;
+        color: #5d5d5d !important;
+        letter-spacing: 0.55px;
+    }
+
+    .AppointmentSectionBox {
+        padding: 15px;
+        border-left: 0px solid #1094f8;
+        box-shadow: 0 1px 2px 1px hsla(0,0%,43%,.14);
+    }
+
+    
+    .m10 {
+        margin: 10px !important;
+    }
+
+    .mar0 {
+        margin: 0px !important
+    }
+
+    .padleft30 {
+        padding-left: 30px !important;
+    }
+
+    #btnMove {
+        position: absolute;
+        right: 0px;
+        top: 0px;
+        border: 0px solid #badef9;
+        padding: 6px 6px;
+        cursor: pointer;
+    }
+
+        #btnMove .svg-inline--fa {
+            color: #797172 !important;
+            font-size: 18px;
+        }
+
+
+    .doctorCol input[type=checkbox] {
+        vertical-align: text-bottom;
+    }
+
+    .doctorCol label {
+        cursor: pointer;
+        color: #1b1b1b !important;
+        padding: 5px;
+        border-bottom: 1px solid #f3f3f3;
+    }
+
+        .doctorCol label:hover {
+            background: aliceblue;
+            color: #0c4ec6 !important;
+        }
+
+    .appointmentSidebar {
+        border: 1px solid #e8edf1;
+        border-radius: 4px;
+        background: #fff !important;
+        width: 210px;
+        position: relative;
+        z-index: 2;
+        padding: 0px;
+    }
+
+        .appointmentSidebar.active {
+            margin-left: -180px !important;
+        }
+
+        .appointmentSidebar input, .appointmentSidebar .selectpicker + .btn {
+            background: transparent !important;
+        }
+
+    .fc-button-primary {
+        color: #003179 !important;
+        background-color: #ffffff !important;
+        border-color: #ffffff !important;
+        font-weight: bold !important;
+        letter-spacing: 1.2px;
+        box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
+    }
+
+    .d-inline-block {
+        display: inline-block !important;
+    }
+
+    .calendarTimeline {
+        width: 83% !important;
+        padding-left: 5px;
+    }
+
+        .calendarTimeline.active {
+            width: 97% !important;
+        }
+
+    .fc-toolbar.fc-header-toolbar {
+        margin-bottom: 0.15em !important;
+        height: 35px;
+    }
+
+     
+
+    .appointmentSidebar .headingText {
+        height: 35px;
+        line-height: 35px !important;
+        margin: 0px !important;
+        background: linear-gradient(to bottom,#fff,#fffcec);
+        padding-left: 15px !important;
+        font-weight: 600;
+        color: #505050;
+        letter-spacing: 1.45px;
+        margin-bottom: 15px !important;
+    }
+
+    .appointmentSidebar .form-group {
+        padding: 0px 27px 0px 15px !important;
+        margin-bottom: 15px !important;
+    }
+
+    .fa-user-md {
+        font-size: 30px !important;
+        color: #b0b0b0 !important
+    }
+
+    #divEnterLocation {
+        display: none;
+    }
+</style>
+
+<div class="row">
+    <div class="appointmentSidebar d-inline-block">
+        <div id="divAppointmentFilter">
+            <p class="headingText">Appointment <span id="btnMove" title="Collapse"><i class="fas fa-bars c-black"></i></span></p>
+           
+                @*<div class="form-group">
+                    <label>Business Key</label>
+                    @await Component.InvokeAsync("UserBusinessLocation")
+                </div>*@
+             
+            <div class="form-group">
+                <label>Clinic Type</label>
+                <select id="cboClinicType" class="selectpicker" onchange="fnLoadDoctorScheduleList()">
+                    <option value="0">Select</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Date</label>
+                <input type="date" name="name" value="" id="dtAppointmentDate" data-date-format="DD-MM-YYYY" onchange="fnLoadDoctorScheduleList()" class="form-control padleft0" />
+            </div>
+            <div class="form-group">
+                <label>Specialty</label>
+                <select id="cboSpecialty" class="selectpicker" onchange="fnLoadDoctorScheduleList()">
+                    <option value="value">Select</option>
+                </select>
+            </div>
+        </div>
+        <div id="divDoctorList">
+            <p class="headingText">Choose Doctors <span id="btnPullUp" title="Collapse"><i class="fas fa-chevron-up c-black"></i></span></p>
+            <div class="form-group">
+                <div id="dvDoctorScheduleList" class="lsDoctor">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="d-inline-block padleft5 calendarTimeline">
+        <div id='calendar'></div>
+    </div>
+
+    <div class="waitlist">
+        <p class="headingText">Reschedule Wait-list</p>
+        <div id='external-events'>
+        </div>
+    </div>
+
+</div>
+
+
+<div class="modal fade in " id="PopupAppointmentScheduler" tabindex="-1" role="dialog" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    @*<div class="modal-dialog modal-md fullwidth m10" role="document">*@
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <button type="button" class="close ml-auto" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title blur">Appointment Scheduler</h4>
+            </div>
+            <div class="modal-body">
+                @await Html.PartialAsync("~/Areas/eSyaOutPatient/Views/AppointmentSchedular/_Confirmation.cshtml")
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnSaveAppointment" onclick="fnSaveAppointmentConfirmation()"><i class="fa fa-save"></i> Save </button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button cancel-button" id="btnCancelBusinessKey"><i class="fa fa-times"></i> Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    
+    $('#PopupAppointmentScheduler').on('show.bs.modal', function () {
+
+        $(".modal-body").addClass('bg-lightgrey');
+        
+    });
+    $('#PopupPatientSearch').on('show.bs.modal', function () {
+
+        $(".blur").addClass('active')
+    });
+    $('#PopupPatientSearch').on('hide.bs.modal', function () {
+
+        $(".blur").removeClass('active')
+    });
+</script>
+
+<script>
+
+    document.getElementById("dtAppointmentDate").valueAsDate = new Date();
+
+
+    $(document).ready(function () {
+        $(".appointmentSidebar,.waitlist,.pullWaitlist").css({
+            'height': $(window).innerHeight() - ($('section.header').outerHeight(true) + $('.banner').outerHeight(true)),
+            'overflow': 'auto'
+        });
+        $("#divDoctorList .headingText").click(function () {
+            $("#divDoctorList").toggleClass('pullUp');
+            $("#btnPullUp").find("svg").toggleClass('fa-chevron-up fa-chevron-down');
+        })
+        $(".doctorCol").css({
+            'max-height': $(window).innerHeight() / 2.8,
+            'overflow': 'auto'
+        });
+        $(".fc-view-container").css({
+            'height': $(window).innerHeight() - 170,
+            'overflow': 'auto'
+        });
+        $(".fc-timegrid-container").css({
+
+            'overflow': 'hidden'
+        });
+
+        onFormLoad();
+    })
+
+    function fnShowPopup() {
+        $("#PopupAppointmentScheduler").modal('show');
+    }
+
+    $(window).resize(function () {
+        $(".appointmentSidebar,.waitlist ,.pullWaitlist").css({
+            'height': $(window).innerHeight() - 131,
+            'overflow': 'auto'
+        });
+    })
+
+    $("#btnMove").click(function () {
+        $(".appointmentSidebar").toggleClass('active');
+        $(".appointmentSidebar .form-group").toggleClass('padright27');
+        $("#calendar").parent().toggleClass('active');
+    })
+    function pullthewaitlist() {
+        $(".waitlist").toggleClass('active');
+        $(".calendarTimeline").toggleClass('slightright');
+
+        //if()
+    }
+    $('#PopupAppointmentScheduler').on('show.bs.modal', function () {
+
+        $(".modal-body").addClass('bg-lightgrey')
+    });
+    $('#PopupPatientSearch').on('show.bs.modal', function () {
+
+        $(".blur").addClass('active')
+    });
+    $('#PopupPatientSearch').on('hide.bs.modal', function () {
+
+        $(".blur").removeClass('active')
+    });
+
+    function onFormLoad() {
+
+        $.get(getBaseURL() + '/AppointmentSchedular/GetClinicConsultationTypeByBKey',
+            function (data) {
+                var s = '<option value="-1">select</option>';
+                for (var i = 0; i < data.length; i++) {
+                    s += '<option data-clinictype=' + data[i].ClinicType + ' data-consultationtype=' + data[i].ConsultationType + '>' +
+                        data[i].ClinicDesc + ' - ' + data[i].ConsultationDesc + '' + '</option>';
+                }
+                $("#cboClinicType").html(s);
+                $("#cboClinicType").selectpicker('refresh');
+            });
+
+        $.get(getBaseURL() + '/AppointmentSchedular/GetSpecialtyListByBKey', 
+            function (data) {
+                var s = '<option value="-1">select</option>';
+                for (var i = 0; i < data.length; i++) {
+                    s += '<option value="' + data[i].SpecialtyId + '" >' + data[i].SpecialtyDesc + '</option>';
+                }
+                $("#cboSpecialty").html(s);
+                $("#cboSpecialty").selectpicker('refresh');
+            });
+    }
+
+    var _l_DoctorID = [];
+    function fnLoadDoctorScheduleList() {
+
+        calendar.destroy();
+        fnInitializerCalendar();
+
+        $("#dvDoctorScheduleList").html("");
+
+        var ds = "";
+        $.ajax({
+            url: getBaseURL() + '/AppointmentSchedular/GetDoctorScheduleListByClinicTypeSpecialtyDate',
+            type: 'get',
+            data: {
+                clinicType: $(':selected', $('#cboClinicType')).data('clinictype'),
+                consultationType: $(':selected', $('#cboClinicType')).data('consultationtype'),
+                specialtyID: $("#cboSpecialty").val(),
+                scheduleDate: $("#dtAppointmentDate").val()
+            },
+            success: function (result) {
+                $.each(result, function (i, item) {
+
+                    ds += "<label id='lbl_" + item.DoctorId + "' ";
+                    if (item.IsOnLeave == true)
+                        ds += " style='color:#808080 !important;'";
+                    ds += ">";
+                    ds += "<input type='checkbox' name='chkDoctor' id=" + item.DoctorId;
+                    if (item.IsOnLeave == true)
+                        ds += " disabled='disabled' ";
+                    ds += "  /> Dr. " + item.DoctorName; //+ "</label>";
+                    if (item.DoctorRemark != null && item.DoctorRemark != "")
+                        ds += "<br/><span style='color: #e80d0d !important;font-size:14px;padding-left:20px'>" + item.DoctorRemark + "</span>";
+                    ds += "</label>";
+                });
+            },
+
+        }).done(function () {
+            $("#dvDoctorScheduleList").html(ds);
+
+            $('input[name="chkDoctor"]').on('change', function () {
+
+                var l_DoctorID = [];
+                $("input:checkbox[name='chkDoctor']:checked").each(function (e) {
+                    l_DoctorID.push($(this).attr("id"));
+                });
+
+                _l_DoctorID = l_DoctorID;
+
+                if (_l_DoctorID.length > 0 && _l_DoctorID != null) {
+                    _specialtyID = $("#cboSpecialty").val();
+                    _specialtyName = $('#cboSpecialty option:selected').text();
+                  
+                    var params = {
+                        clinicType: $(':selected', $('#cboClinicType')).data('clinictype'),
+                        consultationType: $(':selected', $('#cboClinicType')).data('consultationtype'),
+                        specialtyID: $("#cboSpecialty").val(),
+                        doctorID: _l_DoctorID.toString(),
+                        scheduleDate: $("#dtAppointmentDate").val()
+                    };
+
+                    calendar.destroy();
+
+                    $.ajax({
+
+                        url: getBaseURL() + '/AppointmentSchedular/GetDoctorScheduleHours',
+                        type: 'GET',
+                        data: params,
+                        datatype: 'json',
+                        contenttype: 'application/json; charset=utf-8',
+                        success: function (data) {
+                            fnFullCalendarByResource(data.Duration, data.minDate, data.maxDate, data.businessHours);
+                        },
+                        error: function (request, error) {
+                            alert("Request: " + JSON.stringify(request));
+                        }
+                    });
+
+                    fnLoadDoctorWorkList();
+
+                }
+                else {
+                    calendar.destroy();
+                    fnInitializerCalendar();
+                }
+            });
+        });
+    }
+
+    var calendarEl = document.getElementById('calendar');
+    var calendar;
+
+    var _specialtyID = null;
+    var _specialtyName = null;
+    var _doctorID = null;
+    var _doctorName = null;
+    var _appDate = null;
+    var _appTime = null;
+    var _appKey = 0;
+
+    $(function () {
+        fnInitializerCalendar();
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var Calendar = FullCalendar.Calendar;
+        var Draggable = FullCalendarInteraction.Draggable;
+
+        /* initialize the external events */
+        var containerEl = document.getElementById('external-events');
+        new Draggable(containerEl, {
+            itemSelector: '.fc-event',
+            eventData: function (eventEl) {
+                return {
+                    title: eventEl.innerText.trim(),
+                    duration: '00:05'
+                }
+            }
+        });
+    });
+
+    function fnInitializerCalendar() {
+
+        calendar = new FullCalendar.Calendar(calendarEl, {
+            titleFormat: { // will produce something like "Tuesday, September 18, 2018"
+                month: 'long',
+                year: 'numeric',
+                day: 'numeric',
+            },
+            plugins: ['interaction', 'dayGrid', 'timeGrid', 'list', 'timelineWeek'],
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'timeGridDay,list,timeGridWeek,dayGridMonth'
+            },
+            themeSystem: 'bootstrap',
+            defaultView: 'timeGridDay',
+        });
+
+        calendar.render();
+    }
+
+
+    function fnFullCalendarByResource(duration, startTime, endTime, resourcesbusinessHours) {
+
+        var endDate = new Date($("#dtAppointmentDate").val());
+        endDate.setDate(new Date($("#dtAppointmentDate").val()).getDate() + 6);
+
+        calendar = new FullCalendar.Calendar(calendarEl, {
+            titleFormat: { // will produce something like "Tuesday, September 18, 2018"
+                month: 'short',
+                year: 'numeric',
+                day: 'numeric',
+                //weekday: 'long',
+            },
+            plugins: ['interaction', 'dayGrid', 'timeGrid', 'list', 'timelineWeek', 'resourceTimeGrid'],
+            header: {
+                left: 'prev,next today btnReschedule',
+                center: 'title',
+                right: 'resourceTimeGridDay,resourceTimeGridFourDay,list,dayGridMonth,btnWorkList'
+            },
+            themeSystem: 'bootstrap',
+            defaultView: 'resourceTimeGridDay',
+
+            slotDuration: duration,
+            minTime: startTime,
+            maxTime: endTime,
+            defaultDate: $("#dtAppointmentDate").val(),
+            eventLimit: true,
+            businessHours: true,
+            selectable: true,
+            selectConstraint: "businessHours",
+            eventConstraint: "businessHours",
+            timeZone: 'local',
+            editable: true,
+            slotEventOverlap: false,
+            eventOverlap: false,
+            eventResourceEditable: true,
+            droppable: true,
+            customButtons: {
+
+                btnReschedule: {
+                    text: 'Reschedule',
+                    click: function () {
+                        var moment = calendar.getDate();
+
+                        bootbox.confirm({
+                            message: "Do you want to Push all appointment to wait list ?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Yes',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'No',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (result) {
+                                if (result) {
+
+                                    var l_DoctorID = [];
+                                    $("input:checkbox[name='chkDoctor']:checked").each(function (e) {
+                                        l_DoctorID.push($(this).attr("id"));
+                                    });
+
+                                    var obj = {
+                                        specialtyId: _specialtyID,
+                                        doctorId: l_DoctorID.toString(),
+                                        appointmentDate: moment.toDateString(),
+                                    };
+                                    $.ajax({
+                                        url: getBaseURL() + '/AppointmentSchedular/UpdateDoctorAppointmentToUnScheduleWorkOrder',
+                                        type: 'POST',
+                                        datatype: 'json',
+                                        contenttype: 'application/json; charset=utf-8',
+                                        data: obj,
+                                        async: false,
+                                        success: function (response) {
+                                            if (response.Status) {
+                                                toastr.success("All Appointment are push to waiting List");
+                                                fnRefreshScreen();
+                                                fnLoadDoctorWorkList();
+                                            }
+                                            else
+                                                toastr.error(response.Message)
+                                        },
+                                        error: function (error) {
+                                            toastr.error(error.statusText)
+                                        }
+                                    });
+
+                                }
+                            }
+                        });
+                    }
+                },
+
+                btnWorkList: {
+                    text: 'Wait List',
+                    click: function () {
+                        pullthewaitlist();
+                    }
+                }
+            },
+
+            dayRender: function (info) {
+                info.el.style.backgroundColor = 'white';
+            },
+
+            select: function (info) {
+
+                if (info.view.type != "dayGridMonth") {
+
+                    _doctorID = info.resource.id;
+                    _doctorName = info.resource.title;
+
+                    _appDate = new Date(info.startStr);
+                    _appTime = new Date(info.startStr);
+                    _appKey = 0;
+
+                    if (_appDate < new Date()) {
+                        toastr.warning("Appointment Cannot be booked for previous time slot.");
+                        return;
+                    }
+
+                    $.ajax({
+                        url: getBaseURL() + '/AppointmentSchedular/InsertIntoDoctorSlotBooking',
+                        type: 'post',
+                        async: false,
+                        data: {
+                            specialtyId: $("#cboSpecialty").val(),
+                            doctorId: _doctorID.toString(),
+                            appointmentDate: _appDate.toDateString(),
+                            AppointmentFromTime: Converttimeformat(_appTime),
+                            Duration: 5
+                        },
+                        success: function (result) {
+                            if (result.Status) {
+
+                                if (result.Warning) {
+                                    bootbox.confirm({
+                                        message: result.WarningMessage + "! Do you like to book appointment ?",
+                                        buttons: {
+                                            confirm: {
+                                                label: 'Yes',
+                                                className: 'btn-success'
+                                            },
+                                            cancel: {
+                                                label: 'No',
+                                                className: 'btn-danger'
+                                            }
+                                        },
+                                        callback: function (result) {
+                                            console.log('This was logged in the callback: ' + result);
+                                            if (result) {
+                                                fnShowAppointmentConfirmation();
+                                            }
+                                        }
+                                    });
+                                }
+                                else {
+                                    fnShowAppointmentConfirmation();
+                                }
+                            }
+                            else {
+                                toastr.error(result.Message);
+                            }
+                        }
+                    });
+                }
+            },
+
+            dateClick: function (info) {
+            },
+
+            views: {
+                resourceTimeGridFourDay: {
+                    type: 'resourceTimeGrid',
+                    duration: { days: 4 },
+                    buttonText: '4 days'
+                }
+            },
+
+            resources: resourcesbusinessHours,
+
+            eventSources: [
+
+                // your event source
+                {
+                    url: getBaseURL() + '/AppointmentSchedular/GetPatientAppointmentByDoctorDate',
+                    method: 'POST',
+                    extraParams: {
+                        specialtyId: $("#cboSpecialty").val(),
+                        doctorId: _l_DoctorID.toString(),
+                    },
+                    failure: function () {
+                        toastr.error('there was an error while fetching events!');
+                    },
+                    textColor: 'black' // a non-ajax option
+                }
+            ],
+
+            eventDrop: function (info) {
+
+                if (info.view.type != "dayGridMonth") {
+
+                    var event = calendar.getEventById(info.event.id);
+                    var resources = event.getResources();
+
+                    _doctorID = resources.map(function (resource) { return resource.id });
+                    _doctorName = resources.map(function (resource) { return resource.title });
+
+                    var obj = {
+                        SpecialtyId: _specialtyID,
+                        SpecialtyDesc: _specialtyName,
+                        DoctorId: _doctorID,
+                        DoctorName: _doctorName,
+                        AppointmentKey: info.event.id,
+                        AppointmentDate: info.event.start.toDateString(),
+                        AppointmentFromTime: Converttimeformat(new Date(info.event.start)),
+                        Duration: 0
+                    };
+                    var isConfirmed = false;
+                    $.ajax({
+                        url: getBaseURL() + '/AppointmentSchedular/UpdatePatientAppointmentReschedule',
+                        type: 'POST',
+                        datatype: 'json',
+                        contenttype: 'application/json; charset=utf-8',
+                        data: obj,
+                        async: false,
+                        success: function (response) {
+
+                            isConfirmed = response.Status;
+                            if (isConfirmed) {
+                                bootbox.alert("Appointment Rescheduled.Token Number : " + response.QTokenKey);
+                            }
+                            else
+                                toastr.error(response.Message)
+                        },
+                        error: function (error) {
+                            toastr.error(error.statusText)
+                        }
+                    });
+
+                    if (!isConfirmed) {
+                        info.revert();
+                    }
+
+                }
+                else
+                    info.revert();
+            },
+
+            eventResize: function (info) {
+                //  alert(info.event.title + " end is now " + info.event.end.toISOString());
+
+                const start = new Date(info.event.start).getTime();
+                const end = new Date(info.event.end).getTime();
+
+                const diff = end - start;
+                const min = Math.floor(diff / (1000 * 60));
+
+                var event = calendar.getEventById(info.event.id);
+                var resources = event.getResources();
+                _doctorID = resources.map(function (resource) { return resource.id });
+
+                var obj = {
+                    SpecialtyId: _specialtyID,
+                    DoctorId: _doctorID,
+                    AppointmentKey: info.event.id,
+                    AppointmentDate: info.event.start.toDateString(),
+                    //AppointmentFromTime: Converttimeformat(new Date(info.event.start).toLocaleTimeString()),
+                    AppointmentFromTime: Converttimeformat(new Date(info.event.start)),
+                    Duration: min
+                };
+                var isConfirmed = false;
+                $.ajax({
+                    url: getBaseURL() + '/AppointmentSchedular/UpdatePatientAppointmentReschedule',
+                    type: 'POST',
+                    datatype: 'json',
+                    contenttype: 'application/json; charset=utf-8',
+                    data: obj,
+                    async: false,
+                    success: function (response) {
+                        isConfirmed = true;
+                    },
+                    error: function (error) {
+                        toastr.error(error.statusText);
+                    }
+                });
+                if (!isConfirmed) {
+                    info.revert();
+                }
+                else
+                    toastr.success('Schedule changed')
+            },
+
+            eventClick: function (info) {
+               
+                if (info.event.id > 0) {
+
+                    var event = calendar.getEventById(info.event.id);
+                    var resources = event.getResources();
+
+                    _doctorID = resources.map(function (resource) { return resource.id });
+                    _doctorName = resources.map(function (resource) { return resource.title });
+
+                    _appDate = new Date(info.event.start);
+                    //_appTime = new Date(info.event.start).toLocaleTimeString();
+                    _appTime = new Date(info.event.start);
+                    _appKey = info.event.id;
+                  
+                    var dialog = bootbox.dialog({
+                        title: 'Appointment Detail',
+                        message: "<p style='text-align:center'> " + info.event.title + " On " + _appDate.toDateString() + " at " + _appTime.toLocaleTimeString() + "</p>",
+                        size: 'large',
+                        buttons: {
+                            cancel: {
+                                label: "Cancel Appointment!",
+                                className: 'btn-danger',
+                                callback: function () {
+                                    var btnCancel = bootbox.prompt({
+                                        title: "Reason For Cancellation",
+                                        inputType: 'textarea',
+                                        callback: function (result) {
+
+                                            if (result === null) {
+                                                return true;
+                                            }
+                                            else if (result === '') {
+                                                toastr.warning("Please enter the reason for cancellation");
+                                                return false;
+                                            }
+                                            else {
+                                                var obj = {
+                                                    AppointmentKey: _appKey,
+                                                    SpecialtyDesc: _specialtyName,
+                                                    DoctorName: _doctorName,
+                                                    ReasonforCancellation: result
+                                                };
+
+                                                $.ajax({
+                                                    url: getBaseURL() + '/AppointmentSchedular/UpdatePatientAppointmentCancellation',
+                                                    type: 'POST',
+                                                    datatype: 'json',
+                                                    contenttype: 'application/json; charset=utf-8',
+                                                    data: obj,
+                                                    async: true,
+                                                    success: function (result) {
+                                                        if (result.Status) {
+                                                            toastr.success("Cancelled");
+                                                            // fnSendSMSAppointmentCancellation(obj);
+                                                            fnRefreshScreen();
+                                                            return true;
+                                                        }
+                                                        else {
+                                                            toastr.error(result.Message);
+                                                        }
+                                                    },
+                                                    error: function (error) {
+                                                        toastr.error(error.statusText);
+                                                        return false;
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
+                                }
+                            },
+                            change: {
+                                label: "Edit Patient Detail",
+                                className: 'btn-info',
+                                callback: function () {
+                                    fnShowAppointmentConfirmation();
+                                }
+                            },
+                            worklist: {
+                                label: "Push to reschedule work list",
+                                className: 'btn-info',
+                                callback: function () {
+
+                                    fnPushAppointmentToWorkList();
+                                }
+                            },
+                             regn: {
+                                label: "Registered the Patient",
+                                className: 'btn-info',
+                                callback: function () {
+
+                                    bootbox.confirm({
+                                        message: "Do you want to registered this appointment ?",
+                                        buttons: {
+                                            confirm: {
+                                                label: 'Yes',
+                                                className: 'btn-success'
+                                            },
+                                            cancel: {
+                                                label: 'No',
+                                                className: 'btn-danger'
+                                            }
+                                        },
+                                        callback: function (result) {
+                                            if (result) {
+
+                                                var obj = {
+                                                    AppointmentKey: _appKey,
+                                                };
+                                                $.ajax({
+                                                    url: getBaseURL() + '/AppointmentSchedular/SaveRegisterPatientAppointment',
+                                                    type: 'POST',
+                                                    datatype: 'json',
+                                                    contenttype: 'application/json; charset=utf-8',
+                                                    data: obj,
+                                                    async: true,
+                                                    success: function (result) {
+
+                                                        if (result.Status) {
+                                                            toastr.success("Registered");
+                                                            fnRefreshScreen();
+                                                        }
+                                                        else {
+                                                            toastr.error(result.Message);
+                                                        }
+                                                        return true;
+                                                    },
+                                                    error: function (error) {
+                                                        toastr.error(error.statusText);
+                                                        return false;
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
+
+
+                                }
+                            }
+                        }
+                    });
+
+                }
+            },
+
+            drop: function (info) {
+
+                var eventInfo = JSON.parse(info.draggedEl.dataset.event);
+                _isDragDropCompleted = false;
+
+                _doctorID = info.resource.id;
+                _doctorName = info.resource.title;
+
+                var eventInfo = JSON.parse(info.draggedEl.dataset.event);
+
+                var obj = {
+                    SpecialtyId: _specialtyID,
+                    DoctorId: _doctorID,
+                    DoctorName: _doctorName,
+                    AppointmentKey: eventInfo.id,
+                    AppointmentDate: new Date(info.dateStr).toDateString(),
+                    AppointmentFromTime: Converttimeformat(new Date(info.dateStr)),
+                    Duration: 0
+                };
+                $.ajax({
+                    url: getBaseURL() + '/AppointmentSchedular/UpdatePatientAppointmentReschedule',
+                    type: 'POST',
+                    datatype: 'json',
+                    contenttype: 'application/json; charset=utf-8',
+                    data: obj,
+                    async: false,
+                    success: function (response) {
+
+                        if (response.Status) {
+                            bootbox.alert("Appointment Rescheduled.Token Number : " + response.QTokenKey);
+                            info.draggedEl.parentNode.removeChild(info.draggedEl);
+                            _isDragDropCompleted = true;
+                        }
+                        else
+                            toastr.error(response.Message)
+                    },
+                    error: function (error) {
+                        toastr.error(error.statusText)
+                    }
+                });
+
+
+            },
+
+            eventReceive: function (info) {
+                info.event.remove();
+                fnRefreshScreen();
+            },
+
+        });
+
+
+        calendar.render();
+
+        $(".fc-today-button").click(function () {
+            calendar.refetchEvents();
+        });
+    }
+
+    
+
+    function Converttimeformat(time) {
+        var hours = time.getHours();
+        var minutes = time.getMinutes();
+        return hours + ":" + minutes + ":00";
+    }
+
+    function fnRefreshScreen() {
+        calendar.refetchEvents();
+    }
+
+    function fnPushAppointmentToWorkList() {
+
+        var URL = getBaseURL() + '/AppointmentSchedular/UpdatePatientAppointmentToUnScheduleWorkOrder';
+
+        $.ajax({
+            url: URL,
+            type: 'POST',
+            datatype: 'json',
+            data: {
+                AppointmentKey: _appKey
+            },
+            async: true,
+            success: function (response) {
+                if (response.Status) {
+                    fnRefreshScreen();  
+                    fnLoadDoctorWorkList();
+                    toastr.success("Updated");
+                }
+                else {
+                    toastr.error(response.Message);
+                }
+            },
+            error: function (error) {
+                toastr.error(error.statusText);
+            }
+        });
+
+    }
+
+
+    function fnLoadDoctorWorkList()
+    {
+        var l_DoctorID = [];
+        $("input:checkbox[name='chkDoctor']:checked").each(function (e) {
+            l_DoctorID.push($(this).attr("id"));
+        });
+
+        $.ajax({
+            url: getBaseURL() + '/AppointmentSchedular/GetDoctorUnScheduleWorkOrder',
+            type: 'get',
+            async: true,
+            data: {
+                specialtyId: $("#cboSpecialty").val(),
+                doctorId: l_DoctorID.toString()
+            },
+            success: function (result) {
+
+                var ds = "";
+                $.each(result, function (i, item) {
+                    var titleText = item.StartDate +'<br/>';
+                    titleText += item.PatientFirstName + ' ' + item.PatientLastName;
+                    titleText += ' - '+ item.PatientMobileNumber;
+                    var ev = {
+                        id: item.AppointmentKey,
+                        title: item.PatientFirstName + ' ' + item.PatientLastName + '(' + item.PatientMobileNumber +')',
+                        duration: '02:00'
+                    };
+
+                    ds += "<div class='fc-event' data-event='" + JSON.stringify(ev) + "' style='padding:4px' onclick='fnCancelUnScheduleAppointment(" + item.AppointmentKey +")'>" + titleText + "</div>";
+
+                });
+                $("#external-events").html(ds);
+            }
+
+        });
+    }
+
+
+    function fnUpdateAppointmentRescheduleConfirmation(appKey) 
+    {
+
+        var URL = getBaseURL() + '/AppointmentSchedular/UpdatePatientAppointmentToUnScheduleWorkOrder';
+
+        $.ajax({
+            url: URL,
+            type: 'POST',
+            datatype: 'json',
+            contenttype: 'application/json; charset=utf-8',
+            data: {
+                AppointmentKey: _appKey
+            },
+            async: true,
+            success: function (response) {
+
+                if (response.Status) {
+
+                    fnRefreshScreen();
+                    toastr.success("Updated");
+                }
+                else {
+                    toastr.error(response.Message);
+                }
+            },
+            error: function (error) {
+                toastr.error(error.statusText);
+            }
+        });
+
+    }
+
+    function fnCancelUnScheduleAppointment(appKey) {
+
+        var btnCancel = bootbox.prompt({
+            title: "Reason For Cancellation",
+            inputType: 'textarea',
+            callback: function (result) {
+
+                if (result === null) {
+                    return true;
+                }
+                else if (result === '') {
+                    toastr.warning("Please enter the reason for cancellation", "e");
+                    return false;
+                }
+                else {
+
+                    $.ajax({
+                        url: getBaseURL() + '/AppointmentSchedular/UpdatePatientAppointmentCancellation',
+                        type: 'POST',
+                        datatype: 'json',
+                        contenttype: 'application/json; charset=utf-8',
+                        data: {
+                            AppointmentKey: appKey,
+                            ReasonforCancellation: 'NA',
+                            SpecialtyDesc: _specialtyName,
+                            DoctorName: _doctorName,
+                        },
+                        async: true,
+                        success: function (result) {
+                            toastr.success("Cancelled");
+                            fnLoadDoctorWorkList();
+                            return true;
+                        },
+                        error: function (error) {
+                            toastr.error(error.statusText);
+                            return false;
+                        }
+                    });
+
+                }
+            }
+        });
+
+    }
+
+
+</script>

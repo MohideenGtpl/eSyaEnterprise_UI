@@ -1,0 +1,777 @@
+﻿
+var UserID;
+var prevSelectedID;
+var formID;
+var BusinessKey;
+var UserGroup;
+var UserType;
+
+$(document).ready(function () {
+    fnGridLoadUserCreation();
+    fnFillUserCreationValues();
+
+    $('#txtSearch').keyup(function () {
+        var searchString = $(this).val();
+        $('#jstUserGroup').jstree('search', searchString)
+    })
+
+    $("#dvForm").hide();
+    $("#divUserCreationForm").css('display', 'none');
+    $("#divUserCreationGrid").show();
+});
+
+function fnGridLoadUserCreation() {
+    
+    var URL = getBaseURL() + '/UserManagement/GetUserMaster';
+    $("#jqgUserCreation").jqGrid('GridUnload');
+    $("#jqgUserCreation").jqGrid({
+        url: URL,
+        mtype: 'Post',
+        datatype: 'json',
+        data: [{ CodeDesc: '1000', DefaultStatus: 'True', ActiveStatus: 'True' }],
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["User ID","Login ID", "Login Description", "Mobile Number", "Last Activity Date", "Active", ""],
+        colModel: [
+            { name: "UserID", width: 120, editable: true, align: 'left', hidden: true },
+            { name: "LoginID", width: 120, editable: true, align: 'left', hidden: false },
+            { name: "LoginDesc", width: 300, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "MobileNumber", width: 100, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            //{ name: "LastActivityDate", editable: true, width: 100, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            {
+                name: 'LastActivityDate', index: 'LastActivityDate', width: 90, sorttype: "date", formatter: "date", formatoptions:
+                    { newformat: _cnfjqgDateFormat },
+            },
+            { name: "ActiveStatus", editable: false, width: 40, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            //{ name: "ActiveStatus", editable: true, width: 95, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: Inactive" } },
+            {
+                name: 'Edit', search: false, align: 'center', width: 50, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditUserCreation(event)"><i class="fa fa-edit"></i> Edit </button>'
+
+                }
+            },
+        ],
+        rowNum: 10,
+        loadonce: false,
+        pager: "#jqpUserCreation",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        //onSelectRow: function (rowid) {
+        //    UserID = $("#jqgUserCreation").jqGrid('getCell', rowid, 'UserID');
+
+        //},
+        loadComplete: function (data) {
+            SetGridControlByAction();
+
+        },
+        //loadComplete: function (data) {
+        //    $("#btnEdit").attr("disabled", _userFormRole.IsEdit === false);
+        //    if (_userFormRole.IsInsert === false) {
+        //        $('#jqgAdd').addClass('ui-state-disabled');
+        //    }
+        //},
+        shrinkToFit: false,
+        scrollOffset: 0
+    }).jqGrid('navGrid', '#jqpUserCreation', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpUserCreation', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshUserCreation
+        }).jqGrid('navButtonAdd', '#jqpUserCreation', {
+            caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnGridAddUserCreation
+    });
+}
+
+function SetGridControlByAction() {
+    if (_userFormRole.IsInsert === false) {
+        $('#jqgAdd').addClass('ui-state-disabled');
+    }
+    if (_userFormRole.IsEdit === false) {
+        var eleDisable = document.querySelectorAll('#jqgEdit');
+        for (var i = 0; i < eleDisable.length; i++) {
+            eleDisable[i].disabled = true;
+            eleDisable[i].className = "ui-state-disabled";
+        }
+    }
+}
+
+function fnGridRefreshUserCreation() {
+    $("#jqgUserCreation").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+function fnGridAddUserCreation() {
+    $('#txtLoginId').val('');
+    $('#txtLoginDescription').val();
+    $('#txtPassword').val('');
+    $('#txtmobileno').val('');
+    $('#txtemailid').val('');
+    
+    fnGridUserSegment();
+    $("#jqgUserBusinessSegment").trigger('reloadGrid');
+    UserID = 0;
+    
+    //location.href = getBaseURL() + "/eSyaUser/UserManagement/_UserCreation?UserID=" + UserID;
+    $("#divUserCreationForm").css('display', 'block');
+    $("#divUserCreationGrid").hide();
+} 
+
+function fnEditUserCreation(e) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgUserCreation').jqGrid('getRowData', rowid);
+    UserID = rowData.UserID;
+
+    if (UserID != '' && UserID != undefined) {
+        
+        location.href = getBaseURL() + "/eSyaUser/UserManagement/_UserCreation?UserID=" + UserID;
+    }
+}
+
+function fnFillUserCreationValues() {
+    if ($("#txtUserId").val() != '' && $("#txtUserId").val() != undefined) {
+        $.ajax({
+            async: false,
+            url: getBaseURL() + "/UserManagement/GetUserDetails?UserID=" + $("#txtUserId").val(),
+            type: 'post',
+            datatype: 'json',
+            contentType: 'application/json; charset=utf-8',
+            success: function (result) {
+
+                if ($("#txtUserId").val() == 0)
+                    $("#jqBusinessSegmentDiv").hide();
+                else
+                    $("#jqBusinessSegmentDiv").show();
+
+                $('#txtLoginId').val(result.LoginID);
+                $('#txtLoginDescription').val(result.LoginDesc);
+                $('#txtPassword').val(result.Password);
+                $('#txtmobileno').val(result.MobileNumber);
+                $('#txtemailid').val(result.eMailID);
+
+                if (result.userimage != null && result.userimage != "") {
+                    document.getElementById('imgPhoto').innerHTML = '<img id="imgPhotoimageblah" src=" ' + result.userimage + '"  alt=" &nbsp; User Image"   /> <input class="fileInput" id="FileUpload1" type="file" name="file" onchange="readPhotoimage(this);"enctype="multipart/form-data" />'
+                }
+
+
+                if (result.DSimage != null && result.DSimage != "") {
+                    document.getElementById('imgDS').innerHTML = '<img id="imgDSimageblah" src=" ' + result.DSimage + '"  alt="Patient Image"  /> <input class="fileInput" id="DSimage" type="file" name="file" onchange="readDSimage(this);"enctype="multipart/form-data" />'
+                }
+            }
+        });
+    }
+
+    fnGridUserSegment();
+}
+
+function fnGridUserSegment() {
+
+    var UserID = $("#txtUserId").val();
+    if (UserID == null || UserID == "") {
+        UserID = 0;
+    }
+
+    var URL = getBaseURL() + '/UserManagement/GetUserBusinessLocation?UserID=' + UserID;
+    $("#jqgUserBusinessSegment").jqGrid('GridUnload');
+    $("#jqgUserBusinessSegment").jqGrid({
+        url: URL,
+        mtype: 'Post',
+        datatype: 'json',
+        //datatype: 'local',
+        //data: [{ BusinessKey: '1000', LocationDescription: 'True', UserType:'UserType', UserGroup:'User Group', ActiveStatus:true }],
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["IU Status", "Business Key", "Location Description", "User Group Code", "User Group", "User Type", "User Type Code", "Allow MFY", "Active", "Actions"],
+        colModel: [
+            { name: "IUStatus", width: 20, editable: false, align: 'left', hidden: true },
+            { name: "BusinessKey", width: 20, editable: false, align: 'left', hidden: true },
+            { name: "LocationDescription", width: 120, editable: true, align: 'left' },
+
+            { name: "UserGroup", width: 70, editable: false, align: 'left', resizable: false, hidden: true },
+            { name: "UserGroupDesc", width: 70, editable: false, align: 'left', resizable: false },
+            { name: "UserType", editable: false, width: 70, align: 'center', resizable: false, hidden: true },
+            { name: "UserTypeDesc", editable: false, width: 70, align: 'center', resizable: false },
+            { name: "AllowMTFY", editable: false, width: 25, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            { name: "ActiveStatus", editable: false, width: 25, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" } },
+            //{ name: "ActiveStatus", editable: false, width: 28, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: Inactive" } },
+            {
+                name: 'Actions', search: false, align: 'left', width: 110, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" onclick="return fnEditBusinessSegment(event)"><i class="fas fa-pencil-alt"></i> Edit </button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnViewBusinessSegment(event)"><i class="far fa-file-alt"></i> View </button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" id="btnAddMenuLink" onclick="return fnAddMenuLink(event)"><i class="fa fa-bars"></i> Menu Link </button>'
+
+                }
+            },
+        ],
+        rowNum: 10,
+        loadonce: true,
+        pager: "#jqpUserBusinessSegment",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        multiselect: false,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0
+    }).jqGrid('navGrid', '#jqpUserBusinessSegment', { add: false, edit: false, search: false, del: false, refresh: false });
+    $("#jqgUserBusinessSegment").jqGrid('inlineNav', '#jqpUserBusinessSegment',
+        {
+            edit: false,
+            editicon: " fa fa-pen",
+            edittext: "Edit",
+            add: false,
+            addicon: "fa fa-plus",
+            addtext: "Add",
+            save: true,
+            savetext: "  Save ",
+            saveicon: "fa fa-save",
+            cancelicon: "fa fa-ban",
+            canceltext: "  Cancel ",
+            editParams: {
+                keys: false,
+                oneditfunc: function (formid) {
+
+                    $("#" + formid + "_LanguageCode").prop('disabled', true);
+                    $("#" + formid + "_TableCode").prop('disabled', true);
+                },
+                url: null,
+
+                extraparam: {
+
+                },
+
+                successfunc: function (result) {
+                },
+                aftersavefunc: null,
+                errorfun: null,
+                afterrestorefun: null,
+                restoreAfterError: true,
+                mtype: "POST"
+            },
+            addParams: {
+                useDefValues: true,
+                position: "last",
+                addRowParams: {
+                    keys: true,
+                    url: null,
+                    extraparam: {
+
+                    },
+
+                    oneditfunc: function (rowid) {
+
+                    },
+                    successfunc: function (result) {
+                    }
+                }
+            }
+        });
+}
+
+function fnCancelUserMaster() {
+    $("#jqgUserCreation").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+    $("#divUserCreationForm").css('display', 'none');
+    $("#divUserCreationGrid").show();
+}
+
+function validateUserMaster() {
+
+    var PasswordPattern = new RegExp("((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@@#$%!&*]).{8,20})");
+
+    var EmailPattern = /^\w+([-+.'][^\s]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
+
+    if ($("#txtLoginId").val().trim().length <= 0) {
+        toastr.warning("Please Enter Login Id");
+        return false;
+    }
+    if ($("#txtLoginDescription").val().trim().length <= 0) {
+        toastr.warning("Please Enter Login Description");
+        return false;
+    }
+    if ($("#txtPassword").val().trim().length <= 0) {
+        toastr.warning("Please Enter Password");
+        return false;
+    }
+    if ($("#txtmobileno").val().trim().length <= 0) {
+        toastr.warning("Please Enter Mobile No");
+        return false;
+    }
+    if ($("#txtemailid").val().trim().length <= 0) {
+        toastr.warning("Please Enter Email Id");
+        return false;
+    }
+    if (!EmailPattern.test($("#txtemailid").val())) {
+        toastr.warning("Email ID is Not Valid");
+        return false;
+    }
+    if (!PasswordPattern.test($("#txtPassword").val())) {
+        toastr.warning("Password Should Contains : Minimum 1 uppercase character/lower case character required, Minimum 1 special symbol(@@#$%!&*) required, Minimum 1 digit required.");
+        return false;
+    }
+}
+ 
+function fnSaveUserMaster() {
+
+    if (validateUserMaster() === false) {
+        return;
+    }
+
+    $("#btnSaveUserMaster").attr('disabled', true);
+
+    var file = ($('#imgPhoto img').attr('src').indexOf('TakePicture.jpg') > 0) ? null : $('#imgPhoto img').attr('src');// Data URI
+    var DSfile = ($('#imgDS img').attr('src').indexOf('TakePicture.jpg') > 0) ? null : $('#imgDS img').attr('src');// Data URI
+
+    var userId = $("#txtUserId").val();
+    var userMaster;
+    if (userId == null || userId == "") {
+        $("#btnSaveUserMaster").attr('disabled', true);
+        userMaster = {
+            LoginID: $("#txtLoginId").val(),
+            UserID: 0,
+            LoginDesc: $("#txtLoginDescription").val(),
+            Password: $("#txtPassword").val(),
+            MobileNumber: $("#txtmobileno").val(),
+            eMailID: $("#txtemailid").val(),
+            
+        }
+    }
+    else {
+        userMaster = {
+            LoginID: $("#txtLoginId").val(),
+            UserID: $("#txtUserId").val(),
+            LoginDesc: $("#txtLoginDescription").val(),
+            Password: $("#txtPassword").val(),
+            MobileNumber: $("#txtmobileno").val(),
+            eMailID: $("#txtemailid").val(),
+        };
+    }
+
+    $.ajax({
+        async: false,
+        url: getBaseURL() + '/UserManagement/InsertOrUpdateUserMaster',
+        type: 'POST',
+        data: {
+            userMaster: userMaster,
+            file: file,
+            DSfile: DSfile
+        },
+        datatype: 'json',
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                $("#btnSaveUserMaster").attr('disabled', true);
+                $("#btnSaveUserMaster").hide();
+
+                if ($("#txtUserId").val() == 0) {
+
+                    location.href = getBaseURL() + "/eSyaUser/UserManagement/_UserCreation?UserID=" + response.ID;
+                }
+            }
+            else {
+                toastr.error(response.Message);
+            }
+            $("#btnSaveUserMaster").attr('disabled', false);
+            $("#btnSaveUserMaster").show();
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnSaveUserMaster").attr("disabled", false);
+        }
+    }); 
+}
+
+
+function fnGridRefreshUserBL() {
+    $("#jqgUserBusinessSegment").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+function fnEditBusinessSegment(e) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgUserBusinessSegment').jqGrid('getRowData', rowid);
+    $("#PopupBusinessSegment").modal('show');
+    $("#PopupBusinessSegment").find('.modal-title').text("Edit Business Segment");
+
+    $('#txtIUStatus').val(rowData.IUStatus);
+    $('#txtBusinessKey').val(rowData.BusinessKey);
+    $('#txtLocationDescription').val(rowData.LocationDescription);
+    $("#cboUserGroup").val(rowData.UserGroup);
+    $("#cboUserGroup").selectpicker('refresh');
+    $("#cboUserType").val(rowData.UserType);
+    $("#cboUserType").selectpicker('refresh');
+
+    if (rowData.AllowMTFY === "true") {
+        $("#chkIsMultiSegmentApplicable").parent().addClass("is-checked");
+    }
+    else { $("#chkIsMultiSegmentApplicable").parent().removeClass("is-checked"); }
+    
+    $("#chkActiveStatus").parent().addClass("is-checked");
+
+    $("input[type=checkbox]").attr('disabled', false);
+
+    $("#PopupBusinessSegment").on('hidden.bs.modal', function () {
+        $("input[type=checkbox]").attr('disabled', true);
+    });
+
+    $("#btnSaveBusinessSegment").attr('disabled', false);
+
+}
+
+function fnViewBusinessSegment(e) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgUserBusinessSegment').jqGrid('getRowData', rowid);
+    $("#PopupBusinessSegment").modal('show');
+    $("#PopupBusinessSegment").find('.modal-title').text("View Business Segment");
+
+    $('#txtIUStatus').val(rowData.IUStatus);
+    $('#txtBusinessKey').val(rowData.BusinessKey);
+    $('#txtLocationDescription').val(rowData.LocationDescription);
+    $("#cboUserGroup").val(rowData.UserGroup);
+    $("#cboUserGroup").selectpicker('refresh');
+    $("#cboUserType").val(rowData.UserType);
+    $("#cboUserType").selectpicker('refresh');
+
+    if (rowData.AllowMTFY === "true") {
+        $("#chkIsMultiSegmentApplicable").parent().addClass("is-checked");
+    }
+    else { $("#chkIsMultiSegmentApplicable").parent().removeClass("is-checked"); }
+
+    $("#btnSaveBusinessSegment").hide();
+    $("input,textarea").attr('readonly', true);
+    $("select").next().attr('disabled', true);
+    //$("input[type=checkbox]").attr('disabled', true);
+    $("#PopupBusinessSegment").on('hidden.bs.modal', function () {
+        $("#btnSaveBusinessSegment").show();
+        $("input,textarea").attr('readonly', false);
+        $("select").next().attr('disabled', false);
+        //$("input[type=checkbox]").attr('disabled', false);
+    });
+}
+
+function validateBusinessLocation() {
+    if ($("#txtUserId").val().trim().length <= 0) {
+        toastr.warning("Please Select Login Id");
+        return false;
+    }
+    if ($("#txtBusinessKey").val().trim().length <= 0) {
+        toastr.warning("Please Select Business Location");
+        return false;
+    }
+    if ($("#txtLocationDescription").val().trim().length <= 0) {
+        toastr.warning("Please Select Business Location");
+        return false;
+    }
+    if ($("#cboUserGroup").val() === "0" || $("#cboUserGroup").val() === "") {
+        toastr.warning("Please Select User Group");
+        return false;
+    }
+    if ($("#cboUserType").val() === "0" || $("#cboUserType").val() === "") {
+        toastr.warning("Please Select User Type");
+        return false;
+    }
+}
+
+function fnSaveUserBusinessLocation() {
+
+    if (validateBusinessLocation() === false) {
+        return;
+    }
+
+    var userBL;
+    var IsMltSeg = $("#chkIsMultiSegmentApplicable").parent().hasClass("is-checked");
+
+    $("#btnSaveBusinessSegment").attr('disabled', true);
+
+    userBL = {
+        IUStatus: $("#txtIUStatus").val(),
+        UserID: $("#txtUserId").val(),
+        BusinessKey: $("#txtBusinessKey").val(),
+        UserGroup: $("#cboUserGroup").val(),
+        UserType: $("#cboUserType").val(),
+        AllowMTFY: IsMltSeg,
+        //ActiveStatus: $("#cboActiveStatus").val()
+        ActiveStatus: $("#chkActiveStatus").parent().hasClass("is-checked")
+    }
+   
+
+    $.ajax({
+        async: false,
+        url: getBaseURL() + '/UserManagement/InsertOrUpdateUserBL',
+        type: 'POST',
+        data: {
+            UserBusinessLink: userBL
+        },
+        datatype: 'json',
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                $("#btnSaveBusinessSegment").attr('disabled', true);
+                $("#btnSaveBusinessSegment").hide();
+                $("#PopupBusinessSegment").modal('hide');
+                fnGridRefreshUserCreation();
+                $("#jqBusinessSegmentDiv").show(200);
+                fnGridUserSegment();
+            }
+            else {
+                toastr.error(response.Message);
+            }
+            $("#btnSaveBusinessSegment").attr('disabled', false);
+            $("#btnSaveBusinessSegment").show();
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnSaveBusinessSegment").attr("disabled", false);
+        }
+    });
+}
+
+
+// User Menu and User Action
+
+$("#PopupMenuLink").on("hidden.bs.modal", function () {
+    $("#dvForm").hide();
+})
+
+function fnGridRefreshFormAction() {
+    $("#jqgFormAction").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+function fnAddMenuLink(e) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgUserBusinessSegment').jqGrid('getRowData', rowid);
+
+    UserGroup = rowData.UserGroup;
+    UserType = rowData.UserType;
+    BusinessKey = rowData.BusinessKey;
+    UserID = $("#txtUserId").val();
+
+    if (BusinessKey <= 0) {
+        toastr.warning("Please Link with Business Location First");
+        return;
+    }
+    if (UserGroup <= 0) {
+        toastr.warning("Please Link User Group from Edit Option");
+        return;
+    }
+    if (UserType <= 0) {
+        toastr.warning("Please Link User Type from Edit Option");
+        return;
+    }
+
+    $("#PopupMenuLink").modal('show');
+    $("#PopupMenuLinkbody").css({ 'height': $(document).height() - 142 , 'overflow-x':'hidden' });
+    $("#jqgFormAction").css({ 'max-height': $(document).height() - 180, 'overflow-y': 'auto' });
+
+    fnGridRefreshFormAction();
+    fnFormaction();
+}
+
+$(window).on('resize', function () {
+    $("#PopupMenuLinkbody").css({ 'height': $(document).height() - 148, 'overflow-x': 'hidden' });
+})
+
+function fnFormaction() {
+    $('#btnSaveFormAction').show();
+    $.ajax({
+        url: getBaseURL() + '/UserManagement/GetMenulist?UserGroup=' + UserGroup + '&UserType=' + UserType + '&UserID=' + UserID + '&BusinessKey=' + BusinessKey,
+        type: 'POST',
+        datatype: 'json',
+        success: function (result) {
+            
+            fnGetUserMenuList_Success(result, BusinessKey);
+        },
+        error: function (error) {
+            toastr.error(error.status);
+        }
+    });
+}
+
+function fnGetUserMenuList_Success(dataArray, BusinessKey) {
+    $('#jstUserGroup').jstree('destroy');
+    $("#jstUserGroup").jstree({
+        core: { 'data': dataArray, 'check_callback': true, 'multiple': true, 'expand_selected_onload': false },
+        "plugins": ["search"],
+        
+        "search": {
+            "case_sensitive": false,
+            "show_only_matches": true,
+            "show_only_matches_children": true
+        }
+        //"state": { "checkbox_disabled": true },
+        //"checkbox": {
+        //    "keep_selected_style": true
+        //},
+        //"plugins": ["checkbox"],
+        //core: { 'data': dataArray, 'check_callback': true, 'multiple': true }
+         
+    });
+    
+    $("#jstUserGroup").on('loaded.jstree', function () {
+        $("#jstUserGroup").jstree('open_all');
+        $("#jstUserGroup").jstree()._open_to(prevSelectedID);
+        $('#jstUserGroup').jstree().select_node(prevSelectedID);
+        
+    });
+
+    $('#jstUserGroup').on("changed.jstree", function (e, data) {
+        if (data.node != undefined) {
+            //if (prevSelectedID != data.node.id) {
+            prevSelectedID = data.node.id;
+            
+            if (data.node.id == "0") {
+                fnGridRefreshFormAction();
+                $("#dvForm").hide();
+            }
+            else {
+                if (data.node.parent == "#") {
+                    fnGridRefreshFormAction();
+                    $("#dvForm").hide();
+                }
+                else if (data.node.id.startsWith("FM")) {
+                    $("#dvForm").show();
+
+                    formID = 0;
+                    formID = data.node.id.substring(2).split(".")[1];
+                    $('#UserActionTitle').text(data.node.text);
+                    $('.lblFormName').text(data.node.text);
+
+                    $("#chkFormName").parent().addClass("is-checked");
+
+
+                    $("#jqgFormAction").GridUnload();
+
+                    fnUserActionGrid(BusinessKey, formID);
+                }
+                else {
+                    fnGridRefreshFormAction();
+                    $("#dvForm").hide();
+                }
+            }
+        }
+    });
+
+    $('#jstUserGroup').on("close_node.jstree", function (node) {
+        var closingNode = node.handleObj.handler.arguments[1].node;
+        $('#jstUserGroup').jstree().deselect_node(closingNode.children);
+    });
+
+};
+
+function fnUserActionGrid(BusinessKey, formID) {
+  
+    var UserID = $("#txtUserId").val();
+    $("#jqgFormAction").jqGrid('GridUnload');
+    $("#jqgFormAction").jqGrid({
+        url: getBaseURL() + '/UserManagement/GetUserFormActionLink?UserID=' + UserID + '&BusinessKey=' + BusinessKey + '&MenuKey=' + formID,
+        datatype: 'json',
+        mtype: 'POST',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        colNames: ["Action ID", "Action", "Status"],
+        colModel: [
+            { name: 'ActionID', key: true, index: 'ActionId', width: 0, sortable: false, hidden: true },
+            { name: 'ActionDesc', index: 'ActionDesc', width: 150, sortable: false, editable: false},
+            { name: 'ActiveStatus', index: 'ActiveStatus', width: 75, align: 'center', sortable: false, formatter: 'checkbox', editable: true, edittype: "checkbox", formatoptions: { disabled: false } }
+        ],
+        caption: "",
+        height: 'auto',
+        width: '200',
+        rowNum: 15,
+        rownumbers: true,
+        viewrecords: true,
+        gridview: true,
+        autowidth: false,
+        shrinkToFit: false,
+        forceFit: false,
+        cellEdit: true,
+
+    });
+}
+
+function fnSaveFormAction() {
+    var IsForChecked = $("#chkFormName").parent().hasClass("is-checked");
+
+    var uml = {
+        UserID: $("#txtUserId").val(),
+        BusinessKey: BusinessKey,
+        MenuKey: formID,
+        ActiveStatus: IsForChecked
+    };
+
+    var formAction = [];
+    var jqgFormAction = jQuery("#jqgFormAction").jqGrid('getRowData');
+    for (var i = 0; i < jqgFormAction.length; ++i) {
+        if (parseFloat(jqgFormAction[i]["ActionID"]) > 0) {
+            formAction.push({
+                ActionID: jqgFormAction[i]["ActionID"],
+                Active: jqgFormAction[i]["ActiveStatus"]
+            });
+        }
+    }
+
+    uml.l_formAction = formAction;
+    
+    $("#btnSaveFormAction").attr('disabled', true);
+    
+    $.ajax({
+        url: getBaseURL() + '/UserManagement/InsertIntoUserMenuAction',
+            type: 'POST',
+            datatype: 'json',
+            data: {
+                UserMenuLink: uml
+            },
+            async: false,
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                $("#btnSaveFormAction").attr('disabled', true);
+                //$("#btnSaveFormAction").hide();
+                fnReloadTreeAfterSave();
+                //fnGridRefreshFormAction();
+                //$("#dvForm").hide();
+            }
+            else {
+                toastr.error(response.Message);
+            }
+            $("#btnSaveFormAction").attr('disabled', false);
+            $("#btnSaveFormAction").show();
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnSaveFormAction").attr("disabled", false);
+        }
+    });
+}
+
+function fnReloadTreeAfterSave() {
+   
+    UserID = $("#txtUserId").val();
+
+    if (BusinessKey <= 0) {
+        toastr.warning("Please Link with Business Location First");
+        return;
+    }
+    if (UserGroup <= 0) {
+        toastr.warning("Please Link User Group from Edit Option");
+        return;
+    }
+    if (UserType <= 0) {
+        toastr.warning("Please Link User Type from Edit Option");
+        return;
+    }
+
+    //$("#PopupMenuLink").modal('show');
+    //$("#PopupMenuLinkbody").css({ 'height': $(document).height() - 142, 'overflow-x': 'hidden' });
+    //$("#jqgFormAction").css({ 'max-height': $(document).height() - 180, 'overflow-y': 'auto' });
+
+    fnGridRefreshFormAction();
+    fnFormaction();
+}
+
+function fnCancelFormAction() {
+    $("#dvForm").hide();
+}
+ 

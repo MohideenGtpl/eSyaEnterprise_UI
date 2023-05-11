@@ -1,0 +1,134 @@
+﻿
+@{
+    ViewData["Title"] = "ETM_05_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    // Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="google" content="notranslate">
+    <title>ETM_005_00</title>
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/material.min.css" rel="stylesheet" />
+    <link href="~/css/all.min.css" rel="stylesheet" />
+    <link href="~/css/animate.css" rel="stylesheet" />
+    <link href="~/css/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/css/ui.jqgrid.css" rel="stylesheet" />
+    <link href="~/css/bootstrap-select.css" rel="stylesheet" />
+    <link href="~/css/jqgridcustomstyle.css" rel="stylesheet" />
+    <link href="~/css/site.css" rel="stylesheet" />
+    <link href="~/css/master.css" rel="stylesheet" />
+    <link href="~/css/esyafonts.css" rel="stylesheet" />
+    <link href="~/css/esyaTheme.css" rel="stylesheet" />
+    <link href="~/css/TokenSystem/tokensystem.css" rel="stylesheet" />
+
+
+</head>
+<body>
+    <header>
+        <img src="~/images/logo/esya-logo-whitebg.jpeg" class="img-responsive" />
+    </header>
+
+    <main>
+        <h1 class="text-center">Token Management System</h1>
+        <div class="container atmDisplay">
+            <div class="row" id="dvMain">
+                @*<div class="col-lg-6 col-md-6 pl-3 my-1">
+                    <button type="button" class="btn btn-primary p-4" onclick="fnGeneratToken('RC')"> Registration & Consultation   </button>
+                </div>
+                <div class="col-lg-6 col-md-6 pl-3 my-1">
+                    <button type="button" class="btn btn-primary p-4" onclick="fnGeneratToken('OP')"> OP Billing   </button>
+                </div>
+                <div class="col-lg-6 col-md-6 pl-3 my-1">
+                    <button type="button" class="btn btn-primary p-4" onclick="fnGeneratToken('MH')"> MHC Billing  </button>
+                </div>
+                <div class="col-lg-6 col-md-6 pl-3 my-1">
+                    <button type="button" class="btn btn-primary p-4" onclick="fnGeneratToken('RD')"> Report Dispatch</button>
+                </div>
+                <div class="col-lg-6 col-md-6 pl-3 my-1">
+                    <button type="button" class="btn btn-primary p-4" onclick="fnGeneratToken('PH')"> Pharmacy</button>
+                </div>*@
+
+            </div>
+            <footer>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <p class="text-small text-center m-0">Instruction : Please click on the one of the button for your required Service</p>
+                        <p class="m-0">Powered by Gestalt Technologies Pvt. Ltd.</p>
+                    </div>
+                </div>
+            </footer>
+        </div>
+
+    </main>
+
+    <script src="~/lib/bootstrap/dist/js/jquery-3.2.1.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/popper.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/js/material.min.js"></script>
+    <script src="~/js/all.min.js"></script>
+    <script src="~/js/jquery-ui.min.js"></script>
+
+
+    
+</body>
+</html>
+<script>
+    $(document).ready(function () {
+        fnGetTokenTypes();
+    });
+    function fnGetTokenTypes() {
+        $.ajax({
+            url: getBaseURL() + '/Configure/GetAllConfigureTokens',
+            type: 'POST',
+            datatype: 'json',
+            contentType: 'application/json; charset=utf-8',
+            success: function (result) {
+                var _content = "";
+                $.each(result, function (key, data) {
+                    _content += "<div class='col-lg-6 col-md-6 pl-3 my-1'><button type='button' class='btn btn-primary p-4' onclick=fnGeneratToken('" + data.TokenType + "')> " + data.TokenDesc + "</button></div>";
+                });
+                $("#dvMain").html(_content); 
+            },
+            error: function (error) {
+                alert(error.statusText)
+            }
+        });
+
+    }
+
+
+    function fnGeneratToken(_type) {
+        var obj = {
+            TokenType: _type,
+        };
+        var URL = getBaseURL() + '/Generate/GenerateToken';
+        $.ajax({
+            url: URL,
+            type: 'POST',
+            datatype: 'json',
+            contenttype: 'application/json; charset=utf-8',
+            data: obj,
+            success: function (response) {
+                if (response.Status) {
+                    toastr.success("Token Generated. Token Number is : " + response.key);
+                                    }
+                else {
+                    toastr.error(response.Message);
+                }            
+            },
+            error: function (error) {
+                toastr.error(error.statusText);
+            }
+        });
+
+    }
+
+</script>

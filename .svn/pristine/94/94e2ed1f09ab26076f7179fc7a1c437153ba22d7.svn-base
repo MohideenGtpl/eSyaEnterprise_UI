@@ -1,0 +1,14 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace eSyaEnterprise_UI.Areas.eSyaFA
+{
+    public class CodeTypeValues
+    {
+        public const int AssetGroup = 3;
+        public const int AssetSubGroup = 4;
+        public const int DrepreciationMethod = 5;
+    }
+}

@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace eSyaEnterprise_UI.Areas.eSyaPayroll.Data
+{
+    public class CodeTypeValues
+    {
+        public const int EmployeeClass = 5;
+        public const int EmployeeGroup= 10;
+    }
+}

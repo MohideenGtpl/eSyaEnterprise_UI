@@ -1,0 +1,148 @@
+﻿
+@{
+    ViewData["Title"] = "V_3_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="~/css/jsTree.css" />
+@section scripts{
+    <script src="~/js/Config/FormModule.js"></script>
+    <script src="~/js/jsTree.js"></script>
+    <script src="~/js/tinymce/tinymce.js"></script>
+}
+
+<div class="row">
+    <div class="col-lg-4 col-md-6 col-sm-4 col-10">
+        <div id="jstMenuFormModule"></div>
+    </div>
+    <div class="col-2 only-for-smallscreen">
+        <button class="mdl-button mdl-js-button mdl-button--raised cancel-button btn_wdth" onclick="fnDeleteNode()">
+            <i class="fa fa-times" style="color:#fff !important"></i>
+        </button>
+
+        <button class="mdl-button mdl-js-button mdl-button--raised primary-button btn_wdth" id="btnExpandAll">
+            <i class="fas fa-expand" style="color:#fff !important"></i>   Expand All
+        </button>
+        <button class="mdl-button mdl-js-button mdl-button--raised primary-button btn_wdth" id="btnCollapseAll">
+            <i class="fas fa-compress" style="color:#fff !important"></i>   Collapse All
+        </button>
+        <button class="mdl-button mdl-js-button mdl-button--raised primary-button btn_wdth" id="btnInternalForms" onclick="fnOpenInternalForms()">
+            <i class="fa fa-braille" style="color:#fff !important"></i>   Internal Forms
+        </button>
+    </div>
+
+    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12  div-menuform">
+        <div class="demo-card-square mdl-card mdl-shadow--2dp" id="pnlFormModule" style="width:100%">
+            <div id="pnlMainModuleHeading" class="mdl-card__title mdl-card--expand padleft0 padtop0 h-60 d-block">
+                <h5 class="mdl-card__title-text">Add Form Module</h5>
+            </div>
+            <div class="mdl-card__supporting-text fullwidth pad0">
+                <div class="row  padbot10 mar0">
+                    <input type="text" id="txtMainMenuID" style="display:none" />
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group ">
+                            <label>Form ID</label>
+                            <select class="selectpicker" data-size="" data-live-search="true" title="Choose Form ID"></select>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group">
+                            <label>Module ID</label>
+                            <select class="selectpicker" data-size="" data-live-search="true" title="Choose Module ID"></select>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group ">
+                            <label>Transaction Table</label>
+                            <textarea id="" rows="3" cols="10" class=" form-control" maxlength="8000"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group">
+                            <label>Reffered Table</label>
+                            <textarea id="" rows="3" cols="10" class=" form-control" maxlength="8000"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea id="txtFormModuleDescription"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-lg-9 col-md-9 col-sm-9">
+                        <div class="form-group ">
+                            <label>Assigned To</label>
+                            <select class="selectpicker" data-size="" data-live-search="true" title="Choose Assigned To"></select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-3">
+                        <div class="form-group">
+                            <label>Assigned On</label>
+                            <input type="text" class="datepicker form-control" name="name" value="" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin:0px">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="lable-color">Status</label>
+                            <div>
+                                <select class="selectpicker" data-live-search="false" id="" title="">
+                                    <option>To do</option>
+                                    <option>In Progress</option>
+                                    <option>Completed</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mdl-card__actions mdl-card--border" style="text-align: center;">
+                <button class="mdl-button mdl-js-button mdl-button--raised primary-button" id="btnMainMenuAdd" onclick="fnSaveMainMenu()">
+                    Add
+                </button>
+                @*<button class="mdl-button mdl-js-button mdl-button--raised cancel-button" id="btnMainMenuCancel">
+                        Cancel
+                    </button>
+                    <button class="mdl-button mdl-js-button mdl-button--raised cancel-button" onclick="btnMainMenuclose()">
+                        Close
+                    </button>*@
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+</div>
+<script>
+    $(document).ready(function () {
+        tinymceinit();
+    })
+    function tinymceinit() {
+        tinymce.init({
+            selector: 'textarea#txtFormModuleDescription',
+            height: 200,
+            menubar: false,
+            plugins: [
+                'advlist autolink lists link image charmap print preview anchor',
+                'searchreplace visualblocks code fullscreen',
+                'insertdatetime media table paste code wordcount'
+            ],
+            toolbar: 'undo redo | formatselect | ' +
+                'bold italic backcolor | alignleft aligncenter ' +
+                'alignright alignjustify | bullist numlist outdent indent | ' +
+                'removeformat | help',
+            //content_css: '//www.tiny.cloud/css/codepen.min.css'
+            init_instance_callback: function (editor) {
+                var freeTiny = document.querySelector('.tox .tox-notification--in');
+                //freeTiny.style.display = 'none';
+            }
+        });
+    }
+</script>
+
+

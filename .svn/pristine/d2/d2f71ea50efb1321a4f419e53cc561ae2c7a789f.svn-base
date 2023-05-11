@@ -1,0 +1,208 @@
+﻿var _isInsert = true;
+var actiontype = "";
+$(document).ready(function () {
+    fnLoadLocalizationTableMappingGrid();
+});
+
+function fnLoadLocalizationTableMappingGrid() {
+
+    $("#jqgLocalizationTable").GridUnload();
+
+    $("#jqgLocalizationTable").jqGrid({
+        url: getBaseURL() + '/Localization/GetLocalizationTableMaster',
+        mtype: 'Post',
+        datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: [localization.TableCode, localization.SchemaName, localization.TableDescription, localization.Active, localization.Actions],
+        colModel: [
+            { name: "TableCode", width: 30, editable: true, align: 'left', hidden: false },
+            { name: "SchemaName", editable: true, width:95, align: 'left', resizable: false },
+            { name: "TableName", editable: true, width: 95, align: 'left', resizable: false },
+            { name: "ActiveStatus", width: 35, editable: false, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+            {
+                name: 'Edit', search: false, align: 'left', width:80, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit", onclick="return fnEditLocalizationTable(event,\'edit\')"><i class="fas fa-pencil-alt"></i>' + localization.Edit+' </button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnEditLocalizationTable(event,\'view\')"><i class="far fa-eye"></i> ' +localization.View+' </button>';
+
+                }
+            }
+        ],
+        rowNum: 10,
+        loadonce: true,
+        pager: "#jqpLocalizationTable",
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        forceFit: false,
+        scrollOffset: 0,
+        loadComplete: function (data) {
+            SetGridControlByAction();
+        },
+    }).jqGrid('navGrid', '#jqpLocalizationTable', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpLocalizationTable', {
+        caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnRefresh
+    }).jqGrid('navButtonAdd', '#jqpLocalizationTable', {
+        caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddLocalizationTable
+        });
+    fnAddGridSerialNoHeading();
+}
+
+function fnAddLocalizationTable() {
+    fnClearFields();
+
+    _isInsert = true;
+    $(".modal-title").text("Add Localization Table Mapping");
+    $("#txtTableCode").attr('disabled', false);
+    $("#chkActiveStatus").parent().addClass("is-checked");
+    $("#PopupLocalizationTable").modal('show');
+    $("#btnSave").html(' Save');
+}
+
+function fnEditLocalizationTable(e,actiontype) {
+
+    fnClearFields();
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgLocalizationTable').jqGrid('getRowData', rowid);
+    _isInsert = false;
+   
+    $("#txtTableCode").val(rowData.TableCode).attr('disabled', true);
+    $("#txtSchemaName").val(rowData.SchemaName);
+    $("#txtTableDesc").val(rowData.TableName);
+    if (rowData.ActiveStatus == 'true') {
+        $("#chkActiveStatus").parent().addClass("is-checked");
+    }
+    else {
+        $("#chkActiveStatus").parent().removeClass("is-checked");
+    }
+
+    $("#PopupLocalizationTable").modal('show');
+   
+    if (actiontype.trim() == "edit") {
+        $("#chkActiveStatus").prop('disabled', false);
+        $(".modal-title").text("Edit Localization Table Mapping");
+        $("#btnSave").html(' Update');
+    }
+    if (actiontype.trim() == "view") {
+        $("#btnSave").hide();
+        $("#chkActiveStatus").prop('disabled', true);
+        $("input,textarea").attr('readonly', true);
+        $("select").next().attr('disabled', true);
+        $("input[id*=chk]").attr('disabled', true);
+        $(".modal-title").text("View Localization Table Mapping");
+        $("#PopupLocalizationTable").on('hidden.bs.modal', function () {
+            $("#btnSave").show();
+            $("input,textarea").attr('readonly', false);
+            $("select").next().attr('disabled', false);
+            $("input[id*=chk]").attr('disabled', false);
+        })
+    }
+}
+
+function fnSaveLocalizationTableMapping() {
+
+    if (!IsValidate()) {
+        return;
+    }
+
+    var obj = {
+        IsInsert: _isInsert,
+        TableCode: $('#txtTableCode').val(),
+        SchemaName: $("#txtSchemaName").val(),
+        TableName: $("#txtTableDesc").val(),
+        ActiveStatus: $("#chkActiveStatus").parent().hasClass("is-checked")
+    };
+
+    $("#btnSave").attr('disabled', true);
+
+    $.ajax({
+        url: getBaseURL() + '/Localization/InsertOrUpdateLocalizationTableMaster',
+        type: 'POST',
+        datatype: 'json',
+        data: obj,
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+
+                fnClosePopUp();
+                fnClearFields();
+                $("#jqgLocalizationTable").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+
+                return true;
+            }
+            else {
+                toastr.error(response.Message);
+                return false;
+            }
+        },
+        error: function (request, status, error) {
+            toastr.error(request.responseText);
+        }
+    }).always(function () {
+        $("#btnSave").attr('disabled', false);
+    });
+}
+
+function IsValidate() {
+
+    if (IsStringNullorEmpty($("#txtTableCode").val())) {
+        toastr.warning("Please Enter Table Code");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtSchemaName").val())) {
+        toastr.warning("Please Enter Schema Name");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtTableDesc").val())) {
+        toastr.warning("Please Enter Table Description");
+        return false;
+    }
+    if (isNaN($("#txtTableCode").val())) {
+        toastr.warning("Table Code Should be Numbers Only");
+        return false;
+    }
+
+    return true;
+}
+
+function fnClosePopUp() {
+    fnClearFields();
+    $("#PopupLocalizationTable").modal('hide');
+}
+
+function fnRefresh() {
+    $("#jqgLocalizationTable").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+  
+function fnClearFields() {
+
+    $("#txtTableCode").val('');
+    $("#txtSchemaName").val('');
+    $("#txtTableDesc").val('');
+    $("#chkActiveStatus").prop('disabled', false);
+    $("#btnSave").attr('disabled', false);
+}
+
+function SetGridControlByAction() {
+    $('#jqgAdd').removeClass('ui-state-disabled');
+    var eleEnable = document.querySelectorAll('#jqgEdit');
+
+    for (var i = 0; i < eleEnable.length; i++) {
+        eleEnable[i].disabled = false;
+    }
+    if (_userFormRole.IsInsert === false) {
+        $('#jqgAdd').addClass('ui-state-disabled');
+    }
+    if (_userFormRole.IsEdit === false) {
+        var eleDisable = document.querySelectorAll('#jqgEdit');
+        for (var i = 0; i < eleDisable.length; i++) {
+            eleDisable[i].disabled = true;
+            eleDisable[i].className = "ui-state-disabled";
+        }
+    }
+}

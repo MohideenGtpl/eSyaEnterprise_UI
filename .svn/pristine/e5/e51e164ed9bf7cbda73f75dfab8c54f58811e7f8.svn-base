@@ -1,0 +1,157 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+<div class="row">
+    <div class="col-lg-10 col-md-10 col-sm-10 pad0">
+        <div class="row mar0">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <p class="subheading">Employee Details</p>
+                <hr class="left" />
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6 form-group">
+                <label>Business Key</label>
+                <select class="selectpicker" data-live-search="true" data-size="5" id="cboAssetGroup" title="Select" asp-items="@ViewBag.BusinessKey">
+
+                </select>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6 form-group">
+                <label>Employee Number</label>
+                <input type="text" class="form-control" />
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6 form-group">
+                <label>Employee ID</label>
+                <input type="text" class="form-control" />
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                <label>Employee Name</label>
+                <input type="text" class="form-control" />
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6 form-group">
+                <label>Biometric Code</label>
+                <input type="text" class="form-control" />
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6 form-group">
+                <label>Gender</label>
+                <select class="form-control selectpicker">
+                    <option value="value">Select</option>
+                </select>
+            </div>
+
+            <div class="col-lg-6 col-md-6 col-sm-6 form-group">
+                <label>Email ID</label>
+                <input type="text" class="form-control" />
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6 form-group">
+                <label>Mobile No</label>
+                <input type="text" class="form-control" />
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6 form-group">
+                <div class="default-checkbox">
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkSameAsPermanent">
+                        <input type="checkbox" id="chkSameAsPermanent" class="mdl-checkbox__input">
+                        <span class="mdl-checkbox__label"> Willingness to work in shifts</span>
+                    </label>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6 form-group">
+                <div class="default-checkbox separate">
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkSameAsPermanent">
+                        <input type="checkbox" id="chkSameAsPermanent" class="mdl-checkbox__input">
+                        <span class="mdl-checkbox__label"> Is Exempted from ATT ?</span>
+                    </label>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6 form-group">
+                <div class="default-checkbox separate">
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkSameAsPermanent">
+                        <input type="checkbox" id="chkSameAsPermanent" class="mdl-checkbox__input">
+                        <span class="mdl-checkbox__label"> Export from ATT</span>
+                    </label>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-2">
+        <div class="form-group">
+            <label> Photo</label>
+            <div class="imagedig" style="border:thin; padding-bottom:5px;" id="imgPhoto">
+                <img id="imgPhotoimageblah" src="">
+                <input class="mdl-textfield__input fullwidth FileUpload" id="Photoimage" type="file" name="file" onchange="readPhotoimage(this);" accept='image/*' enctype="multipart/form-data" style="border-bottom:none !important" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+
+    <div class="col-lg-5 col-md-6 col-sm-6 form-group">
+        <label>Employee Class</label>
+        <select class="selectpicker" data-live-search="true" data-size="5" id="cboAssetGroup" title="Select" asp-items="@ViewBag.EmployeeClass"></select>
+    </div>
+    <div class="col-lg-4 col-md-6 col-sm-6 form-group">
+        <label>Employee Group</label>
+        <select class="selectpicker" data-live-search="true" data-size="5" id="cboAssetGroup" title="Select" asp-items="@ViewBag.EmployeeGroup"></select>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-6 form-group">
+        <label>Employee Status</label>
+        <input type="text" class="form-control" readonly />
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <p class="subheading">Employee Status</p>
+        <hr class="left" />
+    </div>
+    <div class="col-lg-2 col-md-6 col-sm-6 form-group">
+        <label>Date of Joining</label>
+        <input type="text" class="form-control datepicker" />
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-6 form-group">
+        <label>Date of Confirmation</label>
+        <input type="text" class="form-control datepicker" />
+    </div>
+    <div class="col-lg-2 col-md-6 col-sm-6 form-group">
+        <label>Date of Resignation</label>
+        <input type="text" class="form-control datepicker" />
+    </div>
+    <div class="col-lg-2 col-md-6 col-sm-6 form-group">
+        <label>Date of Relieving</label>
+        <input type="text" class="form-control datepicker" />
+    </div>
+    <div class="col-lg-2 col-md-6 col-sm-6 form-group">
+        <label>Date of Termination</label>
+        <input type="text" class="form-control datepicker" />
+    </div>
+
+    <div class="col-lg-5 col-md-6 col-sm-6 form-group">
+        <label>Current Department</label>
+        <input type="text" class="form-control" />
+    </div>
+    <div class="col-lg-2 col-md-6 col-sm-6 form-group">
+        <label>Current Location Posted</label>
+        <input type="text" class="form-control" />
+    </div>
+    <div class="col-lg-2 col-md-6 col-sm-6 form-group lbl-right">
+        <label>Current Basic</label>
+        <input type="text" class="form-control" />
+    </div>
+    <div class="col-lg-2 col-md-6 col-sm-6 form-group lbl-right">
+        <label>Current Gross</label>
+        <input type="text" class="form-control" />
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-6 form-group">
+        <div class="default-checkbox separate">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkSameAsPermanent">
+                <input type="checkbox" id="chkSameAsPermanent" class="mdl-checkbox__input">
+                <span class="mdl-checkbox__label"> Any Suspension during employment Tenure</span>
+            </label>
+        </div>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+        <hr />
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent btn-back mr-10 c-white" onclick="fnCloseEmployeeDetails()"><i class="fas fa-chevron-left"></i> Back</button>
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button mr-10" id="btnSaveEmployeeDetails" onclick="fnSaveCustomerDetails()">
+            <i class="fa fa-save"></i>   Save
+        </button>
+        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button" id="btnCancel" onclick="fnCloseEmployeeDetails()"><i class="fa fa-redo"></i> Cancel</button>
+    </div>
+</div>

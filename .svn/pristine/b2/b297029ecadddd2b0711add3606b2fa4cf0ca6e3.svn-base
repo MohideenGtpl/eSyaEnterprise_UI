@@ -1,0 +1,183 @@
+﻿
+$(document).ready(function () {
+    fnGridLoadDepartmentLocationLink();
+});
+var actiontype = "";
+function fnGridLoadDepartmentLocationLink() {
+
+
+    $("#jqgDepartmentLocationLink").jqGrid('GridUnload');
+    $("#jqgDepartmentLocationLink").jqGrid({
+        url: getBaseURL() + '/DepartmentCodes/GetDepartmentLocation?businessKey=' + $('#cboBusinessKey').val() + '&departmentId=' + $('#cboDepartment').val(),
+        mtype: 'Post',
+        datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        async: false,
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Location ID", "Location Description", "Location Short Name", "Status", "Actions"],
+        colModel: [
+            { name: "DeptLocnID", width: 250, editable: true, align: 'left', hidden: true },
+            { name: "LocationDescription", width: 250, editable: true, align: 'left', hidden: false },
+            { name: "LocnShortDesc", width: 150, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "ActiveStatus", editable: true, width: 28, align: 'left', resizable: false, edittype: "select", formatter: 'select', editoptions: { value: "true: Active;false: Inactive" } },
+            {
+                name: 'Actions', search: false, align: 'left', width: 75, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" id="jqgEdit" title="Edit" onclick="return fnEditDepartmentLocationLink(event,\'edit\')"><i class="fas fa-pencil-alt"></i> Edit </button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" id="jqgView" title="View" onclick="return fnEditDepartmentLocationLink(event,\'view\')"><i class="far fa-file-alt"></i> View </button>'
+
+                }
+            }
+        ],
+        pager: "#jqpDepartmentLocationLink",
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0,
+        loadComplete: function (data) {
+            //$("#jqgDepartmentCodes").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+
+            SetGridControlByAction("jqgDepartmentLocationLink");
+        }
+    }).jqGrid('navGrid', '#jqpDepartmentLocationLink', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpDepartmentLocationLink', {
+        caption: '<span class="fa fa-sync" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshDepartmentLocationLink
+    }).jqGrid('navButtonAdd', '#jqpDepartmentLocationLink', {
+        caption: '<span class="fa fa-plus" data-toggle="modal" data-whatever="something" style="padding-right:5px;padding-top:2px;padding-right: 2px; vertical-align:text-top;margin-left:8px;"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddDepartmentLocationLink
+    });
+    $("[id^='jqgh'][id$='_rn']").empty();
+    $("[id^='jqgh'][id$='_rn']").text("S.No").css("text-align", 'center');
+    $("[id^='gbox_']").parent().css('overflow', 'auto');
+}
+
+function fnAddDepartmentLocationLink() {
+    fnClearFields();
+    if (IsStringNullorEmpty($('#cboDepartment').val())) {
+        toastr.warning("Please Select Department");
+        return;
+    }
+    $("#txtLocationId").val('');
+    $('#PopupDepartmentLocationLink').modal('show');
+    $('#PopupDepartmentLocationLink').modal({ backdrop: 'static', keyboard: false });
+    $('#PopupDepartmentLocationLink').find('.modal-title').text("Add Department Location Link");
+    $("#btnSaveDepartmentLocationLink").html(' Save');
+}
+
+function fnEditDepartmentLocationLink(e, actiontype) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgDepartmentLocationLink').jqGrid('getRowData', rowid);
+
+    $('#PopupDepartmentLocationLink').modal('show');
+
+    $("#txtLocationId").val(rowData.DeptLocnID);
+    $("#txtLocationDescription").val(rowData.LocationDescription);
+    $("#txtLocationShortDescription").val(rowData.LocnShortDesc);
+    $("#cboActiveStatus").val(rowData.ActiveStatus);
+    $("#cboActiveStatus").selectpicker('refresh');
+
+    if (actiontype.trim() == "edit") {
+        $('#PopupDepartmentLocationLink').find('.modal-title').text("Update Department Location Link");
+        $("#btnSaveDepartmentLocationLink").html(' Update');
+    }
+    if (actiontype.trim() == "view") {
+        $('#PopupDepartmentLocationLink').find('.modal-title').text("View Department Location Link");
+        $("#btnSaveDepartmentLocationLink").hide();
+        $("input,textarea").attr('readonly', true);
+        $("select").next().attr('disabled', true);
+        $("input[type=checkbox]").attr('disabled', true);
+        $("#PopupDepartmentLocationLink").on('hidden.bs.modal', function () {
+            $("#btnSaveDepartmentLocationLink").show();
+            $("input,textarea").attr('readonly', false);
+            $("select").next().attr('disabled', false);
+            $("input[type=checkbox]").attr('disabled', false);
+        });
+    }
+}
+
+function fnSaveDepartmentLocationLink() {
+
+    var obj = {
+        BusinessKey: $('#cboBusinessKey').val(),
+        DepartmentId: $('#cboDepartment').val(),
+        DeptLocnId: $('#txtLocationId').val(),
+        LocationDescription: $('#txtLocationDescription').val(),
+        LocnShortDesc: $('#txtLocationShortDescription').val(),
+        ActiveStatus: $('#cboActiveStatus').val()
+    }
+    var URL = '';
+    //alert($('#txtDepartmentID').val());
+    if ($('#txtLocationId').val() != '')
+        URL = getBaseURL() + '/DepartmentCodes/UpdateDepartmentLocationLink';
+    else
+        URL = getBaseURL() + '/DepartmentCodes/InsertIntoDepartmentLocationLink';
+    $.ajax({
+        url: URL,
+        type: 'POST',
+        datatype: 'json',
+        data: { obj },
+        //contentType: 'application/json; charset=utf-8',
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                $("#btnSaveDepartmentLocationLink").attr('disabled', true);
+                fnClearFields();
+                //$("#jqgDepartmentCodes").jqGrid('resetSelection');
+                fnGridLoadDepartmentLocationLink();
+                $('#PopupDepartmentLocationLink').modal('hide');
+            }
+            else {
+                toastr.error(response.Message);
+                $("#btnSaveDepartmentLocationLink").attr('disabled', false);
+            }
+
+            $("#btnSaveDepartmentLocationLink").attr('disabled', false);
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnSaveDepartmentLocationLink").attr("disabled", false);
+
+        }
+    });
+
+}
+
+function fnGridRefreshDepartmentLocationLink() {
+    $("[id^='jqgh'][id$='_rn']").empty();
+    $("[id^='jqgh'][id$='_rn']").text("S.No").css("text-align", 'center');
+    $("[id^='gbox_']").parent().css('overflow', 'auto');
+    $("#jqgDepartmentLocationLink").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+function fnCancelDepartmentLocationLink() {
+    fnClearFields();
+    $("#jqgDepartmentLocationLink").jqGrid('resetSelection');
+    $('#PopupDepartmentLocationLink').modal('hide');
+}
+
+function fnClearFields() {
+    $("#txtLocationDescription").val("");
+    $("#txtLocationShortDescription").val("");
+    $('#cboActiveStatus').val("true");
+    $('#cboActiveStatus').selectpicker('refresh');
+}
+
+function SetGridControlByAction(jqg) {
+    //$('#jqgEdit').removeClass('ui-state-disabled');
+    if (_userFormRole.IsInsert === false) {
+        $('#jqgAdd').addClass('ui-state-disabled');
+    }
+    if (_userFormRole.IsEdit === false) {
+        var eleDisable = document.querySelectorAll('#jqgEdit');
+        for (var i = 0; i < eleDisable.length; i++) {
+            eleDisable[i].disabled = true;
+            eleDisable[i].className = "ui-state-disabled";
+        }
+    }
+}

@@ -1,0 +1,92 @@
+﻿
+body{
+    background: #faf8f8;
+}
+#btnPassportDetails {
+    position: absolute;
+    top: 7px;
+    min-width: 45px;
+}
+.banner{
+    margin-bottom:0px !important;
+    padding-bottom:0px !important;
+}
+.body-content section {
+    background: #fff;
+    padding: 0px 10px 5px;
+    margin: 3px 0px;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
+}
+p.subheading {
+    border-left: 4px solid #fbd729;
+    font-size: 13px;
+    font-weight: 300;
+    color: #000;
+    margin: 0px;
+    margin-left: 0px;
+    padding-left: 6px;
+    background: linear-gradient(to left,#fff,#fffbf0);
+    letter-spacing: 0.85px;
+    margin-left: -10px;
+    padding: 6px;
+}
+hr.left {
+    border-radius: 5px;
+    height: 0px;
+    background-color: #fbd427;
+    width: 115px;
+    margin: 0px 0px 0px !important;
+}
+.spinner-border {
+    position: absolute;
+    top: 20px;
+    right: 15px;
+    font-size: 12px;
+    width: 16px;
+    height: 16px;
+    color: gray;
+    visibility:hidden;
+}
+.mw-30{
+    min-width:30px !important;
+}
+.list-card {
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 0px solid rgba(0,0,0,.125);
+    border-radius: .25rem;
+    width: 100%;
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 0px 1px, rgba(0, 0, 0, 0.14) 0px 1px 0px;
+}
+.filters .form-group{
+    margin-bottom:0px !important;
+}
+.card-header {
+    color: #474747 !important;
+    background: rgba(0,0,0,.03) !important;
+}
+    .card-header .form-check-label{
+        color:green !important;
+    }
+.form-check-label {
+    font-weight:600 !important;
+}
+.list-group-item {
+    border-color: rgba(234, 234, 234, 0.5) !important;
+}
+.form-check:hover{
+    cursor:pointer !important;
+}
+.form-check-label.patientname {
+    line-height: 16px !important;
+}
+.form-check-label.tokennumber {
+    font-size: 11px !important;
+    line-height: 14px;
+    font-weight: 300 !important;
+    color: gray !important;
+}
+.modal-body{
+    background:#ebebeb;
+}

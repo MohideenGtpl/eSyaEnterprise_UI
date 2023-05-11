@@ -1,0 +1,215 @@
+﻿var _isInsert = true;
+var actiontype = "";
+function fnGridBankDetails() {
+    $("#jqgBankDetails").GridUnload();
+    $("#jqgBankDetails").jqGrid({
+        url: getBaseURL() + '/Employee/GetEmployeeBankInfobyEmpNumber?EmpNumber=' + $("#txtEmployeenumber").val(),
+        mtype: 'POST',
+        datatype: 'json',
+        contentType: 'application/json; charset=utf-8',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        colNames: ["Payment Mode", "Bank Name", "Account No", "IFSC Code", "Bank Branch", "Status","Actions"],
+        colModel: [
+            { name: "SalaryPaymentMode", width: 50, align: 'left', editable: true, editoptions: { maxlength: 15 }, resizable: false, hidden: true },
+            { name: "BankCode", width: 80, align: 'left', editable: true, editoptions: { maxlength: 50 }, resizable: false, hidden: true },
+            { name: "AccountNumber", width: 90, align: 'left', editable: true, editoptions: { maxlength: 50 }, resizable: false },
+            { name: "Ifsccode", width: 95, align: 'left', editable: true, editoptions: { maxlength: 50 }, resizable: false },
+            { name: "BankBranch", width: 90, align: 'left', editable: true, editoptions: { maxlength: 50 }, resizable: false },
+            { name: "AccountStatus", width: 35, editable: false, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+            {
+                name: 'edit', search: false, align: 'left', width: 88, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditEmployeeBankDetails(event,\'edit\');"><i class="fa fa-edit"></i>' + 'Edit' + '</button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnEditEmployeeBankDetails(event,\'view\');"><i class="far fa-eye"></i>' +'View' + '</button>'
+                }
+            },
+        ],
+        pager: "#jqpBankDetails",
+        rowNum: 10,
+        rowList: [10, 20, 50, 100],
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        scroll: false,
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        forceFit: false,
+        loadComplete: function (data) {
+            //SetGridControlByAction();
+        },
+    }).jqGrid('navGrid', '#jqpBankDetails', { add: false, edit: false, search: false, del: false, refresh: false, refreshtext: 'Reload' }).jqGrid('navButtonAdd', '#jqpBankDetails', {
+        caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshBankDetails
+    }).jqGrid('navButtonAdd', '#jqpBankDetails', {
+        caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddBankDetails
+    });
+
+    $(window).on("resize", function () {
+        var $grid = $("#jqgBankDetails"),
+            newWidth = $grid.closest(".BankDetailscontainer").parent().width();
+        $grid.jqGrid("setGridWidth", newWidth, true);
+    });
+    fnAddGridSerialNoHeading();
+    fnGridSalaryDetails();
+}
+
+function fnAddBankDetails() {
+    _isInsert = true;
+    $("#divForm").css("display", "block");
+    $("#divGrid").hide();
+    fnClearEmpBankFields();
+    $('#PopupBankDetails').find('.modal-title').text("Add Bank Details");
+    $('#PopupBankDetails').modal('show');
+    $("#btnSaveBankDetails").show();
+    $("#btnCancelBankDetails").show();
+    $("#btnSaveBankDetails").html('Save');
+    $("#chkBankActiveStatus").prop('disabled', false);
+    $("input,textarea").attr('readonly', false);
+    $("select").next().attr('disabled', false);
+    $("#txtAccountno").attr('readonly', false);
+}
+
+function fnEditEmployeeBankDetails(e, actiontype) {
+
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgBankDetails').jqGrid('getRowData', rowid);
+    $("#txtAccountno").val(rowData.AccountNumber);
+    $("#txtAccountno").attr("readonly", "readonly");
+    $("#cboPaymentmode").val(rowData.SalaryPaymentMode).selectpicker('refresh');
+    $("#cboBankname").val(rowData.BankCode).selectpicker('refresh');
+    $("#txtIFSCcode").val(rowData.Ifsccode);
+    $("#txtBankbranch").val(rowData.BankBranch);
+    if (rowData.AccountStatus == 'true') {
+        $("#chkBankActiveStatus").parent().addClass("is-checked");
+    }
+    else {
+        $("#chkBankActiveStatus").parent().removeClass("is-checked");
+    }
+    $("#btnSaveBankDetails").attr("disabled", false);
+    $('#PopupBankDetails').modal('show');
+    _isInsert = false;
+
+    if (actiontype.trim() == "edit") {
+        $('#PopupBankDetails').find('.modal-title').text("Update Bank Details");
+        $("#btnSaveBankDetails").show();
+        $("#btnCancelBankDetails").show();
+        $("#btnSaveBankDetails").html('Update');
+        $("#chkBankActiveStatus").prop('disabled', false);
+        $("input,textarea").attr('readonly', false);
+        $("select").next().attr('disabled', false);
+        $("#txtAccountno").attr('readonly', true);
+    }
+
+    if (actiontype.trim() == "view") {
+        $('#PopupBankDetails').find('.modal-title').text("View Bank Details");
+        $("#btnSaveBankDetails").attr("disabled", true);
+        $("#btnSaveBankDetails").hide();
+        $("#btnCancelBankDetails").hide();
+        $("input,textarea").attr('readonly', true);
+        $("select").next().attr('disabled', true);
+        $("#chkBankActiveStatus").prop('disabled', true);
+        
+    }
+}
+
+function fnSaveBankDetails() {
+
+    if (IsValidBankDetails() === false) {
+        return;
+    }
+    var objbankinfo = {
+        BusinessKey: $("#txtBusinesskey").val(),
+        EmployeeNumber: $("#txtEmployeenumber").val(),
+        AccountNumber: $("#txtAccountno").val(),
+        SalaryPaymentMode: $("#cboPaymentmode").val(),
+        BankCode: $("#cboBankname").val(),
+        Ifsccode: $("#txtIFSCcode").val(),
+        BankBranch: $("#txtBankbranch").val(),
+        AccountStatus: $("#chkBankActiveStatus").parent().hasClass("is-checked")
+
+    };
+    $("#btnSaveBankDetails").attr('disabled', true);
+    $.ajax({
+        url: getBaseURL() + '/Employee/InsertOrUpdateEmployeeBankInfo',
+        type: 'POST',
+        datatype: 'json',
+        data: { isInsert: _isInsert, obj:objbankinfo },
+        success: function (response) {
+            if (response.Status) {
+                toastr.success(response.Message);
+                $('#PopupBankDetails').modal('hide');
+                fnGridRefreshBankDetails();
+                $("#btnSaveBankDetails").attr('disabled', false);
+                fnClearEmpBankFields();
+                return true;
+            }
+            else {
+                toastr.error(response.Message);
+                $("#btnSaveBankDetails").attr('disabled', false);
+                return false;
+            }
+
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnSaveBankDetails").attr('disabled', false);
+        }
+    });
+
+}
+
+function IsValidBankDetails() {
+    if (IsStringNullorEmpty($("#txtEmployeenumber").val())) {
+        toastr.warning("Please Create Employee details Details");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtBusinesskey").val())) {
+        toastr.warning("Please Create Employee details Details");
+        return false;
+    }
+    if ($("#cboPaymentmode").val() == 0 || $("#cboPaymentmode").val() == "0") {
+        toastr.warning("Please select Payment Mode");
+        return false;
+    }
+    if ($("#cboBankname").val() == 0 || $("#cboBankname").val() == "0") {
+        toastr.warning("Please select Bank Name");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtAccountno").val())) {
+        toastr.warning("Please Enter Account Number");
+        return false;
+    }
+   
+    if (IsStringNullorEmpty($("#txtIFSCcode").val())) {
+        toastr.warning("Please Enter IFSC Code");
+        return false;
+    }
+    if (IsStringNullorEmpty($("#txtBankbranch").val())) {
+        toastr.warning("Please Enter Bank Branch");
+        return false;
+    }
+}
+
+function fnGridRefreshBankDetails() {
+    $("#jqgBankDetails").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+}
+
+function fnClearEmpBankFields() {
+    $("#txtAccountno").attr('readonly',false);
+    $("#txtAccountno").val('');
+    $("#cboPaymentmode").val('0').selectpicker('refresh');
+    $("#cboBankname").val('0').selectpicker('refresh');
+    $("#txtIFSCcode").val('');
+    $("#txtBankbranch").val('');
+    $("#chkBankActiveStatus").parent().addClass("is-checked");
+    $("#btnSaveBankDetails").attr("disabled", false);
+    $("#btnSaveBankDetails").html("Save");
+}
+
+$("#btnCancelBankDetails").click(function () {
+    $("#jqgBankDetails").jqGrid('resetSelection');
+    $('#PopupBankDetails').modal('hide');
+    fnClearEmpBankFields();
+});

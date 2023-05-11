@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace eSyaEnterprise_UI.Areas.Configure
+{
+    public class CodeTypeValues
+    {
+        public const int PaymentMode = 80;
+        public const int PaymentCategory = 82;
+    }
+}

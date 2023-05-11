@@ -1,0 +1,124 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color">Location</label>
+            <select class="selectpicker" data-live-search="true" id="cboLocation" title="Select" asp-items="@ViewBag.BusinessKeyList" onchange="fnLoadSpecialty()"></select>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label class="lable-color">Specialty</label>
+            <select class="selectpicker" data-live-search="true" id="cboSpecialty" title="Select"></select>
+        </div>
+    </div>
+    <div class="col-lg-2  col-md-3 col-sm-12 col-xs-12">
+        <div class="default-checkbox">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkSpecialtyActiveStatus">
+                <input type="checkbox" id="chkSpecialtyActiveStatus" class="mdl-checkbox__input">
+                <span class="mdl-checkbox__label">Active</span>
+            </label>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-6 padtop20 padbot20">
+        <button type="button" class="btn btn-primary"><i class="fa fa-plus"></i> Save</button>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <table id="jqgDoctorSpecialtyLink"> </table>
+        <div id="jqpDoctorSpecialtyLink"></div>
+    </div>
+</div>
+
+
+<script>
+
+    $(document).ready(function () {
+        fnGridDoctorSpecialtyLink();
+    });
+
+    function fnGridDoctorSpecialtyLink() {
+        $("#jqgDoctorSpecialtyLink").jqGrid('GridUnload');
+        $("#jqgDoctorSpecialtyLink").jqGrid(
+            {
+                //url: getBaseURL() + '',
+               // datatype: 'json',
+               // mtype: 'GET',
+                ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+                colNames: ['Location', 'Specialty ','Active', 'Actions'],
+                colModel: [
+                    { name: "Location", width: 170, editable: true, align: 'left', hidden: false },
+                    { name: 'Specialty', index: 'SpecialtySegment', width: 170, resizable: false },
+                    {
+                        name: 'ActiveStatus', index: 'ActiveStatus', width: 70, resizable: false, align: 'center',
+                    },
+                    {
+                        name: 'delete', search: false, align: 'left', width: 100, sortable: false, resizable: false,
+                        formatter: function (cellValue, options, rowdata, action) {
+                            return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid cancel-button" id="jqgDelete", onclick="return fnDeleteSpecialty(event)"><i class="far fa-trash-alt"></i> Delete </button>'
+                        }
+                    },
+                ],
+                rowNum: 10,
+                rowList: [10, 20, 50, 100],
+                loadonce: true,
+                pager: "#jqpDoctorSpecialtyLink",
+                viewrecords: true,
+                gridview: true,
+                rownumbers: true,
+                height: 'auto',
+                width: 'auto',
+                autowidth: false,
+                shrinkToFit: false,
+                forceFit: false,
+                scroll: false,
+                scrollOffset: 0,
+            }).jqGrid('navGrid', '#jqpDoctorSpecialtyLink', { add: false, edit: false, search: false, del: false, refresh: false });
+    }
+
+
+
+    function fnGridRefreshDoctorSpecialtyLinkGrid() {
+        $("#jqgDoctorSpecialtyLink").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid')
+    }
+    function fnDeleteSpecialty(e) {
+
+    }
+
+    function fnLoadSpecialty() {
+
+        if ($('#cboLocation').val() == '')
+            return;
+        
+        $.ajax({
+            url: getBaseURL() + '/Specialty/GetSpecialtyListForBusinessKey?businessKey=' + $('#cboLocation').val(),
+            type: 'POST',
+            datatype: 'json',
+            async: false,
+            success: function (response) {
+                if (response != null) {
+                    var options = $("#cboSpecialty");
+                    $("#cboSpecialty").empty();
+
+                    $.each(response, function () {
+                        options.append($("<option />").val(this.SpecialtyID).text(this.SpecialtyDesc));
+                    });
+                    $('#cboSpecialty').selectpicker('refresh');
+                    $('#chkSpecialtyActiveStatus').parent().addClass("is-checked");
+                }
+                else {
+
+                }
+
+            },
+            error: function (error) {
+                toastr.error(error.statusText);
+
+            }
+        });
+    }
+
+</script>

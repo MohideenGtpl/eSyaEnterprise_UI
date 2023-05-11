@@ -1,0 +1,461 @@
+﻿
+var NodeID;
+var prevSelectedID;
+
+$(document).ready(function () {
+    //fnLoadCustodianTree();
+    $("#pnlAddItemCustodian").hide();
+   });
+$("#popupAddItemCategory").on('shown.bs.modal', function () {
+    fnLoadGridItemCustodian();
+    fnLoadGridAccountingStore();
+    fnLoadGridConsumptionStore();
+    console.log($('.divCustodianStore').width());
+    $('#jqgCustodianStore').jqGrid('setGridWidth', $('.divCustodianStore').width());
+})
+function fnLoadtreebyBusinessKey() {
+    if ($("#cboBusinessKey").val() === '0') {
+        $("#ItemCustodianTree").jstree("destroy");
+        $("#jqgCustodianStore").hide();
+        $("#jqpCustodianStore").hide();
+        $('#pnlAddItemCategory').hide();
+    }
+    else {
+        $("#jqgCustodianStore").show();
+        $("#jqpCustodianStore").show();
+        fnLoadCustodianTree();
+    }
+}
+function fnLoadGridItemCustodian() {
+    $("#jqgCustodianStore").jqGrid('GridUnload');
+    $("#jqgCustodianStore").jqGrid({
+        url: getBaseURL() + '/ItemManagement/GetCustodianStoreList',
+        mtype: 'Post',
+        datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: [localization.StoreCode, localization.CustodianStore, localization.Active],
+        colModel: [
+            { name: "CustodianStore", width: 170, editable: true, align: 'left', hidden: true },
+            { name: "StoreDesc", width: 170, editable: true, align: 'left', hidden: false },
+            { name: "ActiveStatus", editable: true, width: 45, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: false } },
+        ],
+        rowNum: 100000,
+        pgtext: null,
+        pgbuttons: false,
+        loadonce: true,
+        rownumWidth: 55,
+        viewrecords: false,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: true,
+        shrinkToFit: true,
+        forceFit: true,
+        loadComplete: function () {
+           
+        }
+    }).jqGrid('navGrid', '#jqgCustodianStore', { add: false, edit: false, search: false, del: false, refresh: false });
+
+}
+
+function fnLoadCustodianTree() {
+
+    $.ajax({
+        url: getBaseURL() + '/ItemManagement/GetItemTree',
+        type: 'POST',
+        //datatype: 'json',
+        success: function (result) {
+            fnGetBusinessLocation_Success(result);
+        },
+        error: function (error) {
+            toastr.error(error.status);
+        }
+    });
+
+    //$('#ItemCustodianTree').jstree({
+    //    'core': {
+    //        'data': [
+                
+    //            {
+    //                'text': 'Item',
+    //                'state': {
+    //                    'opened': true,
+    //                    'selected': true
+    //                },
+    //                'children': [
+    //                    { 'text': 'Item 1' },
+    //                    'Item 2'
+    //                ]
+    //            }
+    //        ]
+    //    }
+    //});
+}
+
+function fnGetBusinessLocation_Success(dataArray) {
+    $("#ItemCustodianTree").jstree({
+        "state": { "checkbox_disabled": true },
+        "checkbox": {
+            "keep_selected_style": false
+        },
+        //"plugins": ["checkbox"],
+        core: { 'data': dataArray, 'check_callback': true, 'multiple': true }
+
+    });
+
+    $("#ItemCustodianTree").on('loaded.jstree', function () {
+
+        $("#ItemCustodianTree").jstree('open_all');
+        $("#ItemCustodianTree").jstree()._open_to(prevSelectedID);
+        $('#ItemCustodianTree').jstree().select_node(prevSelectedID);
+
+    });
+
+    $('#ItemCustodianTree').on("changed.jstree", function (e, data) {
+
+        if (data.node != undefined) {
+            if (prevSelectedID != data.node.id) {
+                prevSelectedID = data.node.id;
+
+                if (data.node.id == "0") {
+                    fnClearFields();
+                    $('#popupAddItemCategory').modal('hide');
+                }
+                else {
+                    
+                
+                    $('#View').remove();
+                    $('#Edit').remove();
+                    $('#Add').remove();
+
+                    $('#popupAddItemCategory').modal('hide');
+
+
+                    if (data.node.id.startsWith("IT")) {
+
+                        NodeID = 0;
+                        NodeID = data.node.id.substring(2).split("_")[3];
+                       
+                        $('#' + data.node.id + "_anchor").html($('#' + data.node.id + "_anchor").html() + '<span id="View" style="padding-left:10px">&nbsp;<i class="fa fa-eye" style="color:#337ab7"aria-hidden="true"></i></span>')
+                        $('#' + data.node.id + "_anchor").html($('#' + data.node.id + "_anchor").html() + '<span id="Edit" style="padding-left:10px">&nbsp;<i class="fa fa-pen" style="color:#337ab7"aria-hidden="true"></i></span>')
+                        $('#' + data.node.id + "_anchor").html($('#' + data.node.id + "_anchor").html() + '<span id="Add" style="padding-left:10px;padding-right:10px">&nbsp;<i class="fa fa-plus" style="color:#337ab7"aria-hidden="true"></i></span>')
+
+
+                        $('#View').on('click', function () {
+
+                            if (_userFormRole.IsView === false) {
+                                $('#popupAddItemCategory').modal('hide');
+                                toastr.warning(errorMsgCS["E001"]);
+                                return;
+                            }
+                            if ($("#cboBusinessKey").val() === 0 || $("#cboBusinessKey").val() === "0") {
+                                $('#popupAddItemCategory').modal('hide');
+                                toastr.warning('Please select any Location');
+                                return;
+                            }
+                            $('#popupAddItemCategory').modal('show');
+                            $('#pnlcustodianheading > h5').text(localization.ViewCustodianStore);
+                            $('#btnICAdd').hide();
+                            $("#txtItemcode").val(NodeID);
+                            fnFillCustodianStore();
+                            //$("input[type=checkbox]").attr('disabled', true);
+                        });
+
+                        $('#Edit').on('click', function () {
+                           
+                            if (_userFormRole.IsEdit === false) {
+                                $('#popupAddItemCategory').modal('hide');
+                                toastr.warning(errorMsgCS["E002"]);
+                                return;
+                            }
+                            if ($("#cboBusinessKey").val() === 0 || $("#cboBusinessKey").val() === "0") {
+                                $('#popupAddItemCategory').modal('hide');
+                                toastr.warning('Please select any Location');
+                                return;
+                            }
+                            $('#popupAddItemCategory').modal('show');
+                            $('#pnlcustodianheading > h5').text(localization.EditCustodianStore);
+                            $('#btnICAdd').show();
+                            $('#btnICAdd').html('<i class="fa fa-sync"></i>' + localization.Update);
+                            $("#txtItemcode").val(NodeID);
+                            fnFillCustodianStore();
+                            fnFillAccountingStore();
+                            fnFillConsumptionStore();
+                            //$("input[type=checkbox]").attr('disabled', false);
+                        });
+
+                        $('#Add').on('click', function () {
+                          
+                            if (_userFormRole.IsInsert === false) {
+                                $('#popupAddItemCategory').modal('hide');
+                                toastr.warning(errorMsgCS["E003"]);
+                                return;
+                            }
+                            if ($("#cboBusinessKey").val() === 0 || $("#cboBusinessKey").val() === "0") {
+                                $('#popupAddItemCategory').modal('hide');
+                                toastr.warning('Please select any Location');
+                                return;
+                            }
+                            $('#popupAddItemCategory').modal('show');
+                            $('#btnICAdd').show();
+                            $('#pnlcustodianheading > h5').text(localization.AddCustodianStore);
+                            $('#btnICAdd').html('<i class="fa fa-plus"></i>' + localization.Add);
+                            fnClearFields();
+                            $("#txtItemcode").val(NodeID);
+                            //$("input[type=checkbox]").attr('disabled', false);
+                        });
+
+
+                    }
+                    else {
+                        $('#View').remove();
+                        $('#Edit').remove();
+                        $('#Add').remove();
+                        fnClearFields();
+                        $('#popupAddItemCategory').modal('hide');
+                    }
+                }
+            }
+        }
+    });
+
+    $('#ItemCustodianTree').on("close_node.jstree", function (node) {
+        var closingNode = node.handleObj.handler.arguments[1].node;
+        $('#ItemCustodianTree').jstree().deselect_node(closingNode.children);
+    });
+
+}
+
+function fnClearFields() {
+    $("#txtItemcode").val('');
+}
+
+function fnFillCustodianStore() {
+  
+    $("#jqgCustodianStore").jqGrid('GridUnload');
+    $("#jqgCustodianStore").jqGrid({
+        url: getBaseURL() + '/ItemManagement/GetCustodianStoreListbyAccountingStore?Businesskey=' + $("#cboBusinessKey").val() + '&Itemcode=' + $("#txtItemcode").val() + '&accountingcode=' + $("#cboAccountingStore").val(),
+        mtype: 'Post',
+        datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: [localization.StoreCode, localization.CustodianStore, localization.Active],
+        colModel: [
+            { name: "CustodianStore", width: 170, editable: true, align: 'left', hidden: true },
+            { name: "StoreDesc", width: 170, editable: true, align: 'left', hidden: false },
+            { name: "ActiveStatus", editable: true, width: 45, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: false } },
+        ],
+        rowNum: 100000,
+        pgtext: null,
+        pgbuttons: false,
+        loadonce: true,
+        rownumWidth: 55,
+        viewrecords: false,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: true,
+        shrinkToFit: true,
+        forceFit: true,
+    }).jqGrid('navGrid', '#jqgCustodianStore', { add: false, edit: false, search: false, del: false, refresh: false });
+
+}
+
+function fnSaveItemCustodianStore() {
+    debugger;
+    if ($("#cboBusinessKey").val() === 0 || $("#cboBusinessKey").val() === "0") {
+        toastr.warning('Please select any Location');
+        return;
+    }
+    if (IsStringNullorEmpty($("#txtItemcode").val())) {
+        toastr.warning("Please select Item");
+        return;
+    }
+    if ($("#cboAccountingStore").val() === 0 || $("#cboAccountingStore").val() === "0") {
+        toastr.warning('Please select Accounting Store');
+        return;
+    }
+    var $grid = $("#jqgCustodianStore");
+    var r_custodian = [];
+    var ids = jQuery("#jqgCustodianStore").jqGrid('getDataIDs');
+    for (var i = 0; i < ids.length; i++) {
+        var rowId = ids[i];
+        var rowData = jQuery('#jqgCustodianStore').jqGrid('getRowData', rowId);
+
+        if (rowData.ActiveStatus==="true") {
+            r_custodian.push({
+                BusinessKey: $("#cboBusinessKey").val(),
+                AccountingStore: $("#cboAccountingStore").val(),
+                ItemCode: $("#txtItemcode").val(),
+                CustodianStore: rowData.CustodianStore,
+                ActiveStatus: rowData.ActiveStatus,
+            });
+        }
+    }
+
+    $("#btnICAdd").attr("disabled", true);
+    $.ajax({
+        url: getBaseURL() + '/ItemManagement/InsertOrUpdateItemCodetoCustodianStore',
+        type: 'POST',
+        datatype: 'json',
+        data: { obj: r_custodian },
+        async: false,
+        success: function (response) {
+            if (response.Status === true) {
+                toastr.success("Saved");
+                fnClearFields();
+                $("#ItemCustodianTree").jstree("destroy");
+                fnLoadCustodianTree();
+                $('#popupAddItemCategory').modal('hide');
+            }
+            else {
+                toastr.error(response.Message);
+                $("#btnICAdd").attr("disabled", false);
+            }
+            $("#btnICAdd").attr("disabled", false);
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            $("#btnICAdd").attr("disabled", false);
+        }
+    });
+
+}
+
+function fnLoadGridAccountingStore() {
+    $("#jqgAccountingStore").jqGrid('GridUnload');
+    $("#jqgAccountingStore").jqGrid({
+        url: getBaseURL() + '/ItemManagement/GetCustodianStoreList',
+        mtype: 'Post',
+        datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: [localization.StoreCode, localization.CustodianStore, localization.Active],
+        colModel: [
+            { name: "CustodianStore", width: 170, editable: true, align: 'left', hidden: true },
+            { name: "StoreDesc", width: 170, editable: true, align: 'left', hidden: false },
+            { name: "ActiveStatus", editable: true, width: 45, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: false } },
+        ],
+        rowNum: 100000,
+        pgtext: null,
+        pgbuttons: false,
+        loadonce: true,
+        rownumWidth: 55,
+        viewrecords: false,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: true,
+        shrinkToFit: true,
+        forceFit: true,
+        loadComplete: function () {
+
+        }
+    }).jqGrid('navGrid', '#jqgAccountingStore', { add: false, edit: false, search: false, del: false, refresh: false });
+
+}
+function fnFillAccountingStore() {
+
+    $("#jqgAccountingStore").jqGrid('GridUnload');
+    $("#jqgAccountingStore").jqGrid({
+        url: getBaseURL() + '/ItemManagement/GetCustodianStoreListbyAccountingStore?Businesskey=' + $("#cboBusinessKey").val() + '&Itemcode=' + $("#txtItemcode").val() + '&accountingcode=' + $("#cboAccountingStore").val(),
+        mtype: 'Post',
+        datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: [localization.StoreCode, localization.CustodianStore, localization.Active],
+        colModel: [
+            { name: "CustodianStore", width: 170, editable: true, align: 'left', hidden: true },
+            { name: "StoreDesc", width: 170, editable: true, align: 'left', hidden: false },
+            { name: "ActiveStatus", editable: true, width: 45, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: false } },
+        ],
+        rowNum: 100000,
+        pgtext: null,
+        pgbuttons: false,
+        loadonce: true,
+        rownumWidth: 55,
+        viewrecords: false,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: true,
+        shrinkToFit: true,
+        forceFit: true,
+    }).jqGrid('navGrid', '#jqgAccountingStore', { add: false, edit: false, search: false, del: false, refresh: false });
+
+}
+
+function fnLoadGridConsumptionStore() {
+    $("#jqgConsumptionStore").jqGrid('GridUnload');
+    $("#jqgConsumptionStore").jqGrid({
+        url: getBaseURL() + '/ItemManagement/GetCustodianStoreList',
+        mtype: 'Post',
+        datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: [localization.StoreCode, localization.CustodianStore, localization.Active],
+        colModel: [
+            { name: "CustodianStore", width: 170, editable: true, align: 'left', hidden: true },
+            { name: "StoreDesc", width: 170, editable: true, align: 'left', hidden: false },
+            { name: "ActiveStatus", editable: true, width: 45, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: false } },
+        ],
+        rowNum: 100000,
+        pgtext: null,
+        pgbuttons: false,
+        loadonce: true,
+        rownumWidth: 55,
+        viewrecords: false,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: true,
+        shrinkToFit: true,
+        forceFit: true,
+        loadComplete: function () {
+
+        }
+    }).jqGrid('navGrid', '#jqgConsumptionStore', { add: false, edit: false, search: false, del: false, refresh: false });
+
+}
+function fnFillConsumptionStore() {
+    $("#jqgConsumptionStore").jqGrid('GridUnload');
+    $("#jqgConsumptionStore").jqGrid({
+        url: getBaseURL() + '/ItemManagement/GetCustodianStoreListbyAccountingStore?Businesskey=' + $("#cboBusinessKey").val() + '&Itemcode=' + $("#txtItemcode").val() + '&accountingcode=' + $("#cboAccountingStore").val(),
+        mtype: 'Post',
+        datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: [localization.StoreCode, localization.CustodianStore, localization.Active],
+        colModel: [
+            { name: "CustodianStore", width: 170, editable: true, align: 'left', hidden: true },
+            { name: "StoreDesc", width: 170, editable: true, align: 'left', hidden: false },
+            { name: "ActiveStatus", editable: true, width: 45, align: 'center', resizable: false, edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: false } },
+        ],
+        rowNum: 100000,
+        pgtext: null,
+        pgbuttons: false,
+        loadonce: true,
+        rownumWidth: 55,
+        viewrecords: false,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: true,
+        shrinkToFit: true,
+        forceFit: true,
+    }).jqGrid('navGrid', '#jqgConsumptionStore', { add: false, edit: false, search: false, del: false, refresh: false });
+
+}

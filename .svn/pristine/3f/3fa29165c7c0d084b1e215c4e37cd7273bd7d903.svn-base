@@ -1,0 +1,213 @@
+﻿
+@{
+    ViewData["Title"] = "EDN_03";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+<script>
+    var localization = {
+        AddDonorRegistration:'@Localizer["AddDonorRegistration"]',
+        DonorTypeDesc:'@Localizer["DonorTypeDesc"]',
+        DonationRangeFrom:'@Localizer["DonationRangeFrom"]',
+        DonationRangeTo:'@Localizer["DonationRangeTo"]',
+        DiscountPercentage:'@Localizer["DiscountPercentage"]',
+        RoomType:'@Localizer["RoomType"]',
+        NoOfPersons:'@Localizer["NoOfPersons"]',
+        DonorValidityInYears:'@Localizer["DonorValidityInYears"]',
+        Active:'@Localizer["Active"]',
+        Save:'@Localizer["Save"]',
+        Cancel:'@Localizer["Cancel"]',
+        DonorType:'@Localizer["DonorType"]',
+        Actions: '@Localizer["Actions"]',
+
+        DonorID:'@Localizer["DonorID"]',
+        DonorRegistrationNo:'@Localizer["DonorRegistrationNo"]',
+        DonorFirstName:'@Localizer["DonorFirstName"]',
+        DonorMiddleName:'@Localizer["DonorMiddleName"]',
+        DonorLastName:'@Localizer["DonorLastName"]',
+        AgeYY:'@Localizer["AgeYY"]',
+        Gender:'@Localizer["Gender"]',
+        ISDCode:'@Localizer["ISDCode"]',
+        RegisteredMobileNumber:'@Localizer["RegisteredMobileNumber"]',
+        EmailID:'@Localizer["EmailID"]',
+        Address:'@Localizer["Address"]',
+        Country:'@Localizer["Country"]',
+        State: '@Localizer["State"]',
+        City:'@Localizer["City"]',
+        ZIPcode:'@Localizer["ZIPcode"]',
+        Area:'@Localizer["Area"]',
+        RoomType:'@Localizer["RoomType"]',
+        NoOfPersons:'@Localizer["NoOfPersons"]',
+        ValidFrom:'@Localizer["ValidFrom"]',
+        ValidTill:'@Localizer["ValidTill"]',
+        DiscountPercentage:'@Localizer["DiscountPercentage"]',
+        DonatedSoFar:'@Localizer["DonatedSoFar"]',
+        ActiveStatus:'@Localizer["ActiveStatus"]',
+    }
+</script>
+@section scripts{
+    <script src="~/js/eSyaNatureCure/Donor/DonorRegistration.js"></script>
+    <script src="~/js/context-menu.js"></script>
+    <script src="~/js/jquery.contextMenu.min.js"></script>
+}
+<link href="~/css/jquery.contextMenu.min.css" rel="stylesheet" />
+<style>
+    .section-address button{
+        display:none;
+    }
+</style>
+<section id="section-grid">
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-12">
+            <table id="jqgDonorRegistration"></table>
+            <div id="jqpDonorRegistration"></div>
+        </div>
+    </div>
+</section>
+<section class="" style="display:none;" id="section-donoregistration">
+    <section class="div-section">
+        <div class="row padbot4">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <p class="subheading">Donor information</p>
+                <hr class="left" />
+            </div>
+            <div class="col-sm-6 col-lg-2">
+                <div class="form-group">
+                    <label for="txtDonorRegistrationNo">@Localizer["DonorRegistrationNo"] </label>
+                    <input class="form-control" type="text" maxlength="20" id="txtDonorRegistrationNo" />
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label for="txtDateOfRegistration"> @Localizer["DateOfRegistration"]</label>
+                    <input id="txtDateOfRegistration" class="form-control" type="datetime" />
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
+                <div class="form-group">
+                    <label for="txtDonorType">@Localizer["DonorType"] </label>
+                    <select id="txtDonorType" class="form-control">
+                        <option>Select</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row padbot4">
+            <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                <div class="form-group">
+                    <label for="txtDonorFirstName"> @Localizer["DonorFirstName"]</label>
+                    <input type="text" id="txtDonorFirstName" class="form-control" maxlength="50" />
+                </div>
+            </div>
+            <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                <div class="form-group">
+                    <label for="txtDonorMiddleName"> @Localizer["DonorMiddleName"]</label>
+                    <input type="text" id="txtDonorMiddleName" class="form-control" maxlength="50" />
+                </div>
+            </div>
+            <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                <div class="form-group">
+                    <label for="txtDonorLastName"> @Localizer["DonorLastName"]</label>
+                    <input type="text" id="txtDonorLastName" class="form-control" maxlength="50" />
+                </div>
+            </div>
+            <div class="col-lg-2  col-md-3 col-sm-12 col-xs-12">
+                <div class="form-group">
+                    <label for="txtAgeYY"> @Localizer["AgeYY"]</label>
+                    <input type="text" id="txtAgeYY" class="form-control" maxlength="3" />
+                </div>
+            </div>
+            <div class="col-lg-2  col-md-3 col-sm-12 col-xs-12">
+                <div class="form-group">
+                    <label for="txtGender">@Localizer["Gender"] </label>
+                    <select id="txtGender" class="form-control">
+                        <option>Select</option>
+                    </select>
+                </div>
+            </div>
+            @*<div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                <label>ISDCode</label>
+                @await Component.InvokeAsync("IsdMobileInput", new { id = "MobileNo" })
+            </div>*@
+            <div class="col-lg-4  col-md-4 col-sm-12 col-xs-12">
+                <div class="form-group">
+                    <label for="txtEmailID">@Localizer["EmailID"] </label>
+                    <input type="text" name="emailid" value="" class="form-control" id="txtEmailID" />
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-address div-section">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <p class="subheading">Contact Details</p>
+                <hr class="left" />
+            </div>
+        </div>
+        @await Html.PartialAsync("~/Areas/Facilities/Views/Doctors/_Address.cshtml")
+    </section>
+    <section class="div-section">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <p class="subheading">Room Details</p>
+                <hr class="left" />
+            </div>
+            <div class="col-lg-2  col-md-3 col-sm-12 col-xs-12">
+                <div class="form-group">
+                    <label for="txtRoomType">@Localizer["RoomType"] </label>
+                    <input id="txtRoomType" class="form-control" type="text" />
+                </div>
+            </div>
+            <div class="col-lg-2  col-md-3 col-sm-12 col-xs-12">
+                <div class="form-group">
+                    <label for="txtNoOfPersons">@Localizer["NoOfPersons"] </label>
+                    <input id="txtNoOfPersons" class="form-control" type="text" />
+                </div>
+            </div>
+            <div class="col-lg-2  col-md-3 col-sm-12 col-xs-12">
+                <div class="form-group">
+                    <label for="txtValidFrom">@Localizer["ValidFrom"] </label>
+                    <input id="txtValidFrom" class="form-control" type="date" />
+                </div>
+            </div>
+            <div class="col-lg-2  col-md-3 col-sm-12 col-xs-12">
+                <div class="form-group">
+                    <label for="txtValidTill">@Localizer["ValidTill"] </label>
+                    <input id="txtValidTill" class="form-control" type="date" />
+                </div>
+            </div>
+            <div class="col-lg-2  col-md-3 col-sm-12 col-xs-12">
+                <div class="form-group">
+                    <label for="txtDiscount">@Localizer["Discount"] </label>
+                    <input id="txtDiscount" class="form-control" type="datetime" />
+                </div>
+            </div>
+            <div class="col-lg-2  col-md-3 col-sm-12 col-xs-12">
+                <div class="form-group">
+                    <label for="txtDonatedSoFar">@Localizer["DonatedSoFar"] </label>
+                    <input id="txtDonatedSoFar" class="form-control" type="number" />
+                </div>
+            </div>
+
+            <div class="col-lg-3  col-md-3 col-sm-12 col-xs-12 d-flex align-items-center">
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkActiveStatus">
+                    <input type="checkbox" id="chkActiveStatus" class="mdl-checkbox__input">
+                    <span class="mdl-checkbox__label">@Localizer["Active"]</span>
+                </label>
+            </div>
+        </div>
+    </section>
+    <div class="row">
+        <div class="col-lg-12 col-12 text-center">
+            <hr />
+            <button class="btn btn-primary mdl-button mr-10"><i class="fa fa-save"></i> Save</button>
+            <button class="btn btn-primary mdl-button" onclick="fnClearFields()"><i class="fa fa-times"></i> Cancel</button>
+        </div>
+    </div>
+</section>
+ 

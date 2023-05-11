@@ -1,0 +1,70 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@{
+    ViewData["Title"] = "EWR_06";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script>
+  
+    var localization = {
+        WardDesc: '@Localizer["WardDescription"]',
+        RoomDesc: '@Localizer["RoomDescription"]',
+        IPRate: '@Localizer["IPRate"]',
+        DCRate: '@Localizer["DCRate"]',
+        EffectiveFrom: '@Localizer["EffectiveFrom"]',
+        EffectiveTill: '@Localizer["EffectiveTill"]',
+        BusinessLocation: '@Localizer["BusinessLocation"]',
+        RateType: '@Localizer["RateType"]',
+        Currency: '@Localizer["Currency"]',
+         Active: '@Localizer["Active"]',
+        Actions: '@Localizer["Actions"]',
+        Edit: '@Localizer["Edit"]',
+        View: '@Localizer["View"]',
+        AddScheduleOfCharges: '@Localizer["AddScheduleOfCharges"]',
+        UpdateScheduleOfCharges :'@Localizer["UpdateScheduleOfCharges"]',
+        ViewScheduleOfCharges: '@Localizer["ViewScheduleOfCharges"]',
+        Update: '@Localizer["Update"]',
+        Save: '@Localizer["Save"]',
+        DActivate: '@Localizer["DActivate"]',
+        Activate: '@Localizer["Activate"]',
+        Delete: '@Localizer["Delete"]',
+    }
+</script>
+@section scripts{
+    <script src="~/js/ConfigureWardRoom/ScheduleOfCharges.js"></script>
+    <script src="~/js/jquery.contextMenu.min.js"></script>
+}
+    <div class="row">
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="form-group">
+                <label class="lable-color"> @Localizer["BusinessLocation"]</label>
+                <select class="selectpicker" data-live-search="false" title="" id="cboBusinessLocation">
+                    <option value="">Select</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="form-group">
+                <label class="lable-color"> @Localizer["RateType"]</label>
+                <select class="selectpicker" data-live-search="false" title="" id="cboRateType">
+                    <option value="">Select</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="form-group">
+                <label class="lable-color"> @Localizer["Currency"]</label>
+                <select class="selectpicker" data-live-search="false" title="" id="cboCurrency">
+                    <option value="">Select</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+            <table id="jqgScheduleOfcharges"></table>
+            <div id="jqpScheduleOfcharges"></div>
+        </div>
+    </div>
+

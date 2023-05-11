@@ -1,0 +1,63 @@
+﻿ 
+@{
+    ViewData["Title"] = "V_101_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts{
+    <script src="~/js/eSyaFA/DepreciationMethod.js"></script>
+}
+
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <table id="jqgAssetGroup"></table>
+        <div id="jqpAssetGroup"></div>
+    </div>
+</div>
+
+<div class="modal fade in" id="PopupDepreciationMethod">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header popupHeader">
+                <button type="button" class="close" data-dismiss="modal"> <i class="fa fa-times"></i></button>
+                <h4 class="modal-title">Depreciation Method</h4>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="hdvAssetGroupId" />
+                <input type="hidden" id="hdvAssetSubGroupId" />
+                <div class="row form-group">
+
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                        Asset Group:  <span id="lblAssetGroup" style="color: #1094f8 !important;font-weight: 600 !important;font-size:16px;"></span>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                        Asset Sub Group:  <span id="lblSubGroup" style="color: #1094f8 !important;font-weight: 600 !important;font-size:16px;"></span>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <table id="jqgDepreciationMethod"></table>
+                        <div id="jqpDepreciationMethod"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent primary-button" id="btnDepreciationMethodSave" onclick="fnSaveAssetDepreciationMethod()">
+                            Save
+                        </button>
+                        <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect  cancel-button" data-dismiss="modal" id="btnDepreciationMethodCancel"> Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+

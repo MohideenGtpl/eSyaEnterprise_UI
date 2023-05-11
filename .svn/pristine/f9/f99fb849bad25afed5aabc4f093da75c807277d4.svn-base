@@ -1,0 +1,650 @@
+﻿
+@{
+    ViewData["Title"] = "V_3020_00";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/js/jquery.repeater.js"></script>
+<div class="row">
+
+    <div class="col-lg-3 col-md-2 col-sm-4">
+        <div class="form-group">
+            <label for="txtNationalityID">Services</label>
+            <select class="selectpicker">
+                <option value="value">Select</option>
+                <option value="value">Outpatient Consultation</option>
+                <option value="value">Preventive Health</option>
+                <option value="value">Other Services</option>
+            </select>
+        </div>
+    </div>
+    </div>
+<div class="row">
+    <div class="col-lg-3 col-md-2 col-sm-4">
+        <label>Type of visit</label>
+        <label class="d-inline mr-10"> <input type="radio" name="typeofvisit" value="1" /> Walk-in</label>
+        <label class="d-inline mr-10"> <input type="radio" name="typeofvisit" value="2" /> Booked</label>
+        <label class="d-inline mr-10"> <input type="radio" name="typeofvisit" value="3" /> New</label>
+        <label class="d-inline"> <input type="radio" name="typeofvisit" value="4" /> Established</label>
+    </div>
+    <div class="col-lg-3 col-md-2 col-sm-4">
+        <div class="form-group">
+            <label for="">Mobile Number</label>
+            <input id="" type="text" class="form-control" />
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-3 col-sm-6" id="divRegisteredPatient" style="display:none">
+        <table id="jqgRegisteredPatient"></table>
+        <div id="jqpRegisteredPatient"></div>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6" id="divAppointmentInfo" style="display:none">
+        <table id="jqgAppointmentInfo"></table>
+        <div id="jqpAppointmentInfo"></div>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <p class="subheading">Demographic Details</p>
+        <hr class="left" />
+    </div>
+    <div class="col-lg-3 col-md-2 col-sm-4">
+        <div class="form-group">
+            <label for="txtNationalityID">Nationality ID</label>
+            <input id="txtNationalityID" type="text" class="form-control" />
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-2 col-sm-4">
+        <div class="form-group">
+            <label for="">Email ID</label>
+            <input id="" type="text" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-2 col-sm-4 form-group">
+        <div class="default-checkbox">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsPPScanned">
+                <input type="checkbox" id="chkIsPPScanned" class="mdl-checkbox__input">
+                <span class="mdl-checkbox__label">Is VIP</span>
+            </label>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label for="txtFirstName">First Name</label>
+            <input id="txtFirstName" type="text" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label for="txtMiddleName">Middle Name</label>
+            <input id="txtMiddleName" type="text" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label for="txtLastName">Last Name</label>
+            <input id="txtLastName" type="text" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-1 col-md-1 col-sm-2">
+        <div class="form-group">
+            <label for="txtAgeYY">Age YY</label>
+            <input id="txtAgeYY" type="text" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-1 col-md-1 col-sm-2">
+        <div class="form-group">
+            <label for="txtAgeMM">Age MM</label>
+            <input id="txtAgeMM" type="text" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-1 col-md-1 col-sm-2">
+        <div class="form-group">
+            <label for="txtAgeDD">Age DD</label>
+            <input id="txtAgeDD" type="text" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label for="txtDateOfBirth">Date of birth</label>
+            <input id="txtDateOfBirth" type="text" class="form-control datepicker" />
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label for="">Gender</label>
+            <select class="form-control">
+                <option value="value">Select</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label>Clinic</label>
+            <select class="form-control">
+                <option value="value">Select</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label>Consultation type</label>
+            <select class="form-control">
+                <option value="value">Select</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label>Episode</label>
+            <select class="form-control">
+                <option value="value">Select</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label>Specialty</label>
+            <select class="form-control">
+                <option value="value">Select</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label>Doctor</label>
+            <select class="form-control">
+                <option value="value">Select</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="col-lg-12">
+        <p class="subheading">Address Details</p>
+        <hr class="left" />
+    </div>
+    <div class="col-lg-5 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label for="txtVisaIssueDate">Address Line 1</label>
+            <input id="txtVisaIssueDate" type="text" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-2 col-sm-6">
+        <div class="form-group">
+            <label for="txtVisaIssueDate">Address Line 2</label>
+            <input id="txtVisaIssueDate" type="text" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label for="txtVisaIssueDate">Address Line 3</label>
+            <input id="txtVisaIssueDate" type="text" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-12">
+        <p class="subheading">Passport Details</p>
+        <hr class="left" />
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-6 form-group">
+        <div class="default-checkbox">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsPPScanned">
+                <input type="checkbox" id="chkIsPPScanned" class="mdl-checkbox__input">
+                <span class="mdl-checkbox__label">Is PP Scanned</span>
+            </label>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label for="txtPassportNumber">Passport Number</label>
+            <input id="txtPassportNumber" type="text" class="form-control datepicker" />
+        </div>
+    </div>
+
+    <div class="col-lg-2 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label for="txtDateOfIssue">Date of Issue</label>
+            <input id="txtDateOfIssue" type="text" class="form-control datepicker" />
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label for="txtPlaceOfIssue">Place of Issue</label>
+            <input id="txtPlaceOfIssue" type="text" class="form-control datepicker halfwidth" />
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label for="txtPlaceOfIssue">Place of Issue</label>
+            <input id="txtPlaceOfIssue" type="text" class="form-control halfwidth" />
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label for="">Visa Type</label>
+            <select class="form-control">
+                <option value="value">Select</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label for="txtVisaIssueDate">Visa Issue Date</label>
+            <input id="txtVisaIssueDate" type="text" class="form-control datepicker halfwidth" />
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label for="txtVisaExpiryDate">Visa Expiry Date</label>
+            <input id="txtVisaExpiryDate" type="text" class="form-control datepicker halfwidth" />
+        </div>
+    </div>
+
+
+    <div class="col-lg-12">
+        <p class="subheading">Patient Category</p>
+        <hr class="left" />
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label for="">Patient Type</label>
+            <select class="form-control">
+                <option value="value">Select</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label for="">Patient Category</label>
+            <select class="form-control">
+                <option value="value">Select</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label for="">Rate Plan</label>
+            <select class="form-control">
+                <option value="value">Select</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label for="txtAppointmentNumber">Appointment Number</label>
+            <input id="txtAppointmentNumber" type="text" class="form-control" />
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-3 col-sm-6 form-group">
+        <div class="default-checkbox">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsPPScanned">
+                <input type="checkbox" id="chkIsPPScanned" class="mdl-checkbox__input">
+                <span class="mdl-checkbox__label">Is Recommended By Staff</span>
+            </label>
+        </div>
+    </div>
+    <div class="col-lg-5 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label for="txtRecommenderName">Recommender Name</label>
+            <input id="txtRecommenderName" type="text" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label for="txtRecommenderName">Source of Reference</label>
+            <input id="txtRecommenderName" type="text" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label for="txtRecommenderName">Sub SOR</label>
+            <input id="txtRecommenderName" type="text" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-6 form-group">
+        <div class="default-checkbox separate">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsPPScanned">
+                <input type="checkbox" id="chkIsPPScanned" class="mdl-checkbox__input">
+                <span class="mdl-checkbox__label">Is VIP</span>
+            </label>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-6 form-group">
+        <div class="default-checkbox separate">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsPPScanned">
+                <input type="checkbox" id="chkIsPPScanned" class="mdl-checkbox__input">
+                <span class="mdl-checkbox__label">Is MLC</span>
+            </label>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-6 form-group">
+        <div class="default-checkbox separate">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsPPScanned">
+                <input type="checkbox" id="chkIsPPScanned" class="mdl-checkbox__input">
+                <span class="mdl-checkbox__label">
+                    Is Student
+                </span>
+            </label>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-6 form-group">
+        <div class="default-checkbox separate">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsPPScanned">
+                <input type="checkbox" id="chkIsPPScanned" class="mdl-checkbox__input">
+                <span class="mdl-checkbox__label">
+                    Is Staff
+                </span>
+            </label>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-6 form-group">
+        <div class="default-checkbox separate">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkIsPPScanned">
+                <input type="checkbox" id="chkIsPPScanned" class="mdl-checkbox__input">
+                <span class="mdl-checkbox__label">
+                    Is Staff Dependent
+                </span>
+            </label>
+        </div>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 form-group">
+        <div class="repeater">
+            <div data-repeater-list="outer-list">
+                <div class="row" data-repeater-item>
+                    <div class="col-lg-11 col-md-11 col-sm-11">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-6">
+                                <div class="form-group">
+                                    <label for="">Payer</label>
+                                    <select class="form-control">
+                                        <option value="value">Select</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6">
+                                <div class="form-group">
+                                    <label for="">Insurer</label>
+                                    <select class="form-control">
+                                        <option value="value">Select</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6">
+                                <div class="form-group">
+                                    <label for="">Scheme Plan</label>
+                                    <select class="form-control">
+                                        <option value="value">Select</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6">
+                                <div class="form-group">
+                                    <label for="">Member ID</label>
+                                    <input type="text" name="name" value="" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6">
+                                <div class="form-group">
+                                    <label for="">Co Pay %</label>
+                                    <input type="text" name="name" value="" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6">
+                                <div class="form-group">
+                                    <label for="">Rate Plan</label>
+                                    <input type="text" name="name" value="" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-1 col-md-1">
+                        <button data-repeater-delete type="button" class="mdl-button"><i class="fa fa-trash"></i> Delete</button>
+                    </div>
+
+
+                </div>
+
+            </div>
+            <button data-repeater-create type="button" value="Add" class="mdl-button"><i class="fa fa-plus"></i> Add</button>
+        </div>
+    </div>
+    <div class="col-lg-12">
+        <p class="subheading">Bill Info - Fixed Currency / Multi Currency</p>
+        <hr class="left" />
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label for="">Service Description</label>
+            <input id="" type="text" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label for="">Service Provider</label>
+            <input id="" type="text" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label for="">QTY</label>
+            <input id="" type="text" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label for="">Curr rate</label>
+            <input id="" type="text" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label for="">Description</label>
+            <input id="" type="text" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-12">
+        <p class="subheading">Visit Details</p>
+        <hr class="left" />
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label for="">Department </label>
+            <select class="form-control">
+                <option value="value">Select</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label for="">Transfered From </label>
+            <select class="form-control">
+                <option value="value">Select</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6">
+        <div class="form-group">
+            <label for="txtConsultingDoctor">Consulting Doctor</label>
+            <input id="txtConsultingDoctor" type="text" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label for="">Visit Type</label>
+            <select class="form-control">
+                <option value="value">Select</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label for="">Consultation Type </label>
+            <select class="form-control">
+                <option value="value">Select</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label for="">Consultation Date</label>
+            <input id="txtConsultingDoctor" type="text" class="form-control datepicker" />
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label for="">Consultation Time</label>
+            <input id="txtConsultingDoctor" type="time" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6">
+        <div class="form-group">
+            <label for="">Consultation Remarks</label>
+            <input id="txtConsultingRemarks" type="text" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label for="">Consultation Fees</label>
+            <input id="txtConsultingFees" type="text" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-6">
+        <div class="form-group">
+            <label for="">Referred by</label>
+            <input id="txtReferredBy" type="text" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-10 col-md-9 col-sm-6">
+        <div class="form-group">
+            <label for="">Complaint</label>
+            <input id="txtComplaint" type="text" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+        <hr />
+        <button class="mdl-button mr-10">Save</button>
+        <button class="mdl-button">Cancel</button>
+    </div>
+
+
+    <script>
+        $(document).ready(function () {
+            fnLoadRegisteredPatient();
+            fnLoadAppointmentInfo();
+            $('.repeater').repeater({
+                // (Required if there is a nested repeater)
+                // Specify the configuration of the nested repeaters.
+                // Nested configuration follows the same format as the base configuration,
+                // supporting options "defaultValues", "show", "hide", etc.
+                // Nested repeaters additionally require a "selector" field.
+                repeaters: [{
+                    // (Required)
+                    // Specify the jQuery selector for this nested repeater
+                    selector: '.inner-repeater'
+                }]
+            });
+        })
+        function fnLoadRegisteredPatient() {
+            $("#jqgRegisteredPatient").jqGrid({
+                //url: '',
+                //mtype: 'Post',
+                //datatype: 'json',
+                ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+                jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+                colNames: ["Registered Patient", "Active"],
+                colModel: [
+                    { name: "RegisteredPatient", width: 150, editable: true, align: 'left', hidden: false },
+                    { name: "Active", width: 150, editable: false, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+                ],
+                pager: "#jqpRegisteredPatient",
+                rowNum: 10000,
+                rownumWidth: '55',
+                pgtext: null,
+                pgbuttons: null,
+                loadonce: true,
+                viewrecords: true,
+                gridview: true,
+                rownumbers: true,
+                height: 'auto',
+                align: "left",
+                width: 'auto',
+                autowidth: true,
+                shrinkToFit: true,
+                forceFit: true,
+                scrollOffset: 0,
+                loadComplete: function (data) {
+                    SetGridControlByAction();
+
+                },
+            }).jqGrid('navGrid', '#jqpRegisteredPatient', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpRegisteredPatient', {
+                caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first"
+            }).jqGrid('navButtonAdd', '#jqpRegisteredPatient', {
+                caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first'
+            });
+            fnAddGridSerialNoHeading();
+        }
+
+
+        function fnLoadAppointmentInfo() {
+            $("#jqgAppointmentInfo").jqGrid({
+                //url: '',
+                //mtype: 'Post',
+                //datatype: 'json',
+                ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+                jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+                colNames: ["Appointment Info", ""],
+                colModel: [
+                    { name: "AppointmentInfo", width: 150, editable: true, align: 'left', hidden: false },
+                    { name: "Active", width: 150, editable: false, align: 'center', edittype: "checkbox", formatter: 'checkbox', editoptions: { value: "true:false" }, formatoptions: { disabled: true } },
+                ],
+                pager: "#jqpAppointmentInfo",
+                rowNum: 10000,
+                rownumWidth: '55',
+                pgtext: null,
+                pgbuttons: null,
+                loadonce: true,
+                viewrecords: true,
+                gridview: true,
+                rownumbers: true,
+                height: 'auto',
+                align: "left",
+                width: 'auto',
+                autowidth: true,
+                shrinkToFit: true,
+                forceFit: true,
+                scrollOffset: 0,
+                loadComplete: function (data) {
+                    SetGridControlByAction();
+
+                },
+            }).jqGrid('navGrid', '#jqpAppointmentInfo', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpAppointmentInfo', {
+                caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first"
+            }).jqGrid('navButtonAdd', '#jqpAppointmentInfo', {
+                caption: '<span class="fa fa-plus"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first'
+            });
+            fnAddGridSerialNoHeading();
+        }
+        function fnTypeOfVisit() {
+
+        }
+        $('input').on('change', function () {
+            var chkTypeOfVisit = $('input[name=typeofvisit]:checked').val()
+            if (chkTypeOfVisit == 1) {
+                $("#divRegisteredPatient").css('display', 'none');
+                $("#divAppointmentInfo").css('display', 'none');
+            }
+            if (chkTypeOfVisit == 2) {
+                $("#divRegisteredPatient").css('display', 'none');
+                $("#divAppointmentInfo").css('display', 'none');
+            }
+            if (chkTypeOfVisit == 3) {
+                $("#divRegisteredPatient").css('display', 'none');
+                $("#divAppointmentInfo").css('display', 'block');
+            }
+            if (chkTypeOfVisit == 4) {
+                $("#divRegisteredPatient").css('display', 'block');
+                $("#divAppointmentInfo").css('display', 'none');
+            }
+        });
+                                     //$("#divRegisteredPatient")
+                                     //$("#divAppointmentInfo")
+    </script>

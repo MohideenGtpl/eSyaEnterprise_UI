@@ -1,0 +1,86 @@
+﻿$(document).ready(function () {
+    fnGridLoadVendorDrugLink();
+});
+function fnGridLoadVendorDrugLink() {
+    $("#jqgVendorDrugLink").jqGrid('GridUnload');
+    $("#jqgVendorDrugLink").jqGrid({
+        //url:'',
+        //mtype: 'Post',
+        //datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { repeatitems: false, root: "rows", page: "page", total: "total", records: "records" },
+        colNames: ["Drug Code", "Drug Name","Business Share", "Minimum Supply Quantity", "Rate Type", "Rate", ""],
+        colModel: [
+            { name: "DrugCode", width: 50, editable: true, align: 'left', hidden: false },
+            { name: "DrugName", width: 120, editable: false, hidden: false, align: 'left', resizable: true },
+            { name: "BusinessShare", width: 120, editable: false, hidden: false, align: 'left', resizable: true },
+              { name: "MinimumSupplyQuantity ", width: 70, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            { name: "RateType", width: 60, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 15 } },
+            { name: "Rate", width: 70, editable: true, align: 'left', resizable: false, editoption: { 'text-align': 'left', maxlength: 50 } },
+            {
+                name: 'edit', search: false, align: 'left', width: 54, sortable: false, resizable: false,
+                formatter: function (cellValue, options, rowdata, action) {
+                    return '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="Edit" id="jqgEdit" onclick="return fnEditVendorDrugLink(event,\'edit\')"><i class="fas fa-pencil-alt"></i> ' + Edit + ' </button>' +
+                        '<button class="btn-xs ui-button ui-widget ui-corner-all btn-jqgrid" title="View" onclick="return fnEditVendorDrugLink(event,\'view\')"><i class="far fa-file-alt"></i> ' + View + ' </button>'
+
+                }
+            }
+        ],
+        pager: "#jqpVendorDrugLink",
+        rowNum: 10000,
+        pgtext: null,
+        pgbuttons: null,
+        loadonce: true,
+        viewrecords: true,
+        gridview: true,
+        rownumbers: true,
+        height: 'auto',
+        align: "left",
+        width: 'auto',
+        autowidth: false,
+        shrinkToFit: false,
+        scrollOffset: 0,
+        loadComplete: function (data) {
+            SetGridControlByAction();
+        },
+    }).jqGrid('navGrid', '#jqpVendorDrugLink', { add: false, edit: false, search: false, del: false, refresh: false }).jqGrid('navButtonAdd', '#jqpVendorDrugLink', {
+        caption: '<span class="fa fa-sync"></span> Refresh', buttonicon: "none", id: "custRefresh", position: "first", onClickButton: fnGridRefreshVendorDrugLink
+    }).jqGrid('navButtonAdd', '#jqpVendorDrugLink', {
+        caption: '<span class="fa fa-plus" data-toggle="modal"></span> Add', buttonicon: 'none', id: 'jqgAdd', position: 'first', onClickButton: fnAddVendorDrugLink
+    });
+    fnAddGridSerialNoHeading();
+}
+
+function fnAddVendorDrugLink() {
+    $("#divVendorDrugLinkGrid").css('display', 'none');
+    $("#divVendorDrugLinkForm").css('display', 'block');
+}
+
+function fnEditVendorDrugLink(e, actiontype) {
+    var rowid = $(e.target).parents("tr.jqgrow").attr('id');
+    var rowData = $('#jqgVendorDrugLink').jqGrid('getRowData', rowid);
+
+    $("#divVendorDrugLinkGrid").css('display', 'none');
+    $("#divVendorDrugLinkForm").css('display', 'block');
+
+
+    if (actiontype.trim() == "edit") {
+        $("input,textarea").attr('readonly', false);
+        $("select").next().attr('disabled', false);
+        $("#btnSaveVendorDrugLink").show();
+    }
+    if (actiontype.trim() == "view") {
+        $("input,textarea").attr('readonly', true);
+        $("select").next().attr('disabled', true);
+        $("#btnSaveVendorDrugLink").hide();
+    }
+}
+function fnCloseVendorDrugLink() {
+    $("#divVendorDrugLinkGrid").css('display', 'block');
+    $("#divVendorDrugLinkForm").css('display', 'none');
+}
+
+
+function fnGridRefreshVendorDrugLink() {
+
+}

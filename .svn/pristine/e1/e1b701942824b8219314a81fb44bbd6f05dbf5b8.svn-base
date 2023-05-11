@@ -1,0 +1,31 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model IEnumerable<eSyaEnterprise_UI.Areas.Config.Models.DO_MainMenu>
+
+<ul class="submenu">
+
+    @foreach (var mn in Model)
+    {
+        <li>
+            <a href="#"><i class="fas fa-plus-circle"></i> @mn.MainMenu </a>
+            <ul class="submenu">
+                @foreach (var sm in mn.l_SubMenu)
+                {
+                    <li>
+                        <a href="#"><i class="fas fa-plus-circle"></i> @sm.MenuItemName </a>
+                        <ul class="submenu">
+                            @foreach (var fm in sm.l_FormMenu)
+                            {
+                                <li><a asp-area=@fm.Area asp-controller=@fm.Controller asp-action=@fm.View> @fm.FormNameClient </a></li>
+
+                                @*<li><a asp-area="eSyaConfig" asp-controller="FormsMenu" asp-action="V_1_00"><i class="far fa-file-alt"></i> Form Names</a></li>*@
+                            }
+                        </ul>
+                    </li>
+                }
+            </ul>
+        </li>
+    }
+
+</ul>

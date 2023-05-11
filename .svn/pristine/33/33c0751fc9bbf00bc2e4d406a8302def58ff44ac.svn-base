@@ -1,0 +1,193 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.ActionFilter;
+using eSyaEnterprise_UI.Areas.Config.Data;
+using eSyaEnterprise_UI.Areas.Config.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Mvc;
+
+namespace eSyaEnterprise_UI.Areas.eSyaConfig.Controllers
+{
+    public class SMSEngineController : Controller
+    {
+        private readonly IeSyaConfigAPIServices _eSyaConfigAPIServices;
+        public SMSEngineController(IeSyaConfigAPIServices eSyaConfigAPIServices)
+        {
+            _eSyaConfigAPIServices = eSyaConfigAPIServices;
+        }
+
+        #region SMS Variables
+        /// <summary>
+        /// SMS Variables
+        /// </summary>
+        ///
+        [Area("eSyaConfig")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public IActionResult V_117_00()
+        {
+            return View();
+        }
+
+        /// <summary>
+        ///Get SMS Variable Information
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetSMSVariableInformation()
+        {
+            try
+            {
+                var serviceResponse = _eSyaConfigAPIServices.HttpClientServices.GetAsync<List<DO_SMSVariable>>("SMSEngine/GetSMSVariableInformation").Result;
+                return Json(serviceResponse.Data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Insert Into SMS Variable
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertIntoSMSVariable(DO_SMSVariable sm_sv)
+        {
+            try
+            {
+                sm_sv.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                sm_sv.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                var serviceResponse = _eSyaConfigAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("SMSEngine/InsertIntoSMSVariable", sm_sv).Result;
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+
+        /// <summary>
+        /// Update SMS Variable
+        /// </summary>
+        [HttpPost]
+        public JsonResult UpdateSMSVariable(DO_SMSVariable sm_sv)
+        {
+            try
+            {
+                sm_sv.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                sm_sv.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                var serviceResponse = _eSyaConfigAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("SMSEngine/UpdateSMSVariable", sm_sv).Result;
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+
+        #endregion
+
+        [Area("eSyaConfig")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public IActionResult V_115_00()
+        {
+            try
+            {
+                var serviceResponse = _eSyaConfigAPIServices.HttpClientServices.GetAsync<List<DO_Forms>>("ConfigMasterData/GetFormDetails").Result;
+                ViewBag.formList = serviceResponse.Data;
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+
+        /// <summary>
+        ///Get SMS Header Information
+        /// </summary>
+        [HttpPost]
+        public JsonResult GetSMSHeaderInformationByFormId(int formId)
+        {
+            try
+            {
+                var serviceResponse = _eSyaConfigAPIServices.HttpClientServices.GetAsync<List<DO_SMSHeader>>("SMSEngine/GetSMSHeaderInformationByFormId?formId=" + formId).Result;
+                return Json(serviceResponse.Data);
+            }
+            catch (Exception ex)
+            {
+                return Json(new DO_ReturnParameter() { Status = false, Message = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Insert Into SMS Header
+        /// </summary>
+        [HttpPost]
+        public JsonResult InsertIntoSMSHeader(DO_SMSHeader sm_sh)
+        {
+            try
+            {
+                sm_sh.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                sm_sh.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                var serviceResponse = _eSyaConfigAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("SMSEngine/InsertIntoSMSHeader", sm_sh).Result;
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+
+        /// <summary>
+        /// Update SMS Header
+        /// </summary>
+        [HttpPost]
+        public JsonResult UpdateSMSHeader(DO_SMSHeader sm_sh)
+        {
+            try
+            {
+                sm_sh.UserID = AppSessionVariables.GetSessionUserID(HttpContext);
+                sm_sh.TerminalID = AppSessionVariables.GetIPAddress(HttpContext);
+
+                var serviceResponse = _eSyaConfigAPIServices.HttpClientServices.PostAsJsonAsync<DO_ReturnParameter>("SMSEngine/UpdateSMSHeader", sm_sh).Result;
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+        }
+
+        [Area("eSyaConfig")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public IActionResult _SMSInformation()
+        {
+            return View();
+        }
+
+        [Area("eSyaConfig")]
+        public IActionResult V_116_00()
+        {
+            ViewBag.formName = "SMS to Whom";
+            return View();
+        }
+    }
+}

@@ -1,0 +1,227 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eSyaEnterprise_UI.ActionFilter;
+using eSyaEnterprise_UI.Areas.eSyaOutPatient.Data;
+using eSyaEnterprise_UI.Areas.eSyaOutPatient.Models;
+using eSyaEnterprise_UI.Models;
+using eSyaEnterprise_UI.Utility;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+
+namespace eSyaEnterprise_UI.Areas.eSyaOutPatient.Controllers
+{
+
+    public class AppointmentSchedularController : Controller
+    {
+        private readonly IeSyaOutPatientAPIServices _eSyaOutPatientAPIServices;
+        private readonly ILogger<AppointmentSchedularController> _logger;
+
+        public AppointmentSchedularController(IeSyaOutPatientAPIServices eSyaOutPatientAPIServices, ILogger<AppointmentSchedularController> logger)
+        {
+            _eSyaOutPatientAPIServices = eSyaOutPatientAPIServices;
+            _logger = logger;
+        }
+
+
+        [Area("eSyaOutPatient")]
+        [ServiceFilter(typeof(ViewBagActionFilter))]
+        public IActionResult V_3010_00()
+        {
+            return View();
+        }
+
+        public async Task<JsonResult> GetClinicConsultationTypeByBKey(int businessKey)
+        {
+            try
+            {
+                var serviceResponse = await _eSyaOutPatientAPIServices.HttpClientServices.GetAsync<List<DO_ClinicConsultationType>>("DoctorClinic/GetClinicConsultationTypeByBKey?businessKey=" + businessKey);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetClinicConsultationTypeByBKey:params:businessKey:{0}" + businessKey);
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetClinicConsultationTypeByBKey:params:businessKey:{0}" + businessKey);
+                throw ex;
+            }
+        }
+
+        public async Task<JsonResult> GetSpecialtyListByBKey(int businessKey)
+        {
+            try
+            {
+                var serviceResponse = await _eSyaOutPatientAPIServices.HttpClientServices.GetAsync<List<DO_Specialty>>("DoctorClinic/GetSpecialtyListByBKey?businessKey=" + businessKey);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), "UD:GetSpecialtyListByBKey:params:businessKey:{0}" + businessKey);
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UD:GetSpecialtyListByBKey:params:businessKey:{0}" + businessKey);
+                throw ex;
+            }
+        }
+
+        public async Task<JsonResult> GetDoctorScheduleListByClinicTypeSpecialtyDate(int businessKey, int clinicType, int consultationType,
+            int specialtyID, DateTime scheduleDate)
+        {
+            try
+            {
+                var parameter = "?businessKey=" + businessKey;
+                parameter += "&clinicType=" + clinicType.ToString();
+                parameter += "&consultationType=" + consultationType.ToString();
+                parameter += "&specialtyID=" + specialtyID.ToString();
+                parameter += "&scheduleDate=" + scheduleDate.ToString("dd-MMM-yyyy");
+
+                var serviceResponse = await _eSyaOutPatientAPIServices.HttpClientServices.GetAsync<List<DO_DoctorClinicSchedule>>("DoctorClinic/GetDoctorScheduleListByClinicTypeSpecialtyDate" + parameter);
+                if (serviceResponse.Status)
+                    return Json(serviceResponse.Data);
+                else
+                {
+                    _logger.LogError(new Exception(serviceResponse.Message), string.Format("UD:GetDoctorScheduleListByClinicTypeSpecialtyDate:params: businessKey:{0},clinicType:{1},consultationType:{2},specialtyID:{3},scheduleDate:{4}", 
+                        AppSessionVariables.GetSessionBusinessKey(HttpContext).ToString(), clinicType, consultationType, specialtyID, scheduleDate.ToString()) );
+                    return Json(new DO_ReturnParameter() { Status = false, Message = serviceResponse.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, string.Format("UD:GetDoctorScheduleListByClinicTypeSpecialtyDate:params: businessKey:{0},clinicType:{1},consultationType:{2},specialtyID:{3},scheduleDate:{4}",
+                        AppSessionVariables.GetSessionBusinessKey(HttpContext).ToString(), clinicType, consultationType, specialtyID, scheduleDate.ToString()));
+                throw ex;
+            }
+        }
+
+        public async Task<JsonResult> GetDoctorScheduleHours(int businessKey, int clinicType, int consultationType, int specialtyID, string doctorID, DateTime scheduleDate)
+        {
+            try
+            {
+
+                List<Resources> l_rs = new List<Resources>();
+                TimeSpan sTime = new TimeSpan();
+                TimeSpan eTime = new TimeSpan();
+
+                foreach (string d in doctorID.Split(','))
+                {
+
+                    if (d != null)
+                    {
+                        var parameter = "?businessKey=" + businessKey;
+                        parameter += "&clinicType=" + clinicType.ToString();
+                        parameter += "&consultationType=" + consultationType.ToString();
+                        parameter += "&specialtyID=" + specialtyID.ToString();
+                        parameter += "&scheduleDate=" + scheduleDate.ToString("dd-MMM-yyyy");
+
+                        var serviceResponse = await _eSyaOutPatientAPIServices.HttpClientServices.GetAsync<List<DO_DoctorClinicSchedule>>
+                            ("DoctorClinic/GetDoctorScheduleListByClinicTypeSpecialtyDate" + parameter);
+                        if (serviceResponse.Status)
+                        {
+                            List<BusinessHours> l_bh = new List<BusinessHours>();
+
+                            Resources rs = new Resources();
+
+                            foreach (var s in serviceResponse.Data)
+                            {
+                                rs.id = s.DoctorId.ToString();
+                                rs.title = "Dr." + s.DoctorName;
+
+                                if (sTime.Hours <= 0 || s.FromTime < sTime)
+                                    sTime = s.FromTime;
+                                if (eTime.Hours <= 0 || s.ToTime > eTime)
+                                    eTime = s.ToTime;
+
+                                BusinessHours bh = new BusinessHours();
+                                string dayOfWeek = s.ScheduleDate.DayOfWeek.ToString();
+                                List<int> wk = new List<int>();
+                                wk.Add(GetWeekNumber(dayOfWeek));
+                                bh.daysOfWeek = wk;
+                                bh.startTime = s.FromTime.ToString("hh':'mm");
+                                bh.endTime = s.ToTime.ToString("hh':'mm");
+                                l_bh.Add(bh);
+
+                            }
+
+                            rs.businessHours = l_bh;
+
+                            l_rs.Add(rs);
+                        }
+                    }
+
+                    if (l_rs.Count() > 0)
+                    {
+                        var minDate = sTime.Subtract(TimeSpan.FromHours(1));
+                        var maxDate = eTime.Add(TimeSpan.FromHours(1));
+                        return Json(new { Duration = "00:05", minDate, maxDate, businessHours = l_rs });
+                    }
+                    else
+                        return Json(new { Duration = "00:05", minDate = "00:00:00", maxDate = "00:00:00", businessHours = l_rs });
+                }
+
+                return Json(new { Duration = "00:05", minDate = "00:00:00", maxDate = "00:00:00", businessHours = l_rs });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, Message = ex.ToString() });
+            }
+
+        }
+
+        public int GetWeekNumber(string dayofWeek)
+        {
+            if (dayofWeek.ToUpper() == "MONDAY")
+                return 1;
+            else if (dayofWeek.ToUpper() == "TUESDAY")
+                return 2;
+            else if (dayofWeek.ToUpper() == "WEDNESDAY")
+                return 3;
+            else if (dayofWeek.ToUpper() == "THURSDAY")
+                return 4;
+            else if (dayofWeek.ToUpper() == "FRIDAY")
+                return 5;
+            else if (dayofWeek.ToUpper() == "SATURDAY")
+                return 6;
+            else if (dayofWeek.ToUpper() == "SUNDAY")
+                return 0;
+            else
+                return 0;
+        }
+
+    }
+
+
+    public class FullCalendar
+    {
+        public string id { get; set; }
+        public string resourceId { get; set; }
+        public string title { get; set; }
+        public DateTime start { get; set; }
+        public DateTime end { get; set; }
+
+        public string color { get; set; }
+    }
+
+    public class Resources
+    {
+        public string id { get; set; }
+        public string title { get; set; }
+        public List<BusinessHours> businessHours { get; set; }
+    }
+
+    public class BusinessHours
+    {
+        public List<int> daysOfWeek { get; set; }
+        public string startTime { get; set; }
+        public string endTime { get; set; }
+    }
+
+}

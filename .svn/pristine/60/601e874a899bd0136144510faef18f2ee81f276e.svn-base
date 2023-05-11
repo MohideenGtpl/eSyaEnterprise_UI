@@ -1,0 +1,195 @@
+﻿var l_vType = {
+    'N': localization.NewConsultation,
+    'S': localization.FollowUpSurgical,
+    'R': localization.FollowUpNutrition
+};
+
+$(document).ready(function () {
+    fnSetCurrentdate();
+    fnLoadAppointmentDetail();
+    $('#txtSearchBox').on('change focusout', function () {
+
+        var searchString = $("#txtSearchBox").val();
+
+        var f = { groupOp: "OR", rules: [] };
+
+        f.rules.push({ field: "PatientName", op: "cn", data: searchString });
+        $("#jqgAppointmentDetail")[0].p.search = f.rules.length > 0;
+        $.extend($("#jqgAppointmentDetail")[0].p.postData, { filters: JSON.stringify(f) });
+
+        f.rules.push({ field: "UHID", op: "cn", data: searchString });
+        $("#jqgAppointmentDetail")[0].p.search = f.rules.length > 0;
+        $.extend($("#jqgAppointmentDetail")[0].p.postData, { filters: JSON.stringify(f) });
+
+        f.rules.push({ field: "PatientMobileNumber", op: "cn", data: searchString });
+        $("#jqgAppointmentDetail")[0].p.search = f.rules.length > 0;
+        $.extend($("#jqgAppointmentDetail")[0].p.postData, { filters: JSON.stringify(f) });
+
+
+        $("#jqgAppointmentDetail").trigger("reloadGrid", [{ current: true }]);
+    });
+});
+function fnSetCurrentdate() {
+    var date = new Date();
+
+    var day = date.getDate();
+    var month = date.getMonth() + 1;
+    var year = date.getFullYear();
+
+    if (month < 10) month = "0" + month;
+    if (day < 10) day = "0" + day;
+
+    var today = year + "-" + month + "-" + day;
+    document.getElementById("txtfromdate").value = today;
+    document.getElementById("txttodate").value = today;
+}
+
+function fnLoadAppointmentDetail() {
+
+    $("#jqgAppointmentDetail").jqGrid('GridUnload');
+    var fromdate = $("#txtfromdate").val();
+    var todate = $("#txttodate").val();
+
+    if (fromdate == "" || fromdate == null) {
+        fnAlert("Please select From Date", "e");
+        return false;
+    }
+    if (todate == "" || todate == null) {
+        fnAlert("Please select To Date", "e");
+        return false;
+    }
+
+    $("#jqgAppointmentDetail").jqGrid(
+        {
+            url: getBaseURL() + '/PatientRegistration/GetAppointmentDetailByDate',
+            datatype: "json",
+            contentType: "application/json; charset-utf-8",
+            mtype: 'GET',
+            postData: {
+                startDate: fromdate,
+                endDate: todate,
+                vType: $('#cboVisitType').val(),
+                status: $('#cboAPStatus').val()
+            },
+            ajaxGridOptions: { contentType: 'application/json; charset=utf-8', async: true },
+            colNames: [localization.VisitNumber, localization.MRN, localization.PatientName, localization.Mobile, localization.Email, localization.VisitType, localization.AppointmentDate, localization.AppointmentTime, localization.Status, /* "Reffered By", "Created By", "Create Date", "Modified By", "Modify Date",*/ localization.Actions],
+            //colNames: ["Booking Number", "MRN", "Patient Name", "Mobile", "Email", "Visit Type", "Appointment Date", "Appointment Time", "Status", /* "Reffered By", "Created By", "Create Date", "Modified By", "Modify Date",*/ "Actions"],
+            colModel: [
+                { name: "AppointmentKey", width: 80, editable: true, align: 'left', hidden: false },
+                { name: "UHID", width: 60, editable: true, align: 'left', hidden: false },
+                
+                { name: "PatientName", width: 100, editable: true, align: 'left', hidden: false },
+                { name: "PatientMobileNumber", width: 70, editable: true, align: 'left', hidden: false },
+                { name: "PatientEmailID", width: 100, editable: true, align: 'left', hidden: false },
+                {
+                    name: "EpisodeType", width: 80, editable: true, formatter: 'select',
+                    edittype: 'select', editoptions: {
+                        value: l_vType
+                    },
+                },
+                { name: "AppointmentDate", width: 70, editable: true, align: 'center', hidden: false, formatter: 'date', formatoptions: { srcformat: 'Y/m/d H:i:s', newformat: 'd/m/y' } },
+                { name: "AppointmentFromTime", width: 70, editable: true, align: 'center', hidden: false },
+                { name: "AppointmentStatus", width: 80, editable: true, align: 'left', hidden: true },
+                //{ name: "RefferedBy", width: 80, editable: true, align: 'left', hidden: false },
+                //{ name: "StrCreatedBy", width: 60, editable: true, align: 'left', hidden: false },
+                //{ name: "CreadtedOn", width: 110, editable: true, align: 'left', hidden: false, formatter: 'date', formatoptions: { srcformat: 'Y/m/d H:i:s', newformat: 'd/m/y h:i A' } },
+                //{ name: "StrModifiedBy", width: 60, editable: true, align: 'left', hidden: false },
+                //{ name: "ModifiedOn", width: 110, editable: true, align: 'left', hidden: false, formatter: 'date', formatoptions: { srcformat: 'Y/m/d H:i:s', newformat: 'd/m/y h:i A' } },
+                {
+                    name: "Button", width: 110, editable: false, align: 'center', hidden: false, formatter: function (cellValue, options, rowObject) {
+                        var i = options.rowId;
+                        return "<button id=btnRegister_" + i + " type='button'  class='btn btn-primary' onclick=fnRegisterPatient('" + rowObject.AppointmentKey + "') > <i class='fas fa-external-link-alt c-white'></i> Register </button >"
+                            +
+                            "<button id=btnBill_" + i + " type='button'  class='btn btn-primary' onclick=fnViewBill('" + rowObject.AppointmentKey + "') > <i class='fas fa-external-link-alt c-white'></i> View Bill </button >";
+                    }
+                },
+            ],
+            rowNum: 100000,
+            viewrecords: true,
+            gridview: true,
+            rownumbers: true,
+            scroll: false,
+            loadonce: true,
+            width: 'auto',
+            height: 'auto',
+            autowidth: true,
+            shrinkToFit: true,
+            forceFit: false,
+            pager: "#jqpAppointmentDetail",
+            onSelectRow: function (rowid) {
+
+            },
+            loadComplete: function (data) {
+                fnJqgridSmallScreen('jqgAppointmentDetail');
+                AutoCompleteList = [];
+                var rows = jQuery("#jqgAppointmentDetail").getDataIDs();
+                for (a = 0; a < rows.length; a++) {
+                    row = jQuery("#jqgAppointmentDetail").getRowData(rows[a]);
+
+                    if (row['AppointmentStatus'].startsWith('AP')) {
+                        $("#btnRegister_" + rows[a]).show();
+                        $("#btnBill_" + rows[a]).hide();
+                    }
+                    else if (row['AppointmentStatus'].startsWith('CN')) {
+                        $("#btnBill_" + rows[a]).hide();
+                        $("#btnRegister_" + rows[a]).hide();
+                    }
+                    else {
+                        $("#btnRegister_" + rows[a]).hide();
+                        $("#btnBill_" + rows[a]).show();
+                    }
+
+
+                    
+                    AutoCompleteList.push({ label: row.PatientName, value: row.PatientName });
+                    AutoCompleteList.push({ label: row.UHID, value: row.UHID });
+                    AutoCompleteList.push({ label: row.PatientMobileNumber, value: row.PatientMobileNumber });
+                }
+                $("#txtSearchBox").autocomplete({
+                    source: AutoCompleteList
+                });
+
+                $("#txtSearchBox").autocomplete({
+                    source: AutoCompleteList
+                });
+            }
+        });
+
+
+}
+
+
+function fnRegisterPatient(appKey) {
+    var obj = {
+        AppointmentKey: appKey,
+    };
+    $.ajax({
+        url: getBaseURL() + '/AppointmentSchedular/SaveRegisterPatientAppointment',
+        type: 'POST',
+        datatype: 'json',
+        contenttype: 'application/json; charset=utf-8',
+        data: obj,
+        async: true,
+        success: function (result) {
+
+            if (result.Status) {
+                toastr.success("Registered");
+                fnLoadAppointmentDetail();
+            }
+            else {
+                toastr.error(result.Message);
+            }
+            return true;
+        },
+        error: function (error) {
+            toastr.error(error.statusText);
+            return false;
+        }
+    });
+}
+
+function fnViewBill(appKey) {
+    var URL = getReportBaseURL() + '/eSyaClinic/ReportViewer/ConsultationBill?businessKey=587&appointmentKey=' + appKey;
+    window.open(URL, 'window', 'settings');
+    return false;
+}

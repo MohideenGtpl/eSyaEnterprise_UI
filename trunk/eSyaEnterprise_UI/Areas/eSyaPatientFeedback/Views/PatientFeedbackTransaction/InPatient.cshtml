@@ -1,0 +1,105 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "InPatient";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/css/eSyaPatientFeedback/feedbackQuestionnaire.css" rel="stylesheet" />
+
+@section scripts{
+    <script src="~/js/eSyaPatientFeedback/InPatient.js"></script>
+}
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12 col-12">
+            <h5 class="border-bottom font-weight-light">Patient Information</h5>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 col-12 form-group">
+            <label>Feedback Type <sup class="icon-star"><i class="fa fa-star-of-life"></i></sup></label>
+            <select class="selectpicker" id="cboFeedbackType" >
+                <option value="0">@Localizer["Select"]</option>
+                <option value="IP">IN Patient</option>
+            </select>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 col-12 form-group">
+            <label>Floor ID<sup class="icon-star"><i class="fa fa-star-of-life"></i></sup></label>
+          
+            <select class="selectpicker" data-live-search="true" id="cboFloorID" title="Select" Categorydata-size="8" asp-items="@ViewBag.Floors">
+                <option value="0">@Localizer["Select"]  </option>
+            </select>
+
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 col-12 form-group">
+            <label>MRN ID<sup class="icon-star"><i class="fa fa-star-of-life"></i></sup></label>
+            <input type="text" name="uhid" value="" maxlength="15" class="form-control" pattern="^[0-9]*$" id="txtUHID" data-status="m" />
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 col-12 form-group">
+            <label>First Name <sup class="icon-star"><i class="fa fa-star-of-life"></i></sup></label>
+            <input type="text" name="firstname" value="" class="form-control" pattern="^[A-Za-z]*$" id="txtFirstName" data-status="m" />
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 col-12 form-group">
+            <label>Middle Name</label>
+            <input type="text" name="middlename" value="" class="form-control" pattern="^[A-Za-z]*$" id="txtMiddleName" data-status="m" />
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 col-12 form-group">
+            <label>Last Name <sup class="icon-star"><i class="fa fa-star-of-life"></i></sup></label>
+            <input type="text" name="lastname" value="" class="form-control" pattern="^[A-Za-z]*$" id="txtLastName" data-status="m" />
+        </div>
+        <div class="col-lg-6 col-md-4 col-sm-6 col-12 form-group">
+            <label>Email ID </label>
+            <input type="text" name="emailid" value="" class="form-control" id="txtEmailID" data-status="m" />
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 col-12 form-group">
+            <label>Mobile number <sup class="icon-star"><i class="fa fa-star-of-life"></i></sup></label>
+            @await Component.InvokeAsync("IsdMobileInput", new { id = "MobileNumber" })
+        </div>
+
+        <div class="col-lg-3 col-md-4 col-sm-6 col-12 form-group">
+            <label>Doctor <sup class="icon-star"><i class="fa fa-star-of-life"></i></sup></label>
+
+            <select class="selectpicker" data-live-search="true" id="cboDoctor" title="Select" Categorydata-size="8" asp-items="@ViewBag.Doctors">
+                <option value="0">@Localizer["Select"]  </option>
+            </select>
+        </div>
+
+        <div class="col-lg-3 col-md-4 col-sm-6 col-12 form-group">
+            <label>Specialty <sup class="icon-star"><i class="fa fa-star-of-life"></i></sup></label>
+
+            <select class="selectpicker" data-live-search="true" id="cboSpecialty" title="Select" Categorydata-size="8" asp-items="@ViewBag.Specialties">
+                <option value="0">@Localizer["Select"]  </option>
+            </select>
+        </div>
+
+    </div>
+</section>
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12 col-12">
+            <h5 class="border-bottom font-weight-light">Feedback Questions</h5>
+        </div>
+    </div>
+    <div id="section_question">
+
+    </div>
+</section>
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-12 text-center">
+            <button type="button" class="btn btn-primary mdl-button mr-2" onclick="fnSaveInpatient()"><i class="fa fa-check"></i> Submit</button>
+            <button type="button" class="btn btn-primary" onclick="fnClearFields()"><i class="fa fa-times"></i> Cancel</button>
+        </div>
+    </div>
+</section>
+
+<script>
+    var qMaster = (@Html.Raw(Json.Serialize(ViewBag.questionarymaster)));
+</script>
+

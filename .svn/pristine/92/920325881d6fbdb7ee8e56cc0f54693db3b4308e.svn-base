@@ -1,0 +1,58 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@*<style>
+    .bootstrap-select .dropdown-toggle .filter-option {
+        text-align: center !important;
+    }
+</style>*@
+<div class="row" style="padding-left:15px" id="mobileform">
+    
+    <select name="cboISDCodes" class="selectpicker col-3" data-live-search="true" id="@ViewBag.cboID" title="" data-size="8" onchange="fnCboISDCodes_onChanged(this)">
+        <option value="0">select</option>
+        @if (ViewBag.ISDCodes != null)
+        {
+            foreach (var c in ViewBag.ISDCodes)
+            {
+                <option value=@c.Isdcode data-mobilepattern=@c.MobileNumberPattern
+                        title="<span class='text' style='padding-left:5px'><img src='@ViewBag.DomainName/@c.CountryFlag' alt=@c.CountryCode /> (+@c.Isdcode) </span>&#x200E;"
+                        data-content="<span><img src='@ViewBag.DomainName/@c.CountryFlag' alt=''></span> @c.CountryName (+@c.Isdcode) &#x200E;"></option>
+            }
+        }
+    </select>
+    <div class="col-9" style="padding-left:0px;padding-right:15px">
+        <input name="mobilepattern" id="@ViewBag.txtID" value="" class="form-control" />
+    </div>
+</div>
+
+<script>
+
+    $(function () {
+        if (_cnfISDCode > 0) {
+            $('#@ViewBag.cboID').val(_cnfISDCode).selectpicker('refresh');
+            var mobile = $("#@ViewBag.txtID");
+            mobile.inputmask({
+                "mask": $(':selected', $('#@ViewBag.cboID')).data('mobilepattern'),
+                autoUnmask: true,
+                removeMaskOnSubmit: true
+            });
+        }
+    });
+
+    //$j = jQuery.noConflict();
+    function fnCboISDCodes_onChanged(e) {
+        //console.log(e.value);
+        //console.log('Clicked option value => ' + $(e).val());
+        //console.log(':select & $(this) =>    ' + $(':selected', $(e)).data('mobilepattern'));
+
+        //var mobile = $('input[name=mobilepattern]');
+        var mobile = $("#@ViewBag.txtID");
+        mobile.inputmask({
+            "mask": $(':selected', $(e)).data('mobilepattern'),
+            autoUnmask: true,
+            removeMaskOnSubmit: true});
+    }
+
+</script>

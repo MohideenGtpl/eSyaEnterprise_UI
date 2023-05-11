@@ -1,0 +1,5 @@
+﻿@model Dictionary<int, string>
+
+<select id="cboBusinessLocation" class="selectpicker" data-live-search="false" title="Select" asp-items="@ViewBag.BusinessLocation" 
+    onchange="fnBusinessLocation_onChange()">
+</select>
